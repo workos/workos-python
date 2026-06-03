@@ -4,3 +4,6 @@ from .create_group import CreateGroup as CreateGroup
 from .create_group_membership import CreateGroupMembership as CreateGroupMembership
 from workos.common.models.group import Group as Group
 from .update_group import UpdateGroup as UpdateGroup
+from workos.common.models.user_organization_membership_base_list_data import (
+    UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
+)

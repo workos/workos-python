@@ -7,6 +7,7 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.api_keys.models import (
+    ApiKey,
     ApiKeyValidationResponse,
     OrganizationApiKey,
     OrganizationApiKeyWithValue,
@@ -89,6 +90,18 @@ class TestApiKeys:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/api_keys/test_id")
+
+    def test_create_api_key_expire(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("api_key.json"),
+        )
+        result = workos.api_keys.create_api_key_expire("test_id")
+        assert isinstance(result, ApiKey)
+        assert result.object == "api_key"
+        assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/api_keys/test_id/expire")
 
     def test_list_organization_api_keys_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -239,6 +252,17 @@ class TestAsyncApiKeys:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/api_keys/test_id")
+
+    @pytest.mark.asyncio
+    async def test_create_api_key_expire(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("api_key.json"))
+        result = await async_workos.api_keys.create_api_key_expire("test_id")
+        assert isinstance(result, ApiKey)
+        assert result.object == "api_key"
+        assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/api_keys/test_id/expire")
 
     @pytest.mark.asyncio
     async def test_list_organization_api_keys_with_request_options(

@@ -31,6 +31,7 @@ class CreateWebhookEndpointEvents(str, Enum):
     AUTHENTICATION_RADAR_RISK_DETECTED = "authentication.radar_risk_detected"
     API_KEY_CREATED = "api_key.created"
     API_KEY_REVOKED = "api_key.revoked"
+    API_KEY_UPDATED = "api_key.updated"
     CONNECTION_ACTIVATED = "connection.activated"
     CONNECTION_DEACTIVATED = "connection.deactivated"
     CONNECTION_SAML_CERTIFICATE_RENEWAL_REQUIRED = (
@@ -127,6 +128,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "authentication.radar_risk_detected",
     "api_key.created",
     "api_key.revoked",
+    "api_key.updated",
     "connection.activated",
     "connection.deactivated",
     "connection.saml_certificate_renewal_required",

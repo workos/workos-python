@@ -17,6 +17,7 @@ class AuditLogConfigurationLogStreamType(str, Enum):
     GENERIC_HTTPS = "GenericHttps"
     GOOGLE_CLOUD_STORAGE = "GoogleCloudStorage"
     S_3 = "S3"
+    SNOWFLAKE = "Snowflake"
     SPLUNK = "Splunk"
 
     @classmethod
@@ -30,5 +31,11 @@ class AuditLogConfigurationLogStreamType(str, Enum):
 
 
 AuditLogConfigurationLogStreamTypeLiteral: TypeAlias = Literal[
-    "AzureSentinel", "Datadog", "GenericHttps", "GoogleCloudStorage", "S3", "Splunk"
+    "AzureSentinel",
+    "Datadog",
+    "GenericHttps",
+    "GoogleCloudStorage",
+    "S3",
+    "Snowflake",
+    "Splunk",
 ]

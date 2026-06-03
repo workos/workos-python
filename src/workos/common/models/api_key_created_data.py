@@ -29,14 +29,14 @@ class ApiKeyCreatedData:
     """The obfuscated value of the API key."""
     last_used_at: Optional[str]
     """The timestamp when the API key was last used."""
+    expires_at: Optional[datetime]
+    """Timestamp when the API Key expires. Null means the key does not expire."""
     permissions: List[str]
     """The permissions granted to the API key."""
     created_at: str
     """The timestamp when the API key was created."""
     updated_at: str
     """The timestamp when the API key was last updated."""
-    expires_at: Optional[datetime] = None
-    """Timestamp when the API Key expires. Null means the key does not expire."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyCreatedData":
@@ -62,12 +62,12 @@ class ApiKeyCreatedData:
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=data["last_used_at"],
+                expires_at=_parse_datetime(_v_expires_at)
+                if (_v_expires_at := data["expires_at"]) is not None
+                else None,
                 permissions=data["permissions"],
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
-                expires_at=_parse_datetime(_v_expires_at)
-                if (_v_expires_at := data.get("expires_at")) is not None
-                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApiKeyCreatedData", e)
@@ -84,11 +84,11 @@ class ApiKeyCreatedData:
             result["last_used_at"] = self.last_used_at
         else:
             result["last_used_at"] = None
-        result["permissions"] = self.permissions
-        result["created_at"] = self.created_at
-        result["updated_at"] = self.updated_at
         if self.expires_at is not None:
             result["expires_at"] = _format_datetime(self.expires_at)
         else:
             result["expires_at"] = None
+        result["permissions"] = self.permissions
+        result["created_at"] = self.created_at
+        result["updated_at"] = self.updated_at
         return result

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-06-03T19:19:55.137Z",
+  "generatedAt": "2026-06-17T20:55:36.392Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
@@ -53,10 +53,17 @@
     "src/workos/authorization/models/check_authorization.py",
     "src/workos/authorization/models/create_authorization_permission.py",
     "src/workos/authorization/models/create_authorization_resource.py",
+    "src/workos/authorization/models/create_group_role_assignment.py",
     "src/workos/authorization/models/create_organization_role.py",
     "src/workos/authorization/models/create_role.py",
+    "src/workos/authorization/models/delete_group_role_assignments_by_criteria.py",
+    "src/workos/authorization/models/group_role_assignment.py",
+    "src/workos/authorization/models/group_role_assignment_list.py",
+    "src/workos/authorization/models/group_role_assignment_resource.py",
     "src/workos/authorization/models/permission.py",
     "src/workos/authorization/models/remove_role.py",
+    "src/workos/authorization/models/replace_group_role_assignment_entry.py",
+    "src/workos/authorization/models/replace_group_role_assignments.py",
     "src/workos/authorization/models/role.py",
     "src/workos/authorization/models/role_list.py",
     "src/workos/authorization/models/set_role_permissions.py",
@@ -66,6 +73,11 @@
     "src/workos/authorization/models/update_role.py",
     "src/workos/authorization/models/user_role_assignment.py",
     "src/workos/authorization/models/user_role_assignment_resource.py",
+    "src/workos/client_api/__init__.py",
+    "src/workos/client_api/_resource.py",
+    "src/workos/client_api/models/__init__.py",
+    "src/workos/client_api/models/client_api_token.py",
+    "src/workos/client_api/models/client_api_token_response.py",
     "src/workos/common/__init__.py",
     "src/workos/common/models/__init__.py",
     "src/workos/common/models/action_authentication_denied.py",
@@ -152,6 +164,7 @@
     "src/workos/common/models/connect_application_m2m.py",
     "src/workos/common/models/connect_application_oauth.py",
     "src/workos/common/models/connect_application_oauth_redirect_uris.py",
+    "src/workos/common/models/connected_account_auth_method.py",
     "src/workos/common/models/connected_account_state.py",
     "src/workos/common/models/connection_activated.py",
     "src/workos/common/models/connection_activated_data.py",
@@ -186,6 +199,9 @@
     "src/workos/common/models/create_user_password_hash_type.py",
     "src/workos/common/models/create_webhook_endpoint_events.py",
     "src/workos/common/models/data_integration_access_token_response_error.py",
+    "src/workos/common/models/data_integration_credentials_credentials_type.py",
+    "src/workos/common/models/data_integrations_list_response_data_auth_methods.py",
+    "src/workos/common/models/data_integrations_list_response_data_connected_account_auth_method.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_state.py",
     "src/workos/common/models/data_integrations_list_response_data_ownership.py",
     "src/workos/common/models/directory_group.py",
@@ -292,6 +308,7 @@
     "src/workos/common/models/invitation_revoked_data.py",
     "src/workos/common/models/invitation_revoked_data_state.py",
     "src/workos/common/models/invitation_state.py",
+    "src/workos/common/models/list_metadata.py",
     "src/workos/common/models/magic_auth_created.py",
     "src/workos/common/models/magic_auth_created_data.py",
     "src/workos/common/models/organization_created.py",
@@ -534,6 +551,13 @@
     "src/workos/pipes/models/data_integrations_list_response.py",
     "src/workos/pipes/models/data_integrations_list_response_data.py",
     "src/workos/pipes/models/data_integrations_list_response_data_connected_account.py",
+    "src/workos/pipes_provider/__init__.py",
+    "src/workos/pipes_provider/_resource.py",
+    "src/workos/pipes_provider/models/__init__.py",
+    "src/workos/pipes_provider/models/configure_data_integration_body.py",
+    "src/workos/pipes_provider/models/data_integration_configuration_list_response.py",
+    "src/workos/pipes_provider/models/data_integration_configuration_response.py",
+    "src/workos/pipes_provider/models/data_integration_credentials.py",
     "src/workos/radar/__init__.py",
     "src/workos/radar/_resource.py",
     "src/workos/radar/models/__init__.py",
@@ -565,6 +589,7 @@
     "src/workos/types/api_keys/__init__.py",
     "src/workos/types/audit_logs/__init__.py",
     "src/workos/types/authorization/__init__.py",
+    "src/workos/types/client_api/__init__.py",
     "src/workos/types/connect/__init__.py",
     "src/workos/types/directory_sync/__init__.py",
     "src/workos/types/events/__init__.py",
@@ -575,6 +600,7 @@
     "src/workos/types/organization_membership/__init__.py",
     "src/workos/types/organizations/__init__.py",
     "src/workos/types/pipes/__init__.py",
+    "src/workos/types/pipes_provider/__init__.py",
     "src/workos/types/radar/__init__.py",
     "src/workos/types/sso/__init__.py",
     "src/workos/types/user_management/__init__.py",
@@ -644,7 +670,6 @@
     "src/workos/vault/models/decrypt_request.py",
     "src/workos/vault/models/decrypt_response.py",
     "src/workos/vault/models/delete_object_response.py",
-    "src/workos/vault/models/list_metadata.py",
     "src/workos/vault/models/object_metadata.py",
     "src/workos/vault/models/object_summary.py",
     "src/workos/vault/models/object_version.py",
@@ -770,6 +795,9 @@
     "tests/fixtures/authorized_connect_application_list_data.json",
     "tests/fixtures/challenge_authentication_factor.json",
     "tests/fixtures/check_authorization.json",
+    "tests/fixtures/client_api_token.json",
+    "tests/fixtures/client_api_token_response.json",
+    "tests/fixtures/configure_data_integration_body.json",
     "tests/fixtures/confirm_email_change.json",
     "tests/fixtures/connect_application.json",
     "tests/fixtures/connect_application_m2m.json",
@@ -803,6 +831,7 @@
     "tests/fixtures/create_data_key_response.json",
     "tests/fixtures/create_group.json",
     "tests/fixtures/create_group_membership.json",
+    "tests/fixtures/create_group_role_assignment.json",
     "tests/fixtures/create_m2m_application.json",
     "tests/fixtures/create_magic_code_and_return.json",
     "tests/fixtures/create_oauth_application.json",
@@ -822,6 +851,9 @@
     "tests/fixtures/data_integration_access_token_response.json",
     "tests/fixtures/data_integration_access_token_response_access_token.json",
     "tests/fixtures/data_integration_authorize_url_response.json",
+    "tests/fixtures/data_integration_configuration_list_response.json",
+    "tests/fixtures/data_integration_configuration_response.json",
+    "tests/fixtures/data_integration_credentials.json",
     "tests/fixtures/data_integrations_get_data_integration_authorize_url_request.json",
     "tests/fixtures/data_integrations_get_user_token_request.json",
     "tests/fixtures/data_integrations_list_response.json",
@@ -829,6 +861,7 @@
     "tests/fixtures/data_integrations_list_response_data_connected_account.json",
     "tests/fixtures/decrypt_request.json",
     "tests/fixtures/decrypt_response.json",
+    "tests/fixtures/delete_group_role_assignments_by_criteria.json",
     "tests/fixtures/delete_object_response.json",
     "tests/fixtures/device_authorization_response.json",
     "tests/fixtures/device_code_session_authenticate_request.json",
@@ -922,6 +955,9 @@
     "tests/fixtures/group_member_added_data.json",
     "tests/fixtures/group_member_removed.json",
     "tests/fixtures/group_member_removed_data.json",
+    "tests/fixtures/group_role_assignment.json",
+    "tests/fixtures/group_role_assignment_list.json",
+    "tests/fixtures/group_role_assignment_resource.json",
     "tests/fixtures/group_updated.json",
     "tests/fixtures/intent_options.json",
     "tests/fixtures/invitation.json",
@@ -950,6 +986,7 @@
     "tests/fixtures/list_event_schema.json",
     "tests/fixtures/list_flag.json",
     "tests/fixtures/list_group.json",
+    "tests/fixtures/list_group_role_assignment.json",
     "tests/fixtures/list_metadata.json",
     "tests/fixtures/list_object_summary.json",
     "tests/fixtures/list_organization.json",
@@ -1045,6 +1082,8 @@
     "tests/fixtures/refresh_token_session_authenticate_request.json",
     "tests/fixtures/rekey_request.json",
     "tests/fixtures/remove_role.json",
+    "tests/fixtures/replace_group_role_assignment_entry.json",
+    "tests/fixtures/replace_group_role_assignments.json",
     "tests/fixtures/resend_user_invite_options.json",
     "tests/fixtures/reset_password_response.json",
     "tests/fixtures/revoke_session.json",
@@ -1149,6 +1188,7 @@
     "tests/test_api_keys.py",
     "tests/test_audit_logs.py",
     "tests/test_authorization.py",
+    "tests/test_client_api.py",
     "tests/test_connect.py",
     "tests/test_directory_sync.py",
     "tests/test_events.py",
@@ -1160,6 +1200,7 @@
     "tests/test_organization_membership.py",
     "tests/test_organizations.py",
     "tests/test_pipes.py",
+    "tests/test_pipes_provider.py",
     "tests/test_radar.py",
     "tests/test_sso.py",
     "tests/test_user_management.py",
@@ -1191,6 +1232,30 @@
     "POST /authkit/oauth2/complete": {
       "sdkMethod": "complete_oauth2",
       "service": "connect"
+    },
+    "GET /authorization/groups/{group_id}/role_assignments": {
+      "sdkMethod": "list_group_role_assignments",
+      "service": "authorization"
+    },
+    "POST /authorization/groups/{group_id}/role_assignments": {
+      "sdkMethod": "create_group_role_assignment",
+      "service": "authorization"
+    },
+    "PUT /authorization/groups/{group_id}/role_assignments": {
+      "sdkMethod": "update_group_role_assignments",
+      "service": "authorization"
+    },
+    "DELETE /authorization/groups/{group_id}/role_assignments": {
+      "sdkMethod": "delete_group_role_assignments",
+      "service": "authorization"
+    },
+    "GET /authorization/groups/{group_id}/role_assignments/{role_assignment_id}": {
+      "sdkMethod": "get_group_role_assignment",
+      "service": "authorization"
+    },
+    "DELETE /authorization/groups/{group_id}/role_assignments/{role_assignment_id}": {
+      "sdkMethod": "delete_group_role_assignment",
+      "service": "authorization"
     },
     "POST /authorization/organization_memberships/{organization_membership_id}/check": {
       "sdkMethod": "check",
@@ -1348,6 +1413,10 @@
       "sdkMethod": "delete_permission",
       "service": "authorization"
     },
+    "POST /client/token": {
+      "sdkMethod": "create_token",
+      "service": "client_api"
+    },
     "GET /connect/applications": {
       "sdkMethod": "list_applications",
       "service": "connect"
@@ -1396,8 +1465,8 @@
       "sdkMethod": "authorize_data_integration",
       "service": "pipes"
     },
-    "POST /data-integrations/{slug}/token": {
-      "sdkMethod": "create_data_integration_token",
+    "POST /data-integrations/{provider}/token": {
+      "sdkMethod": "get_access_token",
       "service": "pipes"
     },
     "GET /directories": {
@@ -1515,6 +1584,14 @@
     "POST /organizations/{organizationId}/api_keys": {
       "sdkMethod": "create_organization_api_key",
       "service": "api_keys"
+    },
+    "GET /organizations/{organizationId}/data_integration_configurations": {
+      "sdkMethod": "list_organization_data_integration_configurations",
+      "service": "pipes_provider"
+    },
+    "PUT /organizations/{organizationId}/data_integration_configurations/{slug}": {
+      "sdkMethod": "update_organization_data_integration_configuration",
+      "service": "pipes_provider"
     },
     "GET /organizations/{organizationId}/feature-flags": {
       "sdkMethod": "list_organization_feature_flags",

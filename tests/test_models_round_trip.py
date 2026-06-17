@@ -39,13 +39,19 @@ from workos.authorization.models import (
     AuthorizationCheck,
     AuthorizationPermission,
     AuthorizationResource,
+    GroupRoleAssignment,
+    GroupRoleAssignmentList,
+    GroupRoleAssignmentResource,
+    ListMetadata,
     Permission,
+    ReplaceGroupRoleAssignmentEntry,
     Role,
     RoleList,
     SlimRole,
     UserRoleAssignment,
     UserRoleAssignmentResource,
 )
+from workos.client_api.models import ClientApiTokenResponse
 from workos.common.models import (
     ActionAuthenticationDenied,
     ActionAuthenticationDeniedData,
@@ -352,6 +358,11 @@ from workos.pipes.models import (
     DataIntegrationsListResponseData,
     DataIntegrationsListResponseDataConnectedAccount,
 )
+from workos.pipes_provider.models import (
+    DataIntegrationConfigurationListResponse,
+    DataIntegrationConfigurationResponse,
+    DataIntegrationCredentials,
+)
 from workos.radar.models import (
     RadarListEntryAlreadyPresentResponse,
     RadarStandaloneResponse,
@@ -402,7 +413,6 @@ from workos.vault.models import (
     CreateDataKeyResponse,
     DecryptResponse,
     DeleteObjectResponse,
-    ListMetadata,
     ObjectMetadata,
     ObjectSummary,
     ObjectVersion,
@@ -651,6 +661,30 @@ class TestModelRoundTrip:
         instance = AuditLogSchemaTargetInput.from_dict(data)
         serialized = instance.to_dict()
         assert "metadata" not in serialized
+
+    def test_replace_group_role_assignment_entry_round_trip(self):
+        data = load_fixture("replace_group_role_assignment_entry.json")
+        instance = ReplaceGroupRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ReplaceGroupRoleAssignmentEntry.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_replace_group_role_assignment_entry_minimal_payload(self):
+        data = {"role_slug": "admin"}
+        instance = ReplaceGroupRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_replace_group_role_assignment_entry_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"role_slug": "admin"}
+        instance = ReplaceGroupRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert "resource_id" not in serialized
+        assert "resource_external_id" not in serialized
+        assert "resource_type_slug" not in serialized
 
     def test_organization_domain_data_round_trip(self):
         data = load_fixture("organization_domain_data.json")
@@ -1789,6 +1823,75 @@ class TestModelRoundTrip:
         instance = SlimRole.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["slug"] == data["slug"]
+
+    def test_group_role_assignment_round_trip(self):
+        data = load_fixture("group_role_assignment.json")
+        instance = GroupRoleAssignment.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupRoleAssignment.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_role_assignment_minimal_payload(self):
+        data = {
+            "object": "group_role_assignment",
+            "id": "gra_01HXYZ123456789ABCDEFGH",
+            "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "role": {"slug": "admin"},
+            "resource": {
+                "id": "authz_resource_01HXYZ123456789ABCDEFGH",
+                "external_id": "proj-456",
+                "resource_type_slug": "project",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = GroupRoleAssignment.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["group_id"] == data["group_id"]
+        assert serialized["role"] == data["role"]
+        assert serialized["resource"] == data["resource"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_group_role_assignment_list_round_trip(self):
+        data = load_fixture("group_role_assignment_list.json")
+        instance = GroupRoleAssignmentList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupRoleAssignmentList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_role_assignment_list_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "group_role_assignment",
+                    "id": "gra_01HXYZ123456789ABCDEFGH",
+                    "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+                    "role": {"slug": "admin"},
+                    "resource": {
+                        "id": "authz_resource_01HXYZ123456789ABCDEFGH",
+                        "external_id": "proj-456",
+                        "resource_type_slug": "project",
+                    },
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "list_metadata": {
+                "after": "b21f3a8c-7e4d-4b1a-9c5e-2d8f6a7b3c4e",
+                "before": "a10e2b7d-6c3f-4a2b-8d1e-3f9a5b8c7d6e",
+            },
+        }
+        instance = GroupRoleAssignmentList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+        assert serialized["list_metadata"] == data["list_metadata"]
 
     def test_user_role_assignment_round_trip(self):
         data = load_fixture("user_role_assignment.json")
@@ -14981,6 +15084,164 @@ class TestModelRoundTrip:
         instance = AuditLogConfiguration.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_data_integration_credentials_round_trip(self):
+        data = load_fixture("data_integration_credentials.json")
+        instance = DataIntegrationCredentials.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentials.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_minimal_payload(self):
+        data = {
+            "credentials_type": "organization",
+            "has_credentials": True,
+            "client_id": None,
+            "client_secret_last_four": None,
+            "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+        }
+        instance = DataIntegrationCredentials.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["credentials_type"] == data["credentials_type"]
+        assert serialized["has_credentials"] == data["has_credentials"]
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["client_secret_last_four"] == data["client_secret_last_four"]
+        assert serialized["redirect_uri"] == data["redirect_uri"]
+
+    def test_data_integration_credentials_preserves_nullable_fields(self):
+        data = {
+            "credentials_type": "organization",
+            "has_credentials": True,
+            "client_id": None,
+            "client_secret_last_four": None,
+            "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+        }
+        instance = DataIntegrationCredentials.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] is None
+        assert serialized["client_secret_last_four"] is None
+
+    def test_data_integration_credentials_round_trips_unknown_enum_values(self):
+        data = {
+            "credentials_type": "unexpected_data_integration_credentials_credentials_type",
+            "has_credentials": True,
+            "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
+            "client_secret_last_four": "1a2b",
+            "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+        }
+        instance = DataIntegrationCredentials.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_data_integration_configuration_response_round_trip(self):
+        data = load_fixture("data_integration_configuration_response.json")
+        instance = DataIntegrationConfigurationResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationConfigurationResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_configuration_response_minimal_payload(self):
+        data = {
+            "object": "data_integration_configuration",
+            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "slug": "github",
+            "name": "GitHub",
+            "enabled": True,
+            "scopes": None,
+            "created_at": "2024-01-15T10:30:00.000Z",
+            "updated_at": "2024-01-15T10:30:00.000Z",
+        }
+        instance = DataIntegrationConfigurationResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_data_integration_configuration_response_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "data_integration_configuration",
+            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "slug": "github",
+            "name": "GitHub",
+            "enabled": True,
+            "scopes": ["repo", "user:email"],
+            "created_at": "2024-01-15T10:30:00.000Z",
+            "updated_at": "2024-01-15T10:30:00.000Z",
+        }
+        instance = DataIntegrationConfigurationResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "credentials" not in serialized
+
+    def test_data_integration_configuration_response_preserves_nullable_fields(self):
+        data = {
+            "object": "data_integration_configuration",
+            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "slug": "github",
+            "name": "GitHub",
+            "enabled": True,
+            "scopes": None,
+            "created_at": "2024-01-15T10:30:00.000Z",
+            "updated_at": "2024-01-15T10:30:00.000Z",
+            "credentials": {
+                "credentials_type": "organization",
+                "has_credentials": True,
+                "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
+                "client_secret_last_four": "1a2b",
+                "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+            },
+        }
+        instance = DataIntegrationConfigurationResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["scopes"] is None
+
+    def test_data_integration_configuration_list_response_round_trip(self):
+        data = load_fixture("data_integration_configuration_list_response.json")
+        instance = DataIntegrationConfigurationListResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationConfigurationListResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_configuration_list_response_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "data_integration_configuration",
+                    "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "slug": "github",
+                    "name": "GitHub",
+                    "enabled": True,
+                    "scopes": ["repo", "user:email"],
+                    "created_at": "2024-01-15T10:30:00.000Z",
+                    "updated_at": "2024-01-15T10:30:00.000Z",
+                    "credentials": {
+                        "credentials_type": "organization",
+                        "has_credentials": True,
+                        "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
+                        "client_secret_last_four": "1a2b",
+                        "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+                    },
+                }
+            ],
+        }
+        instance = DataIntegrationConfigurationListResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+
     def test_data_integration_authorize_url_response_round_trip(self):
         data = load_fixture("data_integration_authorize_url_response.json")
         instance = DataIntegrationAuthorizeUrlResponse.from_dict(data)
@@ -15067,6 +15328,22 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
+    def test_connected_account_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": None,
+            "scopes": ["repo", "user:email"],
+            "api_key_last_4": None,
+            "state": "connected",
+            "created_at": "2024-01-16T14:20:00.000Z",
+            "updated_at": "2024-01-16T14:20:00.000Z",
+        }
+        instance = ConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert "auth_method" not in serialized
+
     def test_connected_account_preserves_nullable_fields(self):
         data = {
             "object": "connected_account",
@@ -15074,6 +15351,8 @@ class TestModelRoundTrip:
             "user_id": None,
             "organization_id": None,
             "scopes": ["repo", "user:email"],
+            "auth_method": "oauth",
+            "api_key_last_4": None,
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -15082,6 +15361,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
+        assert serialized["api_key_last_4"] is None
 
     def test_connected_account_round_trips_unknown_enum_values(self):
         data = {
@@ -15090,7 +15370,9 @@ class TestModelRoundTrip:
             "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
             "organization_id": None,
             "scopes": ["repo", "user:email"],
-            "state": "unexpected_connected_account_state",
+            "auth_method": "unexpected_connected_account_auth_method",
+            "api_key_last_4": None,
+            "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
         }
@@ -15118,6 +15400,7 @@ class TestModelRoundTrip:
                     "integration_type": "github",
                     "credentials_type": "oauth2",
                     "scopes": ["repo", "user:email"],
+                    "auth_methods": ["oauth"],
                     "ownership": "userland_user",
                     "created_at": "2024-01-15T10:30:00.000Z",
                     "updated_at": "2024-01-15T10:30:00.000Z",
@@ -15127,6 +15410,8 @@ class TestModelRoundTrip:
                         "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                         "organization_id": None,
                         "scopes": ["repo", "user:email"],
+                        "auth_method": "oauth",
+                        "api_key_last_4": None,
                         "state": "connected",
                         "created_at": "2024-01-16T14:20:00.000Z",
                         "updated_at": "2024-01-16T14:20:00.000Z",
@@ -16035,6 +16320,20 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["token"] == data["token"]
 
+    def test_client_api_token_response_round_trip(self):
+        data = load_fixture("client_api_token_response.json")
+        instance = ClientApiTokenResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientApiTokenResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_api_token_response_minimal_payload(self):
+        data = {"token": "eyJhbGciOiJSUzI1NiIsImtpZCI6InNlc3Npb24..."}
+        instance = ClientApiTokenResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["token"] == data["token"]
+
     def test_sso_authorize_url_response_round_trip(self):
         data = load_fixture("sso_authorize_url_response.json")
         instance = SSOAuthorizeUrlResponse.from_dict(data)
@@ -16465,6 +16764,39 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["connected_account"] == data["connected_account"]
 
+    def test_data_integrations_list_response_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "data_provider",
+            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "name": "GitHub",
+            "description": "Connect your GitHub account to access repositories.",
+            "slug": "github",
+            "integration_type": "github",
+            "credentials_type": "oauth2",
+            "scopes": ["repo", "user:email"],
+            "ownership": "userland_user",
+            "created_at": "2024-01-15T10:30:00.000Z",
+            "updated_at": "2024-01-15T10:30:00.000Z",
+            "connected_account": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": None,
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2024-01-16T14:20:00.000Z",
+                "updated_at": "2024-01-16T14:20:00.000Z",
+                "userlandUserId": "test_userlandUserId",
+            },
+        }
+        instance = DataIntegrationsListResponseData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "auth_methods" not in serialized
+
     def test_data_integrations_list_response_data_preserves_nullable_fields(self):
         data = {
             "object": "data_provider",
@@ -16475,6 +16807,7 @@ class TestModelRoundTrip:
             "integration_type": "github",
             "credentials_type": "oauth2",
             "scopes": None,
+            "auth_methods": ["oauth"],
             "ownership": "userland_user",
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
@@ -16496,6 +16829,7 @@ class TestModelRoundTrip:
             "integration_type": "github",
             "credentials_type": "oauth2",
             "scopes": ["repo", "user:email"],
+            "auth_methods": ["oauth"],
             "ownership": "unexpected_data_integrations_list_response_data_ownership",
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
@@ -16505,6 +16839,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": None,
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2024-01-16T14:20:00.000Z",
                 "updated_at": "2024-01-16T14:20:00.000Z",
@@ -16996,6 +17332,26 @@ class TestModelRoundTrip:
             "resource_type_slug": "project",
         }
         instance = UserRoleAssignmentResource.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+
+    def test_group_role_assignment_resource_round_trip(self):
+        data = load_fixture("group_role_assignment_resource.json")
+        instance = GroupRoleAssignmentResource.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupRoleAssignmentResource.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_role_assignment_resource_minimal_payload(self):
+        data = {
+            "id": "authz_resource_01HXYZ123456789ABCDEFGH",
+            "external_id": "proj-456",
+            "resource_type_slug": "project",
+        }
+        instance = GroupRoleAssignmentResource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
         assert serialized["external_id"] == data["external_id"]
@@ -17905,6 +18261,25 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["userlandUserId"] == data["userlandUserId"]
 
+    def test_data_integrations_list_response_data_connected_account_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": None,
+            "scopes": ["repo", "user:email"],
+            "api_key_last_4": None,
+            "state": "connected",
+            "created_at": "2024-01-16T14:20:00.000Z",
+            "updated_at": "2024-01-16T14:20:00.000Z",
+            "userlandUserId": "test_userlandUserId",
+        }
+        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert "auth_method" not in serialized
+
     def test_data_integrations_list_response_data_connected_account_preserves_nullable_fields(
         self,
     ):
@@ -17914,6 +18289,8 @@ class TestModelRoundTrip:
             "user_id": None,
             "organization_id": None,
             "scopes": ["repo", "user:email"],
+            "auth_method": "oauth",
+            "api_key_last_4": None,
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -17923,6 +18300,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
+        assert serialized["api_key_last_4"] is None
         assert serialized["userlandUserId"] is None
 
     def test_data_integrations_list_response_data_connected_account_round_trips_unknown_enum_values(
@@ -17934,7 +18312,9 @@ class TestModelRoundTrip:
             "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
             "organization_id": None,
             "scopes": ["repo", "user:email"],
-            "state": "unexpected_data_integrations_list_response_data_connected_account_state",
+            "auth_method": "unexpected_data_integrations_list_response_data_connected_account_auth_method",
+            "api_key_last_4": None,
+            "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
             "userlandUserId": "test_userlandUserId",

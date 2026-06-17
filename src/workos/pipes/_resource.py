@@ -70,9 +70,9 @@ class Pipes:
             request_options=request_options,
         )
 
-    def create_data_integration_token(
+    def get_access_token(
         self,
-        slug: str,
+        provider: str,
         *,
         user_id: str,
         organization_id: Optional[str] = None,
@@ -83,7 +83,7 @@ class Pipes:
         Fetches a valid OAuth access token for a user's connected account. WorkOS automatically handles token refresh, ensuring you always receive a valid, non-expired token.
 
         Args:
-            slug: The identifier of the integration.
+            provider: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -108,7 +108,7 @@ class Pipes:
         }
         return self._client.request(
             method="post",
-            path=("data-integrations", str(slug), "token"),
+            path=("data-integrations", str(provider), "token"),
             body=body,
             model=DataIntegrationAccessTokenResponse,
             request_options=request_options,
@@ -213,7 +213,7 @@ class Pipes:
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationsListResponse:
-        """List providers
+        """List providers for a user
 
         Retrieves a list of available providers and the user's connection status for each. Returns all providers configured for your environment, along with the user's [connected account](https://workos.com/docs/reference/pipes/connected-account) information where applicable.
 
@@ -301,9 +301,9 @@ class AsyncPipes:
             request_options=request_options,
         )
 
-    async def create_data_integration_token(
+    async def get_access_token(
         self,
-        slug: str,
+        provider: str,
         *,
         user_id: str,
         organization_id: Optional[str] = None,
@@ -314,7 +314,7 @@ class AsyncPipes:
         Fetches a valid OAuth access token for a user's connected account. WorkOS automatically handles token refresh, ensuring you always receive a valid, non-expired token.
 
         Args:
-            slug: The identifier of the integration.
+            provider: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -339,7 +339,7 @@ class AsyncPipes:
         }
         return await self._client.request(
             method="post",
-            path=("data-integrations", str(slug), "token"),
+            path=("data-integrations", str(provider), "token"),
             body=body,
             model=DataIntegrationAccessTokenResponse,
             request_options=request_options,
@@ -444,7 +444,7 @@ class AsyncPipes:
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationsListResponse:
-        """List providers
+        """List providers for a user
 
         Retrieves a list of available providers and the user's connection status for each. Returns all providers configured for your environment, along with the user's [connected account](https://workos.com/docs/reference/pipes/connected-account) information where applicable.
 

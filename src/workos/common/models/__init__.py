@@ -217,6 +217,9 @@ from .connect_application_oauth_redirect_uris import (
 )
 from .connect_application import ConnectApplicationUnknown as ConnectApplicationUnknown
 from .connect_application import ConnectApplicationVariant as ConnectApplicationVariant
+from .connected_account_auth_method import (
+    ConnectedAccountAuthMethod as ConnectedAccountAuthMethod,
+)
 from .connected_account_state import ConnectedAccountState as ConnectedAccountState
 from .connection_activated import ConnectionActivated as ConnectionActivated
 from .connection_activated_data import (
@@ -272,6 +275,15 @@ from .create_webhook_endpoint_events import (
 )
 from .data_integration_access_token_response_error import (
     DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
+)
+from .data_integration_credentials_credentials_type import (
+    DataIntegrationCredentialsCredentialsType as DataIntegrationCredentialsCredentialsType,
+)
+from .data_integrations_list_response_data_auth_methods import (
+    DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
+)
+from .data_integrations_list_response_data_connected_account_auth_method import (
+    DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
@@ -414,6 +426,7 @@ from .invitation_resent_data import InvitationResentData as InvitationResentData
 from .invitation_revoked import InvitationRevoked as InvitationRevoked
 from .invitation_revoked_data import InvitationRevokedData as InvitationRevokedData
 from .invitation_state import InvitationState as InvitationState
+from .list_metadata import ListMetadata as ListMetadata
 from .magic_auth_created import MagicAuthCreated as MagicAuthCreated
 from .magic_auth_created_data import MagicAuthCreatedData as MagicAuthCreatedData
 from .organization_created import OrganizationCreated as OrganizationCreated

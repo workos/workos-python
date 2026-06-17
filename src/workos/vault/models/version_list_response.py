@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict, List
 from workos._types import _raise_deserialize_error
 
-from .list_metadata import ListMetadata
+from workos.common.models.list_metadata import ListMetadata
 from .object_version import ObjectVersion
 
 

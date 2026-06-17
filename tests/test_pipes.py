@@ -41,19 +41,17 @@ class TestPipes:
         body = json.loads(request.content)
         assert body["user_id"] == "test_user_id"
 
-    def test_create_data_integration_token(self, workos, httpx_mock):
+    def test_get_access_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_access_token_response.json"),
         )
-        result = workos.pipes.create_data_integration_token(
-            "test_slug", user_id="test_user_id"
-        )
+        result = workos.pipes.get_access_token("test_provider", user_id="test_user_id")
         assert isinstance(result, DataIntegrationAccessTokenResponse)
         assert result.active is True
         assert result.error == "not_installed"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith("/data-integrations/test_slug/token")
+        assert request.url.path.endswith("/data-integrations/test_provider/token")
         body = json.loads(request.content)
         assert body["user_id"] == "test_user_id"
 
@@ -231,19 +229,19 @@ class TestAsyncPipes:
         assert request.url.path.endswith("/data-integrations/test_slug/authorize")
 
     @pytest.mark.asyncio
-    async def test_create_data_integration_token(self, async_workos, httpx_mock):
+    async def test_get_access_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_access_token_response.json")
         )
-        result = await async_workos.pipes.create_data_integration_token(
-            "test_slug", user_id="test_user_id"
+        result = await async_workos.pipes.get_access_token(
+            "test_provider", user_id="test_user_id"
         )
         assert isinstance(result, DataIntegrationAccessTokenResponse)
         assert result.active is True
         assert result.error == "not_installed"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith("/data-integrations/test_slug/token")
+        assert request.url.path.endswith("/data-integrations/test_provider/token")
 
     @pytest.mark.asyncio
     async def test_get_user_connected_account(self, async_workos, httpx_mock):

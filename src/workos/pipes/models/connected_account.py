@@ -6,6 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
+from workos.common.models.connected_account_auth_method import (
+    ConnectedAccountAuthMethod,
+)
 from workos.common.models.connected_account_state import ConnectedAccountState
 
 
@@ -32,6 +35,10 @@ class ConnectedAccount:
     """The timestamp when the connection was created."""
     updated_at: str
     """The timestamp when the connection was last updated."""
+    auth_method: Optional["ConnectedAccountAuthMethod"] = None
+    """The authentication method used for this connection (`oauth` or `api_key`). Defaults to `oauth` if absent."""
+    api_key_last_4: Optional[str] = None
+    """The last four characters of the API key, or `null` for OAuth connections."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConnectedAccount":
@@ -46,6 +53,10 @@ class ConnectedAccount:
                 state=ConnectedAccountState(data["state"]),
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
+                auth_method=ConnectedAccountAuthMethod(_v_auth_method)
+                if (_v_auth_method := data.get("auth_method")) is not None
+                else None,
+                api_key_last_4=data.get("api_key_last_4"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectedAccount", e)
@@ -69,4 +80,14 @@ class ConnectedAccount:
         )
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
+        if self.auth_method is not None:
+            result["auth_method"] = (
+                self.auth_method.value
+                if isinstance(self.auth_method, Enum)
+                else self.auth_method
+            )
+        if self.api_key_last_4 is not None:
+            result["api_key_last_4"] = self.api_key_last_4
+        else:
+            result["api_key_last_4"] = None
         return result

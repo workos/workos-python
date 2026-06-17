@@ -11,6 +11,7 @@ from ._base_client import (
 from .multi_factor_auth._resource import MultiFactorAuth, AsyncMultiFactorAuth
 from .connect._resource import Connect, AsyncConnect
 from .authorization._resource import Authorization, AsyncAuthorization
+from .client_api._resource import ClientApi, AsyncClientApi
 from .sso._resource import SSO, AsyncSSO
 from .pipes._resource import Pipes, AsyncPipes
 from .directory_sync._resource import DirectorySync, AsyncDirectorySync
@@ -22,6 +23,7 @@ from .organization_domains._resource import (
 )
 from .organizations._resource import Organizations, AsyncOrganizations
 from .api_keys._resource import ApiKeys, AsyncApiKeys
+from .pipes_provider._resource import PipesProvider, AsyncPipesProvider
 from .groups._resource import Groups, AsyncGroups
 from .admin_portal._resource import AdminPortal, AsyncAdminPortal
 from .radar._resource import Radar, AsyncRadar
@@ -56,6 +58,11 @@ class WorkOSClient(_SyncBase):
     def authorization(self) -> Authorization:
         """Authorization API resources."""
         return Authorization(self)
+
+    @functools.cached_property
+    def client_api(self) -> ClientApi:
+        """Client Api API resources."""
+        return ClientApi(self)
 
     @functools.cached_property
     def sso(self) -> SSO:
@@ -96,6 +103,11 @@ class WorkOSClient(_SyncBase):
     def api_keys(self) -> ApiKeys:
         """Api Keys API resources."""
         return ApiKeys(self)
+
+    @functools.cached_property
+    def pipes_provider(self) -> PipesProvider:
+        """Pipes Provider API resources."""
+        return PipesProvider(self)
 
     @functools.cached_property
     def groups(self) -> Groups:
@@ -186,6 +198,11 @@ class AsyncWorkOSClient(_AsyncBase):
         return AsyncAuthorization(self)
 
     @functools.cached_property
+    def client_api(self) -> AsyncClientApi:
+        """Client Api API resources."""
+        return AsyncClientApi(self)
+
+    @functools.cached_property
     def sso(self) -> AsyncSSO:
         """SSO API resources."""
         return AsyncSSO(self)
@@ -224,6 +241,11 @@ class AsyncWorkOSClient(_AsyncBase):
     def api_keys(self) -> AsyncApiKeys:
         """Api Keys API resources."""
         return AsyncApiKeys(self)
+
+    @functools.cached_property
+    def pipes_provider(self) -> AsyncPipesProvider:
+        """Pipes Provider API resources."""
+        return AsyncPipesProvider(self)
 
     @functools.cached_property
     def groups(self) -> AsyncGroups:

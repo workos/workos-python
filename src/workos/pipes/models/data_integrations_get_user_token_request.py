@@ -33,4 +33,6 @@ class DataIntegrationsGetUserTokenRequest:
         result["user_id"] = self.user_id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
+        else:
+            result["organization_id"] = None
         return result

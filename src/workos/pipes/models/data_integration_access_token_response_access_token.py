@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 
 @dataclass(slots=True)
@@ -15,7 +17,7 @@ class DataIntegrationAccessTokenResponseAccessToken:
     """Distinguishes the access token object."""
     access_token: str
     """The OAuth access token for the connected integration."""
-    expires_at: Optional[str]
+    expires_at: Optional[datetime]
     """The ISO-8601 formatted timestamp indicating when the access token expires."""
     scopes: List[str]
     """The scopes granted to the access token."""
@@ -31,7 +33,9 @@ class DataIntegrationAccessTokenResponseAccessToken:
             return cls(
                 object=data.get("object", "access_token"),
                 access_token=data["access_token"],
-                expires_at=data["expires_at"],
+                expires_at=_parse_datetime(_v_expires_at)
+                if (_v_expires_at := data["expires_at"]) is not None
+                else None,
                 scopes=data["scopes"],
                 missing_scopes=data["missing_scopes"],
             )
@@ -44,7 +48,7 @@ class DataIntegrationAccessTokenResponseAccessToken:
         result["object"] = self.object
         result["access_token"] = self.access_token
         if self.expires_at is not None:
-            result["expires_at"] = self.expires_at
+            result["expires_at"] = _format_datetime(self.expires_at)
         else:
             result["expires_at"] = None
         result["scopes"] = self.scopes

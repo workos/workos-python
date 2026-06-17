@@ -7,7 +7,6 @@ from .create_object_request import CreateObjectRequest as CreateObjectRequest
 from .decrypt_request import DecryptRequest as DecryptRequest
 from .decrypt_response import DecryptResponse as DecryptResponse
 from .delete_object_response import DeleteObjectResponse as DeleteObjectResponse
-from .list_metadata import ListMetadata as ListMetadata
 from .object_metadata import ObjectMetadata as ObjectMetadata
 from .object_summary import ObjectSummary as ObjectSummary
 from .object_version import ObjectVersion as ObjectVersion

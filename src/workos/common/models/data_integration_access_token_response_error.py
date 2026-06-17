@@ -12,8 +12,8 @@ from typing import Literal, TypeAlias
 class DataIntegrationAccessTokenResponseError(str, Enum):
     """Known values for DataIntegrationAccessTokenResponseError."""
 
-    NEEDS_REAUTHORIZATION = "needs_reauthorization"
     NOT_INSTALLED = "not_installed"
+    NEEDS_REAUTHORIZATION = "needs_reauthorization"
 
     @classmethod
     def _missing_(
@@ -28,5 +28,5 @@ class DataIntegrationAccessTokenResponseError(str, Enum):
 
 
 DataIntegrationAccessTokenResponseErrorLiteral: TypeAlias = Literal[
-    "needs_reauthorization", "not_installed"
+    "not_installed", "needs_reauthorization"
 ]

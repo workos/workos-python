@@ -129,6 +129,7 @@ from .models import (
 )
 from .models import ConnectApplicationUnknown as ConnectApplicationUnknown
 from .models import ConnectApplicationVariant as ConnectApplicationVariant
+from .models import ConnectedAccountAuthMethod as ConnectedAccountAuthMethod
 from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionActivated as ConnectionActivated
 from .models import ConnectionActivatedData as ConnectionActivatedData
@@ -168,6 +169,15 @@ from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
     DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
+)
+from .models import (
+    DataIntegrationCredentialsCredentialsType as DataIntegrationCredentialsCredentialsType,
+)
+from .models import (
+    DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
+)
+from .models import (
+    DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
@@ -286,6 +296,7 @@ from .models import InvitationResentData as InvitationResentData
 from .models import InvitationRevoked as InvitationRevoked
 from .models import InvitationRevokedData as InvitationRevokedData
 from .models import InvitationState as InvitationState
+from .models import ListMetadata as ListMetadata
 from .models import MagicAuthCreated as MagicAuthCreated
 from .models import MagicAuthCreatedData as MagicAuthCreatedData
 from .models import OrganizationCreated as OrganizationCreated

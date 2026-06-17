@@ -43,7 +43,6 @@ from workos.authorization.models import (
     Role,
     RoleList,
     SlimRole,
-    UserOrganizationMembershipBaseListData,
     UserRoleAssignment,
     UserRoleAssignmentResource,
 )
@@ -58,6 +57,10 @@ from workos.common.models import (
     ApiKeyRevoked,
     ApiKeyRevokedData,
     ApiKeyRevokedDataOwner,
+    ApiKeyUpdated,
+    ApiKeyUpdatedData,
+    ApiKeyUpdatedDataOwner,
+    ApiKeyUpdatedDataPreviousAttribute,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
@@ -128,9 +131,6 @@ from workos.common.models import (
     DsyncActivated,
     DsyncActivatedData,
     DsyncActivatedDataDomain,
-    DsyncDeactivated,
-    DsyncDeactivatedData,
-    DsyncDeactivatedDataDomain,
     DsyncDeleted,
     DsyncDeletedData,
     DsyncGroupCreated,
@@ -141,6 +141,10 @@ from workos.common.models import (
     DsyncGroupUserAddedData,
     DsyncGroupUserRemoved,
     DsyncGroupUserRemovedData,
+    DsyncTokenCreated,
+    DsyncTokenCreatedData,
+    DsyncTokenRevoked,
+    DsyncTokenRevokedData,
     DsyncUserCreated,
     DsyncUserDeleted,
     DsyncUserUpdated,
@@ -260,6 +264,7 @@ from workos.common.models import (
     SessionRevokedDataImpersonator,
     UserApiKeyCreatedDataOwner,
     UserApiKeyRevokedDataOwner,
+    UserApiKeyUpdatedDataOwner,
     UserCreated,
     UserDeleted,
     UserUpdated,
@@ -311,7 +316,7 @@ from workos.directory_sync.models import (
 )
 from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
-from workos.groups.models import Group
+from workos.groups.models import Group, UserOrganizationMembershipBaseListData
 from workos.multi_factor_auth.models import (
     AuthenticationChallenge,
     AuthenticationChallengeVerifyResponse,
@@ -431,6 +436,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "first_name" not in serialized
         assert "last_name" not in serialized
+        assert "name" not in serialized
         assert "metadata" not in serialized
 
     def test_user_consent_option_round_trip(self):
@@ -1959,6 +1965,7 @@ class TestModelRoundTrip:
             "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "first_name": "Marcelina",
             "last_name": "Davis",
+            "name": "Marcelina Davis",
             "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
             "email": "marcelina.davis@example.com",
             "email_verified": True,
@@ -1978,6 +1985,7 @@ class TestModelRoundTrip:
             "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "first_name": None,
             "last_name": None,
+            "name": None,
             "profile_picture_url": None,
             "email": "marcelina.davis@example.com",
             "email_verified": True,
@@ -1992,6 +2000,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["first_name"] is None
         assert serialized["last_name"] is None
+        assert serialized["name"] is None
         assert serialized["profile_picture_url"] is None
         assert serialized["external_id"] is None
         assert serialized["last_sign_in_at"] is None
@@ -3062,6 +3071,7 @@ class TestModelRoundTrip:
             "name": "My API Key",
             "obfuscated_value": "sk_test_...1234",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["users:read", "users:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -3074,6 +3084,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -3211,6 +3222,7 @@ class TestModelRoundTrip:
             "name": "My API Key",
             "obfuscated_value": "sk_test_...1234",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["users:read", "users:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -3223,6 +3235,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -3279,6 +3292,182 @@ class TestModelRoundTrip:
         assert serialized["type"] == data["type"]
         assert serialized["id"] == data["id"]
         assert serialized["organization_id"] == data["organization_id"]
+
+    def test_api_key_updated_round_trip(self):
+        data = load_fixture("api_key_updated.json")
+        instance = ApiKeyUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_updated_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.updated",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"expires_at": None},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_api_key_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.updated",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"expires_at": None},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_api_key_updated_data_round_trip(self):
+        data = load_fixture("api_key_updated_data.json")
+        instance = ApiKeyUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_updated_data_minimal_payload(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "expires_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "previous_attributes": {"expires_at": None},
+        }
+        instance = ApiKeyUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["name"] == data["name"]
+        assert serialized["obfuscated_value"] == data["obfuscated_value"]
+        assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["previous_attributes"] == data["previous_attributes"]
+
+    def test_api_key_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "expires_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "previous_attributes": {"expires_at": None},
+        }
+        instance = ApiKeyUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
+
+    def test_api_key_updated_data_owner_round_trip(self):
+        data = load_fixture("api_key_updated_data_owner.json")
+        instance = ApiKeyUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyUpdatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_updated_data_owner_minimal_payload(self):
+        data = {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ApiKeyUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["id"] == data["id"]
+
+    def test_user_api_key_updated_data_owner_round_trip(self):
+        data = load_fixture("user_api_key_updated_data_owner.json")
+        instance = UserApiKeyUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeyUpdatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_key_updated_data_owner_minimal_payload(self):
+        data = {
+            "type": "user",
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = UserApiKeyUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+
+    def test_api_key_updated_data_previous_attribute_round_trip(self):
+        data = load_fixture("api_key_updated_data_previous_attribute.json")
+        instance = ApiKeyUpdatedDataPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyUpdatedDataPreviousAttribute.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_updated_data_previous_attribute_minimal_payload(self):
+        data = {"expires_at": None}
+        instance = ApiKeyUpdatedDataPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] == data["expires_at"]
+
+    def test_api_key_updated_data_previous_attribute_preserves_nullable_fields(self):
+        data = {"expires_at": None}
+        instance = ApiKeyUpdatedDataPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
 
     def test_authentication_email_verification_failed_round_trip(self):
         data = load_fixture("authentication_email_verification_failed.json")
@@ -6292,178 +6481,6 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["domain"] == data["domain"]
 
-    def test_dsync_deactivated_round_trip(self):
-        data = load_fixture("dsync_deactivated.json")
-        instance = DsyncDeactivated.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivated.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_minimal_payload(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deactivated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncDeactivated.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["event"] == data["event"]
-        assert serialized["data"] == data["data"]
-        assert serialized["created_at"] == data["created_at"]
-
-    def test_dsync_deactivated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deactivated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncDeactivated.from_dict(data)
-        serialized = instance.to_dict()
-        assert "context" not in serialized
-
-    def test_dsync_deactivated_data_round_trip(self):
-        data = load_fixture("dsync_deactivated_data.json")
-        instance = DsyncDeactivatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivatedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_data_minimal_payload(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
-        instance = DsyncDeactivatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["type"] == data["type"]
-        assert serialized["state"] == data["state"]
-        assert serialized["name"] == data["name"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-        assert serialized["external_key"] == data["external_key"]
-        assert serialized["domains"] == data["domains"]
-
-    def test_dsync_deactivated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
-        instance = DsyncDeactivatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "organization_id" not in serialized
-
-    def test_dsync_deactivated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "unexpected_dsync_deactivated_data_type",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
-        instance = DsyncDeactivatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_dsync_deactivated_data_domain_round_trip(self):
-        data = load_fixture("dsync_deactivated_data_domain.json")
-        instance = DsyncDeactivatedDataDomain.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivatedDataDomain.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domain": "acme.com",
-        }
-        instance = DsyncDeactivatedDataDomain.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["domain"] == data["domain"]
-
     def test_dsync_deleted_round_trip(self):
         data = load_fixture("dsync_deleted.json")
         instance = DsyncDeleted.from_dict(data)
@@ -6789,6 +6806,178 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "raw_attributes" not in serialized
         assert "previous_attributes" not in serialized
+
+    def test_dsync_token_created_round_trip(self):
+        data = load_fixture("dsync_token_created.json")
+        instance = DsyncTokenCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncTokenCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_token_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.token.created",
+            "data": {
+                "object": "directory_token",
+                "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "token_suffix": "a1b2",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_dsync_token_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.token.created",
+            "data": {
+                "object": "directory_token",
+                "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "token_suffix": "a1b2",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_token_created_data_round_trip(self):
+        data = load_fixture("dsync_token_created_data.json")
+        instance = DsyncTokenCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncTokenCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_token_created_data_minimal_payload(self):
+        data = {
+            "object": "directory_token",
+            "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "token_suffix": "a1b2",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["token_suffix"] == data["token_suffix"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_dsync_token_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_token",
+            "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "token_suffix": "a1b2",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_dsync_token_revoked_round_trip(self):
+        data = load_fixture("dsync_token_revoked.json")
+        instance = DsyncTokenRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncTokenRevoked.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_token_revoked_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.token.revoked",
+            "data": {
+                "object": "directory_token",
+                "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "token_suffix": "a1b2",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_dsync_token_revoked_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.token.revoked",
+            "data": {
+                "object": "directory_token",
+                "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "token_suffix": "a1b2",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_token_revoked_data_round_trip(self):
+        data = load_fixture("dsync_token_revoked_data.json")
+        instance = DsyncTokenRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncTokenRevokedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_token_revoked_data_minimal_payload(self):
+        data = {
+            "object": "directory_token",
+            "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "token_suffix": "a1b2",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["token_suffix"] == data["token_suffix"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_dsync_token_revoked_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_token",
+            "id": "directory_token_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "token_suffix": "a1b2",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncTokenRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
 
     def test_dsync_group_user_added_round_trip(self):
         data = load_fixture("dsync_group_user_added.json")
@@ -13207,6 +13396,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -13237,6 +13427,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -13271,6 +13462,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -13301,6 +13493,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -13335,6 +13528,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -13365,6 +13559,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15232,6 +15427,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15274,6 +15470,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15312,6 +15509,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15494,6 +15692,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15524,6 +15723,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15584,6 +15784,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15615,6 +15816,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15652,6 +15854,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15678,6 +15881,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -15706,6 +15910,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -16597,6 +16802,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -16637,6 +16843,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -16676,6 +16883,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -17279,6 +17487,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -17319,6 +17528,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -17357,6 +17567,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "marcelina.davis@example.com",
                 "email_verified": True,
@@ -17387,6 +17598,7 @@ class TestModelRoundTrip:
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "first_name": "Marcelina",
                 "last_name": "Davis",
+                "name": "Marcelina Davis",
                 "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
                 "email": "new.email@example.com",
                 "email_verified": True,
@@ -17447,6 +17659,7 @@ class TestModelRoundTrip:
             "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "first_name": "Marcelina",
             "last_name": "Davis",
+            "name": "Marcelina Davis",
             "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
             "email": "new.email@example.com",
             "email_verified": True,
@@ -17466,6 +17679,7 @@ class TestModelRoundTrip:
             "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "first_name": None,
             "last_name": None,
+            "name": None,
             "profile_picture_url": None,
             "email": "new.email@example.com",
             "email_verified": True,
@@ -17480,6 +17694,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["first_name"] is None
         assert serialized["last_name"] is None
+        assert serialized["name"] is None
         assert serialized["profile_picture_url"] is None
         assert serialized["external_id"] is None
         assert serialized["last_sign_in_at"] is None

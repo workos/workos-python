@@ -19,6 +19,8 @@ class UserObject:
     """The user's first name."""
     last_name: Optional[str] = None
     """The user's last name."""
+    name: Optional[str] = None
+    """The user's full name."""
     metadata: Optional[Dict[str, str]] = None
     """A set of key-value pairs to attach to the user."""
 
@@ -31,6 +33,7 @@ class UserObject:
                 email=data["email"],
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
+                name=data.get("name"),
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
@@ -45,6 +48,8 @@ class UserObject:
             result["first_name"] = self.first_name
         if self.last_name is not None:
             result["last_name"] = self.last_name
+        if self.name is not None:
+            result["name"] = self.name
         if self.metadata is not None:
             result["metadata"] = self.metadata
         return result

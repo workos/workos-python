@@ -21,6 +21,8 @@ class UpdateUser:
     """The first name of the user."""
     last_name: Optional[str] = None
     """The last name of the user."""
+    name: Optional[str] = None
+    """The user's full name."""
     email_verified: Optional[bool] = None
     """Whether the user's email has been verified."""
     metadata: Optional[Dict[str, str]] = None
@@ -44,6 +46,7 @@ class UpdateUser:
                 email=data.get("email"),
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
+                name=data.get("name"),
                 email_verified=data.get("email_verified"),
                 metadata=data.get("metadata"),
                 external_id=data.get("external_id"),
@@ -66,6 +69,8 @@ class UpdateUser:
             result["first_name"] = self.first_name
         if self.last_name is not None:
             result["last_name"] = self.last_name
+        if self.name is not None:
+            result["name"] = self.name
         if self.email_verified is not None:
             result["email_verified"] = self.email_verified
         if self.metadata is not None:

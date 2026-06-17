@@ -34,9 +34,6 @@ from .update_authorization_resource import (
 )
 from .update_organization_role import UpdateOrganizationRole as UpdateOrganizationRole
 from .update_role import UpdateRole as UpdateRole
-from workos.common.models.user_organization_membership_base_list_data import (
-    UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
-)
 from .user_role_assignment import UserRoleAssignment as UserRoleAssignment
 from .user_role_assignment_resource import (
     UserRoleAssignmentResource as UserRoleAssignmentResource,

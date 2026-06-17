@@ -575,8 +575,8 @@ class UserManagement:
         Logout a user from the current [session](https://workos.com/docs/reference/authkit/session).
 
         Args:
-            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-            return_to: The URL to redirect the user to after session revocation.
+            session_id: The ID of the session. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after logout.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -602,7 +602,6 @@ class UserManagement:
         self,
         *,
         session_id: str,
-        return_to: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
         """Revoke Session
@@ -611,7 +610,6 @@ class UserManagement:
 
         Args:
             session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-            return_to: The URL to redirect the user to after session revocation.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:
@@ -621,12 +619,7 @@ class UserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
+            "session_id": session_id,
         }
         self._client.request(
             method="post",
@@ -826,7 +819,7 @@ class UserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -868,6 +861,7 @@ class UserManagement:
         email: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
@@ -882,6 +876,7 @@ class UserManagement:
             email: The email address of the user.
             first_name: The first name of the user.
             last_name: The last name of the user.
+            name: The user's full name.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
@@ -905,6 +900,7 @@ class UserManagement:
                 "email": email,
                 "first_name": first_name,
                 "last_name": last_name,
+                "name": name,
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
@@ -992,6 +988,7 @@ class UserManagement:
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
@@ -1008,6 +1005,7 @@ class UserManagement:
             email: The email address of the user.
             first_name: The first name of the user.
             last_name: The last name of the user.
+            name: The user's full name.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
@@ -1031,6 +1029,7 @@ class UserManagement:
                 "email": email,
                 "first_name": first_name,
                 "last_name": last_name,
+                "name": name,
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
@@ -1275,7 +1274,7 @@ class UserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1325,7 +1324,7 @@ class UserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1762,7 +1761,7 @@ class UserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2612,8 +2611,8 @@ class AsyncUserManagement:
         Logout a user from the current [session](https://workos.com/docs/reference/authkit/session).
 
         Args:
-            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-            return_to: The URL to redirect the user to after session revocation.
+            session_id: The ID of the session. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after logout.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2639,7 +2638,6 @@ class AsyncUserManagement:
         self,
         *,
         session_id: str,
-        return_to: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
         """Revoke Session
@@ -2648,7 +2646,6 @@ class AsyncUserManagement:
 
         Args:
             session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-            return_to: The URL to redirect the user to after session revocation.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:
@@ -2658,12 +2655,7 @@ class AsyncUserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
+            "session_id": session_id,
         }
         await self._client.request(
             method="post",
@@ -2863,7 +2855,7 @@ class AsyncUserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -2905,6 +2897,7 @@ class AsyncUserManagement:
         email: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
@@ -2919,6 +2912,7 @@ class AsyncUserManagement:
             email: The email address of the user.
             first_name: The first name of the user.
             last_name: The last name of the user.
+            name: The user's full name.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
@@ -2942,6 +2936,7 @@ class AsyncUserManagement:
                 "email": email,
                 "first_name": first_name,
                 "last_name": last_name,
+                "name": name,
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
@@ -3029,6 +3024,7 @@ class AsyncUserManagement:
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
@@ -3045,6 +3041,7 @@ class AsyncUserManagement:
             email: The email address of the user.
             first_name: The first name of the user.
             last_name: The last name of the user.
+            name: The user's full name.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
@@ -3068,6 +3065,7 @@ class AsyncUserManagement:
                 "email": email,
                 "first_name": first_name,
                 "last_name": last_name,
+                "name": name,
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
@@ -3312,7 +3310,7 @@ class AsyncUserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3362,7 +3360,7 @@ class AsyncUserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -3799,7 +3797,7 @@ class AsyncUserManagement:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

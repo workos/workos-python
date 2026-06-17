@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
 
@@ -13,8 +13,6 @@ class RevokeSession:
 
     session_id: str
     """The ID of the session to revoke. This can be extracted from the `sid` claim of the access token."""
-    return_to: Optional[str] = None
-    """The URL to redirect the user to after session revocation."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "RevokeSession":
@@ -22,7 +20,6 @@ class RevokeSession:
         try:
             return cls(
                 session_id=data["session_id"],
-                return_to=data.get("return_to"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RevokeSession", e)
@@ -31,6 +28,4 @@ class RevokeSession:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["session_id"] = self.session_id
-        if self.return_to is not None:
-            result["return_to"] = self.return_to
         return result

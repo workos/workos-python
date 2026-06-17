@@ -12,6 +12,12 @@ from .models import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
 from .models import ApiKeyRevoked as ApiKeyRevoked
 from .models import ApiKeyRevokedData as ApiKeyRevokedData
 from .models import ApiKeyRevokedDataOwner as ApiKeyRevokedDataOwner
+from .models import ApiKeyUpdated as ApiKeyUpdated
+from .models import ApiKeyUpdatedData as ApiKeyUpdatedData
+from .models import ApiKeyUpdatedDataOwner as ApiKeyUpdatedDataOwner
+from .models import (
+    ApiKeyUpdatedDataPreviousAttribute as ApiKeyUpdatedDataPreviousAttribute,
+)
 from .models import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
 )
@@ -178,9 +184,6 @@ from .models import DirectoryUserWithGroupsState as DirectoryUserWithGroupsState
 from .models import DsyncActivated as DsyncActivated
 from .models import DsyncActivatedData as DsyncActivatedData
 from .models import DsyncActivatedDataDomain as DsyncActivatedDataDomain
-from .models import DsyncDeactivated as DsyncDeactivated
-from .models import DsyncDeactivatedData as DsyncDeactivatedData
-from .models import DsyncDeactivatedDataDomain as DsyncDeactivatedDataDomain
 from .models import DsyncDeleted as DsyncDeleted
 from .models import DsyncDeletedData as DsyncDeletedData
 from .models import DsyncGroupCreated as DsyncGroupCreated
@@ -191,6 +194,10 @@ from .models import DsyncGroupUserAdded as DsyncGroupUserAdded
 from .models import DsyncGroupUserAddedData as DsyncGroupUserAddedData
 from .models import DsyncGroupUserRemoved as DsyncGroupUserRemoved
 from .models import DsyncGroupUserRemovedData as DsyncGroupUserRemovedData
+from .models import DsyncTokenCreated as DsyncTokenCreated
+from .models import DsyncTokenCreatedData as DsyncTokenCreatedData
+from .models import DsyncTokenRevoked as DsyncTokenRevoked
+from .models import DsyncTokenRevokedData as DsyncTokenRevokedData
 from .models import DsyncUserCreated as DsyncUserCreated
 from .models import DsyncUserDeleted as DsyncUserDeleted
 from .models import DsyncUserUpdated as DsyncUserUpdated
@@ -390,6 +397,7 @@ from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
 from .models import User as User
 from .models import UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner
 from .models import UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner
+from .models import UserApiKeyUpdatedDataOwner as UserApiKeyUpdatedDataOwner
 from .models import UserCreated as UserCreated
 from .models import UserDeleted as UserDeleted
 from .models import UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider

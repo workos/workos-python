@@ -35,6 +35,8 @@ class User:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    name: Optional[str] = None
+    """The user's full name."""
     metadata: Optional[Dict[str, str]] = None
     """Object containing metadata key/value pairs associated with the user."""
     locale: Optional[str] = None
@@ -58,6 +60,7 @@ class User:
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                name=data.get("name"),
                 metadata=data.get("metadata"),
                 locale=data.get("locale"),
             )
@@ -93,6 +96,10 @@ class User:
             result["last_sign_in_at"] = None
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        if self.name is not None:
+            result["name"] = self.name
+        else:
+            result["name"] = None
         if self.metadata is not None:
             result["metadata"] = self.metadata
         if self.locale is not None:

@@ -20,6 +20,12 @@ from .api_key_created_data_owner import ApiKeyCreatedDataOwner as ApiKeyCreatedD
 from .api_key_revoked import ApiKeyRevoked as ApiKeyRevoked
 from .api_key_revoked_data import ApiKeyRevokedData as ApiKeyRevokedData
 from .api_key_revoked_data_owner import ApiKeyRevokedDataOwner as ApiKeyRevokedDataOwner
+from .api_key_updated import ApiKeyUpdated as ApiKeyUpdated
+from .api_key_updated_data import ApiKeyUpdatedData as ApiKeyUpdatedData
+from .api_key_updated_data_owner import ApiKeyUpdatedDataOwner as ApiKeyUpdatedDataOwner
+from .api_key_updated_data_previous_attribute import (
+    ApiKeyUpdatedDataPreviousAttribute as ApiKeyUpdatedDataPreviousAttribute,
+)
 from .audit_log_configuration_log_stream_state import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
 )
@@ -286,11 +292,6 @@ from .dsync_activated_data import DsyncActivatedData as DsyncActivatedData
 from .dsync_activated_data_domain import (
     DsyncActivatedDataDomain as DsyncActivatedDataDomain,
 )
-from .dsync_deactivated import DsyncDeactivated as DsyncDeactivated
-from .dsync_deactivated_data import DsyncDeactivatedData as DsyncDeactivatedData
-from .dsync_deactivated_data_domain import (
-    DsyncDeactivatedDataDomain as DsyncDeactivatedDataDomain,
-)
 from .dsync_deleted import DsyncDeleted as DsyncDeleted
 from .dsync_deleted_data import DsyncDeletedData as DsyncDeletedData
 from .dsync_group_created import DsyncGroupCreated as DsyncGroupCreated
@@ -305,6 +306,10 @@ from .dsync_group_user_removed import DsyncGroupUserRemoved as DsyncGroupUserRem
 from .dsync_group_user_removed_data import (
     DsyncGroupUserRemovedData as DsyncGroupUserRemovedData,
 )
+from .dsync_token_created import DsyncTokenCreated as DsyncTokenCreated
+from .dsync_token_created_data import DsyncTokenCreatedData as DsyncTokenCreatedData
+from .dsync_token_revoked import DsyncTokenRevoked as DsyncTokenRevoked
+from .dsync_token_revoked_data import DsyncTokenRevokedData as DsyncTokenRevokedData
 from .dsync_user_created import DsyncUserCreated as DsyncUserCreated
 from .dsync_user_deleted import DsyncUserDeleted as DsyncUserDeleted
 from .dsync_user_updated import DsyncUserUpdated as DsyncUserUpdated
@@ -597,6 +602,9 @@ from .user_api_key_created_data_owner import (
 )
 from .user_api_key_revoked_data_owner import (
     UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner,
+)
+from .user_api_key_updated_data_owner import (
+    UserApiKeyUpdatedDataOwner as UserApiKeyUpdatedDataOwner,
 )
 from .user_created import UserCreated as UserCreated
 from .user_deleted import UserDeleted as UserDeleted

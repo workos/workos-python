@@ -9,41 +9,43 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .dsync_deactivated_data import DsyncDeactivatedData
+from .dsync_token_revoked_data import DsyncTokenRevokedData
 from .event_context import EventContext
 
 
 @dataclass(slots=True)
-class DsyncDeactivated:
-    """Dsync Deactivated model."""
+class DsyncTokenRevoked:
+    """Dsync Token Revoked model."""
 
     object: Literal["event"]
     """Distinguishes the Event object."""
     id: str
     """Unique identifier for the event."""
-    event: Literal["dsync.deactivated"]
-    data: "DsyncDeactivatedData"
+    event: Literal["dsync.token.revoked"]
+    data: "DsyncTokenRevokedData"
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     context: Optional["EventContext"] = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DsyncDeactivated":
+    def from_dict(cls, data: Dict[str, Any]) -> "DsyncTokenRevoked":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "event"),
                 id=data["id"],
-                event=data.get("event", "dsync.deactivated"),
-                data=DsyncDeactivatedData.from_dict(cast(Dict[str, Any], data["data"])),
+                event=data.get("event", "dsync.token.revoked"),
+                data=DsyncTokenRevokedData.from_dict(
+                    cast(Dict[str, Any], data["data"])
+                ),
                 created_at=_parse_datetime(data["created_at"]),
                 context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
                 if (_v_context := data.get("context")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("DsyncDeactivated", e)
+            _raise_deserialize_error("DsyncTokenRevoked", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

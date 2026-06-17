@@ -16857,6 +16857,7 @@ class TestModelRoundTrip:
         }
         instance = UserOrganizationMembershipBaseListData.from_dict(data)
         serialized = instance.to_dict()
+        assert "roles" not in serialized
         assert "organization_name" not in serialized
         assert "custom_attributes" not in serialized
 
@@ -17542,6 +17543,7 @@ class TestModelRoundTrip:
         }
         instance = OrganizationMembership.from_dict(data)
         serialized = instance.to_dict()
+        assert "roles" not in serialized
         assert "organization_name" not in serialized
         assert "custom_attributes" not in serialized
 

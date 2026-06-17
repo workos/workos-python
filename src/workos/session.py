@@ -336,18 +336,11 @@ class Session:
             )
 
         try:
-            # Use raw dict request because the generated AuthenticateResponse
-            # doesn't include sealed_session, and the request body needs the
-            # session parameter which isn't in the generated request models.
             body: Dict[str, Any] = {
                 "grant_type": "refresh_token",
                 "client_id": self._client.client_id,
                 "client_secret": self._client._api_key,
                 "refresh_token": session["refresh_token"],
-                "session": {
-                    "seal_session": True,
-                    "cookie_password": effective_cookie_password,
-                },
             }
             if organization_id is not None:
                 body["organization_id"] = organization_id
@@ -358,7 +351,15 @@ class Session:
                 body=body,
             )
 
-            self.session_data = str(auth_response["sealed_session"])
+            new_sealed = seal_session_from_auth_response(
+                access_token=auth_response["access_token"],
+                refresh_token=auth_response["refresh_token"],
+                user=auth_response.get("user", {}),
+                impersonator=auth_response.get("impersonator"),
+                cookie_password=effective_cookie_password,
+            )
+
+            self.session_data = new_sealed
             self.cookie_password = effective_cookie_password
 
             signing_key = self.jwks.get_signing_key_from_jwt(
@@ -374,7 +375,7 @@ class Session:
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
-                sealed_session=str(auth_response["sealed_session"]),
+                sealed_session=new_sealed,
                 session_id=decoded["sid"],
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),
@@ -523,10 +524,6 @@ class AsyncSession:
                 "client_id": self._client.client_id,
                 "client_secret": self._client._api_key,
                 "refresh_token": session["refresh_token"],
-                "session": {
-                    "seal_session": True,
-                    "cookie_password": effective_cookie_password,
-                },
             }
             if organization_id is not None:
                 body["organization_id"] = organization_id
@@ -537,7 +534,15 @@ class AsyncSession:
                 body=body,
             )
 
-            self.session_data = str(auth_response["sealed_session"])
+            new_sealed = seal_session_from_auth_response(
+                access_token=auth_response["access_token"],
+                refresh_token=auth_response["refresh_token"],
+                user=auth_response.get("user", {}),
+                impersonator=auth_response.get("impersonator"),
+                cookie_password=effective_cookie_password,
+            )
+
+            self.session_data = new_sealed
             self.cookie_password = effective_cookie_password
 
             signing_key = self.jwks.get_signing_key_from_jwt(
@@ -553,7 +558,7 @@ class AsyncSession:
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
-                sealed_session=str(auth_response["sealed_session"]),
+                sealed_session=new_sealed,
                 session_id=decoded["sid"],
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),

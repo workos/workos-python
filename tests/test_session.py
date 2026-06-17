@@ -26,6 +26,7 @@ from workos.session import (
     AuthenticateWithSessionCookieFailureReason,
     AuthenticateWithSessionCookieSuccessResponse,
     RefreshWithSessionCookieErrorResponse,
+    RefreshWithSessionCookieSuccessResponse,
     Session,
     _map_refresh_exception_to_reason,
     seal_data,
@@ -225,6 +226,114 @@ class TestSession:
         result = session.refresh()
         assert isinstance(result, RefreshWithSessionCookieErrorResponse)
 
+    def test_session_refresh_success(self):
+        new_token = _make_jwt(self.private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01", "email": "test@example.com"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieSuccessResponse)
+        assert result.authenticated
+        assert result.session_id == "session_01"
+        assert result.organization_id == "org_01"
+        assert result.user == {"id": "user_01", "email": "test@example.com"}
+
+        unsealed = unseal_data(result.sealed_session, COOKIE_PASSWORD)
+        assert unsealed["access_token"] == new_token
+        assert unsealed["refresh_token"] == "rt_new"
+        assert unsealed["user"]["id"] == "user_01"
+
+        assert session.session_data == result.sealed_session
+
+    def test_session_refresh_seals_client_side_without_sealed_session_in_response(self):
+        """Regression: API response never contains sealed_session; the SDK must seal locally."""
+        new_token = _make_jwt(self.private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieSuccessResponse)
+        assert result.sealed_session
+        unsealed = unseal_data(result.sealed_session, COOKIE_PASSWORD)
+        assert unsealed["access_token"] == new_token
+        assert unsealed["refresh_token"] == "rt_new"
+
+    def test_session_refresh_with_impersonator(self):
+        new_token = _make_jwt(self.private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+            "impersonator": {"email": "admin@example.com"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieSuccessResponse)
+        assert result.impersonator == {"email": "admin@example.com"}
+        unsealed = unseal_data(result.sealed_session, COOKIE_PASSWORD)
+        assert unsealed["impersonator"]["email"] == "admin@example.com"
+
+    def test_session_refresh_does_not_send_session_param(self):
+        """The session/seal_session param should not be sent to the API."""
+        new_token = _make_jwt(self.private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        session.refresh()
+
+        call_kwargs = session._client.request_raw.call_args
+        sent_body = call_kwargs.kwargs.get("body") or call_kwargs[1].get("body")
+        assert "session" not in sent_body
+
 
 class TestMapRefreshExceptionToReason:
     @pytest.mark.parametrize(
@@ -314,3 +423,33 @@ class TestAsyncSession:
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
         assert result.session_id == "session_01"
+
+    async def test_async_session_refresh_success(self, async_workos):
+        from unittest.mock import AsyncMock
+
+        private_key, public_key = _generate_rsa_key_pair()
+        new_token = _make_jwt(private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks(public_key)
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01", "email": "test@example.com"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = AsyncMock(return_value=api_response)
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieSuccessResponse)
+        assert result.authenticated
+        assert result.session_id == "session_01"
+
+        unsealed = unseal_data(result.sealed_session, COOKIE_PASSWORD)
+        assert unsealed["access_token"] == new_token
+        assert unsealed["refresh_token"] == "rt_new"

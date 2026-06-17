@@ -11,7 +11,10 @@ from .._types import RequestOptions, enum_value
 from .models import (
     AuthorizationCheck,
     AuthorizationResource,
+    GroupRoleAssignment,
+    GroupRoleAssignmentList,
     Permission,
+    ReplaceGroupRoleAssignmentEntry,
     Role,
     RoleList,
     UserRoleAssignment,
@@ -76,6 +79,267 @@ class Authorization:
 
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
+
+    def list_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[GroupRoleAssignment]:
+        """List role assignments for a group
+
+        List all role assignments granted to a group. Each assignment represents a role granted to the group on a resource.
+
+        Args:
+            group_id: The ID of the group.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[GroupRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            model=GroupRoleAssignment,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_group_role_assignment(
+        self,
+        group_id: str,
+        *,
+        role_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignment:
+        """Assign a role to a group
+
+        Assign a role to a group on a specific resource.
+
+        Args:
+            group_id: The ID of the group.
+            role_slug: The slug of the role to assign to the group.
+            resource_id: The ID of the resource. Omit along with the external-id fields to target the organization itself.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The resource type slug.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignment
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "role_slug": role_slug,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            model=GroupRoleAssignment,
+            request_options=request_options,
+        )
+
+    def update_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        role_assignments: List[ReplaceGroupRoleAssignmentEntry],
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignmentList:
+        """Replace all role assignments for a group
+
+        Replace all role assignments for a group with the provided list. Existing assignments not in the list will be removed.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignments: The list of role assignments that should exist for the group. All existing assignments will be replaced.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignmentList
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "role_assignments": [item.to_dict() for item in role_assignments],
+        }
+        return self._client.request(
+            method="put",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            model=GroupRoleAssignmentList,
+            request_options=request_options,
+        )
+
+    def delete_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        role_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove group role assignments by criteria
+
+        Remove role assignments from a group that match the provided criteria. Returns 404 when no matching active assignment is found.
+
+        Args:
+            group_id: The ID of the group.
+            role_slug: The slug of the role to remove assignments for.
+            resource_id: The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The resource type slug.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "role_slug": role_slug,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        self._client.request(
+            method="delete",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            request_options=request_options,
+        )
+
+    def get_group_role_assignment(
+        self,
+        group_id: str,
+        role_assignment_id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignment:
+        """Get a group role assignment
+
+        Get a specific role assignment for a group by its ID.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignment_id: The ID of the group role assignment.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignment
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=(
+                "authorization",
+                "groups",
+                str(group_id),
+                "role_assignments",
+                str(role_assignment_id),
+            ),
+            model=GroupRoleAssignment,
+            request_options=request_options,
+        )
+
+    def delete_group_role_assignment(
+        self,
+        group_id: str,
+        role_assignment_id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove a group role assignment
+
+        Remove a specific role assignment from a group by its ID.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignment_id: The ID of the group role assignment to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=(
+                "authorization",
+                "groups",
+                str(group_id),
+                "role_assignments",
+                str(role_assignment_id),
+            ),
+            request_options=request_options,
+        )
 
     def check(
         self,
@@ -1199,6 +1463,7 @@ class Authorization:
             SyncPage[AuthorizationResource]
 
         Raises:
+            BadRequestError: If the request is malformed (400).
             AuthorizationError: If the request is forbidden (403).
             UnprocessableEntityError: If the request data is unprocessable (422).
             AuthenticationError: If the API key is invalid (401).
@@ -1986,6 +2251,267 @@ class AsyncAuthorization:
 
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
+
+    async def list_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[GroupRoleAssignment]:
+        """List role assignments for a group
+
+        List all role assignments granted to a group. Each assignment represents a role granted to the group on a resource.
+
+        Args:
+            group_id: The ID of the group.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[GroupRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            model=GroupRoleAssignment,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_group_role_assignment(
+        self,
+        group_id: str,
+        *,
+        role_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignment:
+        """Assign a role to a group
+
+        Assign a role to a group on a specific resource.
+
+        Args:
+            group_id: The ID of the group.
+            role_slug: The slug of the role to assign to the group.
+            resource_id: The ID of the resource. Omit along with the external-id fields to target the organization itself.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The resource type slug.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignment
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "role_slug": role_slug,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            model=GroupRoleAssignment,
+            request_options=request_options,
+        )
+
+    async def update_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        role_assignments: List[ReplaceGroupRoleAssignmentEntry],
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignmentList:
+        """Replace all role assignments for a group
+
+        Replace all role assignments for a group with the provided list. Existing assignments not in the list will be removed.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignments: The list of role assignments that should exist for the group. All existing assignments will be replaced.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignmentList
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "role_assignments": [item.to_dict() for item in role_assignments],
+        }
+        return await self._client.request(
+            method="put",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            model=GroupRoleAssignmentList,
+            request_options=request_options,
+        )
+
+    async def delete_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        role_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove group role assignments by criteria
+
+        Remove role assignments from a group that match the provided criteria. Returns 404 when no matching active assignment is found.
+
+        Args:
+            group_id: The ID of the group.
+            role_slug: The slug of the role to remove assignments for.
+            resource_id: The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The resource type slug.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "role_slug": role_slug,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        await self._client.request(
+            method="delete",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            request_options=request_options,
+        )
+
+    async def get_group_role_assignment(
+        self,
+        group_id: str,
+        role_assignment_id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> GroupRoleAssignment:
+        """Get a group role assignment
+
+        Get a specific role assignment for a group by its ID.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignment_id: The ID of the group role assignment.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            GroupRoleAssignment
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=(
+                "authorization",
+                "groups",
+                str(group_id),
+                "role_assignments",
+                str(role_assignment_id),
+            ),
+            model=GroupRoleAssignment,
+            request_options=request_options,
+        )
+
+    async def delete_group_role_assignment(
+        self,
+        group_id: str,
+        role_assignment_id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove a group role assignment
+
+        Remove a specific role assignment from a group by its ID.
+
+        Args:
+            group_id: The ID of the group.
+            role_assignment_id: The ID of the group role assignment to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=(
+                "authorization",
+                "groups",
+                str(group_id),
+                "role_assignments",
+                str(role_assignment_id),
+            ),
+            request_options=request_options,
+        )
 
     async def check(
         self,
@@ -3109,6 +3635,7 @@ class AsyncAuthorization:
             AsyncPage[AuthorizationResource]
 
         Raises:
+            BadRequestError: If the request is malformed (400).
             AuthorizationError: If the request is forbidden (403).
             UnprocessableEntityError: If the request data is unprocessable (422).
             AuthenticationError: If the API key is invalid (401).

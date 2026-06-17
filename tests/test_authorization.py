@@ -9,6 +9,8 @@ from tests.generated_helpers import load_fixture
 from workos.authorization.models import (
     AuthorizationCheck,
     AuthorizationResource,
+    GroupRoleAssignment,
+    GroupRoleAssignmentList,
     Permission,
     Role,
     RoleList,
@@ -37,6 +39,111 @@ from workos.authorization._resource import (
 
 
 class TestAuthorization:
+    def test_list_group_role_assignments(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_group_role_assignment.json"),
+        )
+        page = workos.authorization.list_group_role_assignments("test_group_id")
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], GroupRoleAssignment)
+
+    def test_list_group_role_assignments_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.authorization.list_group_role_assignments("test_group_id")
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_group_role_assignments_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.authorization.list_group_role_assignments(
+            "test_group_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    def test_create_group_role_assignment(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("group_role_assignment.json"),
+        )
+        result = workos.authorization.create_group_role_assignment(
+            "test_group_id", role_slug="test_role_slug"
+        )
+        assert isinstance(result, GroupRoleAssignment)
+        assert result.object == "group_role_assignment"
+        assert result.id == "gra_01HXYZ123456789ABCDEFGH"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+        body = json.loads(request.content)
+        assert body["role_slug"] == "test_role_slug"
+
+    def test_update_group_role_assignments(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("group_role_assignment_list.json"),
+        )
+        result = workos.authorization.update_group_role_assignments(
+            "test_group_id", role_assignments=[]
+        )
+        assert isinstance(result, GroupRoleAssignmentList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+        body = json.loads(request.content)
+        assert "role_assignments" in body
+
+    def test_delete_group_role_assignments(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.authorization.delete_group_role_assignments(
+            "test_group_id", role_slug="test_role_slug"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
+    def test_get_group_role_assignment(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("group_role_assignment.json"),
+        )
+        result = workos.authorization.get_group_role_assignment(
+            "test_group_id", "test_role_assignment_id"
+        )
+        assert isinstance(result, GroupRoleAssignment)
+        assert result.object == "group_role_assignment"
+        assert result.id == "gra_01HXYZ123456789ABCDEFGH"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments/test_role_assignment_id"
+        )
+
+    def test_delete_group_role_assignment(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.authorization.delete_group_role_assignment(
+            "test_group_id", "test_role_assignment_id"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments/test_role_assignment_id"
+        )
+
     def test_check(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_check.json"),
@@ -903,45 +1010,34 @@ class TestAuthorization:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/authorization/permissions/test_slug")
 
-    def test_check_with_request_options(self, workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("authorization_check.json"))
-        workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
+    def test_list_group_role_assignments_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.authorization.list_group_role_assignments(
+            "test_group_id", request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
-    def test_check_unauthorized(self, workos, httpx_mock):
+    def test_list_group_role_assignments_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.authorization.check(
-                "test_organization_membership_id",
-                permission_slug="test_permission_slug",
-                resource_target=ResourceTargetById(resource_id="test_value"),
-            )
+            workos.authorization.list_group_role_assignments("test_group_id")
 
-    def test_check_not_found(self, httpx_mock):
+    def test_list_group_role_assignments_not_found(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             workos.close()
 
-    def test_check_rate_limited(self, httpx_mock):
+    def test_list_group_role_assignments_rate_limited(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -952,61 +1048,154 @@ class TestAuthorization:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             workos.close()
 
-    def test_check_server_error(self, httpx_mock):
+    def test_list_group_role_assignments_server_error(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             workos.close()
 
-    def test_check_bad_request(self, httpx_mock):
+    def test_list_group_role_assignments_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             workos.close()
 
-    def test_check_unprocessable(self, httpx_mock):
+    def test_list_group_role_assignments_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             workos.close()
 
 
 class TestAsyncAuthorization:
+    @pytest.mark.asyncio
+    async def test_list_group_role_assignments(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_group_role_assignment.json"))
+        page = await async_workos.authorization.list_group_role_assignments(
+            "test_group_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], GroupRoleAssignment)
+
+    @pytest.mark.asyncio
+    async def test_list_group_role_assignments_empty_page(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.authorization.list_group_role_assignments(
+            "test_group_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_group_role_assignments_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.authorization.list_group_role_assignments(
+            "test_group_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    @pytest.mark.asyncio
+    async def test_create_group_role_assignment(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("group_role_assignment.json"))
+        result = await async_workos.authorization.create_group_role_assignment(
+            "test_group_id", role_slug="test_role_slug"
+        )
+        assert isinstance(result, GroupRoleAssignment)
+        assert result.object == "group_role_assignment"
+        assert result.id == "gra_01HXYZ123456789ABCDEFGH"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_group_role_assignments(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("group_role_assignment_list.json"))
+        result = await async_workos.authorization.update_group_role_assignments(
+            "test_group_id", role_assignments=[]
+        )
+        assert isinstance(result, GroupRoleAssignmentList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_group_role_assignments(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.authorization.delete_group_role_assignments(
+            "test_group_id", role_slug="test_role_slug"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_group_role_assignment(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("group_role_assignment.json"))
+        result = await async_workos.authorization.get_group_role_assignment(
+            "test_group_id", "test_role_assignment_id"
+        )
+        assert isinstance(result, GroupRoleAssignment)
+        assert result.object == "group_role_assignment"
+        assert result.id == "gra_01HXYZ123456789ABCDEFGH"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments/test_role_assignment_id"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_group_role_assignment(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.authorization.delete_group_role_assignment(
+            "test_group_id", "test_role_assignment_id"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments/test_role_assignment_id"
+        )
+
     @pytest.mark.asyncio
     async def test_check(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_check.json"))
@@ -1876,45 +2065,40 @@ class TestAsyncAuthorization:
         assert request.url.path.endswith("/authorization/permissions/test_slug")
 
     @pytest.mark.asyncio
-    async def test_check_with_request_options(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("authorization_check.json"))
-        await async_workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
+    async def test_list_group_role_assignments_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.authorization.list_group_role_assignments(
+            "test_group_id", request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_check_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_group_role_assignments_unauthorized(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.authorization.check(
-                "test_organization_membership_id",
-                permission_slug="test_permission_slug",
-                resource_target=ResourceTargetById(resource_id="test_value"),
+            await async_workos.authorization.list_group_role_assignments(
+                "test_group_id"
             )
 
     @pytest.mark.asyncio
-    async def test_check_not_found(self, httpx_mock):
+    async def test_list_group_role_assignments_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_check_rate_limited(self, httpx_mock):
+    async def test_list_group_role_assignments_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -1925,58 +2109,42 @@ class TestAsyncAuthorization:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_check_server_error(self, httpx_mock):
+    async def test_list_group_role_assignments_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_check_bad_request(self, httpx_mock):
+    async def test_list_group_role_assignments_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_check_unprocessable(self, httpx_mock):
+    async def test_list_group_role_assignments_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.list_group_role_assignments("test_group_id")
         finally:
             await workos.close()

@@ -17,11 +17,31 @@ from .create_authorization_permission import (
 from .create_authorization_resource import (
     CreateAuthorizationResource as CreateAuthorizationResource,
 )
+from .create_group_role_assignment import (
+    CreateGroupRoleAssignment as CreateGroupRoleAssignment,
+)
 from .create_organization_role import CreateOrganizationRole as CreateOrganizationRole
 from .create_role import CreateRole as CreateRole
+from .delete_group_role_assignments_by_criteria import (
+    DeleteGroupRoleAssignmentsByCriteria as DeleteGroupRoleAssignmentsByCriteria,
+)
+from .group_role_assignment import GroupRoleAssignment as GroupRoleAssignment
+from .group_role_assignment_list import (
+    GroupRoleAssignmentList as GroupRoleAssignmentList,
+)
+from .group_role_assignment_resource import (
+    GroupRoleAssignmentResource as GroupRoleAssignmentResource,
+)
+from workos.common.models.list_metadata import ListMetadata as ListMetadata
 from workos.common.models.pagination_order import PaginationOrder as PaginationOrder
 from .permission import Permission as Permission
 from .remove_role import RemoveRole as RemoveRole
+from .replace_group_role_assignment_entry import (
+    ReplaceGroupRoleAssignmentEntry as ReplaceGroupRoleAssignmentEntry,
+)
+from .replace_group_role_assignments import (
+    ReplaceGroupRoleAssignments as ReplaceGroupRoleAssignments,
+)
 from .role import Role as Role
 from .role_list import RoleList as RoleList
 from .set_role_permissions import SetRolePermissions as SetRolePermissions

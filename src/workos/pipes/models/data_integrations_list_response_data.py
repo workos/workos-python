@@ -11,6 +11,9 @@ from workos._types import _raise_deserialize_error
 from .data_integrations_list_response_data_connected_account import (
     DataIntegrationsListResponseDataConnectedAccount,
 )
+from workos.common.models.data_integrations_list_response_data_auth_methods import (
+    DataIntegrationsListResponseDataAuthMethods,
+)
 from workos.common.models.data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership,
 )
@@ -44,6 +47,8 @@ class DataIntegrationsListResponseData:
     """The timestamp when the provider was last updated."""
     connected_account: Optional["DataIntegrationsListResponseDataConnectedAccount"]
     """The user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` if the user has not connected."""
+    auth_methods: Optional[List["DataIntegrationsListResponseDataAuthMethods"]] = None
+    """The authentication methods supported by this provider (`oauth`, `api_key`, or both). Defaults to `["oauth"]` if absent."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationsListResponseData":
@@ -65,6 +70,12 @@ class DataIntegrationsListResponseData:
                     cast(Dict[str, Any], _v_connected_account)
                 )
                 if (_v_connected_account := data["connected_account"]) is not None
+                else None,
+                auth_methods=[
+                    DataIntegrationsListResponseDataAuthMethods(item)
+                    for item in cast(list[Any], _v_auth_methods)
+                ]
+                if (_v_auth_methods := data.get("auth_methods")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
@@ -96,4 +107,9 @@ class DataIntegrationsListResponseData:
             result["connected_account"] = self.connected_account.to_dict()
         else:
             result["connected_account"] = None
+        if self.auth_methods is not None:
+            result["auth_methods"] = [
+                item.value if isinstance(item, Enum) else item
+                for item in self.auth_methods
+            ]
         return result

@@ -1200,7 +1200,7 @@ class UserManagement:
     ) -> SendVerificationEmailResponse:
         """Send verification email
 
-        Sends an email that contains a one-time code used to verify a user’s email address.
+        Sends an email that contains a one-time code used to verify a user's email address.
 
         Args:
             id: The ID of the user.
@@ -1715,7 +1715,7 @@ class UserManagement:
     ) -> RedirectUri:
         """Create a redirect URI
 
-        Creates a new redirect URI for an environment.
+        Creates a new redirect URI for an application.
 
         Args:
             uri: The redirect URI to create.
@@ -3236,7 +3236,7 @@ class AsyncUserManagement:
     ) -> SendVerificationEmailResponse:
         """Send verification email
 
-        Sends an email that contains a one-time code used to verify a user’s email address.
+        Sends an email that contains a one-time code used to verify a user's email address.
 
         Args:
             id: The ID of the user.
@@ -3751,7 +3751,7 @@ class AsyncUserManagement:
     ) -> RedirectUri:
         """Create a redirect URI
 
-        Creates a new redirect URI for an environment.
+        Creates a new redirect URI for an application.
 
         Args:
             uri: The redirect URI to create.

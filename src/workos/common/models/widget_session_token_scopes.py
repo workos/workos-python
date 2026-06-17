@@ -18,6 +18,7 @@ class WidgetSessionTokenScopes(str, Enum):
     WIDGETS_API_KEYS_MANAGE = "widgets:api-keys:manage"
     WIDGETS_DSYNC_MANAGE = "widgets:dsync:manage"
     WIDGETS_AUDIT_LOG_STREAMING_MANAGE = "widgets:audit-log-streaming:manage"
+    WIDGETS_PIPES_MANAGE = "widgets:pipes:manage"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["WidgetSessionTokenScopes"]:
@@ -36,4 +37,5 @@ WidgetSessionTokenScopesLiteral: TypeAlias = Literal[
     "widgets:api-keys:manage",
     "widgets:dsync:manage",
     "widgets:audit-log-streaming:manage",
+    "widgets:pipes:manage",
 ]

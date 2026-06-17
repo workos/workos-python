@@ -13,11 +13,11 @@ class AuthorizationCodeSessionAuthenticateRequest:
 
     client_id: str
     """The client ID of the application."""
-    client_secret: str
-    """The client secret of the application."""
     grant_type: Literal["authorization_code"]
     code: str
     """The authorization code received from the redirect."""
+    client_secret: Optional[str] = None
+    """The client secret of the application. May be omitted by public clients that authenticate through other means, such as a PKCE `code_verifier`."""
     code_verifier: Optional[str] = None
     """The PKCE code verifier used to derive the code challenge passed to the authorization URL."""
     invitation_token: Optional[str] = None
@@ -37,9 +37,9 @@ class AuthorizationCodeSessionAuthenticateRequest:
         try:
             return cls(
                 client_id=data["client_id"],
-                client_secret=data["client_secret"],
                 grant_type=data.get("grant_type", "authorization_code"),
                 code=data["code"],
+                client_secret=data.get("client_secret"),
                 code_verifier=data.get("code_verifier"),
                 invitation_token=data.get("invitation_token"),
                 ip_address=data.get("ip_address"),
@@ -53,9 +53,10 @@ class AuthorizationCodeSessionAuthenticateRequest:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["client_id"] = self.client_id
-        result["client_secret"] = self.client_secret
         result["grant_type"] = self.grant_type
         result["code"] = self.code
+        if self.client_secret is not None:
+            result["client_secret"] = self.client_secret
         if self.code_verifier is not None:
             result["code_verifier"] = self.code_verifier
         if self.invitation_token is not None:

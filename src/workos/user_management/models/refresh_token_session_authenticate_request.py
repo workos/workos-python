@@ -13,11 +13,11 @@ class RefreshTokenSessionAuthenticateRequest:
 
     client_id: str
     """The client ID of the application."""
-    client_secret: str
-    """The client secret of the application."""
     grant_type: Literal["refresh_token"]
     refresh_token: str
     """The refresh token to exchange for new tokens."""
+    client_secret: Optional[str] = None
+    """The client secret of the application. May be omitted by public clients that authenticate through other means, such as a PKCE `code_verifier`."""
     organization_id: Optional[str] = None
     """The ID of the organization to scope the session to."""
     ip_address: Optional[str] = None
@@ -35,9 +35,9 @@ class RefreshTokenSessionAuthenticateRequest:
         try:
             return cls(
                 client_id=data["client_id"],
-                client_secret=data["client_secret"],
                 grant_type=data.get("grant_type", "refresh_token"),
                 refresh_token=data["refresh_token"],
+                client_secret=data.get("client_secret"),
                 organization_id=data.get("organization_id"),
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),
@@ -50,9 +50,10 @@ class RefreshTokenSessionAuthenticateRequest:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["client_id"] = self.client_id
-        result["client_secret"] = self.client_secret
         result["grant_type"] = self.grant_type
         result["refresh_token"] = self.refresh_token
+        if self.client_secret is not None:
+            result["client_secret"] = self.client_secret
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.ip_address is not None:

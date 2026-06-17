@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "scopes": [
+    "repo",
+    "user:email"
+  ],
+  "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
+  "client_secret": "••••••••"
+}

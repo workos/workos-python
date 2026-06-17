@@ -1,5 +1,25 @@
 # Changelog
 
+## [8.1.0](https://github.com/workos/workos-python/compare/v8.0.0...v8.1.0) (2026-06-17)
+
+
+### Features
+
+* **api_keys:** Add create_api_key_expire operation ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **audit_logs:** Add SNOWFLAKE to AuditLogConfigurationLogStreamType enum ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **authorization:** Remove DOMAIN_SIGN_UP_RATE_LIMIT from RadarStandaloneResponseControl enum ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **common:** Add ApiKeyUpdated event models ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **common:** Make expires_at required in ApiKeyCreatedData and ApiKeyRevokedData ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **common:** Remove DsyncDeactivated models and add DsyncToken events ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **connect:** Add name field to UserObject model ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **user_management:** Add name field to User, CreateUser, and UpdateUser models ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+* **user_management:** Remove return_to parameter from revoke_session ([#665](https://github.com/workos/workos-python/issues/665)) ([4af7da4](https://github.com/workos/workos-python/commit/4af7da4926835b6bbf8a3bad604fcd32a8627766))
+
+
+### Bug Fixes
+
+* **renovate:** explicitly enable minor and patch updates ([#663](https://github.com/workos/workos-python/issues/663)) ([ff8ad1b](https://github.com/workos/workos-python/commit/ff8ad1ba5ef2d2222802dfc2f8de337551740ad4))
+
 ## [8.0.0](https://github.com/workos/workos-python/compare/v7.0.1...v8.0.0) (2026-05-26)
 
 ### Bug Fixes

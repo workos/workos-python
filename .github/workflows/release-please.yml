@@ -5,11 +5,21 @@ on:
     branches:
       - main
 
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
 defaults:
   run:
     shell: bash
 
 jobs:
+  # release-please owns tag + GitHub Release creation (no
+  # skip-github-release). Because it tags every release inside its own run
+  # — before it computes the next release PR — it always knows the previous
+  # release boundary, so it never regenerates the changelog from the start
+  # of history or proposes a spurious major bump. This job is kept minimal
+  # so nothing downstream (changelog enrichment, release notes) can fail it.
   release-please:
     runs-on: ubuntu-latest
     permissions:
@@ -27,31 +37,39 @@ jobs:
           app-id: ${{ vars.SDK_BOT_APP_ID }}
           private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
 
-      # release-please owns tag + GitHub Release creation (no
-      # skip-github-release). This keeps its release-state tracking intact:
-      # because it tags every release itself, it always knows the previous
-      # release boundary, so it never regenerates the changelog from the
-      # start of history or proposes a spurious major bump. The rich release
-      # body is applied afterward by the update-release-notes job below.
       - name: Run release-please
         id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
+  # While the release PR is open, enrich it before it merges. Runs as its
+  # own job (gated on the PR existing) so a failure here can never block the
+  # release or the PyPI publish that depends on release-please.
+  enrich-release-pr:
+    needs: release-please
+    if: needs.release-please.outputs.pr
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # 3.1.1
+        with:
+          app-id: ${{ vars.SDK_BOT_APP_ID }}
+          private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
+
       - name: Checkout release PR branch
-        if: steps.release.outputs.pr
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Install uv
-        if: steps.release.outputs.pr
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Update lockfile
-        if: steps.release.outputs.pr
         run: |
           uv lock
           git config user.name "workos-sdk-automation[bot]"
@@ -68,9 +86,8 @@ jobs:
       # release-please wrote. Fragments are deleted in the same commit.
       # Idempotent: if no fragments exist, skip silently.
       - name: Inline rich changelog fragments
-        if: steps.release.outputs.pr
         env:
-          PR_JSON: ${{ steps.release.outputs.pr }}
+          PR_JSON: ${{ needs.release-please.outputs.pr }}
         run: |
           set -euo pipefail
           shopt -s nullglob

@@ -1,5 +1,28 @@
 # Changelog
 
+## [8.2.0](https://github.com/workos/workos-python/compare/v8.1.0...v8.2.0) (2026-06-18)
+
+
+### Features
+
+* **authorization:** Add authorization operations and models ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **client:** Add client API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **connect:** Add Connect API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **groups:** Add groups API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **organization_membership:** Add organization membership API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **organization_membership:** Change response for `UserManagementOrganizationMembership.list` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **pipes:** Add Pipes API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **pipes:** SDK surface change: Symbol "AsyncPipes.create_data_integration_token" was removed ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **user_management:** Change response for `UserManagementInvitations.list` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **user_management:** Update user management API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **widgets:** Add `widgets:pipes:manage` to `WidgetSessionTokenScopes` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+* **widgets:** SDK surface change: Symbol "WidgetSessionTokenResponse" was removed ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
+
+
+### Bug Fixes
+
+* Fix Session.refresh() KeyError by sealing session client-side ([#673](https://github.com/workos/workos-python/issues/673)) ([6c7ccfd](https://github.com/workos/workos-python/commit/6c7ccfd46d6c58c479f317d3cb508b07edab007b))
+
 ## [8.1.0](https://github.com/workos/workos-python/compare/v8.0.0...v8.1.0) (2026-06-17)
 
 ### Bug Fixes

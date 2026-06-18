@@ -336,18 +336,11 @@ class Session:
             )
 
         try:
-            # Use raw dict request because the generated AuthenticateResponse
-            # doesn't include sealed_session, and the request body needs the
-            # session parameter which isn't in the generated request models.
             body: Dict[str, Any] = {
                 "grant_type": "refresh_token",
                 "client_id": self._client.client_id,
                 "client_secret": self._client._api_key,
                 "refresh_token": session["refresh_token"],
-                "session": {
-                    "seal_session": True,
-                    "cookie_password": effective_cookie_password,
-                },
             }
             if organization_id is not None:
                 body["organization_id"] = organization_id
@@ -358,31 +351,64 @@ class Session:
                 body=body,
             )
 
-            self.session_data = str(auth_response["sealed_session"])
-            self.cookie_password = effective_cookie_password
+            access_token = auth_response.get("access_token")
+            refresh_token = auth_response.get("refresh_token")
+            if not access_token or not refresh_token:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
+                )
 
-            signing_key = self.jwks.get_signing_key_from_jwt(
-                auth_response["access_token"]
+            user = auth_response.get("user") or {}
+            impersonator = auth_response.get("impersonator")
+
+            try:
+                signing_key = self.jwks.get_signing_key_from_jwt(access_token)
+                decoded = jwt.decode(
+                    access_token,
+                    signing_key.key,
+                    algorithms=self._JWK_ALGORITHMS,
+                    options={"verify_aud": False},
+                    leeway=self._client._jwt_leeway,
+                )
+            except (
+                jwt.exceptions.InvalidTokenError,
+                jwt.exceptions.PyJWKClientError,
+            ):
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
+            session_id = decoded.get("sid")
+            if not session_id:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
+            new_sealed = seal_session_from_auth_response(
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user,
+                impersonator=impersonator,
+                cookie_password=effective_cookie_password,
             )
-            decoded = jwt.decode(
-                auth_response["access_token"],
-                signing_key.key,
-                algorithms=self._JWK_ALGORITHMS,
-                options={"verify_aud": False},
-                leeway=self._client._jwt_leeway,
-            )
+
+            self.session_data = new_sealed
+            self.cookie_password = effective_cookie_password
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
-                sealed_session=str(auth_response["sealed_session"]),
-                session_id=decoded["sid"],
+                sealed_session=new_sealed,
+                session_id=session_id,
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),
                 roles=decoded.get("roles"),
                 permissions=decoded.get("permissions"),
                 entitlements=decoded.get("entitlements"),
-                user=auth_response.get("user"),
-                impersonator=auth_response.get("impersonator"),
+                user=user,
+                impersonator=impersonator,
                 feature_flags=decoded.get("feature_flags"),
             )
         except Exception as e:
@@ -523,10 +549,6 @@ class AsyncSession:
                 "client_id": self._client.client_id,
                 "client_secret": self._client._api_key,
                 "refresh_token": session["refresh_token"],
-                "session": {
-                    "seal_session": True,
-                    "cookie_password": effective_cookie_password,
-                },
             }
             if organization_id is not None:
                 body["organization_id"] = organization_id
@@ -537,31 +559,64 @@ class AsyncSession:
                 body=body,
             )
 
-            self.session_data = str(auth_response["sealed_session"])
-            self.cookie_password = effective_cookie_password
+            access_token = auth_response.get("access_token")
+            refresh_token = auth_response.get("refresh_token")
+            if not access_token or not refresh_token:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
+                )
 
-            signing_key = self.jwks.get_signing_key_from_jwt(
-                auth_response["access_token"]
+            user = auth_response.get("user") or {}
+            impersonator = auth_response.get("impersonator")
+
+            try:
+                signing_key = self.jwks.get_signing_key_from_jwt(access_token)
+                decoded = jwt.decode(
+                    access_token,
+                    signing_key.key,
+                    algorithms=self._JWK_ALGORITHMS,
+                    options={"verify_aud": False},
+                    leeway=self._client._jwt_leeway,
+                )
+            except (
+                jwt.exceptions.InvalidTokenError,
+                jwt.exceptions.PyJWKClientError,
+            ):
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
+            session_id = decoded.get("sid")
+            if not session_id:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
+            new_sealed = seal_session_from_auth_response(
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user,
+                impersonator=impersonator,
+                cookie_password=effective_cookie_password,
             )
-            decoded = jwt.decode(
-                auth_response["access_token"],
-                signing_key.key,
-                algorithms=self._JWK_ALGORITHMS,
-                options={"verify_aud": False},
-                leeway=self._client._jwt_leeway,
-            )
+
+            self.session_data = new_sealed
+            self.cookie_password = effective_cookie_password
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
-                sealed_session=str(auth_response["sealed_session"]),
-                session_id=decoded["sid"],
+                sealed_session=new_sealed,
+                session_id=session_id,
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),
                 roles=decoded.get("roles"),
                 permissions=decoded.get("permissions"),
                 entitlements=decoded.get("entitlements"),
-                user=auth_response.get("user"),
-                impersonator=auth_response.get("impersonator"),
+                user=user,
+                impersonator=impersonator,
                 feature_flags=decoded.get("feature_flags"),
             )
         except Exception as e:

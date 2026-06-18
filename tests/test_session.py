@@ -460,6 +460,37 @@ class TestSession:
         assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
         assert session.session_data == original_sealed
 
+    def test_session_refresh_jwks_error_returns_invalid_jwt(self):
+        """A JWKS lookup failure maps to INVALID_JWT, not a raw string."""
+        import jwt as pyjwt_lib
+
+        new_token = _make_jwt(self.private_key)
+        original_sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos,
+            session_data=original_sealed,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        mock_jwks = MagicMock()
+        mock_jwks.get_signing_key_from_jwt.side_effect = (
+            pyjwt_lib.exceptions.PyJWKClientError("Unable to find a signing key")
+        )
+        session.jwks = mock_jwks
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed
+
 
 class TestMapRefreshExceptionToReason:
     @pytest.mark.parametrize(
@@ -671,6 +702,40 @@ class TestAsyncSession:
 
         api_response = {
             "access_token": bad_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = AsyncMock(return_value=api_response)
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed
+
+    async def test_async_session_refresh_jwks_error_returns_invalid_jwt(
+        self, async_workos
+    ):
+        import jwt as pyjwt_lib
+        from unittest.mock import AsyncMock
+
+        private_key, _ = _generate_rsa_key_pair()
+        new_token = _make_jwt(private_key)
+        original_sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos,
+            session_data=original_sealed,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        mock_jwks = MagicMock()
+        mock_jwks.get_signing_key_from_jwt.side_effect = (
+            pyjwt_lib.exceptions.PyJWKClientError("Unable to find a signing key")
+        )
+        session.jwks = mock_jwks
+
+        api_response = {
+            "access_token": new_token,
             "refresh_token": "rt_new",
             "user": {"id": "user_01"},
         }

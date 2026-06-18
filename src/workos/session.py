@@ -371,7 +371,10 @@ class Session:
                     options={"verify_aud": False},
                     leeway=self._client._jwt_leeway,
                 )
-            except jwt.exceptions.InvalidTokenError:
+            except (
+                jwt.exceptions.InvalidTokenError,
+                jwt.exceptions.PyJWKClientError,
+            ):
                 return RefreshWithSessionCookieErrorResponse(
                     authenticated=False,
                     reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
@@ -576,7 +579,10 @@ class AsyncSession:
                     options={"verify_aud": False},
                     leeway=self._client._jwt_leeway,
                 )
-            except jwt.exceptions.InvalidTokenError:
+            except (
+                jwt.exceptions.InvalidTokenError,
+                jwt.exceptions.PyJWKClientError,
+            ):
                 return RefreshWithSessionCookieErrorResponse(
                     authenticated=False,
                     reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,

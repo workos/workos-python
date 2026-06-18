@@ -2,26 +2,67 @@
 
 ## [8.2.0](https://github.com/workos/workos-python/compare/v8.1.0...v8.2.0) (2026-06-18)
 
-
-### Features
-
-* **authorization:** Add authorization operations and models ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **client:** Add client API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **connect:** Add Connect API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **groups:** Add groups API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **organization_membership:** Add organization membership API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **organization_membership:** Change response for `UserManagementOrganizationMembership.list` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **pipes:** Add Pipes API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **pipes:** SDK surface change: Symbol "AsyncPipes.create_data_integration_token" was removed ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **user_management:** Change response for `UserManagementInvitations.list` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **user_management:** Update user management API surface ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **widgets:** Add `widgets:pipes:manage` to `WidgetSessionTokenScopes` ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-* **widgets:** SDK surface change: Symbol "WidgetSessionTokenResponse" was removed ([#670](https://github.com/workos/workos-python/issues/670)) ([e87b9a9](https://github.com/workos/workos-python/commit/e87b9a9af0b99fe7868fdd6ba0cd0f2d7a184d64))
-
-
 ### Bug Fixes
 
 * Fix Session.refresh() KeyError by sealing session client-side ([#673](https://github.com/workos/workos-python/issues/673)) ([6c7ccfd](https://github.com/workos/workos-python/commit/6c7ccfd46d6c58c479f317d3cb508b07edab007b))
+
+* [#670](https://github.com/workos/workos-python/pull/670) feat(generated)!: regenerate from spec (12 changes)
+
+  **⚠️ Breaking**
+  * **[organization_membership](https://workos.com/docs/reference/authkit/organization-membership)**:
+    * Changed response for `UserManagementOrganizationMembership.list`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * SDK surface change: Symbol "AsyncPipes.create_data_integration_token" was removed
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed response for `UserManagementInvitations.list`
+  * **[widgets](https://workos.com/docs/reference/widgets)**:
+    * SDK surface change: Symbol "WidgetSessionTokenResponse" was removed
+
+  **Features**
+  * **[authorization](https://workos.com/docs/reference/fga)**:
+    * Added model `ReplaceGroupRoleAssignmentEntry`
+    * Added model `ReplaceGroupRoleAssignments`
+    * Added model `DeleteGroupRoleAssignmentsByCriteria`
+    * Added endpoint `POST /authorization/groups/{group_id}/role_assignments`
+    * Added endpoint `PUT /authorization/groups/{group_id}/role_assignments`
+    * Added endpoint `DELETE /authorization/groups/{group_id}/role_assignments`
+    * Added endpoint `GET /authorization/groups/{group_id}/role_assignments/{role_assignment_id}`
+    * Added endpoint `DELETE /authorization/groups/{group_id}/role_assignments/{role_assignment_id}`
+  * **[client](https://workos.com/docs/reference)**:
+    * Added model `ClientApiToken`
+    * Added model `ClientApiTokenResponse`
+    * Added service `Client`
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added `auth_method` to `ConnectedAccount`
+    * Added `api_key_last_4` to `ConnectedAccount`
+    * Added enum `ConnectedAccountAuthMethod`
+  * **[groups](https://workos.com/docs/reference/groups)**:
+    * Added model `CreateGroupRoleAssignment`
+    * Added model `GroupRoleAssignment`
+    * Added model `GroupRoleAssignmentList`
+    * Added model `GroupRoleAssignmentResource`
+  * **[organization_membership](https://workos.com/docs/reference/authkit/organization-membership)**:
+    * Added model `UserOrganizationMembershipList`
+    * Added model `UserOrganizationMembershipListListMetadata`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationCredentials`
+    * Added model `DataIntegrationConfigurationResponse`
+    * Added model `DataIntegrationConfigurationListResponse`
+    * Added model `ConfigureDataIntegrationBody`
+    * Added `auth_methods` to `DataIntegrationsListResponseData`
+    * Added `auth_method` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Added `api_key_last_4` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Added enum `DataIntegrationCredentialsCredentialsType`
+    * Added enum `DataIntegrationsListResponseDataAuthMethods`
+    * Added enum `DataIntegrationsListResponseDataConnectedAccountAuthMethod`
+    * Added service `PipesProvider`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added model `UserInviteList`
+    * Added model `UserInviteListListMetadata`
+    * Made `AuthorizationCodeSessionAuthenticateRequest.client_secret` optional
+    * Made `RefreshTokenSessionAuthenticateRequest.client_secret` optional
+  * **[widgets](https://workos.com/docs/reference/widgets)**:
+    * Added `widgets:pipes:manage` to `WidgetSessionTokenScopes`
 
 ## [8.1.0](https://github.com/workos/workos-python/compare/v8.0.0...v8.1.0) (2026-06-17)
 

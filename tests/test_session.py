@@ -407,8 +407,7 @@ class TestSession:
 
     def test_session_refresh_missing_sid_returns_invalid_jwt(self):
         """A JWT without sid returns INVALID_JWT and preserves prior session."""
-        private_key, _ = _generate_rsa_key_pair()
-        no_sid_token = _make_jwt(private_key, claims={"sid": ""})
+        no_sid_token = _make_jwt(self.private_key, claims={"sid": ""})
         original_sealed = seal_data(
             {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
         )
@@ -622,3 +621,62 @@ class TestAsyncSession:
         assert (
             result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
         )
+
+    async def test_async_session_refresh_missing_sid_returns_invalid_jwt(
+        self, async_workos
+    ):
+        from unittest.mock import AsyncMock
+
+        private_key, public_key = _generate_rsa_key_pair()
+        no_sid_token = _make_jwt(private_key, claims={"sid": ""})
+        original_sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos,
+            session_data=original_sealed,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        session.jwks = self._mock_jwks(public_key)
+
+        api_response = {
+            "access_token": no_sid_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = AsyncMock(return_value=api_response)
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed
+
+    async def test_async_session_refresh_invalid_jwt_returns_invalid_jwt(
+        self, async_workos
+    ):
+        from unittest.mock import AsyncMock
+
+        sign_private, _ = _generate_rsa_key_pair()
+        _, verify_public = _generate_rsa_key_pair()
+        bad_token = _make_jwt(sign_private)
+        original_sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos,
+            session_data=original_sealed,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        session.jwks = self._mock_jwks(verify_public)
+
+        api_response = {
+            "access_token": bad_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = AsyncMock(return_value=api_response)
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed

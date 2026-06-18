@@ -524,3 +524,45 @@ class TestAsyncSession:
         unsealed = unseal_data(result.sealed_session, COOKIE_PASSWORD)
         assert unsealed["access_token"] == new_token
         assert unsealed["refresh_token"] == "rt_new"
+
+    async def test_async_session_refresh_maps_auth_error_to_refresh_denied(
+        self, async_workos
+    ):
+        from unittest.mock import AsyncMock
+
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session._client.request_raw = AsyncMock(
+            side_effect=AuthenticationError("unauthorized")
+        )
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert not result.authenticated
+        assert (
+            result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
+        )
+
+    async def test_async_session_refresh_missing_access_token_returns_refresh_denied(
+        self, async_workos
+    ):
+        from unittest.mock import AsyncMock
+
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session._client.request_raw = AsyncMock(return_value={})
+
+        result = await session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert not result.authenticated
+        assert (
+            result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
+        )

@@ -382,10 +382,17 @@ class Session:
                 leeway=self._client._jwt_leeway,
             )
 
+            session_id = decoded.get("sid")
+            if not session_id:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
                 sealed_session=new_sealed,
-                session_id=decoded["sid"],
+                session_id=session_id,
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),
                 roles=decoded.get("roles"),
@@ -574,10 +581,17 @@ class AsyncSession:
                 leeway=self._client._jwt_leeway,
             )
 
+            session_id = decoded.get("sid")
+            if not session_id:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
+
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
                 sealed_session=new_sealed,
-                session_id=decoded["sid"],
+                session_id=session_id,
                 organization_id=decoded.get("org_id"),
                 role=decoded.get("role"),
                 roles=decoded.get("roles"),

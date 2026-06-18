@@ -351,22 +351,31 @@ class Session:
                 body=body,
             )
 
+            access_token = auth_response.get("access_token")
+            refresh_token = auth_response.get("refresh_token")
+            if not access_token or not refresh_token:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
+                )
+
+            user = auth_response.get("user")
+            impersonator = auth_response.get("impersonator")
+
             new_sealed = seal_session_from_auth_response(
-                access_token=auth_response["access_token"],
-                refresh_token=auth_response["refresh_token"],
-                user=auth_response.get("user", {}),
-                impersonator=auth_response.get("impersonator"),
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user or {},
+                impersonator=impersonator,
                 cookie_password=effective_cookie_password,
             )
 
             self.session_data = new_sealed
             self.cookie_password = effective_cookie_password
 
-            signing_key = self.jwks.get_signing_key_from_jwt(
-                auth_response["access_token"]
-            )
+            signing_key = self.jwks.get_signing_key_from_jwt(access_token)
             decoded = jwt.decode(
-                auth_response["access_token"],
+                access_token,
                 signing_key.key,
                 algorithms=self._JWK_ALGORITHMS,
                 options={"verify_aud": False},
@@ -382,8 +391,8 @@ class Session:
                 roles=decoded.get("roles"),
                 permissions=decoded.get("permissions"),
                 entitlements=decoded.get("entitlements"),
-                user=auth_response.get("user"),
-                impersonator=auth_response.get("impersonator"),
+                user=user,
+                impersonator=impersonator,
                 feature_flags=decoded.get("feature_flags"),
             )
         except Exception as e:
@@ -534,22 +543,31 @@ class AsyncSession:
                 body=body,
             )
 
+            access_token = auth_response.get("access_token")
+            refresh_token = auth_response.get("refresh_token")
+            if not access_token or not refresh_token:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
+                )
+
+            user = auth_response.get("user")
+            impersonator = auth_response.get("impersonator")
+
             new_sealed = seal_session_from_auth_response(
-                access_token=auth_response["access_token"],
-                refresh_token=auth_response["refresh_token"],
-                user=auth_response.get("user", {}),
-                impersonator=auth_response.get("impersonator"),
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user or {},
+                impersonator=impersonator,
                 cookie_password=effective_cookie_password,
             )
 
             self.session_data = new_sealed
             self.cookie_password = effective_cookie_password
 
-            signing_key = self.jwks.get_signing_key_from_jwt(
-                auth_response["access_token"]
-            )
+            signing_key = self.jwks.get_signing_key_from_jwt(access_token)
             decoded = jwt.decode(
-                auth_response["access_token"],
+                access_token,
                 signing_key.key,
                 algorithms=self._JWK_ALGORITHMS,
                 options={"verify_aud": False},
@@ -565,8 +583,8 @@ class AsyncSession:
                 roles=decoded.get("roles"),
                 permissions=decoded.get("permissions"),
                 entitlements=decoded.get("entitlements"),
-                user=auth_response.get("user"),
-                impersonator=auth_response.get("impersonator"),
+                user=user,
+                impersonator=impersonator,
                 feature_flags=decoded.get("feature_flags"),
             )
         except Exception as e:

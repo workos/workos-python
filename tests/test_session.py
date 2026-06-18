@@ -334,6 +334,77 @@ class TestSession:
         sent_body = call_kwargs.kwargs.get("body") or call_kwargs[1].get("body")
         assert "session" not in sent_body
 
+    def test_session_refresh_round_trip_authenticate(self):
+        """The sealed cookie produced by refresh() must be re-authenticatable."""
+        new_token = _make_jwt(self.private_key)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": new_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01", "email": "test@example.com"},
+            "authentication_method": "Password",
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        refresh_result = session.refresh()
+        assert isinstance(refresh_result, RefreshWithSessionCookieSuccessResponse)
+
+        new_session = Session(
+            client=self.workos,
+            session_data=refresh_result.sealed_session,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        new_session.jwks = self._mock_jwks()
+
+        auth_result = new_session.authenticate()
+        assert isinstance(auth_result, AuthenticateWithSessionCookieSuccessResponse)
+        assert auth_result.authenticated
+        assert auth_result.session_id == "session_01"
+        assert auth_result.user == {"id": "user_01", "email": "test@example.com"}
+
+    def test_session_refresh_maps_auth_error_to_refresh_denied(self):
+        """AuthenticationError from request_raw maps to REFRESH_DENIED via except."""
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session._client.request_raw = MagicMock(
+            side_effect=AuthenticationError("unauthorized")
+        )
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert not result.authenticated
+        assert (
+            result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
+        )
+
+    def test_session_refresh_missing_access_token_returns_refresh_denied(self):
+        """A malformed 2xx response missing access_token returns REFRESH_DENIED."""
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session._client.request_raw = MagicMock(return_value={})
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert not result.authenticated
+        assert (
+            result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
+        )
+
 
 class TestMapRefreshExceptionToReason:
     @pytest.mark.parametrize(

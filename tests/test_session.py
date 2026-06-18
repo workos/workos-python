@@ -405,6 +405,62 @@ class TestSession:
             result.reason == AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
         )
 
+    def test_session_refresh_missing_sid_returns_invalid_jwt(self):
+        """A JWT without sid returns INVALID_JWT and preserves prior session."""
+        private_key, _ = _generate_rsa_key_pair()
+        no_sid_token = _make_jwt(private_key, claims={"sid": ""})
+        original_sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        session = Session(
+            client=self.workos,
+            session_data=original_sealed,
+            cookie_password=COOKIE_PASSWORD,
+        )
+        session.jwks = self._mock_jwks()
+
+        api_response = {
+            "access_token": no_sid_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed
+
+    def test_session_refresh_invalid_jwt_returns_invalid_jwt(self):
+        """A JWT with bad signature maps to INVALID_JWT via the decode guard."""
+        _, other_public_key = _generate_rsa_key_pair()
+        wrong_key_private, _ = _generate_rsa_key_pair()
+        bad_token = _make_jwt(wrong_key_private)
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+        )
+        original_sealed = sealed
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        mock_jwks = MagicMock()
+        mock_signing_key = MagicMock()
+        mock_signing_key.key = other_public_key
+        mock_jwks.get_signing_key_from_jwt.return_value = mock_signing_key
+        session.jwks = mock_jwks
+
+        api_response = {
+            "access_token": bad_token,
+            "refresh_token": "rt_new",
+            "user": {"id": "user_01"},
+        }
+        session._client.request_raw = MagicMock(return_value=api_response)
+
+        result = session.refresh()
+        assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+        assert session.session_data == original_sealed
+
 
 class TestMapRefreshExceptionToReason:
     @pytest.mark.parametrize(

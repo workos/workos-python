@@ -359,17 +359,23 @@ class Session:
                     reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
                 )
 
-            user = auth_response.get("user")
+            user = auth_response.get("user") or {}
             impersonator = auth_response.get("impersonator")
 
-            signing_key = self.jwks.get_signing_key_from_jwt(access_token)
-            decoded = jwt.decode(
-                access_token,
-                signing_key.key,
-                algorithms=self._JWK_ALGORITHMS,
-                options={"verify_aud": False},
-                leeway=self._client._jwt_leeway,
-            )
+            try:
+                signing_key = self.jwks.get_signing_key_from_jwt(access_token)
+                decoded = jwt.decode(
+                    access_token,
+                    signing_key.key,
+                    algorithms=self._JWK_ALGORITHMS,
+                    options={"verify_aud": False},
+                    leeway=self._client._jwt_leeway,
+                )
+            except jwt.exceptions.InvalidTokenError:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
 
             session_id = decoded.get("sid")
             if not session_id:
@@ -381,7 +387,7 @@ class Session:
             new_sealed = seal_session_from_auth_response(
                 access_token=access_token,
                 refresh_token=refresh_token,
-                user=user or {},
+                user=user,
                 impersonator=impersonator,
                 cookie_password=effective_cookie_password,
             )
@@ -558,17 +564,23 @@ class AsyncSession:
                     reason=AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
                 )
 
-            user = auth_response.get("user")
+            user = auth_response.get("user") or {}
             impersonator = auth_response.get("impersonator")
 
-            signing_key = self.jwks.get_signing_key_from_jwt(access_token)
-            decoded = jwt.decode(
-                access_token,
-                signing_key.key,
-                algorithms=self._JWK_ALGORITHMS,
-                options={"verify_aud": False},
-                leeway=self._client._jwt_leeway,
-            )
+            try:
+                signing_key = self.jwks.get_signing_key_from_jwt(access_token)
+                decoded = jwt.decode(
+                    access_token,
+                    signing_key.key,
+                    algorithms=self._JWK_ALGORITHMS,
+                    options={"verify_aud": False},
+                    leeway=self._client._jwt_leeway,
+                )
+            except jwt.exceptions.InvalidTokenError:
+                return RefreshWithSessionCookieErrorResponse(
+                    authenticated=False,
+                    reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+                )
 
             session_id = decoded.get("sid")
             if not session_id:
@@ -580,7 +592,7 @@ class AsyncSession:
             new_sealed = seal_session_from_auth_response(
                 access_token=access_token,
                 refresh_token=refresh_token,
-                user=user or {},
+                user=user,
                 impersonator=impersonator,
                 cookie_password=effective_cookie_password,
             )

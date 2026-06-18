@@ -362,17 +362,6 @@ class Session:
             user = auth_response.get("user")
             impersonator = auth_response.get("impersonator")
 
-            new_sealed = seal_session_from_auth_response(
-                access_token=access_token,
-                refresh_token=refresh_token,
-                user=user or {},
-                impersonator=impersonator,
-                cookie_password=effective_cookie_password,
-            )
-
-            self.session_data = new_sealed
-            self.cookie_password = effective_cookie_password
-
             signing_key = self.jwks.get_signing_key_from_jwt(access_token)
             decoded = jwt.decode(
                 access_token,
@@ -388,6 +377,17 @@ class Session:
                     authenticated=False,
                     reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
                 )
+
+            new_sealed = seal_session_from_auth_response(
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user or {},
+                impersonator=impersonator,
+                cookie_password=effective_cookie_password,
+            )
+
+            self.session_data = new_sealed
+            self.cookie_password = effective_cookie_password
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
@@ -561,17 +561,6 @@ class AsyncSession:
             user = auth_response.get("user")
             impersonator = auth_response.get("impersonator")
 
-            new_sealed = seal_session_from_auth_response(
-                access_token=access_token,
-                refresh_token=refresh_token,
-                user=user or {},
-                impersonator=impersonator,
-                cookie_password=effective_cookie_password,
-            )
-
-            self.session_data = new_sealed
-            self.cookie_password = effective_cookie_password
-
             signing_key = self.jwks.get_signing_key_from_jwt(access_token)
             decoded = jwt.decode(
                 access_token,
@@ -587,6 +576,17 @@ class AsyncSession:
                     authenticated=False,
                     reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
                 )
+
+            new_sealed = seal_session_from_auth_response(
+                access_token=access_token,
+                refresh_token=refresh_token,
+                user=user or {},
+                impersonator=impersonator,
+                cookie_password=effective_cookie_password,
+            )
+
+            self.session_data = new_sealed
+            self.cookie_password = effective_cookie_password
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,

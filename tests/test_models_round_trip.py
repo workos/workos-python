@@ -334,10 +334,7 @@ from workos.multi_factor_auth.models import (
     AuthenticationFactorTotp,
     UserAuthenticationFactorEnrollResponse,
 )
-from workos.organization_domains.models import (
-    OrganizationDomain,
-    OrganizationDomainStandAlone,
-)
+from workos.organization_domains.models import OrganizationDomain
 from workos.organization_membership.models import (
     OrganizationMembership,
     UserOrganizationMembership,
@@ -14712,66 +14709,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "context" not in serialized
 
-    def test_organization_domain_stand_alone_round_trip(self):
-        data = load_fixture("organization_domain_stand_alone.json")
-        instance = OrganizationDomainStandAlone.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainStandAlone.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_stand_alone_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainStandAlone.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["domain"] == data["domain"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_organization_domain_stand_alone_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainStandAlone.from_dict(data)
-        serialized = instance.to_dict()
-        assert "state" not in serialized
-        assert "verification_prefix" not in serialized
-        assert "verification_token" not in serialized
-        assert "verification_strategy" not in serialized
-
-    def test_organization_domain_stand_alone_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_stand_alone_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainStandAlone.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_flag_round_trip(self):
         data = load_fixture("flag.json")
         instance = Flag.from_dict(data)
@@ -15707,6 +15644,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -15735,6 +15673,7 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["role"] == data["role"]
+        assert serialized["roles"] == data["roles"]
         assert serialized["user"] == data["user"]
 
     def test_user_organization_membership_omits_absent_optional_non_nullable_fields(
@@ -15750,6 +15689,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -15789,6 +15729,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -16587,6 +16528,64 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
+    def test_organization_domain_round_trip(self):
+        data = load_fixture("organization_domain.json")
+        instance = OrganizationDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomain.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_jwks_response_keys_round_trip(self):
         data = load_fixture("jwks_response_keys.json")
         instance = JwksResponseKeys.from_dict(data)
@@ -16933,64 +16932,6 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
         }
         instance = AuditLogConfigurationLogStream.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_domain_round_trip(self):
-        data = load_fixture("organization_domain.json")
-        instance = OrganizationDomain.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomain.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomain.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["domain"] == data["domain"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_organization_domain_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomain.from_dict(data)
-        serialized = instance.to_dict()
-        assert "state" not in serialized
-        assert "verification_prefix" not in serialized
-        assert "verification_token" not in serialized
-        assert "verification_strategy" not in serialized
-
-    def test_organization_domain_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomain.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_api_key_with_value_owner_round_trip(self):
@@ -17838,6 +17779,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -17866,6 +17808,7 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["role"] == data["role"]
+        assert serialized["roles"] == data["roles"]
         assert serialized["user"] == data["user"]
 
     def test_organization_membership_omits_absent_optional_non_nullable_fields(self):
@@ -17879,6 +17822,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -17918,6 +17862,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "user": {
                 "object": "user",
                 "id": "user_01E4ZCR3C56J083X43JQXF3JK5",

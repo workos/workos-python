@@ -6,6 +6,3 @@ from .create_organization_domain import (
 from workos.common.models.organization_domain import (
     OrganizationDomain as OrganizationDomain,
 )
-from .organization_domain_stand_alone import (
-    OrganizationDomainStandAlone as OrganizationDomainStandAlone,
-)

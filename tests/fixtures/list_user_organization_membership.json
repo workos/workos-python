@@ -18,6 +18,11 @@
       "role": {
         "slug": "admin"
       },
+      "roles": [
+        {
+          "slug": "admin"
+        }
+      ],
       "user": {
         "object": "user",
         "id": "user_01E4ZCR3C56J083X43JQXF3JK5",

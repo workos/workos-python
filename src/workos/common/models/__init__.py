@@ -206,6 +206,9 @@ from .authentication_sso_timed_out_data_error import (
 from .authentication_sso_timed_out_data_sso import (
     AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO,
 )
+from .auth_method_mismatch_error import (
+    AuthMethodMismatchError as AuthMethodMismatchError,
+)
 from .authorization_permission import AuthorizationPermission as AuthorizationPermission
 from .connect_application import ConnectApplication as ConnectApplication
 from .connect_application_m2m import ConnectApplicationM2M as ConnectApplicationM2M
@@ -459,12 +462,6 @@ from .organization_domain_deleted import (
 from .organization_domain_deleted_data import (
     OrganizationDomainDeletedData as OrganizationDomainDeletedData,
 )
-from .organization_domain_stand_alone_state import (
-    OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
-)
-from .organization_domain_stand_alone_verification_strategy import (
-    OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy,
-)
 from .organization_domain_state import (
     OrganizationDomainState as OrganizationDomainState,
 )
@@ -557,6 +554,12 @@ from .pipe_connected_account import PipeConnectedAccount as PipeConnectedAccount
 from .pipes_connected_account_connected import (
     PipesConnectedAccountConnected as PipesConnectedAccountConnected,
 )
+from .pipes_connected_account_connection_failed import (
+    PipesConnectedAccountConnectionFailed as PipesConnectedAccountConnectionFailed,
+)
+from .pipes_connected_account_connection_failed_data import (
+    PipesConnectedAccountConnectionFailedData as PipesConnectedAccountConnectionFailedData,
+)
 from .pipes_connected_account_disconnected import (
     PipesConnectedAccountDisconnected as PipesConnectedAccountDisconnected,
 )
@@ -593,6 +596,13 @@ from .session_created import SessionCreated as SessionCreated
 from .session_created_data import SessionCreatedData as SessionCreatedData
 from .session_created_data_impersonator import (
     SessionCreatedDataImpersonator as SessionCreatedDataImpersonator,
+)
+from .session_reauthenticated import SessionReauthenticated as SessionReauthenticated
+from .session_reauthenticated_data import (
+    SessionReauthenticatedData as SessionReauthenticatedData,
+)
+from .session_reauthenticated_data_impersonator import (
+    SessionReauthenticatedDataImpersonator as SessionReauthenticatedDataImpersonator,
 )
 from .session_revoked import SessionRevoked as SessionRevoked
 from .session_revoked_data import SessionRevokedData as SessionRevokedData

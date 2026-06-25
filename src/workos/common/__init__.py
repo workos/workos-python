@@ -120,6 +120,7 @@ from .models import (
     AuthenticationSSOTimedOutDataError as AuthenticationSSOTimedOutDataError,
 )
 from .models import AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO
+from .models import AuthMethodMismatchError as AuthMethodMismatchError
 from .models import AuthorizationPermission as AuthorizationPermission
 from .models import ConnectApplication as ConnectApplication
 from .models import ConnectApplicationM2M as ConnectApplicationM2M
@@ -311,12 +312,6 @@ from .models import OrganizationDomainCreatedData as OrganizationDomainCreatedDa
 from .models import OrganizationDomainDataState as OrganizationDomainDataState
 from .models import OrganizationDomainDeleted as OrganizationDomainDeleted
 from .models import OrganizationDomainDeletedData as OrganizationDomainDeletedData
-from .models import (
-    OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
-)
-from .models import (
-    OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy,
-)
 from .models import OrganizationDomainState as OrganizationDomainState
 from .models import OrganizationDomainUpdated as OrganizationDomainUpdated
 from .models import OrganizationDomainUpdatedData as OrganizationDomainUpdatedData
@@ -370,6 +365,12 @@ from .models import PermissionUpdatedData as PermissionUpdatedData
 from .models import PipeConnectedAccount as PipeConnectedAccount
 from .models import PipesConnectedAccountConnected as PipesConnectedAccountConnected
 from .models import (
+    PipesConnectedAccountConnectionFailed as PipesConnectedAccountConnectionFailed,
+)
+from .models import (
+    PipesConnectedAccountConnectionFailedData as PipesConnectedAccountConnectionFailedData,
+)
+from .models import (
     PipesConnectedAccountDisconnected as PipesConnectedAccountDisconnected,
 )
 from .models import (
@@ -398,6 +399,11 @@ from .models import RoleUpdatedData as RoleUpdatedData
 from .models import SessionCreated as SessionCreated
 from .models import SessionCreatedData as SessionCreatedData
 from .models import SessionCreatedDataImpersonator as SessionCreatedDataImpersonator
+from .models import SessionReauthenticated as SessionReauthenticated
+from .models import SessionReauthenticatedData as SessionReauthenticatedData
+from .models import (
+    SessionReauthenticatedDataImpersonator as SessionReauthenticatedDataImpersonator,
+)
 from .models import SessionRevoked as SessionRevoked
 from .models import SessionRevokedData as SessionRevokedData
 from .models import SessionRevokedDataImpersonator as SessionRevokedDataImpersonator

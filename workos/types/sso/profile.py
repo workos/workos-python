@@ -23,7 +23,8 @@ class Profile(WorkOSModel):
     idp_id: str
     role: Optional[ProfileRole] = None
     groups: Optional[Sequence[str]] = None
-    raw_attributes: Mapping[str, Any]
+    custom_attributes: Optional[Mapping[str, Any]] = None
+    raw_attributes: Optional[Mapping[str, Any]] = None
 
 
 class ProfileAndToken(WorkOSModel):

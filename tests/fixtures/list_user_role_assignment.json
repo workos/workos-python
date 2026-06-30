@@ -12,6 +12,10 @@
         "external_id": "proj-456",
         "resource_type_slug": "project"
       },
+      "source": {
+        "type": "direct",
+        "group_role_assignment_id": null
+      },
       "created_at": "2026-01-15T12:00:00.000Z",
       "updated_at": "2026-01-15T12:00:00.000Z"
     }

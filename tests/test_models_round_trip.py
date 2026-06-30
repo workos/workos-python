@@ -6,12 +6,7 @@ import pytest
 
 from tests.generated_helpers import load_fixture
 
-from workos.admin_portal.models import (
-    DomainVerificationIntentOptions,
-    IntentOptions,
-    PortalLinkResponse,
-    SSOIntentOptions,
-)
+from workos.admin_portal.models import PortalLinkResponse
 from workos.api_keys.models import (
     ApiKey,
     ApiKeyOwner,
@@ -67,6 +62,7 @@ from workos.common.models import (
     ApiKeyUpdatedData,
     ApiKeyUpdatedDataOwner,
     ApiKeyUpdatedDataPreviousAttribute,
+    AuthMethodMismatchError,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
@@ -351,6 +347,8 @@ from workos.pipes.models import (
     DataIntegrationAccessTokenResponse,
     DataIntegrationAccessTokenResponseAccessToken,
     DataIntegrationAuthorizeUrlResponse,
+    DataIntegrationCredentialsResponse,
+    DataIntegrationCredentialsResponseCredential,
     DataIntegrationsListResponse,
     DataIntegrationsListResponseData,
     DataIntegrationsListResponseDataConnectedAccount,
@@ -705,67 +703,6 @@ class TestModelRoundTrip:
         }
         instance = OrganizationDomainData.from_dict(data)
         assert instance.to_dict() == data
-
-    def test_sso_intent_options_round_trip(self):
-        data = load_fixture("sso_intent_options.json")
-        instance = SSOIntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SSOIntentOptions.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_sso_intent_options_minimal_payload(self):
-        data = {}
-        instance = SSOIntentOptions.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_sso_intent_options_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = SSOIntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert "bookmark_slug" not in serialized
-        assert "provider_type" not in serialized
-
-    def test_domain_verification_intent_options_round_trip(self):
-        data = load_fixture("domain_verification_intent_options.json")
-        instance = DomainVerificationIntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DomainVerificationIntentOptions.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_domain_verification_intent_options_minimal_payload(self):
-        data = {}
-        instance = DomainVerificationIntentOptions.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_domain_verification_intent_options_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DomainVerificationIntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert "domain_name" not in serialized
-
-    def test_intent_options_round_trip(self):
-        data = load_fixture("intent_options.json")
-        instance = IntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = IntentOptions.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_intent_options_minimal_payload(self):
-        data = {}
-        instance = IntentOptions.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_intent_options_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = IntentOptions.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sso" not in serialized
-        assert "domain_verification" not in serialized
 
     def test_actor_round_trip(self):
         data = load_fixture("actor.json")
@@ -1141,8 +1078,35 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["api_key"] == data["api_key"]
 
+    def test_api_key_validation_response_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "api_key": {
+                "object": "api_key",
+                "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                },
+                "name": "Production API Key",
+                "obfuscated_value": "sk_...3456",
+                "last_used_at": None,
+                "expires_at": None,
+                "permissions": ["posts:read", "posts:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            }
+        }
+        instance = ApiKeyValidationResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "agent_registration_id" not in serialized
+
     def test_api_key_validation_response_preserves_nullable_fields(self):
-        data = {"api_key": None}
+        data = {
+            "api_key": None,
+            "agent_registration_id": "agent_reg_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
         instance = ApiKeyValidationResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["api_key"] is None
@@ -1909,6 +1873,7 @@ class TestModelRoundTrip:
                 "external_id": "proj-456",
                 "resource_type_slug": "project",
             },
+            "source": {"type": "direct", "group_role_assignment_id": None},
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -1922,6 +1887,7 @@ class TestModelRoundTrip:
         )
         assert serialized["role"] == data["role"]
         assert serialized["resource"] == data["resource"]
+        assert serialized["source"] == data["source"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -12377,6 +12343,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12402,6 +12369,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12427,6 +12395,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12438,6 +12407,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["description"] == data["description"]
         assert serialized["system"] == data["system"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -12449,6 +12419,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12476,6 +12447,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12501,6 +12473,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12526,6 +12499,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12537,6 +12511,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["description"] == data["description"]
         assert serialized["system"] == data["system"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -12548,6 +12523,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12575,6 +12551,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12600,6 +12577,7 @@ class TestModelRoundTrip:
                 "name": "Manage Billing",
                 "description": "Allows managing billing settings.",
                 "system": False,
+                "resource_type_slug": "organization",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12625,6 +12603,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12636,6 +12615,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["description"] == data["description"]
         assert serialized["system"] == data["system"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -12647,6 +12627,7 @@ class TestModelRoundTrip:
             "name": "Manage Billing",
             "description": None,
             "system": False,
+            "resource_type_slug": "organization",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -15235,6 +15216,65 @@ class TestModelRoundTrip:
         instance = DataIntegrationAccessTokenResponse.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_auth_method_mismatch_error_round_trip(self):
+        data = load_fixture("auth_method_mismatch_error.json")
+        instance = AuthMethodMismatchError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthMethodMismatchError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_auth_method_mismatch_error_minimal_payload(self):
+        data = {
+            "code": "auth_method_mismatch",
+            "message": "This installation uses oauth authentication. Use the POST /:slug/token endpoint instead.",
+        }
+        instance = AuthMethodMismatchError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integration_credentials_response_round_trip(self):
+        data = load_fixture("data_integration_credentials_response.json")
+        instance = DataIntegrationCredentialsResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_minimal_payload(self):
+        data = {}
+        instance = DataIntegrationCredentialsResponse.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_data_integration_credentials_response_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DataIntegrationCredentialsResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "active" not in serialized
+        assert "credential" not in serialized
+        assert "error" not in serialized
+
+    def test_data_integration_credentials_response_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": True,
+            "credential": {
+                "object": "credential",
+                "auth_method": "oauth",
+                "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+            },
+            "error": "unexpected_data_integration_credentials_response_error",
+        }
+        instance = DataIntegrationCredentialsResponse.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_connected_account_round_trip(self):
         data = load_fixture("connected_account.json")
         instance = ConnectedAccount.from_dict(data)
@@ -16848,6 +16888,47 @@ class TestModelRoundTrip:
         }
         instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_data_integration_credentials_response_credential_round_trip(self):
+        data = load_fixture("data_integration_credentials_response_credential.json")
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+
+    def test_data_integration_credentials_response_credential_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
 
     def test_data_integration_access_token_response_access_token_round_trip(self):
         data = load_fixture("data_integration_access_token_response_access_token.json")

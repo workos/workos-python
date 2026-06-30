@@ -1,7 +1,7 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-06-17T20:55:36.392Z",
+  "generatedAt": "2026-06-30T23:28:32.352Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
@@ -12,6 +12,8 @@
     "src/workos/admin_portal/models/intent_options.py",
     "src/workos/admin_portal/models/portal_link_response.py",
     "src/workos/admin_portal/models/sso_intent_options.py",
+    "src/workos/agents/__init__.py",
+    "src/workos/agents/models/__init__.py",
     "src/workos/api_keys/__init__.py",
     "src/workos/api_keys/_resource.py",
     "src/workos/api_keys/models/__init__.py",
@@ -100,6 +102,7 @@
     "src/workos/common/models/audit_log_configuration_log_stream_type.py",
     "src/workos/common/models/audit_log_configuration_state.py",
     "src/workos/common/models/audit_log_export_state.py",
+    "src/workos/common/models/auth_method_mismatch_error.py",
     "src/workos/common/models/authenticate_response_authentication_method.py",
     "src/workos/common/models/authenticate_response_impersonator.py",
     "src/workos/common/models/authentication_challenge.py",
@@ -164,6 +167,7 @@
     "src/workos/common/models/connect_application_m2m.py",
     "src/workos/common/models/connect_application_oauth.py",
     "src/workos/common/models/connect_application_oauth_redirect_uris.py",
+    "src/workos/common/models/connected_account.py",
     "src/workos/common/models/connected_account_auth_method.py",
     "src/workos/common/models/connected_account_state.py",
     "src/workos/common/models/connection_activated.py",
@@ -200,6 +204,7 @@
     "src/workos/common/models/create_webhook_endpoint_events.py",
     "src/workos/common/models/data_integration_access_token_response_error.py",
     "src/workos/common/models/data_integration_credentials_credentials_type.py",
+    "src/workos/common/models/data_integration_credentials_response_error.py",
     "src/workos/common/models/data_integrations_list_response_data_auth_methods.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_auth_method.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_state.py",
@@ -546,11 +551,15 @@
     "src/workos/pipes/models/data_integration_access_token_response.py",
     "src/workos/pipes/models/data_integration_access_token_response_access_token.py",
     "src/workos/pipes/models/data_integration_authorize_url_response.py",
+    "src/workos/pipes/models/data_integration_credentials_response.py",
+    "src/workos/pipes/models/data_integration_credentials_response_credential.py",
     "src/workos/pipes/models/data_integrations_get_data_integration_authorize_url_request.py",
     "src/workos/pipes/models/data_integrations_get_user_token_request.py",
     "src/workos/pipes/models/data_integrations_list_response.py",
     "src/workos/pipes/models/data_integrations_list_response_data.py",
     "src/workos/pipes/models/data_integrations_list_response_data_connected_account.py",
+    "src/workos/pipes/models/data_integrations_upsert_api_key_request.py",
+    "src/workos/pipes/models/data_integrations_vend_credentials_request.py",
     "src/workos/pipes_provider/__init__.py",
     "src/workos/pipes_provider/_resource.py",
     "src/workos/pipes_provider/models/__init__.py",
@@ -586,6 +595,7 @@
     "src/workos/sso/models/token_query.py",
     "src/workos/types/__init__.py",
     "src/workos/types/admin_portal/__init__.py",
+    "src/workos/types/agents/__init__.py",
     "src/workos/types/api_keys/__init__.py",
     "src/workos/types/audit_logs/__init__.py",
     "src/workos/types/authorization/__init__.py",
@@ -729,6 +739,7 @@
     "tests/fixtures/audit_log_schema_target.json",
     "tests/fixtures/audit_log_schema_target_input.json",
     "tests/fixtures/audit_logs_retention.json",
+    "tests/fixtures/auth_method_mismatch_error.json",
     "tests/fixtures/authenticate_response.json",
     "tests/fixtures/authenticate_response_impersonator.json",
     "tests/fixtures/authenticate_response_oauth_token.json",
@@ -854,11 +865,15 @@
     "tests/fixtures/data_integration_configuration_list_response.json",
     "tests/fixtures/data_integration_configuration_response.json",
     "tests/fixtures/data_integration_credentials.json",
+    "tests/fixtures/data_integration_credentials_response.json",
+    "tests/fixtures/data_integration_credentials_response_credential.json",
     "tests/fixtures/data_integrations_get_data_integration_authorize_url_request.json",
     "tests/fixtures/data_integrations_get_user_token_request.json",
     "tests/fixtures/data_integrations_list_response.json",
     "tests/fixtures/data_integrations_list_response_data.json",
     "tests/fixtures/data_integrations_list_response_data_connected_account.json",
+    "tests/fixtures/data_integrations_upsert_api_key_request.json",
+    "tests/fixtures/data_integrations_vend_credentials_request.json",
     "tests/fixtures/decrypt_request.json",
     "tests/fixtures/decrypt_response.json",
     "tests/fixtures/delete_group_role_assignments_by_criteria.json",
@@ -1980,6 +1995,30 @@
     "GET /audit_logs/exports/{auditLogExportId}": {
       "sdkMethod": "get_export",
       "service": "audit_logs"
+    },
+    "POST /agents/credentials/validate": {
+      "sdkMethod": "create_validate",
+      "service": "agents"
+    },
+    "GET /agents/registrations/{id}": {
+      "sdkMethod": "get_registration",
+      "service": "agents"
+    },
+    "PUT /data-integrations/{slug}/api-key": {
+      "sdkMethod": "update_data_integration_api_key",
+      "service": "pipes"
+    },
+    "POST /data-integrations/{slug}/credentials": {
+      "sdkMethod": "create_data_integration_credential",
+      "service": "pipes"
+    },
+    "GET /user_management/cors_origins": {
+      "sdkMethod": "list_cors_origins",
+      "service": "user_management"
+    },
+    "GET /user_management/redirect_uris": {
+      "sdkMethod": "list_redirect_uris",
+      "service": "user_management"
     }
   }
 }

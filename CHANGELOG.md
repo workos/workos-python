@@ -2,10 +2,11 @@
 
 ## [8.3.0](https://github.com/workos/workos-python/compare/v8.2.0...v8.3.0) (2026-06-30)
 
+* [#676](https://github.com/workos/workos-python/pull/676) fix(generated): regenerate from spec
 
-### Features
-
-* **generated:** OrganizationMembership (batch 4a353f07) ([#676](https://github.com/workos/workos-python/issues/676)) ([7622533](https://github.com/workos/workos-python/commit/762253326d019350c597c7bbb313256d267817ec))
+  **Fixes**
+  * **[organization_membership](https://workos.com/docs/reference/authkit/organization-membership)**:
+    * Added `roles` to organization membership models
 
 ## [8.2.0](https://github.com/workos/workos-python/compare/v8.1.0...v8.2.0) (2026-06-18)
 

@@ -9,11 +9,12 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions
 from .models import (
-    ConnectedAccount,
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
+    DataIntegrationCredentialsResponse,
     DataIntegrationsListResponse,
 )
+from workos.common.models.connected_account import ConnectedAccount
 
 
 class Pipes:
@@ -21,6 +22,55 @@ class Pipes:
 
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
+
+    def update_data_integration_api_key(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        secret: str,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Upsert an API key for a connected account
+
+        Creates or updates an API-key-based installation for the specified integration and user. If an installation already exists, the stored API key is rotated to the new value.
+
+        Args:
+            slug: The identifier of the integration.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            secret: The API key secret to store for this integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+                "secret": secret,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="put",
+            path=("data-integrations", str(slug), "api-key"),
+            body=body,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
 
     def authorize_data_integration(
         self,
@@ -70,6 +120,50 @@ class Pipes:
             request_options=request_options,
         )
 
+    def create_data_integration_credential(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegrationCredentialsResponse:
+        """Vend credentials for a connected account
+
+        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret.
+
+        Args:
+            slug: The identifier of the integration.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegrationCredentialsResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "credentials"),
+            body=body,
+            model=DataIntegrationCredentialsResponse,
+            request_options=request_options,
+        )
+
     def get_access_token(
         self,
         provider: str,
@@ -95,6 +189,7 @@ class Pipes:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -253,6 +348,55 @@ class AsyncPipes:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
+    async def update_data_integration_api_key(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        secret: str,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Upsert an API key for a connected account
+
+        Creates or updates an API-key-based installation for the specified integration and user. If an installation already exists, the stored API key is rotated to the new value.
+
+        Args:
+            slug: The identifier of the integration.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            secret: The API key secret to store for this integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+                "secret": secret,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="put",
+            path=("data-integrations", str(slug), "api-key"),
+            body=body,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
     async def authorize_data_integration(
         self,
         slug: str,
@@ -301,6 +445,50 @@ class AsyncPipes:
             request_options=request_options,
         )
 
+    async def create_data_integration_credential(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegrationCredentialsResponse:
+        """Vend credentials for a connected account
+
+        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret.
+
+        Args:
+            slug: The identifier of the integration.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegrationCredentialsResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "credentials"),
+            body=body,
+            model=DataIntegrationCredentialsResponse,
+            request_options=request_options,
+        )
+
     async def get_access_token(
         self,
         provider: str,
@@ -326,6 +514,7 @@ class AsyncPipes:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """

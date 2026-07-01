@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.4.0](https://github.com/workos/workos-python/compare/v8.3.0...v8.4.0) (2026-07-01)
+
+
+### Features
+
+* **generated:** AdminPortal, Authorization, Webhooks, UserManagement, AuditLogs (batch 08085e9d) ([#683](https://github.com/workos/workos-python/issues/683)) ([ed5b29a](https://github.com/workos/workos-python/commit/ed5b29a5d14ccc20ef4d7b96cd9b1cd1749ef35c))
+* **generated:** Pipes (batch 77e46600) ([#681](https://github.com/workos/workos-python/issues/681)) ([804000e](https://github.com/workos/workos-python/commit/804000e84578b77cd4abfbe277e3c38b06c26d08))
+
 ## [8.3.0](https://github.com/workos/workos-python/compare/v8.2.0...v8.3.0) (2026-06-30)
 
 * [#676](https://github.com/workos/workos-python/pull/676) fix(generated): regenerate from spec

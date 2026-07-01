@@ -121,6 +121,7 @@ from .models import (
     AuthenticationSSOTimedOutDataError as AuthenticationSSOTimedOutDataError,
 )
 from .models import AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO
+from .models import AuthMethodMismatchError as AuthMethodMismatchError
 from .models import AuthorizationPermission as AuthorizationPermission
 from .models import ConnectApplication as ConnectApplication
 from .models import ConnectApplicationM2M as ConnectApplicationM2M
@@ -130,6 +131,7 @@ from .models import (
 )
 from .models import ConnectApplicationUnknown as ConnectApplicationUnknown
 from .models import ConnectApplicationVariant as ConnectApplicationVariant
+from .models import ConnectedAccount as ConnectedAccount
 from .models import ConnectedAccountAuthMethod as ConnectedAccountAuthMethod
 from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionActivated as ConnectionActivated
@@ -173,6 +175,9 @@ from .models import (
 )
 from .models import (
     DataIntegrationCredentialsCredentialsType as DataIntegrationCredentialsCredentialsType,
+)
+from .models import (
+    DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
 )
 from .models import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,

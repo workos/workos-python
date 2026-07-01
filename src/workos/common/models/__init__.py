@@ -690,6 +690,9 @@ from .user_organization_membership_base_list_data_status import (
 from .user_organization_membership_status import (
     UserOrganizationMembershipStatus as UserOrganizationMembershipStatus,
 )
+from .user_role_assignment_source_type import (
+    UserRoleAssignmentSourceType as UserRoleAssignmentSourceType,
+)
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .user_sessions_impersonator import (
     UserSessionsImpersonator as UserSessionsImpersonator,

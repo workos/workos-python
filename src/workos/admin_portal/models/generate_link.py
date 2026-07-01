@@ -4,11 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
-
-from .intent_options import IntentOptions
 from workos.common.models.generate_link_intent import GenerateLinkIntent
 
 
@@ -32,8 +29,6 @@ class GenerateLink:
         - `domain_verification` - Launch Admin Portal for Domain Verification
         - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
         - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key"""
-    intent_options: Optional["IntentOptions"] = None
-    """Options to configure the Admin Portal based on the intent."""
     it_contact_emails: Optional[List[str]] = None
     """The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
 
@@ -47,11 +42,6 @@ class GenerateLink:
                 success_url=data.get("success_url"),
                 intent=GenerateLinkIntent(_v_intent)
                 if (_v_intent := data.get("intent")) is not None
-                else None,
-                intent_options=IntentOptions.from_dict(
-                    cast(Dict[str, Any], _v_intent_options)
-                )
-                if (_v_intent_options := data.get("intent_options")) is not None
                 else None,
                 it_contact_emails=data.get("it_contact_emails"),
             )
@@ -70,8 +60,6 @@ class GenerateLink:
             result["intent"] = (
                 self.intent.value if isinstance(self.intent, Enum) else self.intent
             )
-        if self.intent_options is not None:
-            result["intent_options"] = self.intent_options.to_dict()
         if self.it_contact_emails is not None:
             result["it_contact_emails"] = self.it_contact_emails
         return result

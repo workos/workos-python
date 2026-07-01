@@ -20,7 +20,7 @@ class AuditLogExport:
     id: str
     """The unique ID of the Audit Log Export."""
     state: "AuditLogExportState"
-    """The state of the export. Possible values: pending, ready, error."""
+    """The state of the export. Possible values: pending, ready, error, expired."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime

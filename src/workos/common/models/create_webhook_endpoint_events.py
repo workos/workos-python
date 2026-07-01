@@ -12,6 +12,15 @@ from typing import Literal, TypeAlias
 class CreateWebhookEndpointEvents(str, Enum):
     """Known values for CreateWebhookEndpointEvents."""
 
+    AGENT_REGISTRATION_CREATED = "agent.registration.created"
+    AGENT_REGISTRATION_CLAIM_ATTEMPT_CREATED = (
+        "agent.registration.claim.attempt.created"
+    )
+    AGENT_REGISTRATION_CLAIM_COMPLETED = "agent.registration.claim.completed"
+    AGENT_REGISTRATION_CREDENTIAL_ISSUED = "agent.registration.credential.issued"
+    AGENT_REGISTRATION_ORGANIZATION_SWITCHED = (
+        "agent.registration.organization.switched"
+    )
     AUTHENTICATION_EMAIL_VERIFICATION_SUCCEEDED = (
         "authentication.email_verification_succeeded"
     )
@@ -29,6 +38,9 @@ class CreateWebhookEndpointEvents(str, Enum):
     AUTHENTICATION_SSO_SUCCEEDED = "authentication.sso_succeeded"
     AUTHENTICATION_SSO_TIMED_OUT = "authentication.sso_timed_out"
     AUTHENTICATION_RADAR_RISK_DETECTED = "authentication.radar_risk_detected"
+    AUTHENTICATION_REAUTHENTICATION_SUCCEEDED = (
+        "authentication.reauthentication_succeeded"
+    )
     API_KEY_CREATED = "api_key.created"
     API_KEY_REVOKED = "api_key.revoked"
     API_KEY_UPDATED = "api_key.updated"
@@ -90,6 +102,9 @@ class CreateWebhookEndpointEvents(str, Enum):
     PERMISSION_DELETED = "permission.deleted"
     PERMISSION_UPDATED = "permission.updated"
     PIPES_CONNECTED_ACCOUNT_CONNECTED = "pipes.connected_account.connected"
+    PIPES_CONNECTED_ACCOUNT_CONNECTION_FAILED = (
+        "pipes.connected_account.connection_failed"
+    )
     PIPES_CONNECTED_ACCOUNT_DISCONNECTED = "pipes.connected_account.disconnected"
     PIPES_CONNECTED_ACCOUNT_REAUTHORIZATION_NEEDED = (
         "pipes.connected_account.reauthorization_needed"
@@ -111,6 +126,11 @@ class CreateWebhookEndpointEvents(str, Enum):
 
 
 CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
+    "agent.registration.created",
+    "agent.registration.claim.attempt.created",
+    "agent.registration.claim.completed",
+    "agent.registration.credential.issued",
+    "agent.registration.organization.switched",
     "authentication.email_verification_succeeded",
     "authentication.magic_auth_failed",
     "authentication.magic_auth_succeeded",
@@ -126,6 +146,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "authentication.sso_succeeded",
     "authentication.sso_timed_out",
     "authentication.radar_risk_detected",
+    "authentication.reauthentication_succeeded",
     "api_key.created",
     "api_key.revoked",
     "api_key.updated",
@@ -185,6 +206,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "permission.deleted",
     "permission.updated",
     "pipes.connected_account.connected",
+    "pipes.connected_account.connection_failed",
     "pipes.connected_account.disconnected",
     "pipes.connected_account.reauthorization_needed",
     "session.created",

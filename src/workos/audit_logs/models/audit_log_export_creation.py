@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 
 @dataclass(slots=True)
@@ -13,9 +15,9 @@ class AuditLogExportCreation:
 
     organization_id: str
     """The unique ID of the Organization."""
-    range_start: str
+    range_start: datetime
     """ISO-8601 value for start of the export range."""
-    range_end: str
+    range_end: datetime
     """ISO-8601 value for end of the export range."""
     actions: Optional[List[str]] = None
     """List of actions to filter against."""
@@ -36,8 +38,8 @@ class AuditLogExportCreation:
         try:
             return cls(
                 organization_id=data["organization_id"],
-                range_start=data["range_start"],
-                range_end=data["range_end"],
+                range_start=_parse_datetime(data["range_start"]),
+                range_end=_parse_datetime(data["range_end"]),
                 actions=data.get("actions"),
                 actors=data.get("actors"),
                 actor_names=data.get("actor_names"),
@@ -51,8 +53,8 @@ class AuditLogExportCreation:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["organization_id"] = self.organization_id
-        result["range_start"] = self.range_start
-        result["range_end"] = self.range_end
+        result["range_start"] = _format_datetime(self.range_start)
+        result["range_end"] = _format_datetime(self.range_end)
         if self.actions is not None:
             result["actions"] = self.actions
         if self.actors is not None:

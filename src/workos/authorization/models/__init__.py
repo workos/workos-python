@@ -58,3 +58,6 @@ from .user_role_assignment import UserRoleAssignment as UserRoleAssignment
 from .user_role_assignment_resource import (
     UserRoleAssignmentResource as UserRoleAssignmentResource,
 )
+from .user_role_assignment_source import (
+    UserRoleAssignmentSource as UserRoleAssignmentSource,
+)

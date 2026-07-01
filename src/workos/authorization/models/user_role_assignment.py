@@ -11,6 +11,7 @@ from workos._types import _format_datetime, _parse_datetime
 
 from workos.common.models.slim_role import SlimRole
 from .user_role_assignment_resource import UserRoleAssignmentResource
+from .user_role_assignment_source import UserRoleAssignmentSource
 
 
 @dataclass(slots=True)
@@ -27,6 +28,8 @@ class UserRoleAssignment:
     """The role included in the assignment."""
     resource: "UserRoleAssignmentResource"
     """The resource the role is assigned on."""
+    source: "UserRoleAssignmentSource"
+    """The origin of the role assignment."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
@@ -44,6 +47,9 @@ class UserRoleAssignment:
                 resource=UserRoleAssignmentResource.from_dict(
                     cast(Dict[str, Any], data["resource"])
                 ),
+                source=UserRoleAssignmentSource.from_dict(
+                    cast(Dict[str, Any], data["source"])
+                ),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
@@ -58,6 +64,7 @@ class UserRoleAssignment:
         result["organization_membership_id"] = self.organization_membership_id
         result["role"] = self.role.to_dict()
         result["resource"] = self.resource.to_dict()
+        result["source"] = self.source.to_dict()
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         return result

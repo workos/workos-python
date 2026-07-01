@@ -102,6 +102,35 @@ class TestUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
 
+    def test_list_cors_origins(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_cors_origin_response.json"),
+        )
+        page = workos.user_management.list_cors_origins()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], CORSOriginResponse)
+
+    def test_list_cors_origins_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_cors_origins()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_cors_origins_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.user_management.list_cors_origins(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
     def test_create_cors_origin(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("cors_origin_response.json"),
@@ -527,6 +556,35 @@ class TestUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/magic_auth/test_id")
 
+    def test_list_redirect_uris(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_redirect_uri.json"),
+        )
+        page = workos.user_management.list_redirect_uris()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], RedirectUri)
+
+    def test_list_redirect_uris_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_redirect_uris()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_redirect_uris_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.user_management.list_redirect_uris(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
     def test_create_redirect_uri(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("redirect_uri.json"),
@@ -862,6 +920,38 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
+
+    @pytest.mark.asyncio
+    async def test_list_cors_origins(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_cors_origin_response.json"))
+        page = await async_workos.user_management.list_cors_origins()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], CORSOriginResponse)
+
+    @pytest.mark.asyncio
+    async def test_list_cors_origins_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_cors_origins()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_cors_origins_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.user_management.list_cors_origins(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_cors_origin(self, async_workos, httpx_mock):
@@ -1264,6 +1354,38 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/magic_auth/test_id")
+
+    @pytest.mark.asyncio
+    async def test_list_redirect_uris(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_redirect_uri.json"))
+        page = await async_workos.user_management.list_redirect_uris()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], RedirectUri)
+
+    @pytest.mark.asyncio
+    async def test_list_redirect_uris_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_redirect_uris()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_redirect_uris_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.user_management.list_redirect_uris(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_redirect_uri(self, async_workos, httpx_mock):

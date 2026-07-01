@@ -459,6 +459,7 @@ class UserManagement:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
+        max_age: Optional[int] = None,
         screen_hint: Optional[
             Union[UserManagementAuthenticationScreenHint, str]
         ] = None,
@@ -482,6 +483,7 @@ class UserManagement:
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
             provider_scopes: Additional OAuth scopes to request from the identity provider.
             invitation_token: A token representing a user invitation to redeem during authentication.
+            max_age: Maximum allowable elapsed time, in seconds, since the user last actively authenticated. If the last authentication is older than this value, the user is prompted to re-authenticate; a value of `0` forces re-authentication. Only supported when the provider is `authkit`.
             screen_hint: Used to specify which screen to display when the provider is `authkit`. Defaults to `sign-in`.
             login_hint: A hint to the authorization server about the login identifier the user might use.
             provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
@@ -511,6 +513,7 @@ class UserManagement:
                 if provider_scopes is not None
                 else None,
                 "invitation_token": invitation_token,
+                "max_age": max_age,
                 "screen_hint": enum_value(screen_hint)
                 if screen_hint is not None
                 else None,
@@ -625,6 +628,52 @@ class UserManagement:
             method="post",
             path=("user_management", "sessions", "revoke"),
             body=body,
+            request_options=request_options,
+        )
+
+    def list_cors_origins(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[CORSOriginResponse]:
+        """List CORS origins
+
+        Lists the CORS origins for the current environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[CORSOriginResponse]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("user_management", "cors_origins"),
+            model=CORSOriginResponse,
+            params=params,
             request_options=request_options,
         )
 
@@ -1707,6 +1756,52 @@ class UserManagement:
             request_options=request_options,
         )
 
+    def list_redirect_uris(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[RedirectUri]:
+        """List redirect URIs
+
+        Lists the redirect URIs for an environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[RedirectUri]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("user_management", "redirect_uris"),
+            model=RedirectUri,
+            params=params,
+            request_options=request_options,
+        )
+
     def create_redirect_uri(
         self,
         *,
@@ -2495,6 +2590,7 @@ class AsyncUserManagement:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
+        max_age: Optional[int] = None,
         screen_hint: Optional[
             Union[UserManagementAuthenticationScreenHint, str]
         ] = None,
@@ -2518,6 +2614,7 @@ class AsyncUserManagement:
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
             provider_scopes: Additional OAuth scopes to request from the identity provider.
             invitation_token: A token representing a user invitation to redeem during authentication.
+            max_age: Maximum allowable elapsed time, in seconds, since the user last actively authenticated. If the last authentication is older than this value, the user is prompted to re-authenticate; a value of `0` forces re-authentication. Only supported when the provider is `authkit`.
             screen_hint: Used to specify which screen to display when the provider is `authkit`. Defaults to `sign-in`.
             login_hint: A hint to the authorization server about the login identifier the user might use.
             provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
@@ -2547,6 +2644,7 @@ class AsyncUserManagement:
                 if provider_scopes is not None
                 else None,
                 "invitation_token": invitation_token,
+                "max_age": max_age,
                 "screen_hint": enum_value(screen_hint)
                 if screen_hint is not None
                 else None,
@@ -2661,6 +2759,52 @@ class AsyncUserManagement:
             method="post",
             path=("user_management", "sessions", "revoke"),
             body=body,
+            request_options=request_options,
+        )
+
+    async def list_cors_origins(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[CORSOriginResponse]:
+        """List CORS origins
+
+        Lists the CORS origins for the current environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[CORSOriginResponse]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("user_management", "cors_origins"),
+            model=CORSOriginResponse,
+            params=params,
             request_options=request_options,
         )
 
@@ -3740,6 +3884,52 @@ class AsyncUserManagement:
             method="get",
             path=("user_management", "magic_auth", str(id)),
             model=MagicAuth,
+            request_options=request_options,
+        )
+
+    async def list_redirect_uris(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[RedirectUri]:
+        """List redirect URIs
+
+        Lists the redirect URIs for an environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[RedirectUri]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("user_management", "redirect_uris"),
+            model=RedirectUri,
+            params=params,
             request_options=request_options,
         )
 

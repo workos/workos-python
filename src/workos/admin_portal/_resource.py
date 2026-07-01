@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import IntentOptions, PortalLinkResponse
+from .models import PortalLinkResponse
 from workos.common.models.generate_link_intent import GenerateLinkIntent
 
 
@@ -25,7 +25,6 @@ class AdminPortal:
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
-        intent_options: Optional[IntentOptions] = None,
         it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
@@ -45,7 +44,6 @@ class AdminPortal:
                 - `domain_verification` - Launch Admin Portal for Domain Verification
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
-            intent_options: Options to configure the Admin Portal based on the intent.
             it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -68,9 +66,6 @@ class AdminPortal:
                 "success_url": success_url,
                 "organization": organization,
                 "intent": enum_value(intent) if intent is not None else None,
-                "intent_options": intent_options.to_dict()
-                if intent_options is not None
-                else None,
                 "it_contact_emails": it_contact_emails,
             }.items()
             if v is not None
@@ -97,7 +92,6 @@ class AsyncAdminPortal:
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
-        intent_options: Optional[IntentOptions] = None,
         it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
@@ -117,7 +111,6 @@ class AsyncAdminPortal:
                 - `domain_verification` - Launch Admin Portal for Domain Verification
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
-            intent_options: Options to configure the Admin Portal based on the intent.
             it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -140,9 +133,6 @@ class AsyncAdminPortal:
                 "success_url": success_url,
                 "organization": organization,
                 "intent": enum_value(intent) if intent is not None else None,
-                "intent_options": intent_options.to_dict()
-                if intent_options is not None
-                else None,
                 "it_contact_emails": it_contact_emails,
             }.items()
             if v is not None

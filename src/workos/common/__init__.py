@@ -420,6 +420,7 @@ from .models import (
     UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
 )
 from .models import UserOrganizationMembershipStatus as UserOrganizationMembershipStatus
+from .models import UserRoleAssignmentSourceType as UserRoleAssignmentSourceType
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .models import UserSessionsImpersonator as UserSessionsImpersonator
 from .models import UserSessionsListItem as UserSessionsListItem

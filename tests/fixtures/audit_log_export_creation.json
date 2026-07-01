@@ -1,7 +1,7 @@
 {
   "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-  "range_start": "2022-07-02T18:09:06.996Z",
-  "range_end": "2022-09-02T18:09:06.996Z",
+  "range_start": "2022-07-02T18:09:06.000Z",
+  "range_end": "2022-09-02T18:09:06.000Z",
   "actions": [
     "user.signed_in"
   ],

@@ -3,5 +3,6 @@
   "user_agent": "Mozilla/5.0",
   "email": "user@example.com",
   "auth_method": "Password",
-  "action": "sign-in"
+  "action": "sign-in",
+  "signals_id": "01JBS0GN92GC2RJQS4X9DBPQ2A"
 }

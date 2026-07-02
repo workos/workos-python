@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
@@ -28,6 +28,8 @@ class RadarStandaloneAssessRequest:
     """The authentication method being used."""
     action: "RadarStandaloneAssessRequestAction"
     """The action being performed."""
+    signals_id: Optional[str] = None
+    """An optional Radar signals ID for the request."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "RadarStandaloneAssessRequest":
@@ -39,6 +41,7 @@ class RadarStandaloneAssessRequest:
                 email=data["email"],
                 auth_method=RadarStandaloneAssessRequestAuthMethod(data["auth_method"]),
                 action=RadarStandaloneAssessRequestAction(data["action"]),
+                signals_id=data.get("signals_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneAssessRequest", e)
@@ -57,4 +60,6 @@ class RadarStandaloneAssessRequest:
         result["action"] = (
             self.action.value if isinstance(self.action, Enum) else self.action
         )
+        if self.signals_id is not None:
+            result["signals_id"] = self.signals_id
         return result

@@ -4,24 +4,155 @@
 
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import AuthMethodMismatchError
+from workos.common.models import (
+    ConnectApplicationM2M,
+    ConnectApplicationOAuth,
+    ConnectApplicationOAuthRedirectUris,
+)
 
 
 class TestModelRoundTrip:
-    def test_auth_method_mismatch_error_round_trip(self):
-        data = load_fixture("auth_method_mismatch_error.json")
-        instance = AuthMethodMismatchError.from_dict(data)
+    def test_connect_application_oauth_round_trip(self):
+        data = load_fixture("connect_application_oauth.json")
+        instance = ConnectApplicationOAuth.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = AuthMethodMismatchError.from_dict(serialized)
+        restored = ConnectApplicationOAuth.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_auth_method_mismatch_error_minimal_payload(self):
+    def test_connect_application_oauth_minimal_payload(self):
         data = {
-            "code": "auth_method_mismatch",
-            "message": "This installation uses oauth authentication. Use the POST /:slug/token endpoint instead.",
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": None,
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "oauth",
+            "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "uses_pkce": True,
+            "is_first_party": True,
         }
-        instance = AuthMethodMismatchError.from_dict(data)
+        instance = ConnectApplicationOAuth.from_dict(data)
         serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["description"] == data["description"]
+        assert serialized["name"] == data["name"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["application_type"] == data["application_type"]
+        assert serialized["redirect_uris"] == data["redirect_uris"]
+        assert serialized["uses_pkce"] == data["uses_pkce"]
+        assert serialized["is_first_party"] == data["is_first_party"]
+
+    def test_connect_application_oauth_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": "An application for managing user access",
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "oauth",
+            "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "uses_pkce": True,
+            "is_first_party": True,
+        }
+        instance = ConnectApplicationOAuth.from_dict(data)
+        serialized = instance.to_dict()
+        assert "was_dynamically_registered" not in serialized
+        assert "organization_id" not in serialized
+
+    def test_connect_application_oauth_preserves_nullable_fields(self):
+        data = {
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": None,
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "oauth",
+            "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "uses_pkce": True,
+            "is_first_party": True,
+            "was_dynamically_registered": True,
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = ConnectApplicationOAuth.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_connect_application_oauth_redirect_uris_round_trip(self):
+        data = load_fixture("connect_application_oauth_redirect_uris.json")
+        instance = ConnectApplicationOAuthRedirectUris.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectApplicationOAuthRedirectUris.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connect_application_oauth_redirect_uris_minimal_payload(self):
+        data = {"uri": "https://example.com/callback", "default": True}
+        instance = ConnectApplicationOAuthRedirectUris.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["uri"] == data["uri"]
+        assert serialized["default"] == data["default"]
+
+    def test_connect_application_m2m_round_trip(self):
+        data = load_fixture("connect_application_m2m.json")
+        instance = ConnectApplicationM2M.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectApplicationM2M.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connect_application_m2m_minimal_payload(self):
+        data = {
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": None,
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "m2m",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = ConnectApplicationM2M.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["description"] == data["description"]
+        assert serialized["name"] == data["name"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["application_type"] == data["application_type"]
+        assert serialized["organization_id"] == data["organization_id"]
+
+    def test_connect_application_m2m_preserves_nullable_fields(self):
+        data = {
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": None,
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "m2m",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = ConnectApplicationM2M.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None

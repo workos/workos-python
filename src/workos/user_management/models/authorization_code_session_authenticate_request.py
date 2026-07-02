@@ -28,6 +28,8 @@ class AuthorizationCodeSessionAuthenticateRequest:
     """A unique identifier for the device."""
     user_agent: Optional[str] = None
     """The user agent string from the user's browser."""
+    signals_id: Optional[str] = None
+    """An optional Radar signals ID to correlate client-side signals with this authentication attempt."""
 
     @classmethod
     def from_dict(
@@ -45,6 +47,7 @@ class AuthorizationCodeSessionAuthenticateRequest:
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),
                 user_agent=data.get("user_agent"),
+                signals_id=data.get("signals_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthorizationCodeSessionAuthenticateRequest", e)
@@ -67,4 +70,6 @@ class AuthorizationCodeSessionAuthenticateRequest:
             result["device_id"] = self.device_id
         if self.user_agent is not None:
             result["user_agent"] = self.user_agent
+        if self.signals_id is not None:
+            result["signals_id"] = self.signals_id
         return result

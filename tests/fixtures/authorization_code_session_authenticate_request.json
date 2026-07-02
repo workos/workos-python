@@ -7,5 +7,6 @@
   "invitation_token": "inv_tok_01HXYZ123456789ABCDEFGHIJ",
   "ip_address": "203.0.113.42",
   "device_id": "device_01HXYZ123456789ABCDEFGHIJ",
-  "user_agent": "Mozilla/5.0"
+  "user_agent": "Mozilla/5.0",
+  "signals_id": "01JBS0GN92GC2RJQS4X9DBPQ2A"
 }

@@ -29,6 +29,12 @@ class CreateUser:
     """Object containing metadata key/value pairs associated with the user."""
     external_id: Optional[str] = None
     """The external ID of the user."""
+    ip_address: Optional[str] = None
+    """The IP address of the user's request."""
+    user_agent: Optional[str] = None
+    """The user agent string from the user's request."""
+    signals_id: Optional[str] = None
+    """An optional Radar signals ID to correlate client-side signals with this request."""
     password: Optional[str] = None
     """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
     password_hash: Optional[str] = None
@@ -48,6 +54,9 @@ class CreateUser:
                 email_verified=data.get("email_verified"),
                 metadata=data.get("metadata"),
                 external_id=data.get("external_id"),
+                ip_address=data.get("ip_address"),
+                user_agent=data.get("user_agent"),
+                signals_id=data.get("signals_id"),
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
                 password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
@@ -85,6 +94,16 @@ class CreateUser:
             result["external_id"] = self.external_id
         else:
             result["external_id"] = None
+        if self.ip_address is not None:
+            result["ip_address"] = self.ip_address
+        else:
+            result["ip_address"] = None
+        if self.user_agent is not None:
+            result["user_agent"] = self.user_agent
+        else:
+            result["user_agent"] = None
+        if self.signals_id is not None:
+            result["signals_id"] = self.signals_id
         if self.password is not None:
             result["password"] = self.password
         else:

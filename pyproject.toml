@@ -1,6 +1,6 @@
 [project]
 name = "workos"
-version = "8.3.0"
+version = "9.0.0"
 description = "WorkOS Python Client"
 readme = "README.md"
 license = "MIT"

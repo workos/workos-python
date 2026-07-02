@@ -1,5 +1,25 @@
 # Changelog
 
+## [9.0.0](https://github.com/workos/workos-python/compare/v8.3.0...v9.0.0) (2026-07-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **user_management:** SDK surface change: Parameter type changed for "body" on "UserManagement.create_authenticate" ([#686](https://github.com/workos/workos-python/issues/686))
+
+### Features
+
+* **generated:** AdminPortal, Authorization, Webhooks, UserManagement, AuditLogs (batch 08085e9d) ([#683](https://github.com/workos/workos-python/issues/683)) ([ed5b29a](https://github.com/workos/workos-python/commit/ed5b29a5d14ccc20ef4d7b96cd9b1cd1749ef35c))
+* **generated:** Pipes (batch 77e46600) ([#681](https://github.com/workos/workos-python/issues/681)) ([804000e](https://github.com/workos/workos-python/commit/804000e84578b77cd4abfbe277e3c38b06c26d08))
+* **pipes:** Add Pipes operations and models ([#685](https://github.com/workos/workos-python/issues/685)) ([37c009f](https://github.com/workos/workos-python/commit/37c009f701b98ce720de99973d3791a940e0a404))
+* **user_management:** Add user management operations and models ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
+* **user_management:** SDK surface change: Parameter type changed for "body" on "UserManagement.create_authenticate" ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
+
+
+### Bug Fixes
+
+* **user_management:** Update user management API surface ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
+
 ## [8.3.0](https://github.com/workos/workos-python/compare/v8.2.0...v8.3.0) (2026-06-30)
 
 * [#676](https://github.com/workos/workos-python/pull/676) fix(generated): regenerate from spec

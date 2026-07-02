@@ -2,23 +2,126 @@
 
 ## [9.0.0](https://github.com/workos/workos-python/compare/v8.3.0...v9.0.0) (2026-07-02)
 
+* [#681](https://github.com/workos/workos-python/pull/681) fix(generated): regenerate from spec
 
-### ⚠ BREAKING CHANGES
+  **Features**
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationCredentialsResponse`
+    * Added model `DataIntegrationCredentialsResponseCredential`
+    * Added model `DataIntegrationsUpsertApiKeyRequest`
+    * Added model `DataIntegrationsVendCredentialsRequest`
+    * Added enum `DataIntegrationCredentialsResponseError`
+    * Added endpoint `PUT /data-integrations/{slug}/api-key`
+    * Added endpoint `POST /data-integrations/{slug}/credentials`
 
-* **user_management:** SDK surface change: Parameter type changed for "body" on "UserManagement.create_authenticate" ([#686](https://github.com/workos/workos-python/issues/686))
+* [#683](https://github.com/workos/workos-python/pull/683) fix(generated): regenerate from spec
 
-### Features
+  **⚠️ Breaking**
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Removed model `SessionReauthenticated`
+    * Removed model `SessionReauthenticatedData`
+    * Removed model `SessionReauthenticatedDataImpersonator`
+    * Removed enum `SessionReauthenticatedDataAuthMethod`
+    * Removed enum `SessionReauthenticatedDataStatus`
 
-* **generated:** AdminPortal, Authorization, Webhooks, UserManagement, AuditLogs (batch 08085e9d) ([#683](https://github.com/workos/workos-python/issues/683)) ([ed5b29a](https://github.com/workos/workos-python/commit/ed5b29a5d14ccc20ef4d7b96cd9b1cd1749ef35c))
-* **generated:** Pipes (batch 77e46600) ([#681](https://github.com/workos/workos-python/issues/681)) ([804000e](https://github.com/workos/workos-python/commit/804000e84578b77cd4abfbe277e3c38b06c26d08))
-* **pipes:** Add Pipes operations and models ([#685](https://github.com/workos/workos-python/issues/685)) ([37c009f](https://github.com/workos/workos-python/commit/37c009f701b98ce720de99973d3791a940e0a404))
-* **user_management:** Add user management operations and models ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
-* **user_management:** SDK surface change: Parameter type changed for "body" on "UserManagement.create_authenticate" ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
+  **Features**
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `agent.registration.created` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.claim.attempt.created` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.claim.completed` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.credential.issued` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.organization.switched` to `CreateWebhookEndpointEvents`
+    * Added `authentication.reauthentication_succeeded` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.claim.attempt.created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.claim.completed` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.credential.issued` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.organization.switched` to `UpdateWebhookEndpointEvents`
+    * Added `authentication.reauthentication_succeeded` to `UpdateWebhookEndpointEvents`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `session.reauthenticated` to `CreateWebhookEndpointEvents`
+    * Added `session.reauthenticated` to `UpdateWebhookEndpointEvents`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `pipes.connected_account.connection_failed` to `CreateWebhookEndpointEvents`
+    * Added `pipes.connected_account.connection_failed` to `UpdateWebhookEndpointEvents`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added model `UserRoleAssignmentSource`
+    * Added `source` to `UserRoleAssignment`
+    * Added enum `UserRoleAssignmentSourceType`
+    * Added parameter `UserManagementAuthentication.authorize.max_age`
+    * Added endpoint `GET /user_management/cors_origins`
+    * Added endpoint `GET /user_management/redirect_uris`
+  * **[audit_logs](https://workos.com/docs/reference/audit-logs)**:
+    * Changed the format of `AuditLogExportCreation.range_start`
+    * Changed the format of `AuditLogExportCreation.range_end`
+  * **[audit_logs](https://workos.com/docs/reference/audit-logs)**:
+    * Added `expired` to `AuditLogExportState`
 
+  **Fixes**
+  * **[admin_portal](https://workos.com/docs/reference/admin-portal)**:
+    * Removed `intent_options` from `GenerateLink`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Removed `session.reauthenticated` from `CreateWebhookEndpointEvents`
+    * Removed `session.reauthenticated` from `UpdateWebhookEndpointEvents`
 
-### Bug Fixes
+* [#685](https://github.com/workos/workos-python/pull/685) feat(generated): regenerate from spec (1 change)
 
-* **user_management:** Update user management API surface ([#686](https://github.com/workos/workos-python/issues/686)) ([c18fd60](https://github.com/workos/workos-python/commit/c18fd60ceaea1ebe2e79e53fb29d7c4544ec6c3a))
+  **Features**
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationCredentialsDto`
+    * Added model `CustomProviderDefinition`
+    * Added model `CreateDataIntegration`
+    * Added model `UpdateCustomProviderDefinition`
+    * Added model `UpdateDataIntegration`
+    * Added model `DataIntegration`
+    * Added model `DataIntegrationList`
+    * Added model `DataIntegrationListListMetadata`
+    * Added model `DataIntegrationCredential`
+    * Added model `DataIntegrationCustomProvider`
+    * Added enum `DataIntegrationCredentialsType`
+    * Added enum `CustomProviderDefinitionAuthenticateVia`
+    * Added enum `UpdateCustomProviderDefinitionAuthenticateVia`
+    * Added enum `DataIntegrationState`
+    * Added enum `DataIntegrationCredentialType`
+    * Added enum `DataIntegrationCustomProviderAuthenticateVia`
+    * Added endpoint `GET /data-integrations`
+    * Added endpoint `POST /data-integrations`
+    * Added endpoint `GET /data-integrations/{slug}`
+    * Added endpoint `PUT /data-integrations/{slug}`
+    * Added endpoint `DELETE /data-integrations/{slug}`
+    * Added endpoint `POST /user_management/users/{user_id}/connected_accounts/{slug}`
+    * Added endpoint `PUT /user_management/users/{user_id}/connected_accounts/{slug}`
+
+* [#686](https://github.com/workos/workos-python/pull/686) feat(generated)!: regenerate from spec (3 changes)
+
+  **Features**
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added model `SendRadarSmsChallenge`
+    * Added model `SendRadarSmsChallengeResponse`
+    * Added model `UrnWorkosOAuthGrantTypeRadarEmailChallengeCodeSessionAuthenticateRequest`
+    * Added model `UrnWorkosOAuthGrantTypeRadarSmsChallengeCodeSessionAuthenticateRequest`
+    * Added model `MagicAuthSendMagicAuthCodeAndReturnResponse`
+    * Added model `UserCreateResponse`
+    * Added `ip_address` to `CreateMagicCodeAndReturn`
+    * Added `user_agent` to `CreateMagicCodeAndReturn`
+    * Added `radar_auth_attempt_id` to `CreateMagicCodeAndReturn`
+    * Added `signals_id` to `CreateMagicCodeAndReturn`
+    * Added `ip_address` to `CreateUser`
+    * Added `user_agent` to `CreateUser`
+    * Added `signals_id` to `CreateUser`
+    * Added `signals_id` to `AuthorizationCodeSessionAuthenticateRequest`
+    * Added `signals_id` to `PasswordSessionAuthenticateRequest`
+    * Added `radar_auth_attempt_id` to `PasswordSessionAuthenticateRequest`
+    * Added `radar_auth_attempt_id` to `UrnWorkosOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest`
+    * Added endpoint `POST /user_management/radar_challenges`
+  * **[radar](https://workos.com/docs/reference/radar)**:
+    * Added `signals_id` to `RadarStandaloneAssessRequest`
+
+  **Fixes**
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed request body for `UserManagementAuthentication.authenticate`
+    * Changed response of `UserManagementUsers.create` from `User` to `UserCreateResponse`
+    * Changed response of `UserManagementMagicAuth.sendMagicAuthCodeAndReturn` from `MagicAuth` to `MagicAuthSendMagicAuthCodeAndReturnResponse`
 
 ## [8.3.0](https://github.com/workos/workos-python/compare/v8.2.0...v8.3.0) (2026-06-30)
 

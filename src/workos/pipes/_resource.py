@@ -2,19 +2,26 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions
+from .._types import RequestOptions, enum_value
 from .models import (
+    CustomProviderDefinition,
+    DataIntegration,
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
+    DataIntegrationCredentialsDto,
     DataIntegrationCredentialsResponse,
     DataIntegrationsListResponse,
+    UpdateCustomProviderDefinition,
 )
 from workos.common.models.connected_account import ConnectedAccount
+from workos.common.models.connected_account_state import ConnectedAccountState
+from workos.common.models.pagination_order import PaginationOrder
+from .._pagination import AsyncPage, SyncPage
 
 
 class Pipes:
@@ -22,6 +29,225 @@ class Pipes:
 
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
+
+    def list_data_integrations(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[DataIntegration]:
+        """List data integrations
+
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[DataIntegration]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("data-integrations",),
+            model=DataIntegration,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_data_integration(
+        self,
+        *,
+        provider: str,
+        description: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        scopes: Optional[List[str]] = None,
+        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        custom_provider: Optional[CustomProviderDefinition] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Create a data integration
+
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials, or `organization` to have each organization supply its own. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+
+        Args:
+            provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled. Defaults to `false`.
+            scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
+            credentials: The credentials to configure for the Data Integration. Required for both built-in and custom providers.
+            custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "provider": provider,
+                "description": description,
+                "enabled": enabled,
+                "scopes": scopes,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("data-integrations",),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    def get_data_integration(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Get a data integration
+
+        Retrieves a data integration by its slug.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("data-integrations", str(slug)),
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    def update_data_integration(
+        self,
+        slug: str,
+        *,
+        description: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        scopes: Optional[List[str]] = None,
+        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        custom_provider: Optional[UpdateCustomProviderDefinition] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Update a data integration
+
+        Updates the description, enabled state, or custom credentials of a data integration. For custom providers, `custom_provider` updates the OAuth definition.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled.
+            scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
+            credentials: New credentials for the Data Integration. When provided, rotates the stored client secret.
+            custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "description": description,
+                "enabled": enabled,
+                "scopes": scopes,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="put",
+            path=("data-integrations", str(slug)),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    def delete_data_integration(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a data integration
+
+        Deletes a data integration and all of its connected installations. For a custom provider, also deletes the custom provider definition.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("data-integrations", str(slug)),
+            request_options=request_options,
+        )
 
     def update_data_integration_api_key(
         self,
@@ -257,6 +483,148 @@ class Pipes:
             request_options=request_options,
         )
 
+    def create_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        access_token: Optional[str] = None,
+        refresh_token: Optional[str] = None,
+        expires_at: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        state: Optional[Union[ConnectedAccountState, str]] = None,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Import a connected account
+
+        Imports a [connected account](https://workos.com/docs/reference/pipes/connected-account) for a user by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
+
+        Args:
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            access_token: The OAuth access token for the connected account.
+            refresh_token: The OAuth refresh token for the connected account.
+            expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
+            scopes: The OAuth scopes granted for this connection.
+            state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "expires_at": expires_at,
+                "scopes": scopes,
+                "state": enum_value(state) if state is not None else None,
+            }.items()
+            if v is not None
+        }
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
+            body=body,
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
+    def update_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        access_token: Optional[str] = None,
+        refresh_token: Optional[str] = None,
+        expires_at: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        state: Optional[Union[ConnectedAccountState, str]] = None,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Update a connected account
+
+        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+
+        Args:
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            access_token: The OAuth access token for the connected account.
+            refresh_token: The OAuth refresh token for the connected account.
+            expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
+            scopes: The OAuth scopes granted for this connection.
+            state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "expires_at": expires_at,
+                "scopes": scopes,
+                "state": enum_value(state) if state is not None else None,
+            }.items()
+            if v is not None
+        }
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="put",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
+            body=body,
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
     def delete_user_connected_account(
         self,
         user_id: str,
@@ -347,6 +715,225 @@ class AsyncPipes:
 
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
+
+    async def list_data_integrations(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[DataIntegration]:
+        """List data integrations
+
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[DataIntegration]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("data-integrations",),
+            model=DataIntegration,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_data_integration(
+        self,
+        *,
+        provider: str,
+        description: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        scopes: Optional[List[str]] = None,
+        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        custom_provider: Optional[CustomProviderDefinition] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Create a data integration
+
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials, or `organization` to have each organization supply its own. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+
+        Args:
+            provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled. Defaults to `false`.
+            scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
+            credentials: The credentials to configure for the Data Integration. Required for both built-in and custom providers.
+            custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "provider": provider,
+                "description": description,
+                "enabled": enabled,
+                "scopes": scopes,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("data-integrations",),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    async def get_data_integration(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Get a data integration
+
+        Retrieves a data integration by its slug.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("data-integrations", str(slug)),
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    async def update_data_integration(
+        self,
+        slug: str,
+        *,
+        description: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        scopes: Optional[List[str]] = None,
+        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        custom_provider: Optional[UpdateCustomProviderDefinition] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegration:
+        """Update a data integration
+
+        Updates the description, enabled state, or custom credentials of a data integration. For custom providers, `custom_provider` updates the OAuth definition.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled.
+            scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
+            credentials: New credentials for the Data Integration. When provided, rotates the stored client secret.
+            custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "description": description,
+                "enabled": enabled,
+                "scopes": scopes,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="put",
+            path=("data-integrations", str(slug)),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    async def delete_data_integration(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a data integration
+
+        Deletes a data integration and all of its connected installations. For a custom provider, also deletes the custom provider definition.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("data-integrations", str(slug)),
+            request_options=request_options,
+        )
 
     async def update_data_integration_api_key(
         self,
@@ -577,6 +1164,148 @@ class AsyncPipes:
                 "connected_accounts",
                 str(slug),
             ),
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
+    async def create_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        access_token: Optional[str] = None,
+        refresh_token: Optional[str] = None,
+        expires_at: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        state: Optional[Union[ConnectedAccountState, str]] = None,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Import a connected account
+
+        Imports a [connected account](https://workos.com/docs/reference/pipes/connected-account) for a user by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
+
+        Args:
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            access_token: The OAuth access token for the connected account.
+            refresh_token: The OAuth refresh token for the connected account.
+            expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
+            scopes: The OAuth scopes granted for this connection.
+            state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "expires_at": expires_at,
+                "scopes": scopes,
+                "state": enum_value(state) if state is not None else None,
+            }.items()
+            if v is not None
+        }
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
+            body=body,
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
+    async def update_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        access_token: Optional[str] = None,
+        refresh_token: Optional[str] = None,
+        expires_at: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        state: Optional[Union[ConnectedAccountState, str]] = None,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Update a connected account
+
+        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+
+        Args:
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            access_token: The OAuth access token for the connected account.
+            refresh_token: The OAuth refresh token for the connected account.
+            expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
+            scopes: The OAuth scopes granted for this connection.
+            state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccount
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "expires_at": expires_at,
+                "scopes": scopes,
+                "state": enum_value(state) if state is not None else None,
+            }.items()
+            if v is not None
+        }
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="put",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
+            body=body,
             params=params,
             model=ConnectedAccount,
             request_options=request_options,

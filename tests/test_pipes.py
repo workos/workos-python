@@ -6,13 +6,15 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import ConnectedAccount
+from workos.common.models import ConnectedAccount, PaginationOrder
 from workos.pipes.models import (
+    DataIntegration,
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsResponse,
     DataIntegrationsListResponse,
 )
+from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -24,6 +26,81 @@ from workos._errors import (
 
 
 class TestPipes:
+    def test_list_data_integrations(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_data_integration.json"),
+        )
+        page = workos.pipes.list_data_integrations()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DataIntegration)
+
+    def test_list_data_integrations_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.pipes.list_data_integrations()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_data_integrations_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.pipes.list_data_integrations(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    def test_create_data_integration(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration.json"),
+        )
+        result = workos.pipes.create_data_integration(provider="test_provider")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/data-integrations")
+        body = json.loads(request.content)
+        assert body["provider"] == "test_provider"
+
+    def test_get_data_integration(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration.json"),
+        )
+        result = workos.pipes.get_data_integration("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
+    def test_update_data_integration(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration.json"),
+        )
+        result = workos.pipes.update_data_integration("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
+    def test_delete_data_integration(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.pipes.delete_data_integration("test_slug")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
     def test_update_data_integration_api_key(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("connected_account.json"),
@@ -111,6 +188,54 @@ class TestPipes:
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
 
+    def test_create_user_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.create_user_connected_account("test_user_id", "test_slug")
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/users/test_user_id/connected_accounts/test_slug"
+        )
+
+    def test_create_user_connected_account_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        workos.pipes.create_user_connected_account(
+            "test_user_id", "test_slug", organization_id="value organization_id/test"
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
+    def test_update_user_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.update_user_connected_account("test_user_id", "test_slug")
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/user_management/users/test_user_id/connected_accounts/test_slug"
+        )
+
+    def test_update_user_connected_account_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        workos.pipes.update_user_connected_account(
+            "test_user_id", "test_slug", organization_id="value organization_id/test"
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
     def test_delete_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = workos.pipes.delete_user_connected_account("test_user_id", "test_slug")
@@ -154,43 +279,34 @@ class TestPipes:
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
 
-    def test_update_data_integration_api_key_with_request_options(
-        self, workos, httpx_mock
-    ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        workos.pipes.update_data_integration_api_key(
-            "test_slug",
-            user_id="test_user_id",
-            secret="test_secret",
-            request_options={"extra_headers": {"X-Custom": "value"}},
+    def test_list_data_integrations_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.pipes.list_data_integrations(
+            request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
-    def test_update_data_integration_api_key_unauthorized(self, workos, httpx_mock):
+    def test_list_data_integrations_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.pipes.update_data_integration_api_key(
-                "test_slug", user_id="test_user_id", secret="test_secret"
-            )
+            workos.pipes.list_data_integrations()
 
-    def test_update_data_integration_api_key_not_found(self, httpx_mock):
+    def test_list_data_integrations_not_found(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                workos.pipes.list_data_integrations()
         finally:
             workos.close()
 
-    def test_update_data_integration_api_key_rate_limited(self, httpx_mock):
+    def test_list_data_integrations_rate_limited(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -201,53 +317,121 @@ class TestPipes:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                workos.pipes.list_data_integrations()
         finally:
             workos.close()
 
-    def test_update_data_integration_api_key_server_error(self, httpx_mock):
+    def test_list_data_integrations_server_error(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                workos.pipes.list_data_integrations()
         finally:
             workos.close()
 
-    def test_update_data_integration_api_key_bad_request(self, httpx_mock):
+    def test_list_data_integrations_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                workos.pipes.list_data_integrations()
         finally:
             workos.close()
 
-    def test_update_data_integration_api_key_unprocessable(self, httpx_mock):
+    def test_list_data_integrations_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                workos.pipes.list_data_integrations()
         finally:
             workos.close()
 
 
 class TestAsyncPipes:
+    @pytest.mark.asyncio
+    async def test_list_data_integrations(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_data_integration.json"))
+        page = await async_workos.pipes.list_data_integrations()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DataIntegration)
+
+    @pytest.mark.asyncio
+    async def test_list_data_integrations_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.pipes.list_data_integrations()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_data_integrations_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.pipes.list_data_integrations(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    @pytest.mark.asyncio
+    async def test_create_data_integration(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("data_integration.json"))
+        result = await async_workos.pipes.create_data_integration(
+            provider="test_provider"
+        )
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/data-integrations")
+
+    @pytest.mark.asyncio
+    async def test_get_data_integration(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("data_integration.json"))
+        result = await async_workos.pipes.get_data_integration("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
+    @pytest.mark.asyncio
+    async def test_update_data_integration(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("data_integration.json"))
+        result = await async_workos.pipes.update_data_integration("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
+    @pytest.mark.asyncio
+    async def test_delete_data_integration(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.pipes.delete_data_integration("test_slug")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/data-integrations/test_slug")
+
     @pytest.mark.asyncio
     async def test_update_data_integration_api_key(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connected_account.json"))
@@ -335,6 +519,58 @@ class TestAsyncPipes:
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     @pytest.mark.asyncio
+    async def test_create_user_connected_account(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.create_user_connected_account(
+            "test_user_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/users/test_user_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_user_connected_account_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        await async_workos.pipes.create_user_connected_account(
+            "test_user_id", "test_slug", organization_id="value organization_id/test"
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
+    @pytest.mark.asyncio
+    async def test_update_user_connected_account(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.update_user_connected_account(
+            "test_user_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/user_management/users/test_user_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_user_connected_account_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        await async_workos.pipes.update_user_connected_account(
+            "test_user_id", "test_slug", organization_id="value organization_id/test"
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
+    @pytest.mark.asyncio
     async def test_delete_user_connected_account(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.pipes.delete_user_connected_account(
@@ -386,45 +622,36 @@ class TestAsyncPipes:
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_with_request_options(
+    async def test_list_data_integrations_with_request_options(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        await async_workos.pipes.update_data_integration_api_key(
-            "test_slug",
-            user_id="test_user_id",
-            secret="test_secret",
-            request_options={"extra_headers": {"X-Custom": "value"}},
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.pipes.list_data_integrations(
+            request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_unauthorized(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_data_integrations_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.pipes.update_data_integration_api_key(
-                "test_slug", user_id="test_user_id", secret="test_secret"
-            )
+            await async_workos.pipes.list_data_integrations()
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_not_found(self, httpx_mock):
+    async def test_list_data_integrations_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                await workos.pipes.list_data_integrations()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_rate_limited(self, httpx_mock):
+    async def test_list_data_integrations_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -435,50 +662,42 @@ class TestAsyncPipes:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                await workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                await workos.pipes.list_data_integrations()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_server_error(self, httpx_mock):
+    async def test_list_data_integrations_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                await workos.pipes.list_data_integrations()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_bad_request(self, httpx_mock):
+    async def test_list_data_integrations_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                await workos.pipes.list_data_integrations()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key_unprocessable(self, httpx_mock):
+    async def test_list_data_integrations_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.pipes.update_data_integration_api_key(
-                    "test_slug", user_id="test_user_id", secret="test_secret"
-                )
+                await workos.pipes.list_data_integrations()
         finally:
             await workos.close()

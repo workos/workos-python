@@ -2,6 +2,12 @@
 
 from .connected_account import *  # noqa: F401,F403
 from workos.common.models.connected_account import ConnectedAccount as ConnectedAccount
+from .connected_account_dto import ConnectedAccountDto as ConnectedAccountDto
+from .create_data_integration import CreateDataIntegration as CreateDataIntegration
+from .custom_provider_definition import (
+    CustomProviderDefinition as CustomProviderDefinition,
+)
+from .data_integration import DataIntegration as DataIntegration
 from .data_integration_access_token_response import (
     DataIntegrationAccessTokenResponse as DataIntegrationAccessTokenResponse,
 )
@@ -11,11 +17,20 @@ from .data_integration_access_token_response_access_token import (
 from .data_integration_authorize_url_response import (
     DataIntegrationAuthorizeUrlResponse as DataIntegrationAuthorizeUrlResponse,
 )
+from .data_integration_credential import (
+    DataIntegrationCredential as DataIntegrationCredential,
+)
+from .data_integration_credentials_dto import (
+    DataIntegrationCredentialsDto as DataIntegrationCredentialsDto,
+)
 from .data_integration_credentials_response import (
     DataIntegrationCredentialsResponse as DataIntegrationCredentialsResponse,
 )
 from .data_integration_credentials_response_credential import (
     DataIntegrationCredentialsResponseCredential as DataIntegrationCredentialsResponseCredential,
+)
+from .data_integration_custom_provider import (
+    DataIntegrationCustomProvider as DataIntegrationCustomProvider,
 )
 from .data_integrations_get_data_integration_authorize_url_request import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequest as DataIntegrationsGetDataIntegrationAuthorizeUrlRequest,
@@ -38,3 +53,7 @@ from .data_integrations_upsert_api_key_request import (
 from .data_integrations_vend_credentials_request import (
     DataIntegrationsVendCredentialsRequest as DataIntegrationsVendCredentialsRequest,
 )
+from .update_custom_provider_definition import (
+    UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
+)
+from .update_data_integration import UpdateDataIntegration as UpdateDataIntegration

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-07-01T18:19:12.330Z",
+  "generatedAt": "2026-07-02T14:58:45.916Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
@@ -201,9 +201,14 @@
     "src/workos/common/models/create_user_invite_options_locale.py",
     "src/workos/common/models/create_user_password_hash_type.py",
     "src/workos/common/models/create_webhook_endpoint_events.py",
+    "src/workos/common/models/custom_provider_definition_authenticate_via.py",
     "src/workos/common/models/data_integration_access_token_response_error.py",
+    "src/workos/common/models/data_integration_credential_type.py",
     "src/workos/common/models/data_integration_credentials_credentials_type.py",
     "src/workos/common/models/data_integration_credentials_response_error.py",
+    "src/workos/common/models/data_integration_credentials_type.py",
+    "src/workos/common/models/data_integration_custom_provider_authenticate_via.py",
+    "src/workos/common/models/data_integration_state.py",
     "src/workos/common/models/data_integrations_list_response_data_auth_methods.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_auth_method.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_state.py",
@@ -415,6 +420,7 @@
     "src/workos/common/models/session_revoked_data_impersonator.py",
     "src/workos/common/models/session_revoked_data_status.py",
     "src/workos/common/models/slim_role.py",
+    "src/workos/common/models/update_custom_provider_definition_authenticate_via.py",
     "src/workos/common/models/update_user_password_hash_type.py",
     "src/workos/common/models/update_webhook_endpoint_events.py",
     "src/workos/common/models/update_webhook_endpoint_status.py",
@@ -548,11 +554,18 @@
     "src/workos/pipes/_resource.py",
     "src/workos/pipes/models/__init__.py",
     "src/workos/pipes/models/connected_account.py",
+    "src/workos/pipes/models/connected_account_dto.py",
+    "src/workos/pipes/models/create_data_integration.py",
+    "src/workos/pipes/models/custom_provider_definition.py",
+    "src/workos/pipes/models/data_integration.py",
     "src/workos/pipes/models/data_integration_access_token_response.py",
     "src/workos/pipes/models/data_integration_access_token_response_access_token.py",
     "src/workos/pipes/models/data_integration_authorize_url_response.py",
+    "src/workos/pipes/models/data_integration_credential.py",
+    "src/workos/pipes/models/data_integration_credentials_dto.py",
     "src/workos/pipes/models/data_integration_credentials_response.py",
     "src/workos/pipes/models/data_integration_credentials_response_credential.py",
+    "src/workos/pipes/models/data_integration_custom_provider.py",
     "src/workos/pipes/models/data_integrations_get_data_integration_authorize_url_request.py",
     "src/workos/pipes/models/data_integrations_get_user_token_request.py",
     "src/workos/pipes/models/data_integrations_list_response.py",
@@ -560,6 +573,8 @@
     "src/workos/pipes/models/data_integrations_list_response_data_connected_account.py",
     "src/workos/pipes/models/data_integrations_upsert_api_key_request.py",
     "src/workos/pipes/models/data_integrations_vend_credentials_request.py",
+    "src/workos/pipes/models/update_custom_provider_definition.py",
+    "src/workos/pipes/models/update_data_integration.py",
     "src/workos/pipes_provider/__init__.py",
     "src/workos/pipes_provider/_resource.py",
     "src/workos/pipes_provider/models/__init__.py",
@@ -814,6 +829,7 @@
     "tests/fixtures/connect_application_oauth.json",
     "tests/fixtures/connect_application_oauth_redirect_uris.json",
     "tests/fixtures/connected_account.json",
+    "tests/fixtures/connected_account_dto.json",
     "tests/fixtures/connection.json",
     "tests/fixtures/connection_activated.json",
     "tests/fixtures/connection_activated_data.json",
@@ -837,6 +853,7 @@
     "tests/fixtures/create_authorization_permission.json",
     "tests/fixtures/create_authorization_resource.json",
     "tests/fixtures/create_cors_origin.json",
+    "tests/fixtures/create_data_integration.json",
     "tests/fixtures/create_data_key_request.json",
     "tests/fixtures/create_data_key_response.json",
     "tests/fixtures/create_group.json",
@@ -858,14 +875,19 @@
     "tests/fixtures/create_user_invite_options.json",
     "tests/fixtures/create_user_organization_membership.json",
     "tests/fixtures/create_webhook_endpoint.json",
+    "tests/fixtures/custom_provider_definition.json",
+    "tests/fixtures/data_integration.json",
     "tests/fixtures/data_integration_access_token_response.json",
     "tests/fixtures/data_integration_access_token_response_access_token.json",
     "tests/fixtures/data_integration_authorize_url_response.json",
     "tests/fixtures/data_integration_configuration_list_response.json",
     "tests/fixtures/data_integration_configuration_response.json",
+    "tests/fixtures/data_integration_credential.json",
     "tests/fixtures/data_integration_credentials.json",
+    "tests/fixtures/data_integration_credentials_dto.json",
     "tests/fixtures/data_integration_credentials_response.json",
     "tests/fixtures/data_integration_credentials_response_credential.json",
+    "tests/fixtures/data_integration_custom_provider.json",
     "tests/fixtures/data_integrations_get_data_integration_authorize_url_request.json",
     "tests/fixtures/data_integrations_get_user_token_request.json",
     "tests/fixtures/data_integrations_list_response.json",
@@ -995,6 +1017,7 @@
     "tests/fixtures/list_connect_application.json",
     "tests/fixtures/list_connection.json",
     "tests/fixtures/list_cors_origin_response.json",
+    "tests/fixtures/list_data_integration.json",
     "tests/fixtures/list_directory.json",
     "tests/fixtures/list_directory_group.json",
     "tests/fixtures/list_directory_user_with_groups.json",
@@ -1132,6 +1155,8 @@
     "tests/fixtures/update_audit_logs_retention.json",
     "tests/fixtures/update_authorization_permission.json",
     "tests/fixtures/update_authorization_resource.json",
+    "tests/fixtures/update_custom_provider_definition.json",
+    "tests/fixtures/update_data_integration.json",
     "tests/fixtures/update_group.json",
     "tests/fixtures/update_jwt_template.json",
     "tests/fixtures/update_oauth_application.json",
@@ -1224,6 +1249,7 @@
     "tests/test_organizations.py",
     "tests/test_organizations_models_round_trip.py",
     "tests/test_pipes.py",
+    "tests/test_pipes_models_round_trip.py",
     "tests/test_pipes_provider.py",
     "tests/test_radar.py",
     "tests/test_sso.py",
@@ -2022,6 +2048,38 @@
     "GET /user_management/redirect_uris": {
       "sdkMethod": "list_redirect_uris",
       "service": "user_management"
+    },
+    "GET /data-integrations": {
+      "sdkMethod": "list_data_integrations",
+      "service": "pipes"
+    },
+    "POST /data-integrations": {
+      "sdkMethod": "create_data_integration",
+      "service": "pipes"
+    },
+    "GET /data-integrations/{slug}": {
+      "sdkMethod": "get_data_integration",
+      "service": "pipes"
+    },
+    "PUT /data-integrations/{slug}": {
+      "sdkMethod": "update_data_integration",
+      "service": "pipes"
+    },
+    "DELETE /data-integrations/{slug}": {
+      "sdkMethod": "delete_data_integration",
+      "service": "pipes"
+    },
+    "POST /user_management/radar_challenges": {
+      "sdkMethod": "create_radar_challenge",
+      "service": "user_management"
+    },
+    "POST /user_management/users/{user_id}/connected_accounts/{slug}": {
+      "sdkMethod": "create_user_connected_account",
+      "service": "pipes"
+    },
+    "PUT /user_management/users/{user_id}/connected_accounts/{slug}": {
+      "sdkMethod": "update_user_connected_account",
+      "service": "pipes"
     }
   }
 }

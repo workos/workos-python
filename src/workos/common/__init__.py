@@ -171,6 +171,9 @@ from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLoca
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
+    CustomProviderDefinitionAuthenticateVia as CustomProviderDefinitionAuthenticateVia,
+)
+from .models import (
     DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
 )
 from .models import (
@@ -178,6 +181,11 @@ from .models import (
 )
 from .models import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
+)
+from .models import DataIntegrationCredentialsType as DataIntegrationCredentialsType
+from .models import DataIntegrationCredentialType as DataIntegrationCredentialType
+from .models import (
+    DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
 from .models import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
@@ -191,6 +199,7 @@ from .models import (
 from .models import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
+from .models import DataIntegrationState as DataIntegrationState
 from .models import DirectoryGroup as DirectoryGroup
 from .models import DirectoryState as DirectoryState
 from .models import DirectoryType as DirectoryType
@@ -402,6 +411,9 @@ from .models import SessionRevoked as SessionRevoked
 from .models import SessionRevokedData as SessionRevokedData
 from .models import SessionRevokedDataImpersonator as SessionRevokedDataImpersonator
 from .models import SlimRole as SlimRole
+from .models import (
+    UpdateCustomProviderDefinitionAuthenticateVia as UpdateCustomProviderDefinitionAuthenticateVia,
+)
 from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
 from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
 from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus

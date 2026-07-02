@@ -288,6 +288,9 @@ from .create_user_password_hash_type import (
 from .create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents as CreateWebhookEndpointEvents,
 )
+from .custom_provider_definition_authenticate_via import (
+    CustomProviderDefinitionAuthenticateVia as CustomProviderDefinitionAuthenticateVia,
+)
 from .data_integration_access_token_response_error import (
     DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
 )
@@ -296,6 +299,15 @@ from .data_integration_credentials_credentials_type import (
 )
 from .data_integration_credentials_response_error import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
+)
+from .data_integration_credentials_type import (
+    DataIntegrationCredentialsType as DataIntegrationCredentialsType,
+)
+from .data_integration_credential_type import (
+    DataIntegrationCredentialType as DataIntegrationCredentialType,
+)
+from .data_integration_custom_provider_authenticate_via import (
+    DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
 from .data_integrations_list_response_data_auth_methods import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
@@ -309,6 +321,7 @@ from .data_integrations_list_response_data_connected_account_state import (
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
+from .data_integration_state import DataIntegrationState as DataIntegrationState
 from .directory_user_state import *  # noqa: F401,F403
 from .directory_group import DirectoryGroup as DirectoryGroup
 from .directory_state import DirectoryState as DirectoryState
@@ -656,6 +669,9 @@ from .session_revoked_data_impersonator import (
     SessionRevokedDataImpersonator as SessionRevokedDataImpersonator,
 )
 from .slim_role import SlimRole as SlimRole
+from .update_custom_provider_definition_authenticate_via import (
+    UpdateCustomProviderDefinitionAuthenticateVia as UpdateCustomProviderDefinitionAuthenticateVia,
+)
 from .update_user_password_hash_type import (
     UpdateUserPasswordHashType as UpdateUserPasswordHashType,
 )

@@ -14,7 +14,6 @@ class ConnectedAccountState(str, Enum):
 
     CONNECTED = "connected"
     NEEDS_REAUTHORIZATION = "needs_reauthorization"
-    DISCONNECTED = "disconnected"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["ConnectedAccountState"]:
@@ -26,6 +25,4 @@ class ConnectedAccountState(str, Enum):
         return unknown
 
 
-ConnectedAccountStateLiteral: TypeAlias = Literal[
-    "connected", "needs_reauthorization", "disconnected"
-]
+ConnectedAccountStateLiteral: TypeAlias = Literal["connected", "needs_reauthorization"]

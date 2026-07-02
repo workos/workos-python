@@ -32,6 +32,7 @@ class Radar:
         email: str,
         auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
         action: Union[RadarStandaloneAssessRequestAction, str],
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> RadarStandaloneResponse:
         """Create an attempt
@@ -44,6 +45,7 @@ class Radar:
             email: The email address of the user making the request.
             auth_method: The authentication method being used.
             action: The action being performed.
+            signals_id: An optional Radar signals ID for the request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -56,11 +58,16 @@ class Radar:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            "ip_address": ip_address,
-            "user_agent": user_agent,
-            "email": email,
-            "auth_method": enum_value(auth_method),
-            "action": enum_value(action),
+            k: v
+            for k, v in {
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "email": email,
+                "auth_method": enum_value(auth_method),
+                "action": enum_value(action),
+                "signals_id": signals_id,
+            }.items()
+            if v is not None
         }
         return self._client.request(
             method="post",
@@ -198,6 +205,7 @@ class AsyncRadar:
         email: str,
         auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
         action: Union[RadarStandaloneAssessRequestAction, str],
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> RadarStandaloneResponse:
         """Create an attempt
@@ -210,6 +218,7 @@ class AsyncRadar:
             email: The email address of the user making the request.
             auth_method: The authentication method being used.
             action: The action being performed.
+            signals_id: An optional Radar signals ID for the request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -222,11 +231,16 @@ class AsyncRadar:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            "ip_address": ip_address,
-            "user_agent": user_agent,
-            "email": email,
-            "auth_method": enum_value(auth_method),
-            "action": enum_value(action),
+            k: v
+            for k, v in {
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "email": email,
+                "auth_method": enum_value(auth_method),
+                "action": enum_value(action),
+                "signals_id": signals_id,
+            }.items()
+            if v is not None
         }
         return await self._client.request(
             method="post",

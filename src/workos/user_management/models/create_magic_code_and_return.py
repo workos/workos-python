@@ -15,6 +15,14 @@ class CreateMagicCodeAndReturn:
     """The email address to send the magic code to."""
     invitation_token: Optional[str] = None
     """The invitation token to associate with this magic code."""
+    ip_address: Optional[str] = None
+    """The IP address of the user's request."""
+    user_agent: Optional[str] = None
+    """The user agent string from the user's request."""
+    radar_auth_attempt_id: Optional[str] = None
+    """The ID of an existing Radar authentication attempt to associate with this request."""
+    signals_id: Optional[str] = None
+    """An optional Radar signals ID to correlate client-side signals with this request."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateMagicCodeAndReturn":
@@ -23,6 +31,10 @@ class CreateMagicCodeAndReturn:
             return cls(
                 email=data["email"],
                 invitation_token=data.get("invitation_token"),
+                ip_address=data.get("ip_address"),
+                user_agent=data.get("user_agent"),
+                radar_auth_attempt_id=data.get("radar_auth_attempt_id"),
+                signals_id=data.get("signals_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateMagicCodeAndReturn", e)
@@ -33,4 +45,12 @@ class CreateMagicCodeAndReturn:
         result["email"] = self.email
         if self.invitation_token is not None:
             result["invitation_token"] = self.invitation_token
+        if self.ip_address is not None:
+            result["ip_address"] = self.ip_address
+        if self.user_agent is not None:
+            result["user_agent"] = self.user_agent
+        if self.radar_auth_attempt_id is not None:
+            result["radar_auth_attempt_id"] = self.radar_auth_attempt_id
+        if self.signals_id is not None:
+            result["signals_id"] = self.signals_id
         return result

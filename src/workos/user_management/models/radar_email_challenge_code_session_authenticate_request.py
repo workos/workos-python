@@ -8,51 +8,51 @@ from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
-class MagicAuthCodeSessionAuthenticateRequest:
-    """Magic Auth Code Session Authenticate Request model."""
+class RadarEmailChallengeCodeSessionAuthenticateRequest:
+    """Radar Email Challenge Code Session Authenticate Request model."""
 
     client_id: str
     """The client ID of the application."""
     client_secret: str
     """The client secret of the application."""
-    grant_type: Literal["urn:workos:oauth:grant-type:magic-auth:code"]
+    grant_type: Literal["urn:workos:oauth:grant-type:radar-email-challenge:code"]
     code: str
-    """The one-time code for Magic Auth authentication."""
-    email: str
-    """The user's email address."""
-    invitation_token: Optional[str] = None
-    """An invitation token to accept during authentication."""
+    """The one-time code from the Radar email challenge."""
+    radar_challenge_id: str
+    """The ID of the Radar email challenge being verified."""
+    pending_authentication_token: str
+    """The pending authentication token from a previous authentication attempt."""
     ip_address: Optional[str] = None
     """The IP address of the user's request."""
     device_id: Optional[str] = None
     """A unique identifier for the device."""
     user_agent: Optional[str] = None
     """The user agent string from the user's browser."""
-    radar_auth_attempt_id: Optional[str] = None
-    """The ID of an existing Radar authentication attempt to associate with this authentication."""
 
     @classmethod
     def from_dict(
         cls, data: Dict[str, Any]
-    ) -> "MagicAuthCodeSessionAuthenticateRequest":
+    ) -> "RadarEmailChallengeCodeSessionAuthenticateRequest":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
                 grant_type=data.get(
-                    "grant_type", "urn:workos:oauth:grant-type:magic-auth:code"
+                    "grant_type",
+                    "urn:workos:oauth:grant-type:radar-email-challenge:code",
                 ),
                 code=data["code"],
-                email=data["email"],
-                invitation_token=data.get("invitation_token"),
+                radar_challenge_id=data["radar_challenge_id"],
+                pending_authentication_token=data["pending_authentication_token"],
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),
                 user_agent=data.get("user_agent"),
-                radar_auth_attempt_id=data.get("radar_auth_attempt_id"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("MagicAuthCodeSessionAuthenticateRequest", e)
+            _raise_deserialize_error(
+                "RadarEmailChallengeCodeSessionAuthenticateRequest", e
+            )
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -61,15 +61,12 @@ class MagicAuthCodeSessionAuthenticateRequest:
         result["client_secret"] = self.client_secret
         result["grant_type"] = self.grant_type
         result["code"] = self.code
-        result["email"] = self.email
-        if self.invitation_token is not None:
-            result["invitation_token"] = self.invitation_token
+        result["radar_challenge_id"] = self.radar_challenge_id
+        result["pending_authentication_token"] = self.pending_authentication_token
         if self.ip_address is not None:
             result["ip_address"] = self.ip_address
         if self.device_id is not None:
             result["device_id"] = self.device_id
         if self.user_agent is not None:
             result["user_agent"] = self.user_agent
-        if self.radar_auth_attempt_id is not None:
-            result["radar_auth_attempt_id"] = self.radar_auth_attempt_id
         return result

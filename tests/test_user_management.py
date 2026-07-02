@@ -19,12 +19,15 @@ from workos.user_management.models import (
     JWTTemplateResponse,
     JwksResponse,
     MagicAuth,
+    MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
     RedirectUri,
     ResetPasswordResponse,
+    SendRadarSmsChallengeResponse,
     SendVerificationEmailResponse,
     UserApiKey,
     UserApiKeyWithValue,
+    UserCreateResponse,
     UserIdentitiesGetItem,
     UserInvite,
     VerifyEmailResponse,
@@ -89,6 +92,28 @@ class TestUserManagement:
         assert request.url.path.endswith("/user_management/authorize/device")
         body = json.loads(request.content)
         assert body["client_id"] == "test_client_id"
+
+    def test_create_radar_challenge(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("send_radar_sms_challenge_response.json"),
+        )
+        result = workos.user_management.create_radar_challenge(
+            user_id="test_user_id",
+            pending_authentication_token="test_pending_authentication_token",
+            phone_number="test_phone_number",
+        )
+        assert isinstance(result, SendRadarSmsChallengeResponse)
+        assert result.verification_id == "vrf_01HXYZ123456789ABCDEFGHIJ"
+        assert result.phone_number == "+15555550123"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/radar_challenges")
+        body = json.loads(request.content)
+        assert body["user_id"] == "test_user_id"
+        assert (
+            body["pending_authentication_token"] == "test_pending_authentication_token"
+        )
+        assert body["phone_number"] == "test_phone_number"
 
     def test_get_logout_url(self, workos):
         result = workos.user_management.get_logout_url(session_id="test_session_id")
@@ -235,14 +260,16 @@ class TestUserManagement:
 
     def test_create_user(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("user.json"),
+            json=load_fixture("user_create_response.json"),
         )
         result = workos.user_management.create_user(
             email="test_email", password=PasswordPlaintext(password="test_value")
         )
-        assert isinstance(result, User)
-        assert result.object == "user"
-        assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert isinstance(result, UserCreateResponse)
+        assert (
+            result.radar_auth_attempt_id
+            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
+        )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/users")
@@ -532,12 +559,16 @@ class TestUserManagement:
 
     def test_create_magic_auth(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("magic_auth.json"),
+            json=load_fixture(
+                "magic_auth_send_magic_auth_code_and_return_response.json"
+            ),
         )
         result = workos.user_management.create_magic_auth(email="test_email")
-        assert isinstance(result, MagicAuth)
-        assert result.object == "magic_auth"
-        assert result.id == "magic_auth_01HWZBQZY2M3AMQW166Q22K88F"
+        assert isinstance(result, MagicAuthSendMagicAuthCodeAndReturnResponse)
+        assert (
+            result.radar_auth_attempt_id
+            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
+        )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/magic_auth")
@@ -906,6 +937,23 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/authorize/device")
 
+    @pytest.mark.asyncio
+    async def test_create_radar_challenge(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("send_radar_sms_challenge_response.json")
+        )
+        result = await async_workos.user_management.create_radar_challenge(
+            user_id="test_user_id",
+            pending_authentication_token="test_pending_authentication_token",
+            phone_number="test_phone_number",
+        )
+        assert isinstance(result, SendRadarSmsChallengeResponse)
+        assert result.verification_id == "vrf_01HXYZ123456789ABCDEFGHIJ"
+        assert result.phone_number == "+15555550123"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/radar_challenges")
+
     def test_get_logout_url(self, async_workos):
         result = async_workos.user_management.get_logout_url(
             session_id="test_session_id"
@@ -1048,13 +1096,15 @@ class TestAsyncUserManagement:
 
     @pytest.mark.asyncio
     async def test_create_user(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("user.json"))
+        httpx_mock.add_response(json=load_fixture("user_create_response.json"))
         result = await async_workos.user_management.create_user(
             email="test_email", password=PasswordPlaintext(password="test_value")
         )
-        assert isinstance(result, User)
-        assert result.object == "user"
-        assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert isinstance(result, UserCreateResponse)
+        assert (
+            result.radar_auth_attempt_id
+            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
+        )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/users")
@@ -1333,13 +1383,19 @@ class TestAsyncUserManagement:
 
     @pytest.mark.asyncio
     async def test_create_magic_auth(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("magic_auth.json"))
+        httpx_mock.add_response(
+            json=load_fixture(
+                "magic_auth_send_magic_auth_code_and_return_response.json"
+            )
+        )
         result = await async_workos.user_management.create_magic_auth(
             email="test_email"
         )
-        assert isinstance(result, MagicAuth)
-        assert result.object == "magic_auth"
-        assert result.id == "magic_auth_01HWZBQZY2M3AMQW166Q22K88F"
+        assert isinstance(result, MagicAuthSendMagicAuthCodeAndReturnResponse)
+        assert (
+            result.radar_auth_attempt_id
+            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
+        )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/magic_auth")

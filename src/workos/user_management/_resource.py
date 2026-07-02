@@ -21,19 +21,24 @@ from .models import (
     JWTTemplateResponse,
     JwksResponse,
     MagicAuth,
+    MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
     PasswordSessionAuthenticateRequest,
     RedirectUri,
     RefreshTokenSessionAuthenticateRequest,
     ResetPasswordResponse,
+    SendRadarSmsChallengeResponse,
     SendVerificationEmailResponse,
     DeviceCodeSessionAuthenticateRequest,
     EmailVerificationCodeSessionAuthenticateRequest,
     MagicAuthCodeSessionAuthenticateRequest,
     MFATotpSessionAuthenticateRequest,
     OrganizationSelectionSessionAuthenticateRequest,
+    RadarEmailChallengeCodeSessionAuthenticateRequest,
+    RadarSmsChallengeCodeSessionAuthenticateRequest,
     UserApiKey,
     UserApiKeyWithValue,
+    UserCreateResponse,
     UserIdentitiesGetItem,
     UserInvite,
     VerifyEmailResponse,
@@ -126,6 +131,8 @@ class UserManagement:
             EmailVerificationCodeSessionAuthenticateRequest,
             MFATotpSessionAuthenticateRequest,
             OrganizationSelectionSessionAuthenticateRequest,
+            RadarEmailChallengeCodeSessionAuthenticateRequest,
+            RadarSmsChallengeCodeSessionAuthenticateRequest,
             DeviceCodeSessionAuthenticateRequest,
             Dict[str, Any],
         ],
@@ -136,7 +143,7 @@ class UserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -566,6 +573,55 @@ class UserManagement:
             request_options=request_options,
         )
 
+    def create_radar_challenge(
+        self,
+        *,
+        user_id: str,
+        pending_authentication_token: str,
+        phone_number: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SendRadarSmsChallengeResponse:
+        """Send a Radar SMS challenge
+
+        Sends a one-time verification code over SMS to a user as part of a Radar challenge. Use the returned `verification_id` to authenticate the user with the `urn:workos:oauth:grant-type:radar-sms-challenge:code` grant type.
+
+        Args:
+            user_id: The ID of the user to send the SMS challenge to.
+            pending_authentication_token: The pending authentication token from a previous authentication attempt that triggered the Radar challenge.
+            phone_number: The phone number to send the SMS verification code to.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SendRadarSmsChallengeResponse
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "pending_authentication_token": pending_authentication_token,
+                "phone_number": phone_number,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("user_management", "radar_challenges"),
+            body=body,
+            model=SendRadarSmsChallengeResponse,
+            request_options=request_options,
+        )
+
     def get_logout_url(
         self,
         *,
@@ -914,9 +970,12 @@ class UserManagement:
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> User:
+    ) -> UserCreateResponse:
         """Create a user
 
         Create a new user in the current environment.
@@ -929,11 +988,14 @@ class UserManagement:
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            signals_id: An optional Radar signals ID to correlate client-side signals with this request.
             password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            User
+            UserCreateResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -953,6 +1015,9 @@ class UserManagement:
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "signals_id": signals_id,
             }.items()
             if v is not None
         }
@@ -966,7 +1031,7 @@ class UserManagement:
             method="post",
             path=("user_management", "users"),
             body=body,
-            model=User,
+            model=UserCreateResponse,
             request_options=request_options,
         )
 
@@ -1689,8 +1754,12 @@ class UserManagement:
         *,
         email: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> MagicAuth:
+    ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
 
         Creates a one-time authentication code that can be sent to the user's email address. The code expires in 10 minutes. To verify the code, [authenticate the user with Magic Auth](https://workos.com/docs/reference/authkit/authentication/magic-auth).
@@ -1698,10 +1767,14 @@ class UserManagement:
         Args:
             email: The email address to send the magic code to.
             invitation_token: The invitation token to associate with this magic code.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            radar_auth_attempt_id: The ID of an existing Radar authentication attempt to associate with this request.
+            signals_id: An optional Radar signals ID to correlate client-side signals with this request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            MagicAuth
+            MagicAuthSendMagicAuthCodeAndReturnResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -1715,6 +1788,10 @@ class UserManagement:
             for k, v in {
                 "email": email,
                 "invitation_token": invitation_token,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "radar_auth_attempt_id": radar_auth_attempt_id,
+                "signals_id": signals_id,
             }.items()
             if v is not None
         }
@@ -1722,7 +1799,7 @@ class UserManagement:
             method="post",
             path=("user_management", "magic_auth"),
             body=body,
-            model=MagicAuth,
+            model=MagicAuthSendMagicAuthCodeAndReturnResponse,
             request_options=request_options,
         )
 
@@ -2257,6 +2334,8 @@ class AsyncUserManagement:
             EmailVerificationCodeSessionAuthenticateRequest,
             MFATotpSessionAuthenticateRequest,
             OrganizationSelectionSessionAuthenticateRequest,
+            RadarEmailChallengeCodeSessionAuthenticateRequest,
+            RadarSmsChallengeCodeSessionAuthenticateRequest,
             DeviceCodeSessionAuthenticateRequest,
             Dict[str, Any],
         ],
@@ -2267,7 +2346,7 @@ class AsyncUserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2697,6 +2776,55 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
+    async def create_radar_challenge(
+        self,
+        *,
+        user_id: str,
+        pending_authentication_token: str,
+        phone_number: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SendRadarSmsChallengeResponse:
+        """Send a Radar SMS challenge
+
+        Sends a one-time verification code over SMS to a user as part of a Radar challenge. Use the returned `verification_id` to authenticate the user with the `urn:workos:oauth:grant-type:radar-sms-challenge:code` grant type.
+
+        Args:
+            user_id: The ID of the user to send the SMS challenge to.
+            pending_authentication_token: The pending authentication token from a previous authentication attempt that triggered the Radar challenge.
+            phone_number: The phone number to send the SMS verification code to.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SendRadarSmsChallengeResponse
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "pending_authentication_token": pending_authentication_token,
+                "phone_number": phone_number,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("user_management", "radar_challenges"),
+            body=body,
+            model=SendRadarSmsChallengeResponse,
+            request_options=request_options,
+        )
+
     def get_logout_url(
         self,
         *,
@@ -3045,9 +3173,12 @@ class AsyncUserManagement:
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> User:
+    ) -> UserCreateResponse:
         """Create a user
 
         Create a new user in the current environment.
@@ -3060,11 +3191,14 @@ class AsyncUserManagement:
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            signals_id: An optional Radar signals ID to correlate client-side signals with this request.
             password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            User
+            UserCreateResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -3084,6 +3218,9 @@ class AsyncUserManagement:
                 "email_verified": email_verified,
                 "metadata": metadata,
                 "external_id": external_id,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "signals_id": signals_id,
             }.items()
             if v is not None
         }
@@ -3097,7 +3234,7 @@ class AsyncUserManagement:
             method="post",
             path=("user_management", "users"),
             body=body,
-            model=User,
+            model=UserCreateResponse,
             request_options=request_options,
         )
 
@@ -3820,8 +3957,12 @@ class AsyncUserManagement:
         *,
         email: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> MagicAuth:
+    ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
 
         Creates a one-time authentication code that can be sent to the user's email address. The code expires in 10 minutes. To verify the code, [authenticate the user with Magic Auth](https://workos.com/docs/reference/authkit/authentication/magic-auth).
@@ -3829,10 +3970,14 @@ class AsyncUserManagement:
         Args:
             email: The email address to send the magic code to.
             invitation_token: The invitation token to associate with this magic code.
+            ip_address: The IP address of the user's request.
+            user_agent: The user agent string from the user's request.
+            radar_auth_attempt_id: The ID of an existing Radar authentication attempt to associate with this request.
+            signals_id: An optional Radar signals ID to correlate client-side signals with this request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            MagicAuth
+            MagicAuthSendMagicAuthCodeAndReturnResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -3846,6 +3991,10 @@ class AsyncUserManagement:
             for k, v in {
                 "email": email,
                 "invitation_token": invitation_token,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "radar_auth_attempt_id": radar_auth_attempt_id,
+                "signals_id": signals_id,
             }.items()
             if v is not None
         }
@@ -3853,7 +4002,7 @@ class AsyncUserManagement:
             method="post",
             path=("user_management", "magic_auth"),
             body=body,
-            model=MagicAuth,
+            model=MagicAuthSendMagicAuthCodeAndReturnResponse,
             request_options=request_options,
         )
 

@@ -45,6 +45,9 @@ from .jwks_response import JwksResponse as JwksResponse
 from .jwks_response_keys import JwksResponseKeys as JwksResponseKeys
 from .jwt_template_response import JWTTemplateResponse as JWTTemplateResponse
 from .magic_auth import MagicAuth as MagicAuth
+from .magic_auth_send_magic_auth_code_and_return_response import (
+    MagicAuthSendMagicAuthCodeAndReturnResponse as MagicAuthSendMagicAuthCodeAndReturnResponse,
+)
 from .password_reset import PasswordReset as PasswordReset
 from .password_session_authenticate_request import (
     PasswordSessionAuthenticateRequest as PasswordSessionAuthenticateRequest,
@@ -59,6 +62,10 @@ from .resend_user_invite_options import (
 from .reset_password_response import ResetPasswordResponse as ResetPasswordResponse
 from .revoke_session import RevokeSession as RevokeSession
 from .send_email_change import SendEmailChange as SendEmailChange
+from .send_radar_sms_challenge import SendRadarSmsChallenge as SendRadarSmsChallenge
+from .send_radar_sms_challenge_response import (
+    SendRadarSmsChallengeResponse as SendRadarSmsChallengeResponse,
+)
 from .send_verification_email_response import (
     SendVerificationEmailResponse as SendVerificationEmailResponse,
 )
@@ -82,6 +89,12 @@ from .mfa_totp_session_authenticate_request import (
 from .organization_selection_session_authenticate_request import (
     OrganizationSelectionSessionAuthenticateRequest as OrganizationSelectionSessionAuthenticateRequest,
 )
+from .radar_email_challenge_code_session_authenticate_request import (
+    RadarEmailChallengeCodeSessionAuthenticateRequest as RadarEmailChallengeCodeSessionAuthenticateRequest,
+)
+from .radar_sms_challenge_code_session_authenticate_request import (
+    RadarSmsChallengeCodeSessionAuthenticateRequest as RadarSmsChallengeCodeSessionAuthenticateRequest,
+)
 from workos.common.models.user import User as User
 from .user_api_key import UserApiKey as UserApiKey
 from .user_api_key_owner import UserApiKeyOwner as UserApiKeyOwner
@@ -89,6 +102,7 @@ from .user_api_key_with_value import UserApiKeyWithValue as UserApiKeyWithValue
 from .user_api_key_with_value_owner import (
     UserApiKeyWithValueOwner as UserApiKeyWithValueOwner,
 )
+from .user_create_response import UserCreateResponse as UserCreateResponse
 from .user_identities_get_item import UserIdentitiesGetItem as UserIdentitiesGetItem
 from .user_invite import UserInvite as UserInvite
 from .user_management_authentication_provider import (

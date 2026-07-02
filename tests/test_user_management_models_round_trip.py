@@ -20,15 +20,18 @@ from workos.user_management.models import (
     JwksResponse,
     JwksResponseKeys,
     MagicAuth,
+    MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
     RedirectUri,
     ResetPasswordResponse,
+    SendRadarSmsChallengeResponse,
     SendVerificationEmailResponse,
     User,
     UserApiKey,
     UserApiKeyOwner,
     UserApiKeyWithValue,
     UserApiKeyWithValueOwner,
+    UserCreateResponse,
     UserIdentitiesGetItem,
     UserInvite,
     UserSessionsImpersonator,
@@ -144,6 +147,24 @@ class TestModelRoundTrip:
         assert serialized["origin"] == data["origin"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
+
+    def test_send_radar_sms_challenge_response_round_trip(self):
+        data = load_fixture("send_radar_sms_challenge_response.json")
+        instance = SendRadarSmsChallengeResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SendRadarSmsChallengeResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_send_radar_sms_challenge_response_minimal_payload(self):
+        data = {
+            "verification_id": "vrf_01HXYZ123456789ABCDEFGHIJ",
+            "phone_number": "+15555550123",
+        }
+        instance = SendRadarSmsChallengeResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["verification_id"] == data["verification_id"]
+        assert serialized["phone_number"] == data["phone_number"]
 
     def test_redirect_uri_round_trip(self):
         data = load_fixture("redirect_uri.json")
@@ -1070,6 +1091,46 @@ class TestModelRoundTrip:
         }
         instance = Invitation.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_magic_auth_send_magic_auth_code_and_return_response_round_trip(self):
+        data = load_fixture("magic_auth_send_magic_auth_code_and_return_response.json")
+        instance = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_response_minimal_payload(self):
+        data = {}
+        instance = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_magic_auth_send_magic_auth_code_and_return_response_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_auth_attempt_id" not in serialized
+
+    def test_user_create_response_round_trip(self):
+        data = load_fixture("user_create_response.json")
+        instance = UserCreateResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_response_minimal_payload(self):
+        data = {}
+        instance = UserCreateResponse.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_user_create_response_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = UserCreateResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_auth_attempt_id" not in serialized
 
     def test_email_change_confirmation_round_trip(self):
         data = load_fixture("email_change_confirmation.json")

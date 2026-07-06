@@ -1101,14 +1101,40 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_magic_auth_send_magic_auth_code_and_return_response_minimal_payload(self):
-        data = {}
+        data = {
+            "object": "magic_auth",
+            "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "code": "123456",
+        }
         instance = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(data)
-        assert instance.to_dict() is not None
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["code"] == data["code"]
 
     def test_magic_auth_send_magic_auth_code_and_return_response_omits_absent_optional_non_nullable_fields(
         self,
     ):
-        data = {}
+        data = {
+            "object": "magic_auth",
+            "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "code": "123456",
+        }
         instance = MagicAuthSendMagicAuthCodeAndReturnResponse.from_dict(data)
         serialized = instance.to_dict()
         assert "radar_auth_attempt_id" not in serialized
@@ -1122,15 +1148,81 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_create_response_minimal_payload(self):
-        data = {}
-        instance = UserCreateResponse.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_user_create_response_omits_absent_optional_non_nullable_fields(self):
-        data = {}
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
         instance = UserCreateResponse.from_dict(data)
         serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_create_response_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "name": "Marcelina Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.000Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserCreateResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
         assert "radar_auth_attempt_id" not in serialized
+
+    def test_user_create_response_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "radar_auth_attempt_id": "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ",
+        }
+        instance = UserCreateResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
 
     def test_email_change_confirmation_round_trip(self):
         data = load_fixture("email_change_confirmation.json")

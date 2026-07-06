@@ -176,6 +176,8 @@ class UserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
@@ -196,6 +198,10 @@ class UserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if signals_id is not None:
+            body["signals_id"] = signals_id
+        if radar_auth_attempt_id is not None:
+            body["radar_auth_attempt_id"] = radar_auth_attempt_id
 
         return self._client.request(
             method="POST",
@@ -214,6 +220,7 @@ class UserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
@@ -235,6 +242,8 @@ class UserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if signals_id is not None:
+            body["signals_id"] = signals_id
 
         return self._client.request(
             method="POST",
@@ -289,6 +298,7 @@ class UserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
@@ -309,6 +319,8 @@ class UserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if radar_auth_attempt_id is not None:
+            body["radar_auth_attempt_id"] = radar_auth_attempt_id
 
         return self._client.request(
             method="POST",
@@ -441,6 +453,82 @@ class UserManagement:
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
+
+        return self._client.request(
+            method="POST",
+            path=("user_management", "authenticate"),
+            body=body,
+            model=AuthenticateResponse,
+            request_options=request_options,
+        )
+
+    def authenticate_with_radar_email_challenge(
+        self,
+        *,
+        code: str,
+        radar_challenge_id: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Authenticate with radar email challenge."""
+        body: Dict[str, Any] = {
+            "grant_type": "urn:workos:oauth:grant-type:radar-email-challenge:code",
+            "code": code,
+            "radar_challenge_id": radar_challenge_id,
+            "pending_authentication_token": pending_authentication_token,
+        }
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
+
+        return self._client.request(
+            method="POST",
+            path=("user_management", "authenticate"),
+            body=body,
+            model=AuthenticateResponse,
+            request_options=request_options,
+        )
+
+    def authenticate_with_radar_sms_challenge(
+        self,
+        *,
+        code: str,
+        verification_id: str,
+        phone_number: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Authenticate with radar sms challenge."""
+        body: Dict[str, Any] = {
+            "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
+            "code": code,
+            "verification_id": verification_id,
+            "phone_number": phone_number,
+            "pending_authentication_token": pending_authentication_token,
+        }
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -2379,6 +2467,8 @@ class AsyncUserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
@@ -2399,6 +2489,10 @@ class AsyncUserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if signals_id is not None:
+            body["signals_id"] = signals_id
+        if radar_auth_attempt_id is not None:
+            body["radar_auth_attempt_id"] = radar_auth_attempt_id
 
         return await self._client.request(
             method="POST",
@@ -2417,6 +2511,7 @@ class AsyncUserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        signals_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
@@ -2438,6 +2533,8 @@ class AsyncUserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if signals_id is not None:
+            body["signals_id"] = signals_id
 
         return await self._client.request(
             method="POST",
@@ -2492,6 +2589,7 @@ class AsyncUserManagement:
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
+        radar_auth_attempt_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
@@ -2512,6 +2610,8 @@ class AsyncUserManagement:
             body["device_id"] = device_id
         if user_agent is not None:
             body["user_agent"] = user_agent
+        if radar_auth_attempt_id is not None:
+            body["radar_auth_attempt_id"] = radar_auth_attempt_id
 
         return await self._client.request(
             method="POST",
@@ -2644,6 +2744,82 @@ class AsyncUserManagement:
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
+
+        return await self._client.request(
+            method="POST",
+            path=("user_management", "authenticate"),
+            body=body,
+            model=AuthenticateResponse,
+            request_options=request_options,
+        )
+
+    async def authenticate_with_radar_email_challenge(
+        self,
+        *,
+        code: str,
+        radar_challenge_id: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Authenticate with radar email challenge."""
+        body: Dict[str, Any] = {
+            "grant_type": "urn:workos:oauth:grant-type:radar-email-challenge:code",
+            "code": code,
+            "radar_challenge_id": radar_challenge_id,
+            "pending_authentication_token": pending_authentication_token,
+        }
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
+
+        return await self._client.request(
+            method="POST",
+            path=("user_management", "authenticate"),
+            body=body,
+            model=AuthenticateResponse,
+            request_options=request_options,
+        )
+
+    async def authenticate_with_radar_sms_challenge(
+        self,
+        *,
+        code: str,
+        verification_id: str,
+        phone_number: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Authenticate with radar sms challenge."""
+        body: Dict[str, Any] = {
+            "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
+            "code": code,
+            "verification_id": verification_id,
+            "phone_number": phone_number,
+            "pending_authentication_token": pending_authentication_token,
+        }
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:

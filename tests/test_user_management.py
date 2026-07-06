@@ -266,10 +266,8 @@ class TestUserManagement:
             email="test_email", password=PasswordPlaintext(password="test_value")
         )
         assert isinstance(result, UserCreateResponse)
-        assert (
-            result.radar_auth_attempt_id
-            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
-        )
+        assert result.object == "user"
+        assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/users")
@@ -565,10 +563,8 @@ class TestUserManagement:
         )
         result = workos.user_management.create_magic_auth(email="test_email")
         assert isinstance(result, MagicAuthSendMagicAuthCodeAndReturnResponse)
-        assert (
-            result.radar_auth_attempt_id
-            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
-        )
+        assert result.object == "magic_auth"
+        assert result.id == "magic_auth_01HWZBQZY2M3AMQW166Q22K88F"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/magic_auth")
@@ -814,6 +810,38 @@ class TestUserManagement:
         assert request.method == "POST"
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
+
+    def test_authenticate_with_radar_email_challenge(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_radar_email_challenge(
+            code="test_value",
+            radar_challenge_id="test_value",
+            pending_authentication_token="test_value",
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"]
+            == "urn:workos:oauth:grant-type:radar-email-challenge:code"
+        )
+
+    def test_authenticate_with_radar_sms_challenge(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_radar_sms_challenge(
+            code="test_value",
+            verification_id="test_value",
+            phone_number="test_value",
+            pending_authentication_token="test_value",
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:radar-sms-challenge:code"
+        )
 
     def test_get_jwks_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("jwks_response.json"))
@@ -1101,10 +1129,8 @@ class TestAsyncUserManagement:
             email="test_email", password=PasswordPlaintext(password="test_value")
         )
         assert isinstance(result, UserCreateResponse)
-        assert (
-            result.radar_auth_attempt_id
-            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
-        )
+        assert result.object == "user"
+        assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/users")
@@ -1392,10 +1418,8 @@ class TestAsyncUserManagement:
             email="test_email"
         )
         assert isinstance(result, MagicAuthSendMagicAuthCodeAndReturnResponse)
-        assert (
-            result.radar_auth_attempt_id
-            == "radar_auth_attempt_01HXYZ123456789ABCDEFGHIJ"
-        )
+        assert result.object == "magic_auth"
+        assert result.id == "magic_auth_01HWZBQZY2M3AMQW166Q22K88F"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/magic_auth")
@@ -1663,6 +1687,48 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
+
+    @pytest.mark.asyncio
+    async def test_authenticate_with_radar_email_challenge(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = (
+            await async_workos.user_management.authenticate_with_radar_email_challenge(
+                code="test_value",
+                radar_challenge_id="test_value",
+                pending_authentication_token="test_value",
+            )
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"]
+            == "urn:workos:oauth:grant-type:radar-email-challenge:code"
+        )
+
+    @pytest.mark.asyncio
+    async def test_authenticate_with_radar_sms_challenge(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = (
+            await async_workos.user_management.authenticate_with_radar_sms_challenge(
+                code="test_value",
+                verification_id="test_value",
+                phone_number="test_value",
+                pending_authentication_token="test_value",
+            )
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:radar-sms-challenge:code"
+        )
 
     @pytest.mark.asyncio
     async def test_get_jwks_with_request_options(self, async_workos, httpx_mock):

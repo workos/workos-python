@@ -3,14 +3,32 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from datetime import datetime
+from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 
 @dataclass(slots=True)
 class MagicAuthSendMagicAuthCodeAndReturnResponse:
     """Magic Auth Send Magic Auth Code And Return Response model."""
 
+    object: Literal["magic_auth"]
+    """Distinguishes the Magic Auth object."""
+    id: str
+    """The unique ID of the Magic Auth code."""
+    user_id: str
+    """The unique ID of the user."""
+    email: str
+    """The email address of the user."""
+    expires_at: datetime
+    """The timestamp when the Magic Auth code expires."""
+    created_at: datetime
+    """An ISO 8601 timestamp."""
+    updated_at: datetime
+    """An ISO 8601 timestamp."""
+    code: str
+    """The code used to verify the Magic Auth code."""
     radar_auth_attempt_id: Optional[str] = None
     """The ID of the Radar authentication attempt created for this request when Radar is enabled. Pass this value to the authenticate endpoint to associate the subsequent authentication with this Radar attempt."""
 
@@ -21,6 +39,14 @@ class MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
+                object=data.get("object", "magic_auth"),
+                id=data["id"],
+                user_id=data["user_id"],
+                email=data["email"],
+                expires_at=_parse_datetime(data["expires_at"]),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
+                code=data["code"],
                 radar_auth_attempt_id=data.get("radar_auth_attempt_id"),
             )
         except (KeyError, ValueError) as e:
@@ -29,6 +55,14 @@ class MagicAuthSendMagicAuthCodeAndReturnResponse:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
+        result["object"] = self.object
+        result["id"] = self.id
+        result["user_id"] = self.user_id
+        result["email"] = self.email
+        result["expires_at"] = _format_datetime(self.expires_at)
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
+        result["code"] = self.code
         if self.radar_auth_attempt_id is not None:
             result["radar_auth_attempt_id"] = self.radar_auth_attempt_id
         return result

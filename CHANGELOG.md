@@ -2,10 +2,19 @@
 
 ## [9.1.0](https://github.com/workos/workos-python/compare/v9.0.0...v9.1.0) (2026-07-06)
 
+* [#687](https://github.com/workos/workos-python/pull/687) fix(generated): regenerate from spec
 
-### Features
+  **Features**
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added model `UserRoleAssignmentSource`
+    * Added `source` to `UserRoleAssignment`
+    * Added enum `UserRoleAssignmentSourceType`
+    * Added parameter `UserManagementAuthentication.authorize.max_age`
+    * Added endpoint `GET /user_management/cors_origins`
+    * Added endpoint `GET /user_management/redirect_uris`
 
-* **generated:** UserManagement, Radar (batch f510ddfb) ([#687](https://github.com/workos/workos-python/issues/687)) ([4832d0e](https://github.com/workos/workos-python/commit/4832d0e57ba36a85a7338202a886fda088fc26bd))
+  **Fixes**
+  * Restore mistakenly removed CreateMagicAuth logic from previous release
 
 ## [9.0.0](https://github.com/workos/workos-python/compare/v8.3.0...v9.0.0) (2026-07-02)
 

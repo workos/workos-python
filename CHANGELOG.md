@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.1.0](https://github.com/workos/workos-python/compare/v9.0.0...v9.1.0) (2026-07-06)
+
+
+### Features
+
+* **generated:** UserManagement, Radar (batch f510ddfb) ([#687](https://github.com/workos/workos-python/issues/687)) ([4832d0e](https://github.com/workos/workos-python/commit/4832d0e57ba36a85a7338202a886fda088fc26bd))
+
 ## [9.0.0](https://github.com/workos/workos-python/compare/v8.3.0...v9.0.0) (2026-07-02)
 
 * [#681](https://github.com/workos/workos-python/pull/681) fix(generated): regenerate from spec

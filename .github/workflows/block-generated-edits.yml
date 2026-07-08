@@ -9,4 +9,5 @@ on:
 jobs:
   block-generated-edits:
     uses: workos/actions/.github/workflows/block-generated-edits.yml@main
-    secrets: inherit
+    secrets:
+      SDK_BOT_PRIVATE_KEY: ${{ secrets.SDK_BOT_PRIVATE_KEY }}

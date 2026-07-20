@@ -16,7 +16,7 @@ from ._errors import (
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from .public_client import create_public_client
-from ._types import RequestOptions
+from ._types import NOT_GIVEN, NotGiven, RequestOptions
 
 __all__ = [
     "WorkOSClient",
@@ -34,5 +34,7 @@ __all__ = [
     "AsyncPage",
     "ListMetadata",
     "RequestOptions",
+    "NOT_GIVEN",
+    "NotGiven",
     "create_public_client",
 ]

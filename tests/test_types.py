@@ -16,3 +16,9 @@ class TestNotGiven:
     def test_is_distinct_from_none(self):
         assert NOT_GIVEN is not None
         assert isinstance(NOT_GIVEN, NotGiven)
+
+    def test_exported_from_public_namespace(self):
+        import workos
+
+        assert workos.NOT_GIVEN is NOT_GIVEN
+        assert workos.NotGiven is NotGiven

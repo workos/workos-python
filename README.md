@@ -140,6 +140,9 @@ result = client.organizations.list_organizations(
 )
 ```
 
+> [!NOTE]
+> The WorkOS API currently honors `Idempotency-Key` only on the [Create Audit Log Event](https://workos.com/docs/reference/audit-logs/event) endpoint (`audit_logs.create_event`). Other endpoints accept the header but do not deduplicate requests, so a retried mutation elsewhere can still create a duplicate.
+
 ## Type Safety
 
 This SDK ships with full type annotations (`py.typed` / PEP 561) and works with mypy, pyright, and IDE autocompletion out of the box. All models are `@dataclass(slots=True)` classes with `from_dict()` / `to_dict()` for serialization.

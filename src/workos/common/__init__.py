@@ -182,7 +182,6 @@ from .models import (
 from .models import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
 )
-from .models import DataIntegrationCredentialsType as DataIntegrationCredentialsType
 from .models import DataIntegrationCredentialType as DataIntegrationCredentialType
 from .models import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,

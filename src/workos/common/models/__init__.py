@@ -291,6 +291,7 @@ from .create_webhook_endpoint_events import (
 from .custom_provider_definition_authenticate_via import (
     CustomProviderDefinitionAuthenticateVia as CustomProviderDefinitionAuthenticateVia,
 )
+from .data_integration_credentials_type import *  # noqa: F401,F403
 from .data_integration_access_token_response_error import (
     DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
 )
@@ -299,9 +300,6 @@ from .data_integration_credentials_credentials_type import (
 )
 from .data_integration_credentials_response_error import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
-)
-from .data_integration_credentials_type import (
-    DataIntegrationCredentialsType as DataIntegrationCredentialsType,
 )
 from .data_integration_credential_type import (
     DataIntegrationCredentialType as DataIntegrationCredentialType,

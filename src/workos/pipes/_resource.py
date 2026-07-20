@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     CustomProviderDefinition,
     DataIntegration,
@@ -80,9 +80,9 @@ class Pipes:
         self,
         *,
         provider: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         credentials: Optional[DataIntegrationCredentialsDto] = None,
         custom_provider: Optional[CustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
@@ -115,9 +115,7 @@ class Pipes:
             k: v
             for k, v in {
                 "provider": provider,
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -127,6 +125,10 @@ class Pipes:
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
         return self._client.request(
             method="post",
             path=("data-integrations",),
@@ -169,9 +171,9 @@ class Pipes:
         self,
         slug: str,
         *,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         credentials: Optional[DataIntegrationCredentialsDto] = None,
         custom_provider: Optional[UpdateCustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
@@ -203,9 +205,7 @@ class Pipes:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -215,6 +215,10 @@ class Pipes:
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
         return self._client.request(
             method="put",
             path=("data-integrations", str(slug)),
@@ -395,7 +399,7 @@ class Pipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
+        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -420,13 +424,10 @@ class Pipes:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "user_id": user_id,
         }
+        if organization_id is not NOT_GIVEN:
+            body["organization_id"] = organization_id
         return self._client.request(
             method="post",
             path=("data-integrations", str(provider), "token"),
@@ -766,9 +767,9 @@ class AsyncPipes:
         self,
         *,
         provider: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         credentials: Optional[DataIntegrationCredentialsDto] = None,
         custom_provider: Optional[CustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
@@ -801,9 +802,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "provider": provider,
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -813,6 +812,10 @@ class AsyncPipes:
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
         return await self._client.request(
             method="post",
             path=("data-integrations",),
@@ -855,9 +858,9 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         credentials: Optional[DataIntegrationCredentialsDto] = None,
         custom_provider: Optional[UpdateCustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
@@ -889,9 +892,7 @@ class AsyncPipes:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -901,6 +902,10 @@ class AsyncPipes:
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
         return await self._client.request(
             method="put",
             path=("data-integrations", str(slug)),
@@ -1081,7 +1086,7 @@ class AsyncPipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
+        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -1106,13 +1111,10 @@ class AsyncPipes:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "user_id": user_id,
         }
+        if organization_id is not NOT_GIVEN:
+            body["organization_id"] = organization_id
         return await self._client.request(
             method="post",
             path=("data-integrations", str(provider), "token"),

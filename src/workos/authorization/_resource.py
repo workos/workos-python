@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     AuthorizationCheck,
     AuthorizationResource,
@@ -819,7 +819,7 @@ class Authorization:
         *,
         name: str,
         slug: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
@@ -853,11 +853,12 @@ class Authorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="post",
             path=("authorization", "organizations", str(organization_id), "roles"),
@@ -911,7 +912,7 @@ class Authorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Update a custom role
@@ -941,10 +942,11 @@ class Authorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="patch",
             path=(
@@ -1179,7 +1181,7 @@ class Authorization:
         external_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -1215,10 +1217,11 @@ class Authorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -1504,7 +1507,7 @@ class Authorization:
         name: str,
         resource_type_slug: str,
         organization_id: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -1537,16 +1540,13 @@ class Authorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_id": external_id,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "external_id": external_id,
+            "name": name,
+            "resource_type_slug": resource_type_slug,
+            "organization_id": organization_id,
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -1602,7 +1602,7 @@ class Authorization:
         resource_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -1636,10 +1636,11 @@ class Authorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -1845,7 +1846,7 @@ class Authorization:
         *,
         slug: str,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
@@ -1878,11 +1879,12 @@ class Authorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="post",
             path=("authorization", "roles"),
@@ -1927,7 +1929,7 @@ class Authorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Update an environment role
@@ -1956,10 +1958,11 @@ class Authorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="patch",
             path=("authorization", "roles", str(slug)),
@@ -2098,7 +2101,7 @@ class Authorization:
         *,
         slug: str,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Permission:
@@ -2130,11 +2133,12 @@ class Authorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="post",
             path=("authorization", "permissions"),
@@ -2178,7 +2182,7 @@ class Authorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationPermission:
         """Update a permission
@@ -2206,10 +2210,11 @@ class Authorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="patch",
             path=("authorization", "permissions", str(slug)),
@@ -2991,7 +2996,7 @@ class AsyncAuthorization:
         *,
         name: str,
         slug: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
@@ -3025,11 +3030,12 @@ class AsyncAuthorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="post",
             path=("authorization", "organizations", str(organization_id), "roles"),
@@ -3083,7 +3089,7 @@ class AsyncAuthorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Update a custom role
@@ -3113,10 +3119,11 @@ class AsyncAuthorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="patch",
             path=(
@@ -3351,7 +3358,7 @@ class AsyncAuthorization:
         external_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -3387,10 +3394,11 @@ class AsyncAuthorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -3676,7 +3684,7 @@ class AsyncAuthorization:
         name: str,
         resource_type_slug: str,
         organization_id: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -3709,16 +3717,13 @@ class AsyncAuthorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_id": external_id,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "external_id": external_id,
+            "name": name,
+            "resource_type_slug": resource_type_slug,
+            "organization_id": organization_id,
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -3774,7 +3779,7 @@ class AsyncAuthorization:
         resource_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         parent_resource: Optional[
             Union[ParentResourceById, ParentResourceByExternalId]
         ] = None,
@@ -3808,10 +3813,11 @@ class AsyncAuthorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
@@ -4017,7 +4023,7 @@ class AsyncAuthorization:
         *,
         slug: str,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
@@ -4050,11 +4056,12 @@ class AsyncAuthorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="post",
             path=("authorization", "roles"),
@@ -4099,7 +4106,7 @@ class AsyncAuthorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Update an environment role
@@ -4128,10 +4135,11 @@ class AsyncAuthorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="patch",
             path=("authorization", "roles", str(slug)),
@@ -4270,7 +4278,7 @@ class AsyncAuthorization:
         *,
         slug: str,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Permission:
@@ -4302,11 +4310,12 @@ class AsyncAuthorization:
             for k, v in {
                 "slug": slug,
                 "name": name,
-                "description": description,
                 "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="post",
             path=("authorization", "permissions"),
@@ -4350,7 +4359,7 @@ class AsyncAuthorization:
         slug: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationPermission:
         """Update a permission
@@ -4378,10 +4387,11 @@ class AsyncAuthorization:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="patch",
             path=("authorization", "permissions", str(slug)),

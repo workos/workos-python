@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     CreateDataKeyResponse,
     DecryptResponse,
@@ -391,7 +391,7 @@ class Vault:
         id: str,
         *,
         value: str,
-        version_check: Optional[str] = None,
+        version_check: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ObjectWithoutValue:
         """Update an object
@@ -415,13 +415,10 @@ class Vault:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "value": value,
-                "version_check": version_check,
-            }.items()
-            if v is not None
+            "value": value,
         }
+        if version_check is not NOT_GIVEN:
+            body["version_check"] = version_check
         return self._client.request(
             method="put",
             path=("vault", "v1", "kv", str(id)),
@@ -855,7 +852,7 @@ class AsyncVault:
         id: str,
         *,
         value: str,
-        version_check: Optional[str] = None,
+        version_check: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ObjectWithoutValue:
         """Update an object
@@ -879,13 +876,10 @@ class AsyncVault:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "value": value,
-                "version_check": version_check,
-            }.items()
-            if v is not None
+            "value": value,
         }
+        if version_check is not NOT_GIVEN:
+            body["version_check"] = version_check
         return await self._client.request(
             method="put",
             path=("vault", "v1", "kv", str(id)),

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import AuditLogConfiguration, Organization, OrganizationDomainData
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
@@ -81,8 +81,8 @@ class Organizations:
         allow_profiles_outside_organization: Optional[bool] = None,
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Create an Organization
@@ -118,11 +118,13 @@ class Organizations:
                 "domain_data": [item.to_dict() for item in domain_data]
                 if domain_data is not None
                 else None,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
         return self._client.request(
             method="post",
             path=("organizations",),
@@ -200,8 +202,8 @@ class Organizations:
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
         stripe_customer_id: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Update an Organization
@@ -242,11 +244,13 @@ class Organizations:
                 if domain_data is not None
                 else None,
                 "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
         return self._client.request(
             method="put",
             path=("organizations", str(id)),
@@ -380,8 +384,8 @@ class AsyncOrganizations:
         allow_profiles_outside_organization: Optional[bool] = None,
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Create an Organization
@@ -417,11 +421,13 @@ class AsyncOrganizations:
                 "domain_data": [item.to_dict() for item in domain_data]
                 if domain_data is not None
                 else None,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
         return await self._client.request(
             method="post",
             path=("organizations",),
@@ -499,8 +505,8 @@ class AsyncOrganizations:
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
         stripe_customer_id: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Update an Organization
@@ -541,11 +547,13 @@ class AsyncOrganizations:
                 if domain_data is not None
                 else None,
                 "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
         return await self._client.request(
             method="put",
             path=("organizations", str(id)),

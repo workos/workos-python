@@ -5,12 +5,30 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, NoReturn, Protocol, TypedDict, TypeVar
+from typing import Any, Dict, Literal, NoReturn, Protocol, TypedDict, TypeVar
 
 if sys.version_info >= (3, 11):
     from typing import Self
 else:
     from typing_extensions import Self
+
+
+class NotGiven:
+    """Sentinel used as the default for nullable optional parameters.
+
+    Distinguishes an omitted argument ("leave unchanged", not sent) from an
+    explicit ``None``, which clears the field by sending JSON ``null``.
+    Falsy so ``if not param`` reads naturally.
+    """
+
+    def __bool__(self) -> Literal[False]:
+        return False
+
+    def __repr__(self) -> str:
+        return "NOT_GIVEN"
+
+
+NOT_GIVEN = NotGiven()
 
 
 class RequestOptions(TypedDict, total=False):

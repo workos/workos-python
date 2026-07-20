@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cas
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     AuthenticateResponse,
     AuthorizationCodeSessionAuthenticateRequest,
@@ -1052,14 +1052,14 @@ class UserManagement:
         self,
         *,
         email: str,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        name: Union[str, None, NotGiven] = NOT_GIVEN,
+        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
+        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
         signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1097,18 +1097,26 @@ class UserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "name": name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "ip_address": ip_address,
-                "user_agent": user_agent,
                 "signals_id": signals_id,
             }.items()
             if v is not None
         }
+        if first_name is not NOT_GIVEN:
+            body["first_name"] = first_name
+        if last_name is not NOT_GIVEN:
+            body["last_name"] = last_name
+        if name is not NOT_GIVEN:
+            body["name"] = name
+        if email_verified is not NOT_GIVEN:
+            body["email_verified"] = email_verified
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
+        if ip_address is not NOT_GIVEN:
+            body["ip_address"] = ip_address
+        if user_agent is not NOT_GIVEN:
+            body["user_agent"] = user_agent
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -1192,9 +1200,9 @@ class UserManagement:
         last_name: Optional[str] = None,
         name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        locale: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        locale: Union[str, None, NotGiven] = NOT_GIVEN,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
@@ -1233,12 +1241,15 @@ class UserManagement:
                 "last_name": last_name,
                 "name": name,
                 "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
+        if locale is not NOT_GIVEN:
+            body["locale"] = locale
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -3343,14 +3354,14 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        name: Union[str, None, NotGiven] = NOT_GIVEN,
+        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
+        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
         signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -3388,18 +3399,26 @@ class AsyncUserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "name": name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "ip_address": ip_address,
-                "user_agent": user_agent,
                 "signals_id": signals_id,
             }.items()
             if v is not None
         }
+        if first_name is not NOT_GIVEN:
+            body["first_name"] = first_name
+        if last_name is not NOT_GIVEN:
+            body["last_name"] = last_name
+        if name is not NOT_GIVEN:
+            body["name"] = name
+        if email_verified is not NOT_GIVEN:
+            body["email_verified"] = email_verified
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
+        if ip_address is not NOT_GIVEN:
+            body["ip_address"] = ip_address
+        if user_agent is not NOT_GIVEN:
+            body["user_agent"] = user_agent
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -3483,9 +3502,9 @@ class AsyncUserManagement:
         last_name: Optional[str] = None,
         name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        locale: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        locale: Union[str, None, NotGiven] = NOT_GIVEN,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
@@ -3524,12 +3543,15 @@ class AsyncUserManagement:
                 "last_name": last_name,
                 "name": name,
                 "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
             }.items()
             if v is not None
         }
+        if metadata is not NOT_GIVEN:
+            body["metadata"] = metadata
+        if external_id is not NOT_GIVEN:
+            body["external_id"] = external_id
+        if locale is not NOT_GIVEN:
+            body["locale"] = locale
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password

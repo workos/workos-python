@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     ApplicationCredentialsListItem,
     CreateM2MApplication,
@@ -287,9 +287,9 @@ class Connect:
         id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -318,14 +318,19 @@ class Connect:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
+        if redirect_uris is not NOT_GIVEN:
+            body["redirect_uris"] = (
+                [item.to_dict() for item in redirect_uris]
+                if redirect_uris is not None
+                else None
+            )
         return cast(
             ConnectApplicationVariant,
             self._client.request(
@@ -719,9 +724,9 @@ class AsyncConnect:
         id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -750,14 +755,19 @@ class AsyncConnect:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
+        if scopes is not NOT_GIVEN:
+            body["scopes"] = scopes
+        if redirect_uris is not NOT_GIVEN:
+            body["redirect_uris"] = (
+                [item.to_dict() for item in redirect_uris]
+                if redirect_uris is not None
+                else None
+            )
         return cast(
             ConnectApplicationVariant,
             await self._client.request(

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from workos.common.models.group import Group
 from workos.common.models.user_organization_membership_base_list_data import (
     UserOrganizationMembershipBaseListData,
@@ -77,7 +77,7 @@ class Groups:
         organization_id: str,
         *,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Group:
         """Create a group
@@ -103,13 +103,10 @@ class Groups:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
+            "name": name,
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="post",
             path=("organizations", str(organization_id), "groups"),
@@ -157,7 +154,7 @@ class Groups:
         group_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Group:
         """Update a group
@@ -187,10 +184,11 @@ class Groups:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return self._client.request(
             method="patch",
             path=("organizations", str(organization_id), "groups", str(group_id)),
@@ -433,7 +431,7 @@ class AsyncGroups:
         organization_id: str,
         *,
         name: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Group:
         """Create a group
@@ -459,13 +457,10 @@ class AsyncGroups:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
+            "name": name,
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="post",
             path=("organizations", str(organization_id), "groups"),
@@ -513,7 +508,7 @@ class AsyncGroups:
         group_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Group:
         """Update a group
@@ -543,10 +538,11 @@ class AsyncGroups:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
             }.items()
             if v is not None
         }
+        if description is not NOT_GIVEN:
+            body["description"] = description
         return await self._client.request(
             method="patch",
             path=("organizations", str(organization_id), "groups", str(group_id)),

@@ -52,6 +52,12 @@ class TestNullableClearing:
         assert "external_id" not in body
         assert body["first_name"] == "Ada"
 
+    def test_sentinel_never_leaks_into_body(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("organization.json"))
+        workos.organizations.update_organization(id="org_123", name="New Name")
+        request = httpx_mock.get_request()
+        assert b"NOT_GIVEN" not in request.content
+
 
 class TestAsyncNullableClearing:
     @pytest.mark.asyncio

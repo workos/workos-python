@@ -11,6 +11,8 @@ See the [API Reference](https://workos.com/docs/reference/client-libraries) for 
 
 ## Installation
 
+Requires Python 3.10+.
+
 ```bash
 pip install workos
 ```
@@ -28,13 +30,13 @@ for org in page.auto_paging_iter():
     print(org.name)
 
 # Create an organization
-org = client.organizations.create_organizations(name="Acme Corp")
+org = client.organizations.create_organization(name="Acme Corp")
 print(org.id)
 ```
 
 ### Async Client
 
-Every method has an identical async counterpart:
+Every HTTP API method has an identical async counterpart on `AsyncWorkOSClient`. (Pure-local utilities such as webhook signature verification, Actions helpers, and PKCE are synchronous on both clients.)
 
 ```python
 from workos import AsyncWorkOSClient
@@ -59,27 +61,35 @@ The client reads credentials from the environment when not passed explicitly:
 
 ## Available Resources
 
-The client exposes the full WorkOS API through typed namespace properties:
+The client exposes the WorkOS API through typed namespace properties:
 
 | Property | Description |
 |----------|-------------|
 | `client.sso` | Single Sign-On connections and authorization |
 | `client.organizations` | Organization management |
+| `client.organization_domains` | Organization domain verification |
+| `client.organization_membership` | Organization membership management |
 | `client.user_management` | Users, identities, auth methods, invitations |
 | `client.directory_sync` | Directory connections and directory users/groups |
+| `client.groups` | Organization group management |
 | `client.admin_portal` | Admin Portal link generation |
 | `client.audit_logs` | Audit log events, exports, and schemas |
 | `client.authorization` | Fine-Grained Authorization (FGA) resources, roles, permissions, and checks |
-| `client.webhooks` | Webhook event verification |
-| `client.feature_flags` | Feature flag evaluation |
+| `client.events` | Events API |
+| `client.webhooks` | Webhook endpoint management and event verification |
+| `client.feature_flags` | Feature flag management (list, enable/disable, targeting) |
 | `client.api_keys` | Organization API key management |
+| `client.client_api` | Client API token generation |
 | `client.connect` | OAuth application management |
 | `client.widgets` | Widget session tokens |
 | `client.multi_factor_auth` | MFA enrollment and verification (also available as `client.mfa`) |
 | `client.pipes` | Data Integrations |
+| `client.pipes_provider` | Organization data integration configuration |
 | `client.radar` | Radar risk scoring |
 | `client.passwordless` | Passwordless authentication sessions |
 | `client.vault` | Encrypted data vault |
+| `client.actions` | AuthKit Actions signature verification and response signing |
+| `client.pkce` | PKCE code verifier/challenge helpers |
 
 ## Pagination
 
@@ -102,7 +112,7 @@ print(page.after)       # Cursor for the next page
 All API errors map to typed exception classes with rich context:
 
 ```python
-from workos._errors import NotFoundError, RateLimitExceededError
+from workos import NotFoundError, RateLimitExceededError
 
 try:
     client.organizations.get_organization("org_nonexistent")
@@ -124,9 +134,13 @@ except RateLimitExceededError as e:
 | `RateLimitExceededError` | 429 |
 | `ServerError` | 5xx |
 
+## Retries
+
+The client automatically retries requests up to 3 times (configurable via the `max_retries` request option) on 429 and 5xx responses, timeouts, and connection errors, using exponential backoff with jitter and honoring `Retry-After`. The SDK attaches an auto-generated `Idempotency-Key` (UUID v4) to every `POST` request and reuses the same key across its internal retries.
+
 ## Per-Request Options
 
-Every method accepts `request_options` for per-call overrides:
+Every API method accepts `request_options` for per-call overrides (local helpers such as webhook/Actions signature verification and PKCE utilities do not make HTTP calls and don't take `request_options`):
 
 ```python
 result = client.organizations.list_organizations(
@@ -145,7 +159,7 @@ result = client.organizations.list_organizations(
 
 ## Type Safety
 
-This SDK ships with full type annotations (`py.typed` / PEP 561) and works with mypy, pyright, and IDE autocompletion out of the box. All models are `@dataclass(slots=True)` classes with `from_dict()` / `to_dict()` for serialization.
+This SDK ships with full type annotations (`py.typed` / PEP 561) and works with mypy, pyright, and IDE autocompletion out of the box. All API resource models are `@dataclass(slots=True)` classes with `from_dict()` / `to_dict()` for serialization.
 
 ## SDK Versioning
 

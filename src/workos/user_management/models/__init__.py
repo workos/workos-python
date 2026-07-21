@@ -32,6 +32,9 @@ from .create_user_invite_options import (
 from .device_authorization_response import (
     DeviceAuthorizationResponse as DeviceAuthorizationResponse,
 )
+from .device_code_session_authenticate_request import (
+    DeviceCodeSessionAuthenticateRequest as DeviceCodeSessionAuthenticateRequest,
+)
 from .email_change import EmailChange as EmailChange
 from .email_change_confirmation import (
     EmailChangeConfirmation as EmailChangeConfirmation,
@@ -40,17 +43,36 @@ from .email_change_confirmation_user import (
     EmailChangeConfirmationUser as EmailChangeConfirmationUser,
 )
 from .email_verification import EmailVerification as EmailVerification
+from .email_verification_code_session_authenticate_request import (
+    EmailVerificationCodeSessionAuthenticateRequest as EmailVerificationCodeSessionAuthenticateRequest,
+)
 from .invitation import Invitation as Invitation
 from .jwks_response import JwksResponse as JwksResponse
 from .jwks_response_keys import JwksResponseKeys as JwksResponseKeys
 from .jwt_template_response import JWTTemplateResponse as JWTTemplateResponse
 from .magic_auth import MagicAuth as MagicAuth
+from .magic_auth_code_session_authenticate_request import (
+    MagicAuthCodeSessionAuthenticateRequest as MagicAuthCodeSessionAuthenticateRequest,
+)
 from .magic_auth_send_magic_auth_code_and_return_response import (
     MagicAuthSendMagicAuthCodeAndReturnResponse as MagicAuthSendMagicAuthCodeAndReturnResponse,
+)
+from .mfa_totp_session_authenticate_request import (
+    MFATotpSessionAuthenticateRequest as MFATotpSessionAuthenticateRequest,
+)
+from .organization_selection_session_authenticate_request import (
+    OrganizationSelectionSessionAuthenticateRequest as OrganizationSelectionSessionAuthenticateRequest,
 )
 from .password_reset import PasswordReset as PasswordReset
 from .password_session_authenticate_request import (
     PasswordSessionAuthenticateRequest as PasswordSessionAuthenticateRequest,
+)
+from .radar_challenge import RadarChallenge as RadarChallenge
+from .radar_email_challenge_code_session_authenticate_request import (
+    RadarEmailChallengeCodeSessionAuthenticateRequest as RadarEmailChallengeCodeSessionAuthenticateRequest,
+)
+from .radar_sms_challenge_code_session_authenticate_request import (
+    RadarSmsChallengeCodeSessionAuthenticateRequest as RadarSmsChallengeCodeSessionAuthenticateRequest,
 )
 from .redirect_uri import RedirectUri as RedirectUri
 from .refresh_token_session_authenticate_request import (
@@ -74,27 +96,6 @@ from .sso_device_authorization_request import (
 )
 from .update_jwt_template import UpdateJWTTemplate as UpdateJWTTemplate
 from .update_user import UpdateUser as UpdateUser
-from .device_code_session_authenticate_request import (
-    DeviceCodeSessionAuthenticateRequest as DeviceCodeSessionAuthenticateRequest,
-)
-from .email_verification_code_session_authenticate_request import (
-    EmailVerificationCodeSessionAuthenticateRequest as EmailVerificationCodeSessionAuthenticateRequest,
-)
-from .magic_auth_code_session_authenticate_request import (
-    MagicAuthCodeSessionAuthenticateRequest as MagicAuthCodeSessionAuthenticateRequest,
-)
-from .mfa_totp_session_authenticate_request import (
-    MFATotpSessionAuthenticateRequest as MFATotpSessionAuthenticateRequest,
-)
-from .organization_selection_session_authenticate_request import (
-    OrganizationSelectionSessionAuthenticateRequest as OrganizationSelectionSessionAuthenticateRequest,
-)
-from .radar_email_challenge_code_session_authenticate_request import (
-    RadarEmailChallengeCodeSessionAuthenticateRequest as RadarEmailChallengeCodeSessionAuthenticateRequest,
-)
-from .radar_sms_challenge_code_session_authenticate_request import (
-    RadarSmsChallengeCodeSessionAuthenticateRequest as RadarSmsChallengeCodeSessionAuthenticateRequest,
-)
 from workos.common.models.user import User as User
 from .user_api_key import UserApiKey as UserApiKey
 from .user_api_key_owner import UserApiKeyOwner as UserApiKeyOwner

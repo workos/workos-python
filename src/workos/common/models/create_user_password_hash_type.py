@@ -15,6 +15,7 @@ class CreateUserPasswordHashType(str, Enum):
     BCRYPT = "bcrypt"
     FIREBASE_SCRYPT = "firebase-scrypt"
     SSHA = "ssha"
+    SSHA_256 = "ssha256"
     SCRYPT = "scrypt"
     PBKDF_2 = "pbkdf2"
     ARGON_2 = "argon2"
@@ -30,5 +31,5 @@ class CreateUserPasswordHashType(str, Enum):
 
 
 CreateUserPasswordHashTypeLiteral: TypeAlias = Literal[
-    "bcrypt", "firebase-scrypt", "ssha", "scrypt", "pbkdf2", "argon2"
+    "bcrypt", "firebase-scrypt", "ssha", "ssha256", "scrypt", "pbkdf2", "argon2"
 ]

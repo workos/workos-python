@@ -6,6 +6,9 @@ from .audit_log_configuration_log_stream import (
 )
 from .audit_logs_retention import AuditLogsRetention as AuditLogsRetention
 from .organization import Organization as Organization
+from .organization_authorized_connect_application_list_data import (
+    OrganizationAuthorizedConnectApplicationListData as OrganizationAuthorizedConnectApplicationListData,
+)
 from .organization_domain_data import OrganizationDomainData as OrganizationDomainData
 from .organization_input import OrganizationInput as OrganizationInput
 from .update_audit_logs_retention import (

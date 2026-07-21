@@ -4,10 +4,40 @@
 
 from tests.generated_helpers import load_fixture
 
-from workos.organizations.models import AuditLogsRetention
+from workos.organizations.models import (
+    AuditLogConfiguration,
+    AuditLogConfigurationLogStream,
+    AuditLogsRetention,
+    Organization,
+    OrganizationAuthorizedConnectApplicationListData,
+    OrganizationDomainData,
+)
 
 
 class TestModelRoundTrip:
+    def test_organization_domain_data_round_trip(self):
+        data = load_fixture("organization_domain_data.json")
+        instance = OrganizationDomainData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_data_minimal_payload(self):
+        data = {"domain": "foo-corp.com", "state": "verified"}
+        instance = OrganizationDomainData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["domain"] == data["domain"]
+        assert serialized["state"] == data["state"]
+
+    def test_organization_domain_data_round_trips_unknown_enum_values(self):
+        data = {
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_data_state",
+        }
+        instance = OrganizationDomainData.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_audit_logs_retention_round_trip(self):
         data = load_fixture("audit_logs_retention.json")
         instance = AuditLogsRetention.from_dict(data)
@@ -29,3 +59,278 @@ class TestModelRoundTrip:
         instance = AuditLogsRetention.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["retention_period_in_days"] is None
+
+    def test_organization_round_trip(self):
+        data = load_fixture("organization.json")
+        instance = Organization.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Organization.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_minimal_payload(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Organization.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["domains"] == data["domains"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Organization.from_dict(data)
+        serialized = instance.to_dict()
+        assert "stripe_customer_id" not in serialized
+        assert "allow_profiles_outside_organization" not in serialized
+
+    def test_organization_preserves_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "allow_profiles_outside_organization": False,
+        }
+        instance = Organization.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["external_id"] is None
+
+    def test_audit_log_configuration_round_trip(self):
+        data = load_fixture("audit_log_configuration.json")
+        instance = AuditLogConfiguration.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogConfiguration.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_configuration_minimal_payload(self):
+        data = {
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "retention_period_in_days": 30,
+            "state": "active",
+        }
+        instance = AuditLogConfiguration.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert (
+            serialized["retention_period_in_days"] == data["retention_period_in_days"]
+        )
+        assert serialized["state"] == data["state"]
+
+    def test_audit_log_configuration_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "retention_period_in_days": 30,
+            "state": "active",
+        }
+        instance = AuditLogConfiguration.from_dict(data)
+        serialized = instance.to_dict()
+        assert "log_stream" not in serialized
+
+    def test_audit_log_configuration_round_trips_unknown_enum_values(self):
+        data = {
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "retention_period_in_days": 30,
+            "state": "unexpected_audit_log_configuration_state",
+            "log_stream": {
+                "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "Datadog",
+                "state": "active",
+                "last_synced_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = AuditLogConfiguration.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_audit_log_configuration_log_stream_round_trip(self):
+        data = load_fixture("audit_log_configuration_log_stream.json")
+        instance = AuditLogConfigurationLogStream.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogConfigurationLogStream.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_configuration_log_stream_minimal_payload(self):
+        data = {
+            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
+            "type": "Datadog",
+            "state": "active",
+            "last_synced_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuditLogConfigurationLogStream.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["state"] == data["state"]
+        assert serialized["last_synced_at"] == data["last_synced_at"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_audit_log_configuration_log_stream_preserves_nullable_fields(self):
+        data = {
+            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
+            "type": "Datadog",
+            "state": "active",
+            "last_synced_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuditLogConfigurationLogStream.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_synced_at"] is None
+
+    def test_audit_log_configuration_log_stream_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
+            "type": "unexpected_audit_log_configuration_log_stream_type",
+            "state": "active",
+            "last_synced_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuditLogConfigurationLogStream.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_authorized_connect_application_list_data_round_trip(self):
+        data = load_fixture(
+            "organization_authorized_connect_application_list_data.json"
+        )
+        instance = OrganizationAuthorizedConnectApplicationListData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationAuthorizedConnectApplicationListData.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_authorized_connect_application_list_data_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "authorized_connect_application",
+            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
+            "granted_scopes": ["openid", "profile", "email"],
+            "application": {
+                "object": "connect_application",
+                "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "description": "An application for managing user access",
+                "name": "My Application",
+                "scopes": ["openid", "profile", "email"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "application_type": "oauth",
+                "redirect_uris": [
+                    {"uri": "https://example.com/callback", "default": True}
+                ],
+                "uses_pkce": True,
+                "is_first_party": True,
+                "was_dynamically_registered": True,
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            },
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+        }
+        instance = OrganizationAuthorizedConnectApplicationListData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["granted_scopes"] == data["granted_scopes"]
+        assert serialized["application"] == data["application"]
+        assert serialized["user_id"] == data["user_id"]
+
+    def test_organization_authorized_connect_application_list_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "authorized_connect_application",
+            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
+            "granted_scopes": ["openid", "profile", "email"],
+            "application": {
+                "object": "connect_application",
+                "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "description": "An application for managing user access",
+                "name": "My Application",
+                "scopes": ["openid", "profile", "email"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "application_type": "oauth",
+                "redirect_uris": [
+                    {"uri": "https://example.com/callback", "default": True}
+                ],
+                "uses_pkce": True,
+                "is_first_party": True,
+                "was_dynamically_registered": True,
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            },
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+        }
+        instance = OrganizationAuthorizedConnectApplicationListData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "oauth_resource" not in serialized

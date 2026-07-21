@@ -7,8 +7,13 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import AuditLogConfiguration, Organization, OrganizationDomainData
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from .models import (
+    AuditLogConfiguration,
+    Organization,
+    OrganizationAuthorizedConnectApplicationListData,
+    OrganizationDomainData,
+)
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -81,8 +86,8 @@ class Organizations:
         allow_profiles_outside_organization: Optional[bool] = None,
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Create an Organization
@@ -118,11 +123,13 @@ class Organizations:
                 "domain_data": [item.to_dict() for item in domain_data]
                 if domain_data is not None
                 else None,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
         return self._client.request(
             method="post",
             path=("organizations",),
@@ -200,8 +207,8 @@ class Organizations:
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
         stripe_customer_id: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Update an Organization
@@ -242,11 +249,13 @@ class Organizations:
                 if domain_data is not None
                 else None,
                 "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
         return self._client.request(
             method="put",
             path=("organizations", str(id)),
@@ -308,6 +317,56 @@ class Organizations:
             method="get",
             path=("organizations", str(id), "audit_log_configuration"),
             model=AuditLogConfiguration,
+            request_options=request_options,
+        )
+
+    def list_authorized_applications(
+        self,
+        organization_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[OrganizationAuthorizedConnectApplicationListData]:
+        """List authorized applications
+
+        Get a list of all Connect applications that users in the organization have authorized.
+
+        Args:
+            organization_id: The ID of the organization.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[OrganizationAuthorizedConnectApplicationListData]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("organizations", str(organization_id), "authorized_applications"),
+            model=OrganizationAuthorizedConnectApplicationListData,
+            params=params,
             request_options=request_options,
         )
 
@@ -380,8 +439,8 @@ class AsyncOrganizations:
         allow_profiles_outside_organization: Optional[bool] = None,
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Create an Organization
@@ -417,11 +476,13 @@ class AsyncOrganizations:
                 "domain_data": [item.to_dict() for item in domain_data]
                 if domain_data is not None
                 else None,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
         return await self._client.request(
             method="post",
             path=("organizations",),
@@ -499,8 +560,8 @@ class AsyncOrganizations:
         domains: Optional[List[str]] = None,
         domain_data: Optional[List[OrganizationDomainData]] = None,
         stripe_customer_id: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> Organization:
         """Update an Organization
@@ -541,11 +602,13 @@ class AsyncOrganizations:
                 if domain_data is not None
                 else None,
                 "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
         return await self._client.request(
             method="put",
             path=("organizations", str(id)),
@@ -607,5 +670,55 @@ class AsyncOrganizations:
             method="get",
             path=("organizations", str(id), "audit_log_configuration"),
             model=AuditLogConfiguration,
+            request_options=request_options,
+        )
+
+    async def list_authorized_applications(
+        self,
+        organization_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[OrganizationAuthorizedConnectApplicationListData]:
+        """List authorized applications
+
+        Get a list of all Connect applications that users in the organization have authorized.
+
+        Args:
+            organization_id: The ID of the organization.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[OrganizationAuthorizedConnectApplicationListData]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("organizations", str(organization_id), "authorized_applications"),
+            model=OrganizationAuthorizedConnectApplicationListData,
+            params=params,
             request_options=request_options,
         )

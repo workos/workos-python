@@ -67,6 +67,7 @@ class TestConnect:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            registration_types=["val1", "val2"],
             organization_id="value organization_id/test",
         )
         request = httpx_mock.get_request()
@@ -74,6 +75,7 @@ class TestConnect:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["registration_types"] == "val1,val2"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     def test_create_application(self, workos, httpx_mock):
@@ -315,6 +317,7 @@ class TestAsyncConnect:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            registration_types=["val1", "val2"],
             organization_id="value organization_id/test",
         )
         request = httpx_mock.get_request()
@@ -322,6 +325,7 @@ class TestAsyncConnect:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["registration_types"] == "val1,val2"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     @pytest.mark.asyncio

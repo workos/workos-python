@@ -3,6 +3,9 @@
 from .application_credentials_list_item import (
     ApplicationCredentialsListItem as ApplicationCredentialsListItem,
 )
+from .applications_registration_types import (
+    ApplicationsRegistrationTypes as ApplicationsRegistrationTypes,
+)
 from workos.common.models.connect_application import (
     ConnectApplication as ConnectApplication,
 )

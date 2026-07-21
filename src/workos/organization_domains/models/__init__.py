@@ -3,7 +3,6 @@
 from .create_organization_domain import (
     CreateOrganizationDomain as CreateOrganizationDomain,
 )
-from .organization_domain_stand_alone import *  # noqa: F401,F403
 from workos.common.models.organization_domain import (
     OrganizationDomain as OrganizationDomain,
 )

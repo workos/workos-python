@@ -1,0 +1,11 @@
+{
+  "id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "status": "unverified",
+  "user_code": "BCDF-GHJK",
+  "organizations": [
+    {
+      "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+      "name": "Acme Corp"
+    }
+  ]
+}

@@ -5,6 +5,7 @@
 from tests.generated_helpers import load_fixture
 
 from workos.pipes.models import (
+    ApiKeyInstallation,
     ConnectedAccount,
     CustomProviderDefinition,
     DataIntegration,
@@ -12,10 +13,11 @@ from workos.pipes.models import (
     DataIntegrationAccessTokenResponseAccessToken,
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredential,
-    DataIntegrationCredentialsDto,
+    DataIntegrationCredentialsInput,
     DataIntegrationCredentialsResponse,
     DataIntegrationCredentialsResponseCredential,
     DataIntegrationCustomProvider,
+    DataIntegrationInstallation,
     DataIntegrationsListResponse,
     DataIntegrationsListResponseData,
     DataIntegrationsListResponseDataConnectedAccount,
@@ -24,37 +26,64 @@ from workos.pipes.models import (
 
 
 class TestModelRoundTrip:
-    def test_data_integration_credentials_dto_round_trip(self):
-        data = load_fixture("data_integration_credentials_dto.json")
-        instance = DataIntegrationCredentialsDto.from_dict(data)
+    def test_data_integration_credentials_input_round_trip(self):
+        data = load_fixture("data_integration_credentials_input.json")
+        instance = DataIntegrationCredentialsInput.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = DataIntegrationCredentialsDto.from_dict(serialized)
+        restored = DataIntegrationCredentialsInput.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_data_integration_credentials_dto_minimal_payload(self):
+    def test_data_integration_credentials_input_minimal_payload(self):
         data = {"type": "custom"}
-        instance = DataIntegrationCredentialsDto.from_dict(data)
+        instance = DataIntegrationCredentialsInput.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
 
-    def test_data_integration_credentials_dto_omits_absent_optional_non_nullable_fields(
+    def test_data_integration_credentials_input_omits_absent_optional_non_nullable_fields(
         self,
     ):
         data = {"type": "custom"}
-        instance = DataIntegrationCredentialsDto.from_dict(data)
+        instance = DataIntegrationCredentialsInput.from_dict(data)
         serialized = instance.to_dict()
         assert "client_id" not in serialized
         assert "client_secret" not in serialized
 
-    def test_data_integration_credentials_dto_round_trips_unknown_enum_values(self):
+    def test_data_integration_credentials_input_round_trips_unknown_enum_values(self):
         data = {
-            "type": "unexpected_data_integration_credentials_dto_type",
+            "type": "unexpected_data_integration_credentials_input_type",
             "client_id": "Iv1.abc123",
             "client_secret": "secret_…",
         }
-        instance = DataIntegrationCredentialsDto.from_dict(data)
+        instance = DataIntegrationCredentialsInput.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_api_key_installation_round_trip(self):
+        data = load_fixture("api_key_installation.json")
+        instance = ApiKeyInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyInstallation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_installation_minimal_payload(self):
+        data = {
+            "secret": "sk-1234567890abcdef",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = ApiKeyInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["secret"] == data["secret"]
+        assert serialized["user_id"] == data["user_id"]
+
+    def test_api_key_installation_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "secret": "sk-1234567890abcdef",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = ApiKeyInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
 
     def test_custom_provider_definition_round_trip(self):
         data = load_fixture("custom_provider_definition.json")
@@ -212,11 +241,13 @@ class TestModelRoundTrip:
             "state": "valid",
             "scopes": None,
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+            "auth_methods": ["oauth"],
             "credentials": {
                 "type": "custom",
                 "client_id": "Iv1.abc123",
                 "redacted_client_secret": "6789",
             },
+            "installation": None,
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -232,7 +263,9 @@ class TestModelRoundTrip:
         assert serialized["state"] == data["state"]
         assert serialized["scopes"] == data["scopes"]
         assert serialized["redirect_uri"] == data["redirect_uri"]
+        assert serialized["auth_methods"] == data["auth_methods"]
         assert serialized["credentials"] == data["credentials"]
+        assert serialized["installation"] == data["installation"]
         assert serialized["custom_provider"] == data["custom_provider"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -248,11 +281,13 @@ class TestModelRoundTrip:
             "state": "valid",
             "scopes": None,
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+            "auth_methods": ["oauth"],
             "credentials": {
                 "type": "custom",
                 "client_id": "Iv1.abc123",
                 "redacted_client_secret": "6789",
             },
+            "installation": None,
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -261,6 +296,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
         assert serialized["scopes"] is None
+        assert serialized["installation"] is None
         assert serialized["custom_provider"] is None
 
     def test_data_integration_round_trips_unknown_enum_values(self):
@@ -274,11 +310,13 @@ class TestModelRoundTrip:
             "state": "unexpected_data_integration_state",
             "scopes": ["repo", "read:org"],
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
+            "auth_methods": ["oauth"],
             "credentials": {
                 "type": "custom",
                 "client_id": "Iv1.abc123",
                 "redacted_client_secret": "6789",
             },
+            "installation": None,
             "custom_provider": {
                 "name": "My OAuth App",
                 "authorization_url": "https://provider.example.com/oauth/authorize",
@@ -756,6 +794,40 @@ class TestModelRoundTrip:
         }
         instance = DataIntegrationCredential.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_data_integration_installation_round_trip(self):
+        data = load_fixture("data_integration_installation.json")
+        instance = DataIntegrationInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationInstallation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_installation_minimal_payload(self):
+        data = {
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": None,
+            "api_key_last_4": None,
+        }
+        instance = DataIntegrationInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["api_key_last_4"] == data["api_key_last_4"]
+
+    def test_data_integration_installation_preserves_nullable_fields(self):
+        data = {
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": None,
+            "api_key_last_4": None,
+        }
+        instance = DataIntegrationInstallation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["api_key_last_4"] is None
 
     def test_data_integration_custom_provider_round_trip(self):
         data = load_fixture("data_integration_custom_provider.json")

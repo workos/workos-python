@@ -8,7 +8,6 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions
-from .models import OrganizationDomainStandAlone
 from workos.common.models.organization_domain import OrganizationDomain
 
 
@@ -60,7 +59,7 @@ class OrganizationDomains:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationDomainStandAlone:
+    ) -> OrganizationDomain:
         """Get an Organization Domain
 
         Get the details of an existing organization domain.
@@ -70,7 +69,7 @@ class OrganizationDomains:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            OrganizationDomainStandAlone
+            OrganizationDomain
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -81,7 +80,7 @@ class OrganizationDomains:
         return self._client.request(
             method="get",
             path=("organization_domains", str(id)),
-            model=OrganizationDomainStandAlone,
+            model=OrganizationDomain,
             request_options=request_options,
         )
 
@@ -116,7 +115,7 @@ class OrganizationDomains:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationDomainStandAlone:
+    ) -> OrganizationDomain:
         """Verify an Organization Domain
 
         Initiates verification process for an Organization Domain.
@@ -126,7 +125,7 @@ class OrganizationDomains:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            OrganizationDomainStandAlone
+            OrganizationDomain
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -137,7 +136,7 @@ class OrganizationDomains:
         return self._client.request(
             method="post",
             path=("organization_domains", str(id), "verify"),
-            model=OrganizationDomainStandAlone,
+            model=OrganizationDomain,
             request_options=request_options,
         )
 
@@ -190,7 +189,7 @@ class AsyncOrganizationDomains:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationDomainStandAlone:
+    ) -> OrganizationDomain:
         """Get an Organization Domain
 
         Get the details of an existing organization domain.
@@ -200,7 +199,7 @@ class AsyncOrganizationDomains:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            OrganizationDomainStandAlone
+            OrganizationDomain
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -211,7 +210,7 @@ class AsyncOrganizationDomains:
         return await self._client.request(
             method="get",
             path=("organization_domains", str(id)),
-            model=OrganizationDomainStandAlone,
+            model=OrganizationDomain,
             request_options=request_options,
         )
 
@@ -246,7 +245,7 @@ class AsyncOrganizationDomains:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationDomainStandAlone:
+    ) -> OrganizationDomain:
         """Verify an Organization Domain
 
         Initiates verification process for an Organization Domain.
@@ -256,7 +255,7 @@ class AsyncOrganizationDomains:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            OrganizationDomainStandAlone
+            OrganizationDomain
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -267,6 +266,6 @@ class AsyncOrganizationDomains:
         return await self._client.request(
             method="post",
             path=("organization_domains", str(id), "verify"),
-            model=OrganizationDomainStandAlone,
+            model=OrganizationDomain,
             request_options=request_options,
         )

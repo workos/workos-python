@@ -12,6 +12,10 @@ from workos._types import _format_datetime, _parse_datetime
 
 from .data_integration_credential import DataIntegrationCredential
 from .data_integration_custom_provider import DataIntegrationCustomProvider
+from .data_integration_installation import DataIntegrationInstallation
+from workos.common.models.data_integration_auth_methods import (
+    DataIntegrationAuthMethods,
+)
 from workos.common.models.data_integration_state import DataIntegrationState
 
 
@@ -37,8 +41,12 @@ class DataIntegration:
     """The OAuth scopes configured for the Data Integration. `null` when the provider's configured scopes are used."""
     redirect_uri: str
     """The OAuth redirect URI to register with the provider when configuring the custom application."""
+    auth_methods: List["DataIntegrationAuthMethods"]
+    """How accounts authenticate with the provider for this Data Integration."""
     credentials: "DataIntegrationCredential"
     """The credentials configured for the Data Integration."""
+    installation: Optional["DataIntegrationInstallation"]
+    """The tenant installation created when an API key was supplied at creation time; `null` otherwise. Not populated on list/get responses."""
     custom_provider: Optional["DataIntegrationCustomProvider"]
     """The OAuth definition when this is a custom provider; `null` for built-in providers."""
     created_at: datetime
@@ -60,9 +68,18 @@ class DataIntegration:
                 state=DataIntegrationState(data["state"]),
                 scopes=data["scopes"],
                 redirect_uri=data["redirect_uri"],
+                auth_methods=[
+                    DataIntegrationAuthMethods(item)
+                    for item in cast(list[Any], data["auth_methods"])
+                ],
                 credentials=DataIntegrationCredential.from_dict(
                     cast(Dict[str, Any], data["credentials"])
                 ),
+                installation=DataIntegrationInstallation.from_dict(
+                    cast(Dict[str, Any], _v_installation)
+                )
+                if (_v_installation := data["installation"]) is not None
+                else None,
                 custom_provider=DataIntegrationCustomProvider.from_dict(
                     cast(Dict[str, Any], _v_custom_provider)
                 )
@@ -94,7 +111,14 @@ class DataIntegration:
         else:
             result["scopes"] = None
         result["redirect_uri"] = self.redirect_uri
+        result["auth_methods"] = [
+            item.value if isinstance(item, Enum) else item for item in self.auth_methods
+        ]
         result["credentials"] = self.credentials.to_dict()
+        if self.installation is not None:
+            result["installation"] = self.installation.to_dict()
+        else:
+            result["installation"] = None
         if self.custom_provider is not None:
             result["custom_provider"] = self.custom_provider.to_dict()
         else:

@@ -7,7 +7,6 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.common.models import OrganizationDomain
-from workos.organization_domains.models import OrganizationDomainStandAlone
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -38,10 +37,10 @@ class TestOrganizationDomains:
 
     def test_get_organization_domain(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json"),
+            json=load_fixture("organization_domain.json"),
         )
         result = workos.organization_domains.get_organization_domain("test_id")
-        assert isinstance(result, OrganizationDomainStandAlone)
+        assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
         request = httpx_mock.get_request()
@@ -58,10 +57,10 @@ class TestOrganizationDomains:
 
     def test_verify_organization_domain(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json"),
+            json=load_fixture("organization_domain.json"),
         )
         result = workos.organization_domains.verify_organization_domain("test_id")
-        assert isinstance(result, OrganizationDomainStandAlone)
+        assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
         request = httpx_mock.get_request()
@@ -174,13 +173,11 @@ class TestAsyncOrganizationDomains:
 
     @pytest.mark.asyncio
     async def test_get_organization_domain(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json")
-        )
+        httpx_mock.add_response(json=load_fixture("organization_domain.json"))
         result = await async_workos.organization_domains.get_organization_domain(
             "test_id"
         )
-        assert isinstance(result, OrganizationDomainStandAlone)
+        assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
         request = httpx_mock.get_request()
@@ -200,13 +197,11 @@ class TestAsyncOrganizationDomains:
 
     @pytest.mark.asyncio
     async def test_verify_organization_domain(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json")
-        )
+        httpx_mock.add_response(json=load_fixture("organization_domain.json"))
         result = await async_workos.organization_domains.verify_organization_domain(
             "test_id"
         )
-        assert isinstance(result, OrganizationDomainStandAlone)
+        assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
         request = httpx_mock.get_request()

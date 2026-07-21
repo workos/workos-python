@@ -143,6 +143,8 @@ class TestDirectorySync:
             order=PaginationOrder("value_order"),
             directory="value directory/test",
             group="value group/test",
+            idp_id="value idp_id/test",
+            email="value email/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
@@ -151,6 +153,8 @@ class TestDirectorySync:
         assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
+        assert request.url.params["idp_id"] == "value idp_id/test"
+        assert request.url.params["email"] == "value email/test"
 
     def test_get_user(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -371,6 +375,8 @@ class TestAsyncDirectorySync:
             order=PaginationOrder("value_order"),
             directory="value directory/test",
             group="value group/test",
+            idp_id="value idp_id/test",
+            email="value email/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
@@ -379,6 +385,8 @@ class TestAsyncDirectorySync:
         assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
+        assert request.url.params["idp_id"] == "value idp_id/test"
+        assert request.url.params["email"] == "value email/test"
 
     @pytest.mark.asyncio
     async def test_get_user(self, async_workos, httpx_mock):

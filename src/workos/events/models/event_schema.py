@@ -10,6 +10,22 @@ from workos.common.models.action_authentication_denied import ActionAuthenticati
 from workos.common.models.action_user_registration_denied import (
     ActionUserRegistrationDenied,
 )
+from workos.common.models.agent_registration_claim_attempt_created import (
+    AgentRegistrationClaimAttemptCreated,
+)
+from workos.common.models.agent_registration_claim_completed import (
+    AgentRegistrationClaimCompleted,
+)
+from workos.common.models.agent_registration_created import AgentRegistrationCreated
+from workos.common.models.agent_registration_credential_issued import (
+    AgentRegistrationCredentialIssued,
+)
+from workos.common.models.agent_registration_deleted import AgentRegistrationDeleted
+from workos.common.models.agent_registration_expired import AgentRegistrationExpired
+from workos.common.models.agent_registration_organization_switched import (
+    AgentRegistrationOrganizationSwitched,
+)
+from workos.common.models.agent_registration_revoked import AgentRegistrationRevoked
 from workos.common.models.api_key_created import ApiKeyCreated
 from workos.common.models.api_key_revoked import ApiKeyRevoked
 from workos.common.models.api_key_updated import ApiKeyUpdated
@@ -45,6 +61,9 @@ from workos.common.models.authentication_password_succeeded import (
 )
 from workos.common.models.authentication_radar_risk_detected import (
     AuthenticationRadarRiskDetected,
+)
+from workos.common.models.authentication_reauthentication_succeeded import (
+    AuthenticationReauthenticationSucceeded,
 )
 from workos.common.models.authentication_sso_failed import AuthenticationSSOFailed
 from workos.common.models.authentication_sso_started import AuthenticationSSOStarted
@@ -116,12 +135,16 @@ from workos.common.models.permission_updated import PermissionUpdated
 from workos.common.models.pipes_connected_account_connected import (
     PipesConnectedAccountConnected,
 )
+from workos.common.models.pipes_connected_account_connection_failed import (
+    PipesConnectedAccountConnectionFailed,
+)
 from workos.common.models.pipes_connected_account_disconnected import (
     PipesConnectedAccountDisconnected,
 )
 from workos.common.models.pipes_connected_account_reauthorization_needed import (
     PipesConnectedAccountReauthorizationNeeded,
 )
+from workos.common.models.radar_challenge_created import RadarChallengeCreated
 from workos.common.models.role_created import RoleCreated
 from workos.common.models.role_deleted import RoleDeleted
 from workos.common.models.role_updated import RoleUpdated
@@ -141,6 +164,7 @@ from workos.common.models.vault_data_updated import VaultDataUpdated
 from workos.common.models.vault_dek_decrypted import VaultDekDecrypted
 from workos.common.models.vault_dek_read import VaultDekRead
 from workos.common.models.vault_kek_created import VaultKekCreated
+from workos.common.models.vault_kek_deleted import VaultKekDeleted
 from workos.common.models.vault_metadata_read import VaultMetadataRead
 from workos.common.models.vault_names_listed import VaultNamesListed
 from workos.common.models.waitlist_user_approved import WaitlistUserApproved
@@ -168,6 +192,14 @@ class EventSchemaUnknown:
 EventSchemaVariant = Union[
     ActionAuthenticationDenied,
     ActionUserRegistrationDenied,
+    AgentRegistrationClaimAttemptCreated,
+    AgentRegistrationClaimCompleted,
+    AgentRegistrationCreated,
+    AgentRegistrationCredentialIssued,
+    AgentRegistrationDeleted,
+    AgentRegistrationExpired,
+    AgentRegistrationOrganizationSwitched,
+    AgentRegistrationRevoked,
     ApiKeyCreated,
     ApiKeyRevoked,
     ApiKeyUpdated,
@@ -184,6 +216,7 @@ EventSchemaVariant = Union[
     AuthenticationPasswordFailed,
     AuthenticationPasswordSucceeded,
     AuthenticationRadarRiskDetected,
+    AuthenticationReauthenticationSucceeded,
     AuthenticationSSOFailed,
     AuthenticationSSOStarted,
     AuthenticationSSOSucceeded,
@@ -240,8 +273,10 @@ EventSchemaVariant = Union[
     PermissionDeleted,
     PermissionUpdated,
     PipesConnectedAccountConnected,
+    PipesConnectedAccountConnectionFailed,
     PipesConnectedAccountDisconnected,
     PipesConnectedAccountReauthorizationNeeded,
+    RadarChallengeCreated,
     RoleCreated,
     RoleDeleted,
     RoleUpdated,
@@ -259,6 +294,7 @@ EventSchemaVariant = Union[
     VaultDekDecrypted,
     VaultDekRead,
     VaultKekCreated,
+    VaultKekDeleted,
     VaultMetadataRead,
     VaultNamesListed,
     WaitlistUserApproved,
@@ -274,6 +310,14 @@ class EventSchema:
     _DISPATCH: ClassVar[Dict[str, type]] = {
         "action.authentication.denied": ActionAuthenticationDenied,
         "action.user_registration.denied": ActionUserRegistrationDenied,
+        "agent.registration.claim.attempt.created": AgentRegistrationClaimAttemptCreated,
+        "agent.registration.claim.completed": AgentRegistrationClaimCompleted,
+        "agent.registration.created": AgentRegistrationCreated,
+        "agent.registration.credential.issued": AgentRegistrationCredentialIssued,
+        "agent.registration.deleted": AgentRegistrationDeleted,
+        "agent.registration.expired": AgentRegistrationExpired,
+        "agent.registration.organization.switched": AgentRegistrationOrganizationSwitched,
+        "agent.registration.revoked": AgentRegistrationRevoked,
         "api_key.created": ApiKeyCreated,
         "api_key.revoked": ApiKeyRevoked,
         "api_key.updated": ApiKeyUpdated,
@@ -290,6 +334,7 @@ class EventSchema:
         "authentication.password_failed": AuthenticationPasswordFailed,
         "authentication.password_succeeded": AuthenticationPasswordSucceeded,
         "authentication.radar_risk_detected": AuthenticationRadarRiskDetected,
+        "authentication.reauthentication_succeeded": AuthenticationReauthenticationSucceeded,
         "authentication.sso_failed": AuthenticationSSOFailed,
         "authentication.sso_started": AuthenticationSSOStarted,
         "authentication.sso_succeeded": AuthenticationSSOSucceeded,
@@ -346,8 +391,10 @@ class EventSchema:
         "permission.deleted": PermissionDeleted,
         "permission.updated": PermissionUpdated,
         "pipes.connected_account.connected": PipesConnectedAccountConnected,
+        "pipes.connected_account.connection_failed": PipesConnectedAccountConnectionFailed,
         "pipes.connected_account.disconnected": PipesConnectedAccountDisconnected,
         "pipes.connected_account.reauthorization_needed": PipesConnectedAccountReauthorizationNeeded,
+        "radar.challenge_created": RadarChallengeCreated,
         "role.created": RoleCreated,
         "role.deleted": RoleDeleted,
         "role.updated": RoleUpdated,
@@ -365,6 +412,7 @@ class EventSchema:
         "vault.dek.decrypted": VaultDekDecrypted,
         "vault.dek.read": VaultDekRead,
         "vault.kek.created": VaultKekCreated,
+        "vault.kek.deleted": VaultKekDeleted,
         "vault.metadata.read": VaultMetadataRead,
         "vault.names.listed": VaultNamesListed,
         "waitlist_user.approved": WaitlistUserApproved,

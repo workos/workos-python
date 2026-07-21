@@ -8,6 +8,7 @@ from ._base_client import (
     WorkOSClient as _SyncBase,
     AsyncWorkOSClient as _AsyncBase,
 )
+from .agents._resource import Agents, AsyncAgents
 from .multi_factor_auth._resource import MultiFactorAuth, AsyncMultiFactorAuth
 from .connect._resource import Connect, AsyncConnect
 from .authorization._resource import Authorization, AsyncAuthorization
@@ -43,6 +44,11 @@ from .pkce import PKCE
 
 class WorkOSClient(_SyncBase):
     """Synchronous WorkOS API client with service accessors."""
+
+    @functools.cached_property
+    def agents(self) -> Agents:
+        """Agents API resources."""
+        return Agents(self)
 
     @functools.cached_property
     def multi_factor_auth(self) -> MultiFactorAuth:
@@ -181,6 +187,11 @@ class WorkOSClient(_SyncBase):
 
 class AsyncWorkOSClient(_AsyncBase):
     """Asynchronous WorkOS API client with service accessors."""
+
+    @functools.cached_property
+    def agents(self) -> AsyncAgents:
+        """Agents API resources."""
+        return AsyncAgents(self)
 
     @functools.cached_property
     def multi_factor_auth(self) -> AsyncMultiFactorAuth:

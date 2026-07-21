@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     ApiKey,
     ApiKeyValidationResponse,
@@ -184,7 +184,7 @@ class ApiKeys:
         self,
         id: str,
         *,
-        expires_at: Optional[str] = None,
+        expires_at: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ApiKey:
         """Expire an API key
@@ -207,13 +207,9 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "expires_at": expires_at,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {}
+        if not isinstance(expires_at, NotGiven):
+            body["expires_at"] = expires_at
         return self._client.request(
             method="post",
             path=("api_keys", str(id), "expire"),
@@ -389,7 +385,7 @@ class AsyncApiKeys:
         self,
         id: str,
         *,
-        expires_at: Optional[str] = None,
+        expires_at: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ApiKey:
         """Expire an API key
@@ -412,13 +408,9 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "expires_at": expires_at,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {}
+        if not isinstance(expires_at, NotGiven):
+            body["expires_at"] = expires_at
         return await self._client.request(
             method="post",
             path=("api_keys", str(id), "expire"),

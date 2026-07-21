@@ -14,8 +14,8 @@ from workos.common.models.widget_session_token_scopes import WidgetSessionTokenS
 class WidgetSessionToken:
     """Widget Session Token model."""
 
-    organization_id: str
-    """The ID of the organization to scope the widget session to."""
+    organization_id: Optional[str] = None
+    """The ID of the organization to scope the widget session to. Required when scopes are provided. Optional when issuing a token for user-only widgets (e.g. `UserProfile`, `UserSecurity`) that do not require organization context."""
     user_id: Optional[str] = None
     """The ID of the user to issue the widget session token for."""
     scopes: Optional[List["WidgetSessionTokenScopes"]] = None
@@ -26,7 +26,7 @@ class WidgetSessionToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                organization_id=data["organization_id"],
+                organization_id=data.get("organization_id"),
                 user_id=data.get("user_id"),
                 scopes=[
                     WidgetSessionTokenScopes(item)
@@ -41,7 +41,8 @@ class WidgetSessionToken:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["organization_id"] = self.organization_id
+        if self.organization_id is not None:
+            result["organization_id"] = self.organization_id
         if self.user_id is not None:
             result["user_id"] = self.user_id
         if self.scopes is not None:

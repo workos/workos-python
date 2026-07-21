@@ -7,7 +7,11 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.common.models import PaginationOrder
-from workos.organizations.models import AuditLogConfiguration, Organization
+from workos.organizations.models import (
+    AuditLogConfiguration,
+    Organization,
+    OrganizationAuthorizedConnectApplicationListData,
+)
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -126,6 +130,42 @@ class TestOrganizations:
         assert request.url.path.endswith(
             "/organizations/test_id/audit_log_configuration"
         )
+
+    def test_list_authorized_applications(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture(
+                "list_organization_authorized_connect_application_list_data.json"
+            ),
+        )
+        page = workos.organizations.list_authorized_applications("test_organization_id")
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(
+            page.data[0], OrganizationAuthorizedConnectApplicationListData
+        )
+
+    def test_list_authorized_applications_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.organizations.list_authorized_applications("test_organization_id")
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_authorized_applications_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.organizations.list_authorized_applications(
+            "test_organization_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_organizations_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -307,6 +347,51 @@ class TestAsyncOrganizations:
         assert request.url.path.endswith(
             "/organizations/test_id/audit_log_configuration"
         )
+
+    @pytest.mark.asyncio
+    async def test_list_authorized_applications(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture(
+                "list_organization_authorized_connect_application_list_data.json"
+            )
+        )
+        page = await async_workos.organizations.list_authorized_applications(
+            "test_organization_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(
+            page.data[0], OrganizationAuthorizedConnectApplicationListData
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_authorized_applications_empty_page(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.organizations.list_authorized_applications(
+            "test_organization_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_authorized_applications_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.organizations.list_authorized_applications(
+            "test_organization_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_organizations_with_request_options(

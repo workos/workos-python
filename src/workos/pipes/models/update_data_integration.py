@@ -7,7 +7,8 @@ from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
 
-from .data_integration_credentials_dto import DataIntegrationCredentialsDto
+from .api_key_installation import ApiKeyInstallation
+from .data_integration_credentials_input import DataIntegrationCredentialsInput
 from .update_custom_provider_definition import UpdateCustomProviderDefinition
 
 
@@ -21,8 +22,10 @@ class UpdateDataIntegration:
     """Whether the Data Integration is enabled."""
     scopes: Optional[List[str]] = None
     """The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes."""
-    credentials: Optional["DataIntegrationCredentialsDto"] = None
-    """New credentials for the Data Integration. When provided, rotates the stored client secret."""
+    credentials: Optional["DataIntegrationCredentialsInput"] = None
+    """New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`."""
+    api_key: Optional["ApiKeyInstallation"] = None
+    """An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`)."""
     custom_provider: Optional["UpdateCustomProviderDefinition"] = None
     """Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations."""
 
@@ -34,10 +37,13 @@ class UpdateDataIntegration:
                 description=data.get("description"),
                 enabled=data.get("enabled"),
                 scopes=data.get("scopes"),
-                credentials=DataIntegrationCredentialsDto.from_dict(
+                credentials=DataIntegrationCredentialsInput.from_dict(
                     cast(Dict[str, Any], _v_credentials)
                 )
                 if (_v_credentials := data.get("credentials")) is not None
+                else None,
+                api_key=ApiKeyInstallation.from_dict(cast(Dict[str, Any], _v_api_key))
+                if (_v_api_key := data.get("api_key")) is not None
                 else None,
                 custom_provider=UpdateCustomProviderDefinition.from_dict(
                     cast(Dict[str, Any], _v_custom_provider)
@@ -63,6 +69,8 @@ class UpdateDataIntegration:
             result["scopes"] = None
         if self.credentials is not None:
             result["credentials"] = self.credentials.to_dict()
+        if self.api_key is not None:
+            result["api_key"] = self.api_key.to_dict()
         if self.custom_provider is not None:
             result["custom_provider"] = self.custom_provider.to_dict()
         return result

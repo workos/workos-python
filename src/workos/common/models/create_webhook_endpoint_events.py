@@ -18,9 +18,12 @@ class CreateWebhookEndpointEvents(str, Enum):
     )
     AGENT_REGISTRATION_CLAIM_COMPLETED = "agent.registration.claim.completed"
     AGENT_REGISTRATION_CREDENTIAL_ISSUED = "agent.registration.credential.issued"
+    AGENT_REGISTRATION_DELETED = "agent.registration.deleted"
+    AGENT_REGISTRATION_EXPIRED = "agent.registration.expired"
     AGENT_REGISTRATION_ORGANIZATION_SWITCHED = (
         "agent.registration.organization.switched"
     )
+    AGENT_REGISTRATION_REVOKED = "agent.registration.revoked"
     AUTHENTICATION_EMAIL_VERIFICATION_SUCCEEDED = (
         "authentication.email_verification_succeeded"
     )
@@ -37,6 +40,7 @@ class CreateWebhookEndpointEvents(str, Enum):
     AUTHENTICATION_SSO_STARTED = "authentication.sso_started"
     AUTHENTICATION_SSO_SUCCEEDED = "authentication.sso_succeeded"
     AUTHENTICATION_SSO_TIMED_OUT = "authentication.sso_timed_out"
+    RADAR_CHALLENGE_CREATED = "radar.challenge_created"
     AUTHENTICATION_RADAR_RISK_DETECTED = "authentication.radar_risk_detected"
     AUTHENTICATION_REAUTHENTICATION_SUCCEEDED = (
         "authentication.reauthentication_succeeded"
@@ -130,7 +134,10 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "agent.registration.claim.attempt.created",
     "agent.registration.claim.completed",
     "agent.registration.credential.issued",
+    "agent.registration.deleted",
+    "agent.registration.expired",
     "agent.registration.organization.switched",
+    "agent.registration.revoked",
     "authentication.email_verification_succeeded",
     "authentication.magic_auth_failed",
     "authentication.magic_auth_succeeded",
@@ -145,6 +152,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "authentication.sso_started",
     "authentication.sso_succeeded",
     "authentication.sso_timed_out",
+    "radar.challenge_created",
     "authentication.radar_risk_detected",
     "authentication.reauthentication_succeeded",
     "api_key.created",

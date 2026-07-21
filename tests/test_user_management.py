@@ -21,6 +21,7 @@ from workos.user_management.models import (
     MagicAuth,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
+    RadarChallenge,
     RedirectUri,
     ResetPasswordResponse,
     SendRadarSmsChallengeResponse,
@@ -114,6 +115,18 @@ class TestUserManagement:
             body["pending_authentication_token"] == "test_pending_authentication_token"
         )
         assert body["phone_number"] == "test_phone_number"
+
+    def test_get_radar_challenge(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("radar_challenge.json"),
+        )
+        result = workos.user_management.get_radar_challenge("test_id")
+        assert isinstance(result, RadarChallenge)
+        assert result.object == "radar_challenge"
+        assert result.id == "radar_challenge_01HWZBQZY2M3AMQW166Q22K88F"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/radar_challenges/test_id")
 
     def test_get_logout_url(self, workos):
         result = workos.user_management.get_logout_url(session_id="test_session_id")
@@ -619,12 +632,20 @@ class TestUserManagement:
         result = workos.user_management.create_redirect_uri(uri="test_uri")
         assert isinstance(result, RedirectUri)
         assert result.object == "redirect_uri"
-        assert result.id == "ruri_01EHZNVPK3SFK441A1RGBFSHRT"
+        assert result.id == "redir_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/redirect_uris")
         body = json.loads(request.content)
         assert body["uri"] == "test_uri"
+
+    def test_delete_redirect_uris(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.user_management.delete_redirect_uris("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/redirect_uris/test_id")
 
     def test_list_user_authorized_applications(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -753,7 +774,7 @@ class TestUserManagement:
     def test_authenticate_with_magic_auth(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_magic_auth(
-            code="test_value", email="test_value"
+            code="test_code", email="test_email"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -764,7 +785,8 @@ class TestUserManagement:
     def test_authenticate_with_email_verification(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_email_verification(
-            code="test_value", pending_authentication_token="test_value"
+            code="test_code",
+            pending_authentication_token="test_pending_authentication_token",
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -790,7 +812,8 @@ class TestUserManagement:
     def test_authenticate_with_organization_selection(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_organization_selection(
-            pending_authentication_token="test_value", organization_id="test_value"
+            pending_authentication_token="test_pending_authentication_token",
+            organization_id="test_organization_id",
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -803,7 +826,7 @@ class TestUserManagement:
     def test_authenticate_with_device_code(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_device_code(
-            device_code="test_value"
+            device_code="test_device_code"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -814,9 +837,9 @@ class TestUserManagement:
     def test_authenticate_with_radar_email_challenge(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_radar_email_challenge(
-            code="test_value",
-            radar_challenge_id="test_value",
-            pending_authentication_token="test_value",
+            code="test_code",
+            radar_challenge_id="test_radar_challenge_id",
+            pending_authentication_token="test_pending_authentication_token",
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -830,10 +853,10 @@ class TestUserManagement:
     def test_authenticate_with_radar_sms_challenge(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_radar_sms_challenge(
-            code="test_value",
-            verification_id="test_value",
-            phone_number="test_value",
-            pending_authentication_token="test_value",
+            code="test_code",
+            verification_id="test_verification_id",
+            phone_number="test_phone_number",
+            pending_authentication_token="test_pending_authentication_token",
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -981,6 +1004,17 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/radar_challenges")
+
+    @pytest.mark.asyncio
+    async def test_get_radar_challenge(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("radar_challenge.json"))
+        result = await async_workos.user_management.get_radar_challenge("test_id")
+        assert isinstance(result, RadarChallenge)
+        assert result.object == "radar_challenge"
+        assert result.id == "radar_challenge_01HWZBQZY2M3AMQW166Q22K88F"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/radar_challenges/test_id")
 
     def test_get_logout_url(self, async_workos):
         result = async_workos.user_management.get_logout_url(
@@ -1473,10 +1507,19 @@ class TestAsyncUserManagement:
         result = await async_workos.user_management.create_redirect_uri(uri="test_uri")
         assert isinstance(result, RedirectUri)
         assert result.object == "redirect_uri"
-        assert result.id == "ruri_01EHZNVPK3SFK441A1RGBFSHRT"
+        assert result.id == "redir_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/redirect_uris")
+
+    @pytest.mark.asyncio
+    async def test_delete_redirect_uris(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.user_management.delete_redirect_uris("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/redirect_uris/test_id")
 
     @pytest.mark.asyncio
     async def test_list_user_authorized_applications(self, async_workos, httpx_mock):
@@ -1620,7 +1663,7 @@ class TestAsyncUserManagement:
     async def test_authenticate_with_magic_auth(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_magic_auth(
-            code="test_value", email="test_value"
+            code="test_code", email="test_email"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -1633,7 +1676,8 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
             await async_workos.user_management.authenticate_with_email_verification(
-                code="test_value", pending_authentication_token="test_value"
+                code="test_code",
+                pending_authentication_token="test_pending_authentication_token",
             )
         )
         assert isinstance(result, AuthenticateResponse)
@@ -1665,7 +1709,8 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
             await async_workos.user_management.authenticate_with_organization_selection(
-                pending_authentication_token="test_value", organization_id="test_value"
+                pending_authentication_token="test_pending_authentication_token",
+                organization_id="test_organization_id",
             )
         )
         assert isinstance(result, AuthenticateResponse)
@@ -1680,7 +1725,7 @@ class TestAsyncUserManagement:
     async def test_authenticate_with_device_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_device_code(
-            device_code="test_value"
+            device_code="test_device_code"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -1695,9 +1740,9 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
             await async_workos.user_management.authenticate_with_radar_email_challenge(
-                code="test_value",
-                radar_challenge_id="test_value",
-                pending_authentication_token="test_value",
+                code="test_code",
+                radar_challenge_id="test_radar_challenge_id",
+                pending_authentication_token="test_pending_authentication_token",
             )
         )
         assert isinstance(result, AuthenticateResponse)
@@ -1716,10 +1761,10 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
             await async_workos.user_management.authenticate_with_radar_sms_challenge(
-                code="test_value",
-                verification_id="test_value",
-                phone_number="test_value",
-                pending_authentication_token="test_value",
+                code="test_code",
+                verification_id="test_verification_id",
+                phone_number="test_phone_number",
+                pending_authentication_token="test_pending_authentication_token",
             )
         )
         assert isinstance(result, AuthenticateResponse)

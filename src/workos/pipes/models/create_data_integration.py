@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
 
+from .api_key_installation import ApiKeyInstallation
 from .custom_provider_definition import CustomProviderDefinition
-from .data_integration_credentials_dto import DataIntegrationCredentialsDto
+from .data_integration_credentials_input import DataIntegrationCredentialsInput
+from workos.common.models.create_data_integration_auth_methods import (
+    CreateDataIntegrationAuthMethods,
+)
 
 
 @dataclass(slots=True)
@@ -23,8 +28,12 @@ class CreateDataIntegration:
     """Whether the Data Integration is enabled. Defaults to `false`."""
     scopes: Optional[List[str]] = None
     """The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted."""
-    credentials: Optional["DataIntegrationCredentialsDto"] = None
-    """The credentials to configure for the Data Integration. Required for both built-in and custom providers."""
+    auth_methods: Optional[List["CreateDataIntegrationAuthMethods"]] = None
+    """How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request)."""
+    credentials: Optional["DataIntegrationCredentialsInput"] = None
+    """The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`."""
+    api_key: Optional["ApiKeyInstallation"] = None
+    """An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path."""
     custom_provider: Optional["CustomProviderDefinition"] = None
     """The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider."""
 
@@ -37,10 +46,19 @@ class CreateDataIntegration:
                 description=data.get("description"),
                 enabled=data.get("enabled"),
                 scopes=data.get("scopes"),
-                credentials=DataIntegrationCredentialsDto.from_dict(
+                auth_methods=[
+                    CreateDataIntegrationAuthMethods(item)
+                    for item in cast(list[Any], _v_auth_methods)
+                ]
+                if (_v_auth_methods := data.get("auth_methods")) is not None
+                else None,
+                credentials=DataIntegrationCredentialsInput.from_dict(
                     cast(Dict[str, Any], _v_credentials)
                 )
                 if (_v_credentials := data.get("credentials")) is not None
+                else None,
+                api_key=ApiKeyInstallation.from_dict(cast(Dict[str, Any], _v_api_key))
+                if (_v_api_key := data.get("api_key")) is not None
                 else None,
                 custom_provider=CustomProviderDefinition.from_dict(
                     cast(Dict[str, Any], _v_custom_provider)
@@ -65,8 +83,15 @@ class CreateDataIntegration:
             result["scopes"] = self.scopes
         else:
             result["scopes"] = None
+        if self.auth_methods is not None:
+            result["auth_methods"] = [
+                item.value if isinstance(item, Enum) else item
+                for item in self.auth_methods
+            ]
         if self.credentials is not None:
             result["credentials"] = self.credentials.to_dict()
+        if self.api_key is not None:
+            result["api_key"] = self.api_key.to_dict()
         if self.custom_provider is not None:
             result["custom_provider"] = self.custom_provider.to_dict()
         return result

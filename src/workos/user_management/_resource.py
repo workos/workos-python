@@ -7,35 +7,36 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cas
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     AuthenticateResponse,
     AuthorizationCodeSessionAuthenticateRequest,
     AuthorizedConnectApplicationListData,
     CORSOriginResponse,
     DeviceAuthorizationResponse,
+    DeviceCodeSessionAuthenticateRequest,
     EmailChange,
     EmailChangeConfirmation,
     EmailVerification,
+    EmailVerificationCodeSessionAuthenticateRequest,
     Invitation,
     JWTTemplateResponse,
     JwksResponse,
     MagicAuth,
+    MagicAuthCodeSessionAuthenticateRequest,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
+    MFATotpSessionAuthenticateRequest,
+    OrganizationSelectionSessionAuthenticateRequest,
     PasswordReset,
     PasswordSessionAuthenticateRequest,
+    RadarChallenge,
+    RadarEmailChallengeCodeSessionAuthenticateRequest,
+    RadarSmsChallengeCodeSessionAuthenticateRequest,
     RedirectUri,
     RefreshTokenSessionAuthenticateRequest,
     ResetPasswordResponse,
     SendRadarSmsChallengeResponse,
     SendVerificationEmailResponse,
-    DeviceCodeSessionAuthenticateRequest,
-    EmailVerificationCodeSessionAuthenticateRequest,
-    MagicAuthCodeSessionAuthenticateRequest,
-    MFATotpSessionAuthenticateRequest,
-    OrganizationSelectionSessionAuthenticateRequest,
-    RadarEmailChallengeCodeSessionAuthenticateRequest,
-    RadarSmsChallengeCodeSessionAuthenticateRequest,
     UserApiKey,
     UserApiKeyWithValue,
     UserCreateResponse,
@@ -710,6 +711,36 @@ class UserManagement:
             request_options=request_options,
         )
 
+    def get_radar_challenge(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> RadarChallenge:
+        """Get Radar Challenge details
+
+        Get the details of an existing Radar Challenge, including the OTP code.
+
+        Args:
+            id: The unique ID of the Radar Challenge.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            RadarChallenge
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("user_management", "radar_challenges", str(id)),
+            model=RadarChallenge,
+            request_options=request_options,
+        )
+
     def get_logout_url(
         self,
         *,
@@ -829,7 +860,7 @@ class UserManagement:
     ) -> CORSOriginResponse:
         """Create a CORS origin
 
-        Creates a new CORS origin for the current environment. CORS origins allow browser-based applications to make requests to the WorkOS API.
+        Creates a new CORS origin for the API key's application. CORS origins allow browser-based applications to make requests to the WorkOS API.
 
         Args:
             origin: The origin URL to allow for CORS requests.
@@ -1052,14 +1083,14 @@ class UserManagement:
         self,
         *,
         email: str,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        name: Union[str, None, NotGiven] = NOT_GIVEN,
+        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
+        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
         signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1097,18 +1128,26 @@ class UserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "name": name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "ip_address": ip_address,
-                "user_agent": user_agent,
                 "signals_id": signals_id,
             }.items()
             if v is not None
         }
+        if not isinstance(first_name, NotGiven):
+            body["first_name"] = first_name
+        if not isinstance(last_name, NotGiven):
+            body["last_name"] = last_name
+        if not isinstance(name, NotGiven):
+            body["name"] = name
+        if not isinstance(email_verified, NotGiven):
+            body["email_verified"] = email_verified
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if not isinstance(ip_address, NotGiven):
+            body["ip_address"] = ip_address
+        if not isinstance(user_agent, NotGiven):
+            body["user_agent"] = user_agent
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -1192,9 +1231,9 @@ class UserManagement:
         last_name: Optional[str] = None,
         name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        locale: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        locale: Union[str, None, NotGiven] = NOT_GIVEN,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
@@ -1233,12 +1272,15 @@ class UserManagement:
                 "last_name": last_name,
                 "name": name,
                 "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if not isinstance(locale, NotGiven):
+            body["locale"] = locale
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -1999,6 +2041,33 @@ class UserManagement:
             path=("user_management", "redirect_uris"),
             body=body,
             model=RedirectUri,
+            request_options=request_options,
+        )
+
+    def delete_redirect_uris(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a redirect URI
+
+        Deletes a redirect URI from an application.
+
+        Args:
+            id: The ID of the redirect URI to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("user_management", "redirect_uris", str(id)),
             request_options=request_options,
         )
 
@@ -3001,6 +3070,36 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
+    async def get_radar_challenge(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> RadarChallenge:
+        """Get Radar Challenge details
+
+        Get the details of an existing Radar Challenge, including the OTP code.
+
+        Args:
+            id: The unique ID of the Radar Challenge.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            RadarChallenge
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("user_management", "radar_challenges", str(id)),
+            model=RadarChallenge,
+            request_options=request_options,
+        )
+
     def get_logout_url(
         self,
         *,
@@ -3120,7 +3219,7 @@ class AsyncUserManagement:
     ) -> CORSOriginResponse:
         """Create a CORS origin
 
-        Creates a new CORS origin for the current environment. CORS origins allow browser-based applications to make requests to the WorkOS API.
+        Creates a new CORS origin for the API key's application. CORS origins allow browser-based applications to make requests to the WorkOS API.
 
         Args:
             origin: The origin URL to allow for CORS requests.
@@ -3343,14 +3442,14 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
+        name: Union[str, None, NotGiven] = NOT_GIVEN,
+        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
+        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
         signals_id: Optional[str] = None,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -3388,18 +3487,26 @@ class AsyncUserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "name": name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "ip_address": ip_address,
-                "user_agent": user_agent,
                 "signals_id": signals_id,
             }.items()
             if v is not None
         }
+        if not isinstance(first_name, NotGiven):
+            body["first_name"] = first_name
+        if not isinstance(last_name, NotGiven):
+            body["last_name"] = last_name
+        if not isinstance(name, NotGiven):
+            body["name"] = name
+        if not isinstance(email_verified, NotGiven):
+            body["email_verified"] = email_verified
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if not isinstance(ip_address, NotGiven):
+            body["ip_address"] = ip_address
+        if not isinstance(user_agent, NotGiven):
+            body["user_agent"] = user_agent
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -3483,9 +3590,9 @@ class AsyncUserManagement:
         last_name: Optional[str] = None,
         name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        metadata: Optional[Dict[str, str]] = None,
-        external_id: Optional[str] = None,
-        locale: Optional[str] = None,
+        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
+        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
+        locale: Union[str, None, NotGiven] = NOT_GIVEN,
         password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
@@ -3524,12 +3631,15 @@ class AsyncUserManagement:
                 "last_name": last_name,
                 "name": name,
                 "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
             }.items()
             if v is not None
         }
+        if not isinstance(metadata, NotGiven):
+            body["metadata"] = metadata
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if not isinstance(locale, NotGiven):
+            body["locale"] = locale
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -4290,6 +4400,33 @@ class AsyncUserManagement:
             path=("user_management", "redirect_uris"),
             body=body,
             model=RedirectUri,
+            request_options=request_options,
+        )
+
+    async def delete_redirect_uris(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a redirect URI
+
+        Deletes a redirect URI from an application.
+
+        Args:
+            id: The ID of the redirect URI to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("user_management", "redirect_uris", str(id)),
             request_options=request_options,
         )
 

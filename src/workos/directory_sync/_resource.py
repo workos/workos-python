@@ -229,6 +229,8 @@ class DirectorySync:
         order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
+        idp_id: Optional[str] = None,
+        email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[DirectoryUserWithGroups]:
         """List Directory Users
@@ -242,6 +244,8 @@ class DirectorySync:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
+            idp_id: Filter Directory Users by the identity provider's unique identifier (`idp_id`). Requires the `directory` parameter to also be provided.
+            email: Filter Directory Users by their primary email address. Requires the `directory` parameter to also be provided.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -264,6 +268,8 @@ class DirectorySync:
                 "order": enum_value(order) if order is not None else None,
                 "directory": directory,
                 "group": group,
+                "idp_id": idp_id,
+                "email": email,
             }.items()
             if v is not None
         }
@@ -522,6 +528,8 @@ class AsyncDirectorySync:
         order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
+        idp_id: Optional[str] = None,
+        email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[DirectoryUserWithGroups]:
         """List Directory Users
@@ -535,6 +543,8 @@ class AsyncDirectorySync:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
+            idp_id: Filter Directory Users by the identity provider's unique identifier (`idp_id`). Requires the `directory` parameter to also be provided.
+            email: Filter Directory Users by their primary email address. Requires the `directory` parameter to also be provided.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -557,6 +567,8 @@ class AsyncDirectorySync:
                 "order": enum_value(order) if order is not None else None,
                 "directory": directory,
                 "group": group,
+                "idp_id": idp_id,
+                "email": email,
             }.items()
             if v is not None
         }

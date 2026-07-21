@@ -1,0 +1,13 @@
+{
+  "object": "agent_registration_claim",
+  "id": "agent_reg_claim_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "completed_by_attempt_id": "agent_reg_claim_attempt_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "claimed_by": {
+    "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "organization_id": null
+  },
+  "completed_at": "2024-01-15T10:32:00.000Z",
+  "created_at": "2024-01-15T10:30:00.000Z",
+  "updated_at": "2024-01-15T10:32:00.000Z"
+}

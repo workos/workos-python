@@ -11,7 +11,6 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .connection_domain import ConnectionDomain
-from .connection_option import ConnectionOption
 from workos.common.models.connection_state import ConnectionState
 from workos.common.models.connection_status import ConnectionStatus
 from workos.common.models.connection_type import ConnectionType
@@ -43,8 +42,8 @@ class Connection:
     """Deprecated. Use `state` instead.
 
     .. deprecated:: This field is deprecated."""
-    options: Optional["ConnectionOption"] = None
-    """Configuration options for SAML connections. Only present for SAML connection types."""
+    callback_endpoint: Optional[str] = None
+    """The immutable callback endpoint for this Connection. For SAML connections this is the ACS URL; for OIDC connections this is the redirect URI."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Connection":
@@ -66,9 +65,7 @@ class Connection:
                 status=ConnectionStatus(_v_status)
                 if (_v_status := data.get("status")) is not None
                 else None,
-                options=ConnectionOption.from_dict(cast(Dict[str, Any], _v_options))
-                if (_v_options := data.get("options")) is not None
-                else None,
+                callback_endpoint=data.get("callback_endpoint"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Connection", e)
@@ -96,6 +93,6 @@ class Connection:
             result["status"] = (
                 self.status.value if isinstance(self.status, Enum) else self.status
             )
-        if self.options is not None:
-            result["options"] = self.options.to_dict()
+        if self.callback_endpoint is not None:
+            result["callback_endpoint"] = self.callback_endpoint
         return result

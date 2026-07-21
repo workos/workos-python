@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions
+from .._types import RequestOptions, NOT_GIVEN, NotGiven
 from .models import (
     DataIntegrationConfigurationListResponse,
     DataIntegrationConfigurationResponse,
@@ -60,7 +60,7 @@ class PipesProvider:
         slug: str,
         *,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -93,12 +93,13 @@ class PipesProvider:
             k: v
             for k, v in {
                 "enabled": enabled,
-                "scopes": scopes,
                 "client_id": client_id,
                 "client_secret": client_secret,
             }.items()
             if v is not None
         }
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return self._client.request(
             method="put",
             path=(
@@ -159,7 +160,7 @@ class AsyncPipesProvider:
         slug: str,
         *,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -192,12 +193,13 @@ class AsyncPipesProvider:
             k: v
             for k, v in {
                 "enabled": enabled,
-                "scopes": scopes,
                 "client_id": client_id,
                 "client_secret": client_secret,
             }.items()
             if v is not None
         }
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return await self._client.request(
             method="put",
             path=(

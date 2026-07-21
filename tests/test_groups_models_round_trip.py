@@ -4,10 +4,52 @@
 
 from tests.generated_helpers import load_fixture
 
-from workos.groups.models import UserOrganizationMembershipBaseListData
+from workos.groups.models import Group, UserOrganizationMembershipBaseListData
 
 
 class TestModelRoundTrip:
+    def test_group_round_trip(self):
+        data = load_fixture("group.json")
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Group.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_minimal_payload(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_group_preserves_nullable_fields(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
     def test_user_organization_membership_base_list_data_round_trip(self):
         data = load_fixture("user_organization_membership_base_list_data.json")
         instance = UserOrganizationMembershipBaseListData.from_dict(data)

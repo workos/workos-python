@@ -15,6 +15,8 @@ class ApiKeyValidationResponse:
     """Api Key Validation Response model."""
 
     api_key: Optional["ApiKey"]
+    agent_registration_id: Optional[str] = None
+    """The ID of the agent registration this API Key was issued for. Present only when the API Key is assigned to an agent registration."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyValidationResponse":
@@ -24,6 +26,7 @@ class ApiKeyValidationResponse:
                 api_key=ApiKey.from_dict(cast(Dict[str, Any], _v_api_key))
                 if (_v_api_key := data["api_key"]) is not None
                 else None,
+                agent_registration_id=data.get("agent_registration_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApiKeyValidationResponse", e)
@@ -35,4 +38,6 @@ class ApiKeyValidationResponse:
             result["api_key"] = self.api_key.to_dict()
         else:
             result["api_key"] = None
+        if self.agent_registration_id is not None:
+            result["agent_registration_id"] = self.agent_registration_id
         return result

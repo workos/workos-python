@@ -22,6 +22,7 @@ from workos.user_management.models import (
     MagicAuth,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
+    RadarChallenge,
     RedirectUri,
     ResetPasswordResponse,
     SendRadarSmsChallengeResponse,
@@ -148,6 +149,38 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
+    def test_radar_challenge_round_trip(self):
+        data = load_fixture("radar_challenge.json")
+        instance = RadarChallenge.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarChallenge.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_challenge_minimal_payload(self):
+        data = {
+            "object": "radar_challenge",
+            "id": "radar_challenge_01HWZBQZY2M3AMQW166Q22K88F",
+            "type": "email",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "code": "123456",
+        }
+        instance = RadarChallenge.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["code"] == data["code"]
+
     def test_send_radar_sms_challenge_response_round_trip(self):
         data = load_fixture("send_radar_sms_challenge_response.json")
         instance = SendRadarSmsChallengeResponse.from_dict(data)
@@ -177,7 +210,7 @@ class TestModelRoundTrip:
     def test_redirect_uri_minimal_payload(self):
         data = {
             "object": "redirect_uri",
-            "id": "ruri_01EHZNVPK3SFK441A1RGBFSHRT",
+            "id": "redir_01EHZNVPK3SFK441A1RGBFSHRT",
             "uri": "https://example.com/callback",
             "default": True,
             "created_at": "2026-01-15T12:00:00.000Z",

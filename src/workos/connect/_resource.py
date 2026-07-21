@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
     ApplicationCredentialsListItem,
     CreateM2MApplication,
@@ -20,6 +20,7 @@ from .models import (
 )
 from workos.common.models.connect_application import ConnectApplication
 from workos.common.models.connect_application import ConnectApplicationVariant
+from .models import ApplicationsRegistrationTypes
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -96,6 +97,9 @@ class Connect:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        registration_types: Optional[
+            List[Union[ApplicationsRegistrationTypes, str]]
+        ] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ConnectApplicationVariant]:
@@ -108,6 +112,7 @@ class Connect:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            registration_types: Filter Connect Applications by registration type. Specify multiple as a comma-separated list (e.g. `registration_types=dynamic,authenticated`). Defaults to `authenticated` only when not specified.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -127,6 +132,9 @@ class Connect:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "registration_types": ",".join(str(v) for v in registration_types)
+                if registration_types is not None
+                else None,
                 "organization_id": organization_id,
             }.items()
             if v is not None
@@ -287,9 +295,9 @@ class Connect:
         id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -318,14 +326,19 @@ class Connect:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
+        if not isinstance(redirect_uris, NotGiven):
+            body["redirect_uris"] = (
+                [item.to_dict() for item in redirect_uris]
+                if redirect_uris is not None
+                else None
+            )
         return cast(
             ConnectApplicationVariant,
             self._client.request(
@@ -528,6 +541,9 @@ class AsyncConnect:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        registration_types: Optional[
+            List[Union[ApplicationsRegistrationTypes, str]]
+        ] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ConnectApplicationVariant]:
@@ -540,6 +556,7 @@ class AsyncConnect:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            registration_types: Filter Connect Applications by registration type. Specify multiple as a comma-separated list (e.g. `registration_types=dynamic,authenticated`). Defaults to `authenticated` only when not specified.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -559,6 +576,9 @@ class AsyncConnect:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "registration_types": ",".join(str(v) for v in registration_types)
+                if registration_types is not None
+                else None,
                 "organization_id": organization_id,
             }.items()
             if v is not None
@@ -719,9 +739,9 @@ class AsyncConnect:
         id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -750,14 +770,19 @@ class AsyncConnect:
             k: v
             for k, v in {
                 "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
+        if not isinstance(redirect_uris, NotGiven):
+            body["redirect_uris"] = (
+                [item.to_dict() for item in redirect_uris]
+                if redirect_uris is not None
+                else None
+            )
         return cast(
             ConnectApplicationVariant,
             await self._client.request(

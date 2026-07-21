@@ -7,19 +7,25 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
+from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from .models import (
+    ApiKeyInstallation,
     CustomProviderDefinition,
     DataIntegration,
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
-    DataIntegrationCredentialsDto,
+    DataIntegrationCredentialsInput,
     DataIntegrationCredentialsResponse,
     DataIntegrationsListResponse,
     UpdateCustomProviderDefinition,
 )
 from workos.common.models.connected_account import ConnectedAccount
-from workos.common.models.connected_account_state import ConnectedAccountState
+from workos.common.models.connected_account_input_state import (
+    ConnectedAccountInputState,
+)
+from workos.common.models.create_data_integration_auth_methods import (
+    CreateDataIntegrationAuthMethods,
+)
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -41,7 +47,7 @@ class Pipes:
     ) -> SyncPage[DataIntegration]:
         """List data integrations
 
-        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers.
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -80,23 +86,29 @@ class Pipes:
         self,
         *,
         provider: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
-        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        auth_methods: Optional[
+            List[Union[CreateDataIntegrationAuthMethods, str]]
+        ] = None,
+        credentials: Optional[DataIntegrationCredentialsInput] = None,
+        api_key: Optional[ApiKeyInstallation] = None,
         custom_provider: Optional[CustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials, or `organization` to have each organization supply its own. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            credentials: The credentials to configure for the Data Integration. Required for both built-in and custom providers.
+            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request).
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -106,7 +118,9 @@ class Pipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -115,18 +129,22 @@ class Pipes:
             k: v
             for k, v in {
                 "provider": provider,
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
+                "auth_methods": auth_methods,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
                 "custom_provider": custom_provider.to_dict()
                 if custom_provider is not None
                 else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return self._client.request(
             method="post",
             path=("data-integrations",),
@@ -169,10 +187,11 @@ class Pipes:
         self,
         slug: str,
         *,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
-        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        credentials: Optional[DataIntegrationCredentialsInput] = None,
+        api_key: Optional[ApiKeyInstallation] = None,
         custom_provider: Optional[UpdateCustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegration:
@@ -185,7 +204,8 @@ class Pipes:
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled.
             scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
-            credentials: New credentials for the Data Integration. When provided, rotates the stored client secret.
+            credentials: New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`.
+            api_key: An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`).
             custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -195,6 +215,7 @@ class Pipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
@@ -203,18 +224,21 @@ class Pipes:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
                 "custom_provider": custom_provider.to_dict()
                 if custom_provider is not None
                 else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return self._client.request(
             method="put",
             path=("data-integrations", str(slug)),
@@ -395,7 +419,7 @@ class Pipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
+        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -420,13 +444,10 @@ class Pipes:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "user_id": user_id,
         }
+        if not isinstance(organization_id, NotGiven):
+            body["organization_id"] = organization_id
         return self._client.request(
             method="post",
             path=("data-integrations", str(provider), "token"),
@@ -492,7 +513,7 @@ class Pipes:
         refresh_token: Optional[str] = None,
         expires_at: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountState, str]] = None,
+        state: Optional[Union[ConnectedAccountInputState, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectedAccount:
@@ -564,7 +585,7 @@ class Pipes:
         refresh_token: Optional[str] = None,
         expires_at: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountState, str]] = None,
+        state: Optional[Union[ConnectedAccountInputState, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectedAccount:
@@ -727,7 +748,7 @@ class AsyncPipes:
     ) -> AsyncPage[DataIntegration]:
         """List data integrations
 
-        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers.
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -766,23 +787,29 @@ class AsyncPipes:
         self,
         *,
         provider: str,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
-        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        auth_methods: Optional[
+            List[Union[CreateDataIntegrationAuthMethods, str]]
+        ] = None,
+        credentials: Optional[DataIntegrationCredentialsInput] = None,
+        api_key: Optional[ApiKeyInstallation] = None,
         custom_provider: Optional[CustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials, or `organization` to have each organization supply its own. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            credentials: The credentials to configure for the Data Integration. Required for both built-in and custom providers.
+            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request).
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -792,7 +819,9 @@ class AsyncPipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -801,18 +830,22 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "provider": provider,
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
+                "auth_methods": auth_methods,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
                 "custom_provider": custom_provider.to_dict()
                 if custom_provider is not None
                 else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return await self._client.request(
             method="post",
             path=("data-integrations",),
@@ -855,10 +888,11 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        description: Optional[str] = None,
+        description: Union[str, None, NotGiven] = NOT_GIVEN,
         enabled: Optional[bool] = None,
-        scopes: Optional[List[str]] = None,
-        credentials: Optional[DataIntegrationCredentialsDto] = None,
+        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
+        credentials: Optional[DataIntegrationCredentialsInput] = None,
+        api_key: Optional[ApiKeyInstallation] = None,
         custom_provider: Optional[UpdateCustomProviderDefinition] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegration:
@@ -871,7 +905,8 @@ class AsyncPipes:
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled.
             scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
-            credentials: New credentials for the Data Integration. When provided, rotates the stored client secret.
+            credentials: New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`.
+            api_key: An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`).
             custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -881,6 +916,7 @@ class AsyncPipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
@@ -889,18 +925,21 @@ class AsyncPipes:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "description": description,
                 "enabled": enabled,
-                "scopes": scopes,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
                 "custom_provider": custom_provider.to_dict()
                 if custom_provider is not None
                 else None,
             }.items()
             if v is not None
         }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
         return await self._client.request(
             method="put",
             path=("data-integrations", str(slug)),
@@ -1081,7 +1120,7 @@ class AsyncPipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
+        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
         request_options: Optional[RequestOptions] = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -1106,13 +1145,10 @@ class AsyncPipes:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
+            "user_id": user_id,
         }
+        if not isinstance(organization_id, NotGiven):
+            body["organization_id"] = organization_id
         return await self._client.request(
             method="post",
             path=("data-integrations", str(provider), "token"),
@@ -1178,7 +1214,7 @@ class AsyncPipes:
         refresh_token: Optional[str] = None,
         expires_at: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountState, str]] = None,
+        state: Optional[Union[ConnectedAccountInputState, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectedAccount:
@@ -1250,7 +1286,7 @@ class AsyncPipes:
         refresh_token: Optional[str] = None,
         expires_at: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountState, str]] = None,
+        state: Optional[Union[ConnectedAccountInputState, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectedAccount:

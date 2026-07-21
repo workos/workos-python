@@ -21,17 +21,17 @@ class Widgets:
     def create_token(
         self,
         *,
-        organization_id: str,
+        organization_id: Optional[str] = None,
         user_id: Optional[str] = None,
         scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token
 
-        Generate a widget token scoped to an organization and user with the specified scopes.
+        Generate a widget token for a user, optionally scoped to an organization. When an organization is specified, org-scoped widgets are enabled; omitting it issues a user-only token for widgets like `UserProfile` and `UserSecurity`.
 
         Args:
-            organization_id: The ID of the organization to scope the widget session to.
+            organization_id: The ID of the organization to scope the widget session to. Required when scopes are provided. Optional when issuing a token for user-only widgets (e.g. `UserProfile`, `UserSecurity`) that do not require organization context.
             user_id: The ID of the user to issue the widget session token for.
             scopes: The scopes to grant the widget session.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -74,17 +74,17 @@ class AsyncWidgets:
     async def create_token(
         self,
         *,
-        organization_id: str,
+        organization_id: Optional[str] = None,
         user_id: Optional[str] = None,
         scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token
 
-        Generate a widget token scoped to an organization and user with the specified scopes.
+        Generate a widget token for a user, optionally scoped to an organization. When an organization is specified, org-scoped widgets are enabled; omitting it issues a user-only token for widgets like `UserProfile` and `UserSecurity`.
 
         Args:
-            organization_id: The ID of the organization to scope the widget session to.
+            organization_id: The ID of the organization to scope the widget session to. Required when scopes are provided. Optional when issuing a token for user-only widgets (e.g. `UserProfile`, `UserSecurity`) that do not require organization context.
             user_id: The ID of the user to issue the widget session token for.
             scopes: The scopes to grant the widget session.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.

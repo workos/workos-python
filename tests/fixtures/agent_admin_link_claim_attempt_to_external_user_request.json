@@ -1,0 +1,9 @@
+{
+  "type": "link_external_user",
+  "claim_attempt_token": "cla_tkn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "user": {
+    "email": "alice@example.com",
+    "external_id": "user_abc123"
+  },
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
+}

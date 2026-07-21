@@ -77,6 +77,7 @@ class TestApiKeys:
         )
         result = workos.api_keys.create_validation(value="test_value")
         assert isinstance(result, ApiKeyValidationResponse)
+        assert result.agent_registration_id == "agent_reg_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/api_keys/validations")
@@ -240,6 +241,7 @@ class TestAsyncApiKeys:
         httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
         result = await async_workos.api_keys.create_validation(value="test_value")
         assert isinstance(result, ApiKeyValidationResponse)
+        assert result.agent_registration_id == "agent_reg_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/api_keys/validations")

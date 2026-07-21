@@ -17,6 +17,9 @@ from .action_user_registration_denied_data import (
 )
 from .actor import Actor as Actor
 from .add_role_permission import AddRolePermission as AddRolePermission
+from .agent_registration_created_data_kind import *  # noqa: F401,F403
+from .agent_registration_created_data_method import *  # noqa: F401,F403
+from .agent_registration_created_data_status import *  # noqa: F401,F403
 from .agent_admin_validate_credential_request_type import (
     AgentAdminValidateCredentialRequestType as AgentAdminValidateCredentialRequestType,
 )
@@ -820,6 +823,7 @@ from .vault_data_updated_data_actor_source import *  # noqa: F401,F403
 from .vault_dek_decrypted_data_actor_source import *  # noqa: F401,F403
 from .vault_dek_read_data_actor_source import *  # noqa: F401,F403
 from .vault_kek_created_data_actor_source import *  # noqa: F401,F403
+from .vault_kek_deleted_data_actor_source import *  # noqa: F401,F403
 from .vault_metadata_read_data_actor_source import *  # noqa: F401,F403
 from .vault_names_listed_data_actor_source import *  # noqa: F401,F403
 from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted

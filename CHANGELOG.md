@@ -2,47 +2,101 @@
 
 ## [10.0.0](https://github.com/workos/workos-python/compare/v9.1.0...v10.0.0) (2026-07-22)
 
-
-### ⚠ BREAKING CHANGES
-
-* **connect:** SDK surface change: Symbol "ConnectedAccountDto" was removed ([#698](https://github.com/workos/workos-python/issues/698))
-* **organization_domains:** SDK surface change: Symbol "DomainVerificationIntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698))
-* **pipes:** SDK surface change: Symbol "DataIntegrationCredentialsDto" was removed ([#698](https://github.com/workos/workos-python/issues/698))
-* **sso:** SDK surface change: Symbol "SSOIntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698))
-* **admin_portal:** SDK surface change: Symbol "IntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698))
-* **authorization:** SDK surface change: Symbol "PermissionCreatedData" was removed ([#695](https://github.com/workos/workos-python/issues/695))
-* **connect:** SDK surface change: Parameter type changed for "description" on "Connect.update_application" ([#695](https://github.com/workos/workos-python/issues/695))
-* **groups:** SDK surface change: Parameter type changed for "description" on "Groups.create_organization_group" ([#695](https://github.com/workos/workos-python/issues/695))
-* **organizations:** SDK surface change: Parameter type changed for "metadata" on "Organizations.create_organization" ([#695](https://github.com/workos/workos-python/issues/695))
-* **pipes:** SDK surface change: Parameter type changed for "description" on "Pipes.create_data_integration" ([#695](https://github.com/workos/workos-python/issues/695))
-* **user_management:** SDK surface change: Parameter type changed for "first_name" on "UserManagement.create_user" ([#695](https://github.com/workos/workos-python/issues/695))
-* **vault:** SDK surface change: Parameter type changed for "version_check" on "Vault.update_kv" ([#695](https://github.com/workos/workos-python/issues/695))
-* **widgets:** SDK surface change: Parameter type changed for "organization_id" on "Widgets.create_token" ([#695](https://github.com/workos/workos-python/issues/695))
-* **api_keys:** SDK surface change: Parameter type changed for "expires_at" on "ApiKeys.create_api_key_expire" ([#695](https://github.com/workos/workos-python/issues/695))
-
 ### Features
 
 * Add NOT_GIVEN sentinel for nullable optional params ([#694](https://github.com/workos/workos-python/issues/694)) ([3b9a2cb](https://github.com/workos/workos-python/commit/3b9a2cb03299231c7fccc1ca392d0eb53d29355e))
-* **admin_portal:** SDK surface change: Symbol "IntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698)) ([7c44fba](https://github.com/workos/workos-python/commit/7c44fbaf76ebd341111cf7bc7d63ebd3d5a05aed))
-* **api_keys:** SDK surface change: Parameter type changed for "expires_at" on "ApiKeys.create_api_key_expire" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **authorization:** SDK surface change: Symbol "PermissionCreatedData" was removed ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **connect:** SDK surface change: Parameter type changed for "description" on "Connect.update_application" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **connect:** SDK surface change: Symbol "ConnectedAccountDto" was removed ([#698](https://github.com/workos/workos-python/issues/698)) ([7c44fba](https://github.com/workos/workos-python/commit/7c44fbaf76ebd341111cf7bc7d63ebd3d5a05aed))
-* **generated:** AuditLogs (batch 56391ebd) ([#690](https://github.com/workos/workos-python/issues/690)) ([b1d3352](https://github.com/workos/workos-python/commit/b1d33524c5b7baf9bcb5ca4a104a9e57f4e638e6))
-* **groups:** SDK surface change: Parameter type changed for "description" on "Groups.create_organization_group" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **organization_domains:** SDK surface change: Symbol "DomainVerificationIntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698)) ([7c44fba](https://github.com/workos/workos-python/commit/7c44fbaf76ebd341111cf7bc7d63ebd3d5a05aed))
-* **organizations:** SDK surface change: Parameter type changed for "metadata" on "Organizations.create_organization" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **pipes:** SDK surface change: Parameter type changed for "description" on "Pipes.create_data_integration" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **pipes:** SDK surface change: Symbol "DataIntegrationCredentialsDto" was removed ([#698](https://github.com/workos/workos-python/issues/698)) ([7c44fba](https://github.com/workos/workos-python/commit/7c44fbaf76ebd341111cf7bc7d63ebd3d5a05aed))
-* **sso:** SDK surface change: Symbol "SSOIntentOptions" was removed ([#698](https://github.com/workos/workos-python/issues/698)) ([7c44fba](https://github.com/workos/workos-python/commit/7c44fbaf76ebd341111cf7bc7d63ebd3d5a05aed))
-* **user_management:** SDK surface change: Parameter type changed for "first_name" on "UserManagement.create_user" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **vault:** SDK surface change: Parameter type changed for "version_check" on "Vault.update_kv" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
-* **widgets:** SDK surface change: Parameter type changed for "organization_id" on "Widgets.create_token" ([#695](https://github.com/workos/workos-python/issues/695)) ([a74e691](https://github.com/workos/workos-python/commit/a74e691ca4f6d731283f6251c9c4bef554cb4ab5))
 
 
 ### Documentation
 
 * clarify Idempotency-Key is only honored on audit log event creation ([#692](https://github.com/workos/workos-python/issues/692)) ([15003c0](https://github.com/workos/workos-python/commit/15003c028ef72f87ff931b007c71477c8939a6e2))
+
+* [#690](https://github.com/workos/workos-python/pull/690) fix(generated): regenerate from spec
+
+  **Features**
+  * **[audit_logs](https://workos.com/docs/reference/audit-logs)**:
+    * Added `expired` to `AuditLogExportState`
+
+* [#695](https://github.com/workos/workos-python/pull/695) feat(generated)!: regenerate from spec (9 changes)
+
+  **Features**
+  * **agents**:
+    * Added model `ClaimViewResponse`
+    * Added model `ClaimViewResponseOrganization`
+    * Added model `AgentAdminLinkClaimAttemptToExternalUserRequest`
+    * Added model `AgentAdminLinkClaimAttemptToExternalUserRequestUser`
+    * Added enum `ClaimViewResponseStatus`
+    * Added endpoint `PATCH /agents/claims/attempts`
+    * Added model `AgentRegistration`
+    * Added model `AgentCredentialValidation`
+    * Added model `AgentRegistrationAgentIdentity`
+    * Added model `AgentRegistrationClaim`
+    * Added model `AgentAdminValidateCredentialRequest`
+    * Added model `AgentRegistrationClaimClaimCompletion`
+    * Added enum `AgentRegistrationStatus`
+    * Added enum `AgentRegistrationKind`
+    * Added enum `AgentAdminValidateCredentialRequestType`
+    * Added service `Agents`
+  * **[api_keys](https://workos.com/docs/reference/authkit/api-keys)**:
+    * Added `agent_registration_id` to `ApiKeyValidationResponse`
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added enum `ApplicationsRegistrationTypes`
+    * Added parameter `Applications.list.registration_types`
+  * **[directory_sync](https://workos.com/docs/reference/directory-sync)**:
+    * Added parameter `DirectoryUsers.list.idp_id`
+    * Added parameter `DirectoryUsers.list.email`
+  * **[organizations](https://workos.com/docs/reference/organization)**:
+    * Added model `OrganizationAuthorizedConnectApplicationList`
+    * Added model `OrganizationAuthorizedConnectApplicationListData`
+    * Added model `OrganizationAuthorizedConnectApplicationListListMetadata`
+    * Added service `OrganizationsAuthorizedApplications`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationInstallation`
+    * Added `auth_methods` to `CreateDataIntegration`
+    * Added `api_key` to `CreateDataIntegration`
+    * Added `api_key` to `UpdateDataIntegration`
+    * Added `auth_methods` to `DataIntegration`
+    * Added `installation` to `DataIntegration`
+    * Added enum `CreateDataIntegrationAuthMethods`
+    * Added enum `DataIntegrationAuthMethods`
+    * Added model `DataIntegrationCredentialsResponse`
+    * Added model `DataIntegrationCredentialsResponseCredential`
+    * Added model `DataIntegrationsUpsertApiKeyRequest`
+    * Added model `DataIntegrationsVendCredentialsRequest`
+    * Added enum `DataIntegrationCredentialsResponseError`
+    * Added endpoint `PUT /data-integrations/{slug}/api-key`
+    * Added endpoint `POST /data-integrations/{slug}/credentials`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Added parameter `SSO.authorize.prompt`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added `ssha256` to `CreateUserPasswordHashType`
+    * Added `ssha256` to `UpdateUserPasswordHashType`
+    * Added endpoint `GET /user_management/radar_challenges/{id}`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `agent.registration.revoked` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.revoked` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.deleted` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `radar.challenge_created` to `CreateWebhookEndpointEvents`
+    * Added `radar.challenge_created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.expired` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.expired` to `UpdateWebhookEndpointEvents`
+  * **[widgets](https://workos.com/docs/reference/widgets)**:
+    * Made `WidgetSessionToken.organization_id` optional
+
+* [#698](https://github.com/workos/workos-python/pull/698) feat(generated)!: regenerate from spec (5 changes)
+
+  **⚠️ Breaking**
+  * **[admin_portal](https://workos.com/docs/reference/admin-portal)**:
+    * SDK surface change: Symbol "IntentOptions" was removed
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * SDK surface change: Symbol "ConnectedAccountDto" was removed
+  * **[organization_domains](https://workos.com/docs/reference/domain-verification)**:
+    * SDK surface change: Symbol "DomainVerificationIntentOptions" was removed
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * SDK surface change: Symbol "DataIntegrationCredentialsDto" was removed
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * SDK surface change: Symbol "SSOIntentOptions" was removed
 
 ## [9.1.0](https://github.com/workos/workos-python/compare/v9.0.0...v9.1.0) (2026-07-06)
 

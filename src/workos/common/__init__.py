@@ -77,7 +77,6 @@ from .models import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
 from .models import AuthenticateResponseImpersonator as AuthenticateResponseImpersonator
-from .models import *  # noqa: F401,F403
 from .models import AuthenticationChallenge as AuthenticationChallenge
 from .models import (
     AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed,

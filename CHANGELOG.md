@@ -1,5 +1,103 @@
 # Changelog
 
+## [10.0.0](https://github.com/workos/workos-python/compare/v9.1.0...v10.0.0) (2026-07-22)
+
+### Features
+
+* Add NOT_GIVEN sentinel for nullable optional params ([#694](https://github.com/workos/workos-python/issues/694)) ([3b9a2cb](https://github.com/workos/workos-python/commit/3b9a2cb03299231c7fccc1ca392d0eb53d29355e))
+
+
+### Documentation
+
+* clarify Idempotency-Key is only honored on audit log event creation ([#692](https://github.com/workos/workos-python/issues/692)) ([15003c0](https://github.com/workos/workos-python/commit/15003c028ef72f87ff931b007c71477c8939a6e2))
+
+* [#690](https://github.com/workos/workos-python/pull/690) fix(generated): regenerate from spec
+
+  **Features**
+  * **[audit_logs](https://workos.com/docs/reference/audit-logs)**:
+    * Added `expired` to `AuditLogExportState`
+
+* [#695](https://github.com/workos/workos-python/pull/695) feat(generated)!: regenerate from spec (9 changes)
+
+  **Features**
+  * **agents**:
+    * Added model `ClaimViewResponse`
+    * Added model `ClaimViewResponseOrganization`
+    * Added model `AgentAdminLinkClaimAttemptToExternalUserRequest`
+    * Added model `AgentAdminLinkClaimAttemptToExternalUserRequestUser`
+    * Added enum `ClaimViewResponseStatus`
+    * Added endpoint `PATCH /agents/claims/attempts`
+    * Added model `AgentRegistration`
+    * Added model `AgentCredentialValidation`
+    * Added model `AgentRegistrationAgentIdentity`
+    * Added model `AgentRegistrationClaim`
+    * Added model `AgentAdminValidateCredentialRequest`
+    * Added model `AgentRegistrationClaimClaimCompletion`
+    * Added enum `AgentRegistrationStatus`
+    * Added enum `AgentRegistrationKind`
+    * Added enum `AgentAdminValidateCredentialRequestType`
+    * Added service `Agents`
+  * **[api_keys](https://workos.com/docs/reference/authkit/api-keys)**:
+    * Added `agent_registration_id` to `ApiKeyValidationResponse`
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added enum `ApplicationsRegistrationTypes`
+    * Added parameter `Applications.list.registration_types`
+  * **[directory_sync](https://workos.com/docs/reference/directory-sync)**:
+    * Added parameter `DirectoryUsers.list.idp_id`
+    * Added parameter `DirectoryUsers.list.email`
+  * **[organizations](https://workos.com/docs/reference/organization)**:
+    * Added model `OrganizationAuthorizedConnectApplicationList`
+    * Added model `OrganizationAuthorizedConnectApplicationListData`
+    * Added model `OrganizationAuthorizedConnectApplicationListListMetadata`
+    * Added service `OrganizationsAuthorizedApplications`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationInstallation`
+    * Added `auth_methods` to `CreateDataIntegration`
+    * Added `api_key` to `CreateDataIntegration`
+    * Added `api_key` to `UpdateDataIntegration`
+    * Added `auth_methods` to `DataIntegration`
+    * Added `installation` to `DataIntegration`
+    * Added enum `CreateDataIntegrationAuthMethods`
+    * Added enum `DataIntegrationAuthMethods`
+    * Added model `DataIntegrationCredentialsResponse`
+    * Added model `DataIntegrationCredentialsResponseCredential`
+    * Added model `DataIntegrationsUpsertApiKeyRequest`
+    * Added model `DataIntegrationsVendCredentialsRequest`
+    * Added enum `DataIntegrationCredentialsResponseError`
+    * Added endpoint `PUT /data-integrations/{slug}/api-key`
+    * Added endpoint `POST /data-integrations/{slug}/credentials`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Added parameter `SSO.authorize.prompt`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added `ssha256` to `CreateUserPasswordHashType`
+    * Added `ssha256` to `UpdateUserPasswordHashType`
+    * Added endpoint `GET /user_management/radar_challenges/{id}`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `agent.registration.revoked` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.revoked` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.deleted` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `radar.challenge_created` to `CreateWebhookEndpointEvents`
+    * Added `radar.challenge_created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.registration.expired` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.expired` to `UpdateWebhookEndpointEvents`
+  * **[widgets](https://workos.com/docs/reference/widgets)**:
+    * Made `WidgetSessionToken.organization_id` optional
+
+* [#698](https://github.com/workos/workos-python/pull/698) feat(generated)!: regenerate from spec (5 changes)
+
+  **⚠️ Breaking**
+  * **[admin_portal](https://workos.com/docs/reference/admin-portal)**:
+    * SDK surface change: Symbol "IntentOptions" was removed
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * SDK surface change: Symbol "ConnectedAccountDto" was removed
+  * **[organization_domains](https://workos.com/docs/reference/domain-verification)**:
+    * SDK surface change: Symbol "DomainVerificationIntentOptions" was removed
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * SDK surface change: Symbol "DataIntegrationCredentialsDto" was removed
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * SDK surface change: Symbol "SSOIntentOptions" was removed
+
 ## [9.1.0](https://github.com/workos/workos-python/compare/v9.0.0...v9.1.0) (2026-07-06)
 
 * [#687](https://github.com/workos/workos-python/pull/687) fix(generated): regenerate from spec

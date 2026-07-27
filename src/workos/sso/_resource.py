@@ -145,6 +145,7 @@ class SSO:
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
+        client_id: Optional[str] = None,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
@@ -164,6 +165,7 @@ class SSO:
         Args:
             provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
+            client_id: The unique identifier of the WorkOS environment client. Defaults to the client's configured client_id.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with various providers.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
@@ -193,6 +195,7 @@ class SSO:
                 if provider_scopes is not None
                 else None,
                 "provider_query_params": provider_query_params,
+                "client_id": client_id,
                 "domain": domain,
                 "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
@@ -207,7 +210,7 @@ class SSO:
             if v is not None
         }
         params["response_type"] = "code"
-        if self._client.client_id is not None:
+        if "client_id" not in params and self._client.client_id is not None:
             params["client_id"] = self._client.client_id
         return self._client.build_url(("sso", "authorize"), params)
 
@@ -565,6 +568,7 @@ class AsyncSSO:
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
+        client_id: Optional[str] = None,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
@@ -584,6 +588,7 @@ class AsyncSSO:
         Args:
             provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
+            client_id: The unique identifier of the WorkOS environment client. Defaults to the client's configured client_id.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with various providers.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
@@ -613,6 +618,7 @@ class AsyncSSO:
                 if provider_scopes is not None
                 else None,
                 "provider_query_params": provider_query_params,
+                "client_id": client_id,
                 "domain": domain,
                 "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
@@ -627,7 +633,7 @@ class AsyncSSO:
             if v is not None
         }
         params["response_type"] = "code"
-        if self._client.client_id is not None:
+        if "client_id" not in params and self._client.client_id is not None:
             params["client_id"] = self._client.client_id
         return self._client.build_url(("sso", "authorize"), params)
 

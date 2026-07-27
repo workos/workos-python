@@ -565,6 +565,7 @@ class UserManagement:
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
         redirect_uri: str,
+        client_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> str:
         """Get an authorization URL
@@ -587,6 +588,7 @@ class UserManagement:
             state: An opaque value used to maintain state between the request and the callback.
             organization_id: The ID of the organization to authenticate the user against.
             redirect_uri: The callback URI where the authorization code will be sent after authentication.
+            client_id: The unique identifier of the WorkOS environment client. Defaults to the client's configured client_id.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -619,11 +621,12 @@ class UserManagement:
                 "state": state,
                 "organization_id": organization_id,
                 "redirect_uri": redirect_uri,
+                "client_id": client_id,
             }.items()
             if v is not None
         }
         params["response_type"] = "code"
-        if self._client.client_id is not None:
+        if "client_id" not in params and self._client.client_id is not None:
             params["client_id"] = self._client.client_id
         return self._client.build_url(("user_management", "authorize"), params)
 
@@ -2373,6 +2376,7 @@ class UserManagement:
 
         url = self.get_authorization_url(
             redirect_uri=redirect_uri,
+            client_id=client_id,
             code_challenge=pair.code_challenge,
             code_challenge_method="S256",
             state=state,
@@ -2924,6 +2928,7 @@ class AsyncUserManagement:
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
         redirect_uri: str,
+        client_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> str:
         """Get an authorization URL
@@ -2946,6 +2951,7 @@ class AsyncUserManagement:
             state: An opaque value used to maintain state between the request and the callback.
             organization_id: The ID of the organization to authenticate the user against.
             redirect_uri: The callback URI where the authorization code will be sent after authentication.
+            client_id: The unique identifier of the WorkOS environment client. Defaults to the client's configured client_id.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2978,11 +2984,12 @@ class AsyncUserManagement:
                 "state": state,
                 "organization_id": organization_id,
                 "redirect_uri": redirect_uri,
+                "client_id": client_id,
             }.items()
             if v is not None
         }
         params["response_type"] = "code"
-        if self._client.client_id is not None:
+        if "client_id" not in params and self._client.client_id is not None:
             params["client_id"] = self._client.client_id
         return self._client.build_url(("user_management", "authorize"), params)
 
@@ -4732,6 +4739,7 @@ class AsyncUserManagement:
 
         url = self.get_authorization_url(
             redirect_uri=redirect_uri,
+            client_id=client_id,
             code_challenge=pair.code_challenge,
             code_challenge_method="S256",
             state=state,

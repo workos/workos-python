@@ -94,6 +94,19 @@ class TestAuthKitPKCEAuthorizationUrl:
         )
         assert "organization_id=org_01" in result["url"]
 
+    def test_uses_configured_client_id(self, workos):
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
+        assert "client_id=client_test" in result["url"]
+
+    def test_explicit_client_id_overrides_configured(self, workos):
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback", client_id="client_override"
+        )
+        assert "client_id=client_override" in result["url"]
+        assert "client_id=client_test" not in result["url"]
+
 
 @pytest.mark.asyncio
 class TestAsyncAuthKitPKCEAuthorizationUrl:
@@ -111,6 +124,13 @@ class TestAsyncAuthKitPKCEAuthorizationUrl:
         )
         assert "code_challenge=" in result["url"]
         assert "code_challenge_method=S256" in result["url"]
+
+    async def test_explicit_client_id_overrides_configured(self, async_workos):
+        result = await async_workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback", client_id="client_override"
+        )
+        assert "client_id=client_override" in result["url"]
+        assert "client_id=client_test" not in result["url"]
 
 
 class TestAuthKitPKCECodeExchange:

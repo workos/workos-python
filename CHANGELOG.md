@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.0.1](https://github.com/workos/workos-python/compare/v10.0.0...v10.0.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* **user_management:** honor client_id in PKCE authorization URL ([#701](https://github.com/workos/workos-python/issues/701)) ([93c4fa4](https://github.com/workos/workos-python/commit/93c4fa4f732a6be29a68aa16a02ddd1cc3bf74ea))
+
+
+### Documentation
+
+* add agent context for oagen-generated code ([d94f9f8](https://github.com/workos/workos-python/commit/d94f9f87cecbaa4cfe2da6c55ff569d40d5c19e4))
+
 ## [10.0.0](https://github.com/workos/workos-python/compare/v9.1.0...v10.0.0) (2026-07-22)
 
 ### Features

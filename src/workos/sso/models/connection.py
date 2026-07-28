@@ -5,15 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .connection_domain import ConnectionDomain
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.connection_state import ConnectionState
 from workos.common.models.connection_status import ConnectionStatus
 from workos.common.models.connection_type import ConnectionType
+
+from .connection_domain import ConnectionDomain
 
 
 @dataclass(slots=True)
@@ -24,29 +23,27 @@ class Connection:
     """Distinguishes the Connection object."""
     id: str
     """Unique identifier for the Connection."""
-    connection_type: "ConnectionType"
+    connection_type: ConnectionType
     """The type of the SSO Connection used to authenticate the user. The Connection type may be used to dynamically generate authorization URLs."""
     name: str
     """A human-readable name for the Connection. This will most commonly be the organization's name."""
-    state: "ConnectionState"
+    state: ConnectionState
     """Indicates whether a Connection is able to authenticate users."""
-    domains: List["ConnectionDomain"]
+    domains: list[ConnectionDomain]
     """List of Organization Domains."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """Unique identifier for the Organization in which the Connection resides."""
-    status: Optional["ConnectionStatus"] = None
+    status: ConnectionStatus | None = None
     """Deprecated. Use `state` instead.
 
     .. deprecated:: This field is deprecated."""
-    callback_endpoint: Optional[str] = None
-    """The immutable callback endpoint for this Connection. For SAML connections this is the ACS URL; for OIDC connections this is the redirect URI."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Connection":
+    def from_dict(cls, data: dict[str, Any]) -> Connection:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -56,7 +53,7 @@ class Connection:
                 name=data["name"],
                 state=ConnectionState(data["state"]),
                 domains=[
-                    ConnectionDomain.from_dict(cast(Dict[str, Any], item))
+                    ConnectionDomain.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["domains"])
                 ],
                 created_at=_parse_datetime(data["created_at"]),
@@ -65,14 +62,13 @@ class Connection:
                 status=ConnectionStatus(_v_status)
                 if (_v_status := data.get("status")) is not None
                 else None,
-                callback_endpoint=data.get("callback_endpoint"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Connection", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["connection_type"] = (
@@ -93,6 +89,4 @@ class Connection:
             result["status"] = (
                 self.status.value if isinstance(self.status, Enum) else self.status
             )
-        if self.callback_endpoint is not None:
-            result["callback_endpoint"] = self.callback_endpoint
         return result

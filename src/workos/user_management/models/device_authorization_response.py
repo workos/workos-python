@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,13 +20,13 @@ class DeviceAuthorizationResponse:
     """The end-user verification URI."""
     expires_in: float
     """Lifetime in seconds of the codes."""
-    verification_uri_complete: Optional[str] = None
+    verification_uri_complete: str | None = None
     """Verification URI that includes the user code."""
-    interval: Optional[float] = None
+    interval: float | None = None
     """Minimum polling interval in seconds."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DeviceAuthorizationResponse":
+    def from_dict(cls, data: dict[str, Any]) -> DeviceAuthorizationResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,9 +40,9 @@ class DeviceAuthorizationResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DeviceAuthorizationResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["device_code"] = self.device_code
         result["user_code"] = self.user_code
         result["verification_uri"] = self.verification_uri

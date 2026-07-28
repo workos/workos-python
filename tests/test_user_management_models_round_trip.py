@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.user_management.models import (
     AuthenticateResponse,
     AuthenticateResponseImpersonator,
@@ -16,9 +15,9 @@ from workos.user_management.models import (
     EmailChangeConfirmationUser,
     EmailVerification,
     Invitation,
-    JWTTemplateResponse,
     JwksResponse,
     JwksResponseKeys,
+    JWTTemplateResponse,
     MagicAuth,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,

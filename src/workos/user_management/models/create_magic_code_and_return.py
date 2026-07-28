@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,19 +14,19 @@ class CreateMagicCodeAndReturn:
 
     email: str
     """The email address to send the magic code to."""
-    invitation_token: Optional[str] = None
+    invitation_token: str | None = None
     """The invitation token to associate with this magic code."""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """The IP address of the user's request."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """The user agent string from the user's request."""
-    radar_auth_attempt_id: Optional[str] = None
+    radar_auth_attempt_id: str | None = None
     """The ID of an existing Radar authentication attempt to associate with this request."""
-    signals_id: Optional[str] = None
+    signals_id: str | None = None
     """An optional Radar signals ID to correlate client-side signals with this request."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateMagicCodeAndReturn":
+    def from_dict(cls, data: dict[str, Any]) -> CreateMagicCodeAndReturn:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,9 +40,9 @@ class CreateMagicCodeAndReturn:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateMagicCodeAndReturn", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         if self.invitation_token is not None:
             result["invitation_token"] = self.invitation_token

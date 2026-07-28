@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
@@ -17,19 +18,19 @@ class CreateUserInviteOptions:
 
     email: str
     """The email address of the recipient."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join."""
-    role_slug: Optional[str] = None
+    role_slug: str | None = None
     """The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation."""
-    expires_in_days: Optional[int] = None
+    expires_in_days: int | None = None
     """How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified."""
-    inviter_user_id: Optional[str] = None
+    inviter_user_id: str | None = None
     """The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user."""
-    locale: Optional["CreateUserInviteOptionsLocale"] = None
+    locale: CreateUserInviteOptionsLocale | None = None
     """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateUserInviteOptions":
+    def from_dict(cls, data: dict[str, Any]) -> CreateUserInviteOptions:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -45,9 +46,9 @@ class CreateUserInviteOptions:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUserInviteOptions", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id

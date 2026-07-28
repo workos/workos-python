@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .email_change_confirmation_user import EmailChangeConfirmationUser
@@ -16,25 +16,25 @@ class EmailChangeConfirmation:
 
     object: Literal["email_change_confirmation"]
     """Distinguishes the email change confirmation object."""
-    user: "EmailChangeConfirmationUser"
+    user: EmailChangeConfirmationUser
     """The user object."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EmailChangeConfirmation":
+    def from_dict(cls, data: dict[str, Any]) -> EmailChangeConfirmation:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "email_change_confirmation"),
                 user=EmailChangeConfirmationUser.from_dict(
-                    cast(Dict[str, Any], data["user"])
+                    cast(dict[str, Any], data["user"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EmailChangeConfirmation", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["user"] = self.user.to_dict()
         return result

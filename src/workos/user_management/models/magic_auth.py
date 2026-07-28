@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -31,7 +31,7 @@ class MagicAuth:
     """The code used to verify the Magic Auth code."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "MagicAuth":
+    def from_dict(cls, data: dict[str, Any]) -> MagicAuth:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -47,9 +47,9 @@ class MagicAuth:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("MagicAuth", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["user_id"] = self.user_id

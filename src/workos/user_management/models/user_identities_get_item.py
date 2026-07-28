@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Literal
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.user_identities_get_item_provider import (
     UserIdentitiesGetItemProvider,
@@ -19,11 +20,11 @@ class UserIdentitiesGetItem:
     """The unique ID of the user in the external identity provider."""
     type: Literal["OAuth"]
     """The type of the identity."""
-    provider: "UserIdentitiesGetItemProvider"
+    provider: UserIdentitiesGetItemProvider
     """The type of OAuth provider for the identity."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserIdentitiesGetItem":
+    def from_dict(cls, data: dict[str, Any]) -> UserIdentitiesGetItem:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +35,9 @@ class UserIdentitiesGetItem:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserIdentitiesGetItem", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["idp_id"] = self.idp_id
         result["type"] = self.type
         result["provider"] = (

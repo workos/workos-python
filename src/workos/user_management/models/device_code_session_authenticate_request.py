@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -16,15 +17,15 @@ class DeviceCodeSessionAuthenticateRequest:
     grant_type: Literal["urn:ietf:params:oauth:grant-type:device_code"]
     device_code: str
     """The device verification code."""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """The IP address of the user's request."""
-    device_id: Optional[str] = None
+    device_id: str | None = None
     """A unique identifier for the device."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """The user agent string from the user's browser."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DeviceCodeSessionAuthenticateRequest":
+    def from_dict(cls, data: dict[str, Any]) -> DeviceCodeSessionAuthenticateRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -40,9 +41,9 @@ class DeviceCodeSessionAuthenticateRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DeviceCodeSessionAuthenticateRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["grant_type"] = self.grant_type
         result["device_code"] = self.device_code

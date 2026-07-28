@@ -5,9 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.invitation_state import InvitationState
 
 
@@ -21,21 +21,21 @@ class Invitation:
     """The unique ID of the invitation."""
     email: str
     """The email address of the recipient."""
-    state: "InvitationState"
+    state: InvitationState
     """The state of the invitation."""
-    accepted_at: Optional[datetime]
+    accepted_at: datetime | None
     """The timestamp when the invitation was accepted, or null if not yet accepted."""
-    revoked_at: Optional[datetime]
+    revoked_at: datetime | None
     """The timestamp when the invitation was revoked, or null if not revoked."""
     expires_at: datetime
     """The timestamp when the invitation expires."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join."""
-    inviter_user_id: Optional[str]
+    inviter_user_id: str | None
     """The ID of the user who invited the recipient, if provided."""
-    accepted_user_id: Optional[str]
+    accepted_user_id: str | None
     """The ID of the user who accepted the invitation, once accepted."""
-    role_slug: Optional[str]
+    role_slug: str | None
     """Slug of the role the invitee will be assigned on acceptance. Reflects the current role on the invitee's organization membership. null when the invitation has no associated organization."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -47,7 +47,7 @@ class Invitation:
     """The URL where the recipient can accept the invitation."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Invitation":
+    def from_dict(cls, data: dict[str, Any]) -> Invitation:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -74,9 +74,9 @@ class Invitation:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Invitation", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["email"] = self.email

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -17,7 +18,7 @@ class SSOLogoutAuthorizeResponse:
     """The logout token to be used in the [Logout Redirect](https://workos.com/docs/reference/sso/logout) endpoint."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SSOLogoutAuthorizeResponse":
+    def from_dict(cls, data: dict[str, Any]) -> SSOLogoutAuthorizeResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class SSOLogoutAuthorizeResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SSOLogoutAuthorizeResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["logout_url"] = self.logout_url
         result["logout_token"] = self.logout_token
         return result

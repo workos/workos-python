@@ -3,18 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import PaginationOrder
-from workos.sso.models import (
-    Connection,
-    Profile,
-    SSOLogoutAuthorizeResponse,
-    SSOTokenResponse,
-    ConnectionsConnectionType,
-)
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -22,6 +13,15 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import PaginationOrder
+from workos.sso.models import (
+    Connection,
+    ConnectionsConnectionType,
+    Profile,
+    SSOLogoutAuthorizeResponse,
+    SSOTokenResponse,
 )
 
 

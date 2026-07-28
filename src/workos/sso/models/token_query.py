@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -21,7 +22,7 @@ class TokenQuery:
     """The grant type for the token request."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TokenQuery":
+    def from_dict(cls, data: dict[str, Any]) -> TokenQuery:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class TokenQuery:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("TokenQuery", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["client_secret"] = self.client_secret
         result["code"] = self.code

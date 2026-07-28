@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,33 +14,38 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
 
     user_id: str
     """The ID of the user to authorize."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """An organization ID to scope the authorization to a specific organization."""
-    return_to: Optional[str] = None
+    return_to: str | None = None
     """The URL to redirect the user to after authorization."""
+    config: dict[str, str] | None = None
+    """Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "DataIntegrationsGetDataIntegrationAuthorizeUrlRequest":
+        cls, data: dict[str, Any]
+    ) -> DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 user_id=data["user_id"],
                 organization_id=data.get("organization_id"),
                 return_to=data.get("return_to"),
+                config=data.get("config"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
                 "DataIntegrationsGetDataIntegrationAuthorizeUrlRequest", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.return_to is not None:
             result["return_to"] = self.return_to
+        if self.config is not None:
+            result["config"] = self.config
         return result

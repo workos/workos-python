@@ -5,13 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .user_sessions_impersonator import UserSessionsImpersonator
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .user_sessions_auth_method import UserSessionsAuthMethod
+from .user_sessions_impersonator import UserSessionsImpersonator
 from .user_sessions_status import UserSessionsStatus
 
 
@@ -23,31 +22,31 @@ class UserSessionsListItem:
     """Distinguishes the session object."""
     id: str
     """The unique ID of the session."""
-    ip_address: Optional[str]
+    ip_address: str | None
     """The IP address from which the session was created."""
-    user_agent: Optional[str]
+    user_agent: str | None
     """The user agent string from the device that created the session."""
     user_id: str
     """The ID of the user this session belongs to."""
-    auth_method: "UserSessionsAuthMethod"
+    auth_method: UserSessionsAuthMethod
     """The authentication method used to create this session."""
-    status: "UserSessionsStatus"
+    status: UserSessionsStatus
     """The current status of the session."""
     expires_at: datetime
     """The timestamp when the session expires."""
-    ended_at: Optional[datetime]
+    ended_at: datetime | None
     """The timestamp when the session ended."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    impersonator: Optional["UserSessionsImpersonator"] = None
+    impersonator: UserSessionsImpersonator | None = None
     """Information about the impersonator if this session was created via impersonation."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization this session is associated with."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserSessionsListItem":
+    def from_dict(cls, data: dict[str, Any]) -> UserSessionsListItem:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -65,7 +64,7 @@ class UserSessionsListItem:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 impersonator=UserSessionsImpersonator.from_dict(
-                    cast(Dict[str, Any], _v_impersonator)
+                    cast(dict[str, Any], _v_impersonator)
                 )
                 if (_v_impersonator := data.get("impersonator")) is not None
                 else None,
@@ -74,9 +73,9 @@ class UserSessionsListItem:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserSessionsListItem", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         if self.ip_address is not None:

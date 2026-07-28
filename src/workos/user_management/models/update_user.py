@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.update_user_password_hash_type import (
     UpdateUserPasswordHashType,
@@ -15,31 +16,31 @@ from workos.common.models.update_user_password_hash_type import (
 class UpdateUser:
     """Update User model."""
 
-    email: Optional[str] = None
+    email: str | None = None
     """The email address of the user."""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """The first name of the user."""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """The last name of the user."""
-    name: Optional[str] = None
+    name: str | None = None
     """The user's full name."""
-    email_verified: Optional[bool] = None
+    email_verified: bool | None = None
     """Whether the user's email has been verified."""
-    metadata: Optional[Dict[str, str]] = None
+    metadata: dict[str, str] | None = None
     """Object containing metadata key/value pairs associated with the user."""
-    external_id: Optional[str] = None
+    external_id: str | None = None
     """The external ID of the user."""
-    locale: Optional[str] = None
+    locale: str | None = None
     """The user's preferred locale."""
-    password: Optional[str] = None
+    password: str | None = None
     """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
-    password_hash: Optional[str] = None
+    password_hash: str | None = None
     """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
-    password_hash_type: Optional["UpdateUserPasswordHashType"] = None
+    password_hash_type: UpdateUserPasswordHashType | None = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateUser":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateUser:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -60,9 +61,9 @@ class UpdateUser:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateUser", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.email is not None:
             result["email"] = self.email
         if self.first_name is not None:

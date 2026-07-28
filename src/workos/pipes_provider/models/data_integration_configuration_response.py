@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .data_integration_credentials import DataIntegrationCredentials
@@ -26,16 +26,18 @@ class DataIntegrationConfigurationResponse:
     """The display name of the data integration."""
     enabled: bool
     """Whether the integration is enabled for this organization. Reflects the organization override when one exists, otherwise the provider default."""
-    scopes: Optional[List[str]]
+    scopes: list[str] | None
     """The OAuth scopes in effect for this organization. Reflects the organization override when one is set, otherwise the provider scopes, or `null` when none are configured."""
+    config: dict[str, str]
+    """The provider-specific config values in effect for this organization, keyed by config field. Reflects the organization override for organization-credential providers, otherwise the provider root. Empty when none are configured."""
     created_at: str
     """The timestamp when the configuration was created."""
     updated_at: str
     """The timestamp when the configuration was last updated."""
-    credentials: Optional["DataIntegrationCredentials"] = None
+    credentials: DataIntegrationCredentials | None = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationConfigurationResponse":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationConfigurationResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -46,10 +48,11 @@ class DataIntegrationConfigurationResponse:
                 name=data["name"],
                 enabled=data["enabled"],
                 scopes=data["scopes"],
+                config=data["config"],
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
                 credentials=DataIntegrationCredentials.from_dict(
-                    cast(Dict[str, Any], _v_credentials)
+                    cast(dict[str, Any], _v_credentials)
                 )
                 if (_v_credentials := data.get("credentials")) is not None
                 else None,
@@ -57,9 +60,9 @@ class DataIntegrationConfigurationResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationConfigurationResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["organization_id"] = self.organization_id
@@ -70,6 +73,7 @@ class DataIntegrationConfigurationResponse:
             result["scopes"] = self.scopes
         else:
             result["scopes"] = None
+        result["config"] = self.config
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         if self.credentials is not None:

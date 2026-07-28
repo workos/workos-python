@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -14,9 +13,10 @@ class ConnectedAccountAuthMethod(str, Enum):
 
     OAUTH = "oauth"
     API_KEY = "api_key"
+    CLIENT_CREDENTIALS = "client_credentials"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["ConnectedAccountAuthMethod"]:
+    def _missing_(cls, value: object) -> ConnectedAccountAuthMethod | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -25,4 +25,6 @@ class ConnectedAccountAuthMethod(str, Enum):
         return unknown
 
 
-ConnectedAccountAuthMethodLiteral: TypeAlias = Literal["oauth", "api_key"]
+ConnectedAccountAuthMethodLiteral: TypeAlias = Literal[
+    "oauth", "api_key", "client_credentials"
+]

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,11 +20,11 @@ class AuthenticateResponseOAuthToken:
     """The access token from the OAuth provider."""
     expires_at: int
     """The timestamp at which the access token expires."""
-    scopes: List[str]
+    scopes: list[str]
     """A list of OAuth scopes for which the access token is authorized."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticateResponseOAuthToken":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticateResponseOAuthToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -36,9 +37,9 @@ class AuthenticateResponseOAuthToken:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticateResponseOAuthToken", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["provider"] = self.provider
         result["refresh_token"] = self.refresh_token
         result["access_token"] = self.access_token

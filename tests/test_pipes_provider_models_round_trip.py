@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.pipes_provider.models import (
     DataIntegrationConfigurationListResponse,
     DataIntegrationConfigurationResponse,
@@ -77,6 +76,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": None,
+            "config": {"account_identifier": "acme-prod"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
         }
@@ -89,6 +89,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["enabled"] == data["enabled"]
         assert serialized["scopes"] == data["scopes"]
+        assert serialized["config"] == data["config"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -103,6 +104,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": ["repo", "user:email"],
+            "config": {"account_identifier": "acme-prod"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
         }
@@ -119,6 +121,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": None,
+            "config": {"account_identifier": "acme-prod"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
             "credentials": {
@@ -153,6 +156,7 @@ class TestModelRoundTrip:
                     "name": "GitHub",
                     "enabled": True,
                     "scopes": ["repo", "user:email"],
+                    "config": {"account_identifier": "acme-prod"},
                     "created_at": "2024-01-15T10:30:00.000Z",
                     "updated_at": "2024-01-15T10:30:00.000Z",
                     "credentials": {

@@ -2,12 +2,34 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from dataclasses import dataclass
+
+from workos.common.models.create_user_invite_options_locale import (
+    CreateUserInviteOptionsLocale,
+)
+from workos.common.models.create_user_password_hash_type import (
+    CreateUserPasswordHashType,
+)
+from workos.common.models.pagination_order import PaginationOrder
+from workos.common.models.resend_user_invite_options_locale import (
+    ResendUserInviteOptionsLocale,
+)
+from workos.common.models.user import User
+from workos.common.models.user_sessions_list_item import UserSessionsListItem
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
+from ..session import (
+    AsyncSession,
+    AuthenticateWithSessionCookieErrorResponse,
+    AuthenticateWithSessionCookieSuccessResponse,
+    Session,
+)
 from .models import (
     AuthenticateResponse,
     AuthorizationCodeSessionAuthenticateRequest,
@@ -20,8 +42,8 @@ from .models import (
     EmailVerification,
     EmailVerificationCodeSessionAuthenticateRequest,
     Invitation,
-    JWTTemplateResponse,
     JwksResponse,
+    JWTTemplateResponse,
     MagicAuth,
     MagicAuthCodeSessionAuthenticateRequest,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
@@ -42,31 +64,9 @@ from .models import (
     UserCreateResponse,
     UserIdentitiesGetItem,
     UserInvite,
-    VerifyEmailResponse,
-)
-from workos.common.models.user import User
-from workos.common.models.user_sessions_list_item import UserSessionsListItem
-from .models import (
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,
-)
-from workos.common.models.create_user_invite_options_locale import (
-    CreateUserInviteOptionsLocale,
-)
-from workos.common.models.pagination_order import PaginationOrder
-from workos.common.models.resend_user_invite_options_locale import (
-    ResendUserInviteOptionsLocale,
-)
-from .._pagination import AsyncPage, SyncPage
-from dataclasses import dataclass
-from workos.common.models.create_user_password_hash_type import (
-    CreateUserPasswordHashType,
-)
-from ..session import (
-    AsyncSession,
-    AuthenticateWithSessionCookieErrorResponse,
-    AuthenticateWithSessionCookieSuccessResponse,
-    Session,
+    VerifyEmailResponse,
 )
 
 
@@ -74,7 +74,7 @@ from ..session import (
 class PasswordPlaintext:
     """Identify password plaintext."""
 
-    password: Optional[str]
+    password: str | None
 
 
 @dataclass
@@ -82,20 +82,20 @@ class PasswordHashed:
     """Identify password hashed."""
 
     password_hash: str
-    password_hash_type: Union[CreateUserPasswordHashType, str]
+    password_hash_type: CreateUserPasswordHashType | str
 
 
 class UserManagement:
     """User Management API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def get_jwks(
         self,
         client_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JwksResponse:
         """Get JWKS
 
@@ -124,20 +124,18 @@ class UserManagement:
     def create_authenticate(
         self,
         *,
-        body: Union[
-            AuthorizationCodeSessionAuthenticateRequest,
-            PasswordSessionAuthenticateRequest,
-            RefreshTokenSessionAuthenticateRequest,
-            MagicAuthCodeSessionAuthenticateRequest,
-            EmailVerificationCodeSessionAuthenticateRequest,
-            MFATotpSessionAuthenticateRequest,
-            OrganizationSelectionSessionAuthenticateRequest,
-            RadarEmailChallengeCodeSessionAuthenticateRequest,
-            RadarSmsChallengeCodeSessionAuthenticateRequest,
-            DeviceCodeSessionAuthenticateRequest,
-            Dict[str, Any],
-        ],
-        request_options: Optional[RequestOptions] = None,
+        body: AuthorizationCodeSessionAuthenticateRequest
+        | PasswordSessionAuthenticateRequest
+        | RefreshTokenSessionAuthenticateRequest
+        | MagicAuthCodeSessionAuthenticateRequest
+        | EmailVerificationCodeSessionAuthenticateRequest
+        | MFATotpSessionAuthenticateRequest
+        | OrganizationSelectionSessionAuthenticateRequest
+        | RadarEmailChallengeCodeSessionAuthenticateRequest
+        | RadarSmsChallengeCodeSessionAuthenticateRequest
+        | DeviceCodeSessionAuthenticateRequest
+        | dict[str, Any],
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate
 
@@ -159,7 +157,7 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
             method="post",
             path=("user_management", "authenticate"),
@@ -173,16 +171,16 @@ class UserManagement:
         *,
         email: str,
         password: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        signals_id: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "password",
             "email": email,
             "password": password,
@@ -216,16 +214,16 @@ class UserManagement:
         self,
         *,
         code: str,
-        code_verifier: Optional[str] = None,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        code_verifier: str | None = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "authorization_code",
             "code": code,
         }
@@ -258,14 +256,14 @@ class UserManagement:
         self,
         *,
         refresh_token: str,
-        organization_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with refresh token."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
         }
@@ -295,15 +293,15 @@ class UserManagement:
         *,
         code: str,
         email: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
             "code": code,
             "email": email,
@@ -336,13 +334,13 @@ class UserManagement:
         *,
         code: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with email verification."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
             "code": code,
             "pending_authentication_token": pending_authentication_token,
@@ -372,13 +370,13 @@ class UserManagement:
         code: str,
         pending_authentication_token: str,
         authentication_challenge_id: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with totp."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
             "code": code,
             "pending_authentication_token": pending_authentication_token,
@@ -408,13 +406,13 @@ class UserManagement:
         *,
         pending_authentication_token: str,
         organization_id: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with organization selection."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
             "pending_authentication_token": pending_authentication_token,
             "organization_id": organization_id,
@@ -442,13 +440,13 @@ class UserManagement:
         self,
         *,
         device_code: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with device code."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
             "device_code": device_code,
         }
@@ -475,13 +473,13 @@ class UserManagement:
         code: str,
         radar_challenge_id: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with radar email challenge."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-email-challenge:code",
             "code": code,
             "radar_challenge_id": radar_challenge_id,
@@ -513,13 +511,13 @@ class UserManagement:
         verification_id: str,
         phone_number: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with radar sms challenge."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
             "code": code,
             "verification_id": verification_id,
@@ -548,25 +546,23 @@ class UserManagement:
     def get_authorization_url(
         self,
         *,
-        code_challenge_method: Optional[Literal["S256"]] = None,
-        code_challenge: Optional[str] = None,
-        domain_hint: Optional[str] = None,
-        connection_id: Optional[str] = None,
-        provider_query_params: Optional[Dict[str, str]] = None,
-        provider_scopes: Optional[List[str]] = None,
-        invitation_token: Optional[str] = None,
-        max_age: Optional[int] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
-        login_hint: Optional[str] = None,
-        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
-        prompt: Optional[str] = None,
-        state: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        code_challenge_method: Literal["S256"] | None = None,
+        code_challenge: str | None = None,
+        domain_hint: str | None = None,
+        connection_id: str | None = None,
+        provider_query_params: dict[str, str] | None = None,
+        provider_scopes: list[str] | None = None,
+        invitation_token: str | None = None,
+        max_age: int | None = None,
+        screen_hint: UserManagementAuthenticationScreenHint | str | None = None,
+        login_hint: str | None = None,
+        provider: UserManagementAuthenticationProvider | str | None = None,
+        prompt: str | None = None,
+        state: str | None = None,
+        organization_id: str | None = None,
         redirect_uri: str,
-        client_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        client_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> str:
         """Get an authorization URL
 
@@ -634,7 +630,7 @@ class UserManagement:
         self,
         *,
         client_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DeviceAuthorizationResponse:
         """Get device authorization URL
 
@@ -654,7 +650,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "client_id": client_id,
         }
         return self._client.request(
@@ -671,9 +667,9 @@ class UserManagement:
         user_id: str,
         pending_authentication_token: str,
         phone_number: str,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SendRadarSmsChallengeResponse:
         """Send a Radar SMS challenge
 
@@ -695,7 +691,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -718,7 +714,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarChallenge:
         """Get Radar Challenge details
 
@@ -748,8 +744,8 @@ class UserManagement:
         self,
         *,
         session_id: str,
-        return_to: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        return_to: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> str:
         """Logout
 
@@ -783,7 +779,7 @@ class UserManagement:
         self,
         *,
         session_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Revoke Session
 
@@ -799,7 +795,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "session_id": session_id,
         }
         self._client.request(
@@ -812,11 +808,11 @@ class UserManagement:
     def list_cors_origins(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[CORSOriginResponse]:
         """List CORS origins
 
@@ -859,7 +855,7 @@ class UserManagement:
         self,
         *,
         origin: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> CORSOriginResponse:
         """Create a CORS origin
 
@@ -879,7 +875,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "origin": origin,
         }
         return self._client.request(
@@ -894,7 +890,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailVerification:
         """Get an email verification code
 
@@ -924,7 +920,7 @@ class UserManagement:
         self,
         *,
         email: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Create a password reset token
 
@@ -945,7 +941,7 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "email": email,
         }
         return self._client.request(
@@ -961,7 +957,7 @@ class UserManagement:
         *,
         token: str,
         new_password: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ResetPasswordResponse:
         """Reset the password
 
@@ -984,7 +980,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "token": token,
             "new_password": new_password,
         }
@@ -1000,7 +996,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Get a password reset token
 
@@ -1029,14 +1025,14 @@ class UserManagement:
     def list_users(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization: str | None = None,
+        organization_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[User]:
         """List users
 
@@ -1086,17 +1082,17 @@ class UserManagement:
         self,
         *,
         email: str,
-        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
-        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
-        name: Union[str, None, NotGiven] = NOT_GIVEN,
-        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
-        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
-        signals_id: Optional[str] = None,
-        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
-        request_options: Optional[RequestOptions] = None,
+        first_name: str | None | NotGiven = NOT_GIVEN,
+        last_name: str | None | NotGiven = NOT_GIVEN,
+        name: str | None | NotGiven = NOT_GIVEN,
+        email_verified: bool | None | NotGiven = NOT_GIVEN,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        ip_address: str | None | NotGiven = NOT_GIVEN,
+        user_agent: str | None | NotGiven = NOT_GIVEN,
+        signals_id: str | None = None,
+        password: PasswordPlaintext | PasswordHashed | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserCreateResponse:
         """Create a user
 
@@ -1127,7 +1123,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -1169,7 +1165,7 @@ class UserManagement:
         self,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Get a user by external ID
 
@@ -1199,7 +1195,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Get a user
 
@@ -1229,16 +1225,16 @@ class UserManagement:
         self,
         id: str,
         *,
-        email: Optional[str] = None,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        locale: Union[str, None, NotGiven] = NOT_GIVEN,
-        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
-        request_options: Optional[RequestOptions] = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
+        name: str | None = None,
+        email_verified: bool | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        locale: str | None | NotGiven = NOT_GIVEN,
+        password: PasswordPlaintext | PasswordHashed | None = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Update a user
 
@@ -1267,7 +1263,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -1302,7 +1298,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a user
 
@@ -1329,7 +1325,7 @@ class UserManagement:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailChangeConfirmation:
         """Confirm email change
 
@@ -1352,7 +1348,7 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return self._client.request(
@@ -1368,7 +1364,7 @@ class UserManagement:
         id: str,
         *,
         new_email: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailChange:
         """Send email change code
 
@@ -1390,7 +1386,7 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "new_email": new_email,
         }
         return self._client.request(
@@ -1406,7 +1402,7 @@ class UserManagement:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VerifyEmailResponse:
         """Verify email
 
@@ -1428,7 +1424,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return self._client.request(
@@ -1443,7 +1439,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> SendVerificationEmailResponse:
         """Send verification email
 
@@ -1474,8 +1470,8 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> List[UserIdentitiesGetItem]:
+        request_options: RequestOptions | None = None,
+    ) -> list[UserIdentitiesGetItem]:
         """Get user identities
 
         Get a list of identities associated with the user. A user can have multiple associated identities after going through [identity linking](https://workos.com/docs/authkit/identity-linking). Currently only OAuth identities are supported. More provider types may be added in the future.
@@ -1499,18 +1495,18 @@ class UserManagement:
             request_options=request_options,
         )
         return [
-            UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw
+            UserIdentitiesGetItem.from_dict(cast(dict[str, Any], item)) for item in raw
         ]
 
     def list_sessions(
         self,
         id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserSessionsListItem]:
         """List sessions
 
@@ -1555,13 +1551,13 @@ class UserManagement:
     def list_invitations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserInvite]:
         """List invitations
 
@@ -1609,12 +1605,12 @@ class UserManagement:
         self,
         *,
         email: str,
-        organization_id: Optional[str] = None,
-        role_slug: Optional[str] = None,
-        expires_in_days: Optional[int] = None,
-        inviter_user_id: Optional[str] = None,
-        locale: Optional[Union[CreateUserInviteOptionsLocale, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        role_slug: str | None = None,
+        expires_in_days: int | None = None,
+        inviter_user_id: str | None = None,
+        locale: CreateUserInviteOptionsLocale | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Send an invitation
 
@@ -1640,7 +1636,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -1664,7 +1660,7 @@ class UserManagement:
         self,
         token: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Find an invitation by token
 
@@ -1694,7 +1690,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Get an invitation
 
@@ -1724,7 +1720,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Invitation:
         """Accept an invitation
 
@@ -1755,8 +1751,8 @@ class UserManagement:
         self,
         id: str,
         *,
-        locale: Optional[Union[ResendUserInviteOptionsLocale, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        locale: ResendUserInviteOptionsLocale | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Resend an invitation
 
@@ -1778,7 +1774,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "locale": enum_value(locale) if locale is not None else None,
@@ -1797,7 +1793,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Invitation:
         """Revoke an invitation
 
@@ -1826,7 +1822,7 @@ class UserManagement:
     def list_jwt_template(
         self,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JWTTemplateResponse:
         """Get JWT template
 
@@ -1852,7 +1848,7 @@ class UserManagement:
         self,
         *,
         content: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JWTTemplateResponse:
         """Update JWT template
 
@@ -1871,7 +1867,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "content": content,
         }
         return self._client.request(
@@ -1886,12 +1882,12 @@ class UserManagement:
         self,
         *,
         email: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
 
@@ -1916,7 +1912,7 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -1940,7 +1936,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> MagicAuth:
         """Get Magic Auth code details
 
@@ -1969,11 +1965,11 @@ class UserManagement:
     def list_redirect_uris(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[RedirectUri]:
         """List redirect URIs
 
@@ -2016,7 +2012,7 @@ class UserManagement:
         self,
         *,
         uri: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RedirectUri:
         """Create a redirect URI
 
@@ -2036,7 +2032,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "uri": uri,
         }
         return self._client.request(
@@ -2051,7 +2047,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a redirect URI
 
@@ -2078,11 +2074,11 @@ class UserManagement:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
 
@@ -2129,7 +2125,7 @@ class UserManagement:
         application_id: str,
         user_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorized application
 
@@ -2162,12 +2158,12 @@ class UserManagement:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserApiKey]:
         """List API keys for a user
 
@@ -2216,9 +2212,9 @@ class UserManagement:
         *,
         name: str,
         organization_id: str,
-        permissions: Optional[List[str]] = None,
-        expires_at: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str] | None = None,
+        expires_at: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user
 
@@ -2243,7 +2239,7 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -2263,7 +2259,7 @@ class UserManagement:
 
     # @oagen-ignore-start
 
-    def get_jwks_url(self, client_id: Optional[str] = None) -> str:
+    def get_jwks_url(self, client_id: str | None = None) -> str:
         """Get the JWKS URL used to verify access tokens.
 
         Use this when integrating with a JWT library that fetches and caches
@@ -2285,7 +2281,7 @@ class UserManagement:
         *,
         session_data: str,
         cookie_password: str,
-    ) -> "Session":
+    ) -> Session:
         """Create a Session object from sealed session data.
 
         Args:
@@ -2308,10 +2304,10 @@ class UserManagement:
         *,
         session_data: str,
         cookie_password: str,
-    ) -> Union[
-        "AuthenticateWithSessionCookieSuccessResponse",
-        "AuthenticateWithSessionCookieErrorResponse",
-    ]:
+    ) -> (
+        AuthenticateWithSessionCookieSuccessResponse
+        | AuthenticateWithSessionCookieErrorResponse
+    ):
         """One-shot authenticate a sealed session cookie.
 
         Args:
@@ -2335,20 +2331,18 @@ class UserManagement:
         self,
         *,
         redirect_uri: str,
-        client_id: Optional[str] = None,
-        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
-        connection_id: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        domain_hint: Optional[str] = None,
-        login_hint: Optional[str] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
-        prompt: Optional[str] = None,
-        provider_scopes: Optional[List[str]] = None,
-        provider_query_params: Optional[Dict[str, str]] = None,
-        invitation_token: Optional[str] = None,
-    ) -> Dict[str, str]:
+        client_id: str | None = None,
+        provider: UserManagementAuthenticationProvider | str | None = None,
+        connection_id: str | None = None,
+        organization_id: str | None = None,
+        domain_hint: str | None = None,
+        login_hint: str | None = None,
+        screen_hint: UserManagementAuthenticationScreenHint | str | None = None,
+        prompt: str | None = None,
+        provider_scopes: list[str] | None = None,
+        provider_query_params: dict[str, str] | None = None,
+        invitation_token: str | None = None,
+    ) -> dict[str, str]:
         """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
 
         Args:
@@ -2398,11 +2392,11 @@ class UserManagement:
         *,
         code: str,
         code_verifier: str,
-        client_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        client_id: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Exchange an authorization code using a PKCE code_verifier.
 
@@ -2419,7 +2413,7 @@ class UserManagement:
             AuthenticateResponse: The authentication result with user and tokens.
         """
         resolved_client_id = client_id or (self._client.client_id or "")
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "authorization_code",
             "client_id": resolved_client_id,
             "code": code,
@@ -2451,14 +2445,14 @@ class UserManagement:
 class AsyncUserManagement:
     """User Management API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def get_jwks(
         self,
         client_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JwksResponse:
         """Get JWKS
 
@@ -2487,20 +2481,18 @@ class AsyncUserManagement:
     async def create_authenticate(
         self,
         *,
-        body: Union[
-            AuthorizationCodeSessionAuthenticateRequest,
-            PasswordSessionAuthenticateRequest,
-            RefreshTokenSessionAuthenticateRequest,
-            MagicAuthCodeSessionAuthenticateRequest,
-            EmailVerificationCodeSessionAuthenticateRequest,
-            MFATotpSessionAuthenticateRequest,
-            OrganizationSelectionSessionAuthenticateRequest,
-            RadarEmailChallengeCodeSessionAuthenticateRequest,
-            RadarSmsChallengeCodeSessionAuthenticateRequest,
-            DeviceCodeSessionAuthenticateRequest,
-            Dict[str, Any],
-        ],
-        request_options: Optional[RequestOptions] = None,
+        body: AuthorizationCodeSessionAuthenticateRequest
+        | PasswordSessionAuthenticateRequest
+        | RefreshTokenSessionAuthenticateRequest
+        | MagicAuthCodeSessionAuthenticateRequest
+        | EmailVerificationCodeSessionAuthenticateRequest
+        | MFATotpSessionAuthenticateRequest
+        | OrganizationSelectionSessionAuthenticateRequest
+        | RadarEmailChallengeCodeSessionAuthenticateRequest
+        | RadarSmsChallengeCodeSessionAuthenticateRequest
+        | DeviceCodeSessionAuthenticateRequest
+        | dict[str, Any],
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate
 
@@ -2522,7 +2514,7 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
             method="post",
             path=("user_management", "authenticate"),
@@ -2536,16 +2528,16 @@ class AsyncUserManagement:
         *,
         email: str,
         password: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        signals_id: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "password",
             "email": email,
             "password": password,
@@ -2579,16 +2571,16 @@ class AsyncUserManagement:
         self,
         *,
         code: str,
-        code_verifier: Optional[str] = None,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        code_verifier: str | None = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "authorization_code",
             "code": code,
         }
@@ -2621,14 +2613,14 @@ class AsyncUserManagement:
         self,
         *,
         refresh_token: str,
-        organization_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with refresh token."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
         }
@@ -2658,15 +2650,15 @@ class AsyncUserManagement:
         *,
         code: str,
         email: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
             "code": code,
             "email": email,
@@ -2699,13 +2691,13 @@ class AsyncUserManagement:
         *,
         code: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with email verification."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
             "code": code,
             "pending_authentication_token": pending_authentication_token,
@@ -2735,13 +2727,13 @@ class AsyncUserManagement:
         code: str,
         pending_authentication_token: str,
         authentication_challenge_id: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with totp."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
             "code": code,
             "pending_authentication_token": pending_authentication_token,
@@ -2771,13 +2763,13 @@ class AsyncUserManagement:
         *,
         pending_authentication_token: str,
         organization_id: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with organization selection."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
             "pending_authentication_token": pending_authentication_token,
             "organization_id": organization_id,
@@ -2805,13 +2797,13 @@ class AsyncUserManagement:
         self,
         *,
         device_code: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with device code."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
             "device_code": device_code,
         }
@@ -2838,13 +2830,13 @@ class AsyncUserManagement:
         code: str,
         radar_challenge_id: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with radar email challenge."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-email-challenge:code",
             "code": code,
             "radar_challenge_id": radar_challenge_id,
@@ -2876,13 +2868,13 @@ class AsyncUserManagement:
         verification_id: str,
         phone_number: str,
         pending_authentication_token: str,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Authenticate with radar sms challenge."""
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
             "code": code,
             "verification_id": verification_id,
@@ -2911,25 +2903,23 @@ class AsyncUserManagement:
     def get_authorization_url(
         self,
         *,
-        code_challenge_method: Optional[Literal["S256"]] = None,
-        code_challenge: Optional[str] = None,
-        domain_hint: Optional[str] = None,
-        connection_id: Optional[str] = None,
-        provider_query_params: Optional[Dict[str, str]] = None,
-        provider_scopes: Optional[List[str]] = None,
-        invitation_token: Optional[str] = None,
-        max_age: Optional[int] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
-        login_hint: Optional[str] = None,
-        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
-        prompt: Optional[str] = None,
-        state: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        code_challenge_method: Literal["S256"] | None = None,
+        code_challenge: str | None = None,
+        domain_hint: str | None = None,
+        connection_id: str | None = None,
+        provider_query_params: dict[str, str] | None = None,
+        provider_scopes: list[str] | None = None,
+        invitation_token: str | None = None,
+        max_age: int | None = None,
+        screen_hint: UserManagementAuthenticationScreenHint | str | None = None,
+        login_hint: str | None = None,
+        provider: UserManagementAuthenticationProvider | str | None = None,
+        prompt: str | None = None,
+        state: str | None = None,
+        organization_id: str | None = None,
         redirect_uri: str,
-        client_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        client_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> str:
         """Get an authorization URL
 
@@ -2997,7 +2987,7 @@ class AsyncUserManagement:
         self,
         *,
         client_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DeviceAuthorizationResponse:
         """Get device authorization URL
 
@@ -3017,7 +3007,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "client_id": client_id,
         }
         return await self._client.request(
@@ -3034,9 +3024,9 @@ class AsyncUserManagement:
         user_id: str,
         pending_authentication_token: str,
         phone_number: str,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SendRadarSmsChallengeResponse:
         """Send a Radar SMS challenge
 
@@ -3058,7 +3048,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -3081,7 +3071,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarChallenge:
         """Get Radar Challenge details
 
@@ -3111,8 +3101,8 @@ class AsyncUserManagement:
         self,
         *,
         session_id: str,
-        return_to: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        return_to: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> str:
         """Logout
 
@@ -3146,7 +3136,7 @@ class AsyncUserManagement:
         self,
         *,
         session_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Revoke Session
 
@@ -3162,7 +3152,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "session_id": session_id,
         }
         await self._client.request(
@@ -3175,11 +3165,11 @@ class AsyncUserManagement:
     async def list_cors_origins(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[CORSOriginResponse]:
         """List CORS origins
 
@@ -3222,7 +3212,7 @@ class AsyncUserManagement:
         self,
         *,
         origin: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> CORSOriginResponse:
         """Create a CORS origin
 
@@ -3242,7 +3232,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "origin": origin,
         }
         return await self._client.request(
@@ -3257,7 +3247,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailVerification:
         """Get an email verification code
 
@@ -3287,7 +3277,7 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Create a password reset token
 
@@ -3308,7 +3298,7 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "email": email,
         }
         return await self._client.request(
@@ -3324,7 +3314,7 @@ class AsyncUserManagement:
         *,
         token: str,
         new_password: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ResetPasswordResponse:
         """Reset the password
 
@@ -3347,7 +3337,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "token": token,
             "new_password": new_password,
         }
@@ -3363,7 +3353,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Get a password reset token
 
@@ -3392,14 +3382,14 @@ class AsyncUserManagement:
     async def list_users(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization: str | None = None,
+        organization_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[User]:
         """List users
 
@@ -3449,17 +3439,17 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        first_name: Union[str, None, NotGiven] = NOT_GIVEN,
-        last_name: Union[str, None, NotGiven] = NOT_GIVEN,
-        name: Union[str, None, NotGiven] = NOT_GIVEN,
-        email_verified: Union[bool, None, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        ip_address: Union[str, None, NotGiven] = NOT_GIVEN,
-        user_agent: Union[str, None, NotGiven] = NOT_GIVEN,
-        signals_id: Optional[str] = None,
-        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
-        request_options: Optional[RequestOptions] = None,
+        first_name: str | None | NotGiven = NOT_GIVEN,
+        last_name: str | None | NotGiven = NOT_GIVEN,
+        name: str | None | NotGiven = NOT_GIVEN,
+        email_verified: bool | None | NotGiven = NOT_GIVEN,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        ip_address: str | None | NotGiven = NOT_GIVEN,
+        user_agent: str | None | NotGiven = NOT_GIVEN,
+        signals_id: str | None = None,
+        password: PasswordPlaintext | PasswordHashed | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserCreateResponse:
         """Create a user
 
@@ -3490,7 +3480,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -3532,7 +3522,7 @@ class AsyncUserManagement:
         self,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Get a user by external ID
 
@@ -3562,7 +3552,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Get a user
 
@@ -3592,16 +3582,16 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        email: Optional[str] = None,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        name: Optional[str] = None,
-        email_verified: Optional[bool] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        locale: Union[str, None, NotGiven] = NOT_GIVEN,
-        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
-        request_options: Optional[RequestOptions] = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
+        name: str | None = None,
+        email_verified: bool | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        locale: str | None | NotGiven = NOT_GIVEN,
+        password: PasswordPlaintext | PasswordHashed | None = None,
+        request_options: RequestOptions | None = None,
     ) -> User:
         """Update a user
 
@@ -3630,7 +3620,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -3665,7 +3655,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a user
 
@@ -3692,7 +3682,7 @@ class AsyncUserManagement:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailChangeConfirmation:
         """Confirm email change
 
@@ -3715,7 +3705,7 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return await self._client.request(
@@ -3731,7 +3721,7 @@ class AsyncUserManagement:
         id: str,
         *,
         new_email: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> EmailChange:
         """Send email change code
 
@@ -3753,7 +3743,7 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "new_email": new_email,
         }
         return await self._client.request(
@@ -3769,7 +3759,7 @@ class AsyncUserManagement:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VerifyEmailResponse:
         """Verify email
 
@@ -3791,7 +3781,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return await self._client.request(
@@ -3806,7 +3796,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> SendVerificationEmailResponse:
         """Send verification email
 
@@ -3837,8 +3827,8 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> List[UserIdentitiesGetItem]:
+        request_options: RequestOptions | None = None,
+    ) -> list[UserIdentitiesGetItem]:
         """Get user identities
 
         Get a list of identities associated with the user. A user can have multiple associated identities after going through [identity linking](https://workos.com/docs/authkit/identity-linking). Currently only OAuth identities are supported. More provider types may be added in the future.
@@ -3862,18 +3852,18 @@ class AsyncUserManagement:
             request_options=request_options,
         )
         return [
-            UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw
+            UserIdentitiesGetItem.from_dict(cast(dict[str, Any], item)) for item in raw
         ]
 
     async def list_sessions(
         self,
         id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserSessionsListItem]:
         """List sessions
 
@@ -3918,13 +3908,13 @@ class AsyncUserManagement:
     async def list_invitations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserInvite]:
         """List invitations
 
@@ -3972,12 +3962,12 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        organization_id: Optional[str] = None,
-        role_slug: Optional[str] = None,
-        expires_in_days: Optional[int] = None,
-        inviter_user_id: Optional[str] = None,
-        locale: Optional[Union[CreateUserInviteOptionsLocale, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        role_slug: str | None = None,
+        expires_in_days: int | None = None,
+        inviter_user_id: str | None = None,
+        locale: CreateUserInviteOptionsLocale | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Send an invitation
 
@@ -4003,7 +3993,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -4027,7 +4017,7 @@ class AsyncUserManagement:
         self,
         token: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Find an invitation by token
 
@@ -4057,7 +4047,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Get an invitation
 
@@ -4087,7 +4077,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Invitation:
         """Accept an invitation
 
@@ -4118,8 +4108,8 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        locale: Optional[Union[ResendUserInviteOptionsLocale, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        locale: ResendUserInviteOptionsLocale | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserInvite:
         """Resend an invitation
 
@@ -4141,7 +4131,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "locale": enum_value(locale) if locale is not None else None,
@@ -4160,7 +4150,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Invitation:
         """Revoke an invitation
 
@@ -4189,7 +4179,7 @@ class AsyncUserManagement:
     async def list_jwt_template(
         self,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JWTTemplateResponse:
         """Get JWT template
 
@@ -4215,7 +4205,7 @@ class AsyncUserManagement:
         self,
         *,
         content: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> JWTTemplateResponse:
         """Update JWT template
 
@@ -4234,7 +4224,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "content": content,
         }
         return await self._client.request(
@@ -4249,12 +4239,12 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        invitation_token: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        radar_auth_attempt_id: Optional[str] = None,
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        invitation_token: str | None = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        radar_auth_attempt_id: str | None = None,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
 
@@ -4279,7 +4269,7 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "email": email,
@@ -4303,7 +4293,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> MagicAuth:
         """Get Magic Auth code details
 
@@ -4332,11 +4322,11 @@ class AsyncUserManagement:
     async def list_redirect_uris(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[RedirectUri]:
         """List redirect URIs
 
@@ -4379,7 +4369,7 @@ class AsyncUserManagement:
         self,
         *,
         uri: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RedirectUri:
         """Create a redirect URI
 
@@ -4399,7 +4389,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "uri": uri,
         }
         return await self._client.request(
@@ -4414,7 +4404,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a redirect URI
 
@@ -4441,11 +4431,11 @@ class AsyncUserManagement:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
 
@@ -4492,7 +4482,7 @@ class AsyncUserManagement:
         application_id: str,
         user_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorized application
 
@@ -4525,12 +4515,12 @@ class AsyncUserManagement:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserApiKey]:
         """List API keys for a user
 
@@ -4579,9 +4569,9 @@ class AsyncUserManagement:
         *,
         name: str,
         organization_id: str,
-        permissions: Optional[List[str]] = None,
-        expires_at: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str] | None = None,
+        expires_at: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user
 
@@ -4606,7 +4596,7 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -4626,7 +4616,7 @@ class AsyncUserManagement:
 
     # @oagen-ignore-start
 
-    def get_jwks_url(self, client_id: Optional[str] = None) -> str:
+    def get_jwks_url(self, client_id: str | None = None) -> str:
         """Get the JWKS URL used to verify access tokens.
 
         Use this when integrating with a JWT library that fetches and caches
@@ -4648,7 +4638,7 @@ class AsyncUserManagement:
         *,
         session_data: str,
         cookie_password: str,
-    ) -> "AsyncSession":
+    ) -> AsyncSession:
         """Create an AsyncSession object from sealed session data.
 
         Args:
@@ -4671,10 +4661,10 @@ class AsyncUserManagement:
         *,
         session_data: str,
         cookie_password: str,
-    ) -> Union[
-        "AuthenticateWithSessionCookieSuccessResponse",
-        "AuthenticateWithSessionCookieErrorResponse",
-    ]:
+    ) -> (
+        AuthenticateWithSessionCookieSuccessResponse
+        | AuthenticateWithSessionCookieErrorResponse
+    ):
         """One-shot authenticate a sealed session cookie.
 
         Args:
@@ -4698,20 +4688,18 @@ class AsyncUserManagement:
         self,
         *,
         redirect_uri: str,
-        client_id: Optional[str] = None,
-        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
-        connection_id: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        domain_hint: Optional[str] = None,
-        login_hint: Optional[str] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
-        prompt: Optional[str] = None,
-        provider_scopes: Optional[List[str]] = None,
-        provider_query_params: Optional[Dict[str, str]] = None,
-        invitation_token: Optional[str] = None,
-    ) -> Dict[str, str]:
+        client_id: str | None = None,
+        provider: UserManagementAuthenticationProvider | str | None = None,
+        connection_id: str | None = None,
+        organization_id: str | None = None,
+        domain_hint: str | None = None,
+        login_hint: str | None = None,
+        screen_hint: UserManagementAuthenticationScreenHint | str | None = None,
+        prompt: str | None = None,
+        provider_scopes: list[str] | None = None,
+        provider_query_params: dict[str, str] | None = None,
+        invitation_token: str | None = None,
+    ) -> dict[str, str]:
         """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
 
         Args:
@@ -4761,11 +4749,11 @@ class AsyncUserManagement:
         *,
         code: str,
         code_verifier: str,
-        client_id: Optional[str] = None,
-        ip_address: Optional[str] = None,
-        device_id: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        client_id: str | None = None,
+        ip_address: str | None = None,
+        device_id: str | None = None,
+        user_agent: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticateResponse:
         """Exchange an authorization code using a PKCE code_verifier.
 
@@ -4782,7 +4770,7 @@ class AsyncUserManagement:
             AuthenticateResponse: The authentication result with user and tokens.
         """
         resolved_client_id = client_id or (self._client.client_id or "")
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "grant_type": "authorization_code",
             "client_id": resolved_client_id,
             "code": code,

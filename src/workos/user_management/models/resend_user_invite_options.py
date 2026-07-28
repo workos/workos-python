@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
@@ -15,11 +16,11 @@ from workos.common.models.resend_user_invite_options_locale import (
 class ResendUserInviteOptions:
     """Resend User Invite Options model."""
 
-    locale: Optional["ResendUserInviteOptionsLocale"] = None
+    locale: ResendUserInviteOptionsLocale | None = None
     """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ResendUserInviteOptions":
+    def from_dict(cls, data: dict[str, Any]) -> ResendUserInviteOptions:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class ResendUserInviteOptions:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ResendUserInviteOptions", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.locale is not None:
             result["locale"] = (
                 self.locale.value if isinstance(self.locale, Enum) else self.locale

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,17 +12,19 @@ from workos._types import _raise_deserialize_error
 class ConfigureDataIntegrationBody:
     """Configure Data Integration Body model."""
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     """Whether the provider is enabled for the organization."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes to request for the organization. Pass `null` to inherit the provider scopes."""
-    client_id: Optional[str] = None
+    client_id: str | None = None
     """The OAuth client ID of the organization's own application. Must be provided together with `client_secret`, and only for providers whose credentials are supplied by the organization."""
-    client_secret: Optional[str] = None
+    client_secret: str | None = None
     """The OAuth client secret of the organization's own application. Must be provided together with `client_id`."""
+    config: dict[str, str] | None = None
+    """Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConfigureDataIntegrationBody":
+    def from_dict(cls, data: dict[str, Any]) -> ConfigureDataIntegrationBody:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,13 +32,14 @@ class ConfigureDataIntegrationBody:
                 scopes=data.get("scopes"),
                 client_id=data.get("client_id"),
                 client_secret=data.get("client_secret"),
+                config=data.get("config"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConfigureDataIntegrationBody", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.enabled is not None:
             result["enabled"] = self.enabled
         if self.scopes is not None:
@@ -46,4 +50,6 @@ class ConfigureDataIntegrationBody:
             result["client_id"] = self.client_id
         if self.client_secret is not None:
             result["client_secret"] = self.client_secret
+        if self.config is not None:
+            result["config"] = self.config
         return result

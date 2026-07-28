@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -16,25 +17,25 @@ class AuthorizationCodeSessionAuthenticateRequest:
     grant_type: Literal["authorization_code"]
     code: str
     """The authorization code received from the redirect."""
-    client_secret: Optional[str] = None
+    client_secret: str | None = None
     """The client secret of the application. May be omitted by public clients that authenticate through other means, such as a PKCE `code_verifier`."""
-    code_verifier: Optional[str] = None
+    code_verifier: str | None = None
     """The PKCE code verifier used to derive the code challenge passed to the authorization URL."""
-    invitation_token: Optional[str] = None
+    invitation_token: str | None = None
     """An invitation token to accept during authentication."""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """The IP address of the user's request."""
-    device_id: Optional[str] = None
+    device_id: str | None = None
     """A unique identifier for the device."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """The user agent string from the user's browser."""
-    signals_id: Optional[str] = None
+    signals_id: str | None = None
     """An optional Radar signals ID to correlate client-side signals with this authentication attempt."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AuthorizationCodeSessionAuthenticateRequest":
+        cls, data: dict[str, Any]
+    ) -> AuthorizationCodeSessionAuthenticateRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -52,9 +53,9 @@ class AuthorizationCodeSessionAuthenticateRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthorizationCodeSessionAuthenticateRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["grant_type"] = self.grant_type
         result["code"] = self.code

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, NOT_GIVEN, NotGiven
+from .._types import NOT_GIVEN, NotGiven, RequestOptions
 from .models import (
     DataIntegrationConfigurationListResponse,
     DataIntegrationConfigurationResponse,
@@ -17,14 +17,14 @@ from .models import (
 class PipesProvider:
     """Pipes Provider API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_organization_data_integration_configurations(
         self,
         organization_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationListResponse:
         """List providers for an organization
 
@@ -59,11 +59,12 @@ class PipesProvider:
         organization_id: str,
         slug: str,
         *,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: dict[str, str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationResponse:
         """Configure a provider for an organization
 
@@ -76,6 +77,7 @@ class PipesProvider:
             scopes: The OAuth scopes to request for the organization. Pass `null` to inherit the provider scopes.
             client_id: The OAuth client ID of the organization's own application. Must be provided together with `client_secret`, and only for providers whose credentials are supplied by the organization.
             client_secret: The OAuth client secret of the organization's own application. Must be provided together with `client_id`.
+            config: Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -89,12 +91,13 @@ class PipesProvider:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "enabled": enabled,
                 "client_id": client_id,
                 "client_secret": client_secret,
+                "config": config,
             }.items()
             if v is not None
         }
@@ -117,14 +120,14 @@ class PipesProvider:
 class AsyncPipesProvider:
     """Pipes Provider API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_organization_data_integration_configurations(
         self,
         organization_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationListResponse:
         """List providers for an organization
 
@@ -159,11 +162,12 @@ class AsyncPipesProvider:
         organization_id: str,
         slug: str,
         *,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: dict[str, str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationResponse:
         """Configure a provider for an organization
 
@@ -176,6 +180,7 @@ class AsyncPipesProvider:
             scopes: The OAuth scopes to request for the organization. Pass `null` to inherit the provider scopes.
             client_id: The OAuth client ID of the organization's own application. Must be provided together with `client_secret`, and only for providers whose credentials are supplied by the organization.
             client_secret: The OAuth client secret of the organization's own application. Must be provided together with `client_id`.
+            config: Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -189,12 +194,13 @@ class AsyncPipesProvider:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "enabled": enabled,
                 "client_id": client_id,
                 "client_secret": client_secret,
+                "config": config,
             }.items()
             if v is not None
         }

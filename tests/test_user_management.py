@@ -3,10 +3,24 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import User, UserSessionsListItem, PaginationOrder
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
+from workos._errors import (
+    AuthenticationError,
+    BadRequestError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
+    UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import (
+    PaginationOrder,
+    User,
+    UserSessionsListItem,
+)
+from workos.user_management._resource import PasswordPlaintext
 from workos.user_management.models import (
     AuthenticateResponse,
     AuthorizedConnectApplicationListData,
@@ -16,8 +30,8 @@ from workos.user_management.models import (
     EmailChangeConfirmation,
     EmailVerification,
     Invitation,
-    JWTTemplateResponse,
     JwksResponse,
+    JWTTemplateResponse,
     MagicAuth,
     MagicAuthSendMagicAuthCodeAndReturnResponse,
     PasswordReset,
@@ -33,16 +47,6 @@ from workos.user_management.models import (
     UserInvite,
     VerifyEmailResponse,
 )
-from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
-from workos.user_management._resource import PasswordPlaintext
 
 
 class TestUserManagement:

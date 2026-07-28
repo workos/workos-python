@@ -4,47 +4,47 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
+from typing import Any, cast
 
-from workos.common.models.authenticate_response_impersonator import (
-    AuthenticateResponseImpersonator,
-)
-from .authenticate_response_oauth_token import AuthenticateResponseOAuthToken
-from workos.common.models.user import User
+from workos._types import _raise_deserialize_error
 from workos.common.models.authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod,
 )
+from workos.common.models.authenticate_response_impersonator import (
+    AuthenticateResponseImpersonator,
+)
+from workos.common.models.user import User
+
+from .authenticate_response_oauth_token import AuthenticateResponseOAuthToken
 
 
 @dataclass(slots=True)
 class AuthenticateResponse:
     """Authenticate Response model."""
 
-    user: "User"
+    user: User
     """The corresponding [user](https://workos.com/docs/reference/authkit/user) object."""
     access_token: str
     """A JWT containing information about the current session."""
     refresh_token: str
     """[Exchange this token](https://workos.com/docs/reference/authkit/authentication/refresh-token) for a new access token."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the user selected to sign in to."""
-    authkit_authorization_code: Optional[str] = None
+    authkit_authorization_code: str | None = None
     """An authorization code that can be exchanged for tokens by a different application."""
-    authentication_method: Optional["AuthenticateResponseAuthenticationMethod"] = None
+    authentication_method: AuthenticateResponseAuthenticationMethod | None = None
     """The authentication method used to initiate the session."""
-    impersonator: Optional["AuthenticateResponseImpersonator"] = None
+    impersonator: AuthenticateResponseImpersonator | None = None
     """Information about the impersonator if this session was created via impersonation."""
-    oauth_tokens: Optional["AuthenticateResponseOAuthToken"] = None
+    oauth_tokens: AuthenticateResponseOAuthToken | None = None
     """The OAuth tokens from the identity provider, if applicable."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticateResponse":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticateResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                user=User.from_dict(cast(Dict[str, Any], data["user"])),
+                user=User.from_dict(cast(dict[str, Any], data["user"])),
                 access_token=data["access_token"],
                 refresh_token=data["refresh_token"],
                 organization_id=data.get("organization_id"),
@@ -56,12 +56,12 @@ class AuthenticateResponse:
                 is not None
                 else None,
                 impersonator=AuthenticateResponseImpersonator.from_dict(
-                    cast(Dict[str, Any], _v_impersonator)
+                    cast(dict[str, Any], _v_impersonator)
                 )
                 if (_v_impersonator := data.get("impersonator")) is not None
                 else None,
                 oauth_tokens=AuthenticateResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v_oauth_tokens)
+                    cast(dict[str, Any], _v_oauth_tokens)
                 )
                 if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
                 else None,
@@ -69,9 +69,9 @@ class AuthenticateResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticateResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["user"] = self.user.to_dict()
         result["access_token"] = self.access_token
         result["refresh_token"] = self.refresh_token

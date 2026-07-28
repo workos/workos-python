@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class DataIntegrationInstallation:
     """Unique identifier of the installation."""
     user_id: str
     """The User the API key was installed for."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The Organization the installation is scoped to, or null when unscoped."""
-    api_key_last_4: Optional[str]
+    api_key_last_4: str | None
     """The last four characters of the stored API key. The full key is never returned."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationInstallation":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationInstallation:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class DataIntegrationInstallation:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationInstallation", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["user_id"] = self.user_id
         if self.organization_id is not None:

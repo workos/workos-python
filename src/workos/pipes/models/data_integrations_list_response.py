@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .data_integrations_list_response_data import DataIntegrationsListResponseData
@@ -16,18 +16,18 @@ class DataIntegrationsListResponse:
 
     object: Literal["list"]
     """Indicates this is a list response."""
-    data: List["DataIntegrationsListResponseData"]
+    data: list[DataIntegrationsListResponseData]
     """A list of [providers](https://workos.com/docs/reference/pipes/provider), each including a [`connected_account`](https://workos.com/docs/reference/pipes/connected-account) field with the user's connection status."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationsListResponse":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsListResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "list"),
                 data=[
                     DataIntegrationsListResponseData.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], data["data"])
                 ],
@@ -35,9 +35,9 @@ class DataIntegrationsListResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsListResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["data"] = [item.to_dict() for item in self.data]
         return result

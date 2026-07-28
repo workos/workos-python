@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.pipes.models import (
     ApiKeyInstallation,
     ConnectedAccount,
@@ -248,6 +247,7 @@ class TestModelRoundTrip:
                 "redacted_client_secret": "6789",
             },
             "installation": None,
+            "config": {"account_identifier": "acme-prod"},
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -266,6 +266,7 @@ class TestModelRoundTrip:
         assert serialized["auth_methods"] == data["auth_methods"]
         assert serialized["credentials"] == data["credentials"]
         assert serialized["installation"] == data["installation"]
+        assert serialized["config"] == data["config"]
         assert serialized["custom_provider"] == data["custom_provider"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -288,6 +289,7 @@ class TestModelRoundTrip:
                 "redacted_client_secret": "6789",
             },
             "installation": None,
+            "config": {"account_identifier": "acme-prod"},
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -317,6 +319,7 @@ class TestModelRoundTrip:
                 "redacted_client_secret": "6789",
             },
             "installation": None,
+            "config": {"account_identifier": "acme-prod"},
             "custom_provider": {
                 "name": "My OAuth App",
                 "authorization_url": "https://provider.example.com/oauth/authorize",

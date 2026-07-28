@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -17,35 +17,35 @@ class UserCreateResponse:
     """Distinguishes the user object."""
     id: str
     """The unique ID of the user."""
-    first_name: Optional[str]
+    first_name: str | None
     """The first name of the user."""
-    last_name: Optional[str]
+    last_name: str | None
     """The last name of the user."""
-    profile_picture_url: Optional[str]
+    profile_picture_url: str | None
     """A URL reference to an image representing the user."""
     email: str
     """The email address of the user."""
     email_verified: bool
     """Whether the user's email has been verified."""
-    external_id: Optional[str]
+    external_id: str | None
     """The external ID of the user."""
-    last_sign_in_at: Optional[datetime]
+    last_sign_in_at: datetime | None
     """The timestamp when the user last signed in."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    name: Optional[str] = None
+    name: str | None = None
     """The user's full name."""
-    metadata: Optional[Dict[str, str]] = None
+    metadata: dict[str, str] | None = None
     """Object containing metadata key/value pairs associated with the user."""
-    locale: Optional[str] = None
+    locale: str | None = None
     """The user's preferred locale."""
-    radar_auth_attempt_id: Optional[str] = None
+    radar_auth_attempt_id: str | None = None
     """The ID of the Radar authentication attempt created for this request when Radar is enabled. Pass this value to the authenticate endpoint to associate the subsequent authentication with this Radar attempt."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserCreateResponse":
+    def from_dict(cls, data: dict[str, Any]) -> UserCreateResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -70,9 +70,9 @@ class UserCreateResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserCreateResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         if self.first_name is not None:

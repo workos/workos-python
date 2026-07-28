@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -17,17 +17,17 @@ class DataIntegrationAccessTokenResponseAccessToken:
     """Distinguishes the access token object."""
     access_token: str
     """The OAuth access token for the connected integration."""
-    expires_at: Optional[datetime]
+    expires_at: datetime | None
     """The ISO-8601 formatted timestamp indicating when the access token expires."""
-    scopes: List[str]
+    scopes: list[str]
     """The scopes granted to the access token."""
-    missing_scopes: List[str]
+    missing_scopes: list[str]
     """If the integration has requested scopes that aren't present on the access token, they're listed here."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "DataIntegrationAccessTokenResponseAccessToken":
+        cls, data: dict[str, Any]
+    ) -> DataIntegrationAccessTokenResponseAccessToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,9 +42,9 @@ class DataIntegrationAccessTokenResponseAccessToken:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationAccessTokenResponseAccessToken", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["access_token"] = self.access_token
         if self.expires_at is not None:

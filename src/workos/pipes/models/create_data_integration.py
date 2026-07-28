@@ -4,16 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
+from workos.common.models.create_data_integration_auth_methods import (
+    CreateDataIntegrationAuthMethods,
+)
 
 from .api_key_installation import ApiKeyInstallation
 from .custom_provider_definition import CustomProviderDefinition
 from .data_integration_credentials_input import DataIntegrationCredentialsInput
-from workos.common.models.create_data_integration_auth_methods import (
-    CreateDataIntegrationAuthMethods,
-)
 
 
 @dataclass(slots=True)
@@ -22,23 +22,25 @@ class CreateDataIntegration:
 
     provider: str
     """The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug."""
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the Data Integration."""
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     """Whether the Data Integration is enabled. Defaults to `false`."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted."""
-    auth_methods: Optional[List["CreateDataIntegrationAuthMethods"]] = None
+    auth_methods: list[CreateDataIntegrationAuthMethods] | None = None
     """How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request)."""
-    credentials: Optional["DataIntegrationCredentialsInput"] = None
+    config: dict[str, str] | None = None
+    """Provider-specific config values (e.g. a Snowflake `account_identifier`), keyed by the config field. Only fields the built-in provider declares are accepted."""
+    credentials: DataIntegrationCredentialsInput | None = None
     """The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`."""
-    api_key: Optional["ApiKeyInstallation"] = None
+    api_key: ApiKeyInstallation | None = None
     """An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path."""
-    custom_provider: Optional["CustomProviderDefinition"] = None
+    custom_provider: CustomProviderDefinition | None = None
     """The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateDataIntegration":
+    def from_dict(cls, data: dict[str, Any]) -> CreateDataIntegration:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -52,16 +54,17 @@ class CreateDataIntegration:
                 ]
                 if (_v_auth_methods := data.get("auth_methods")) is not None
                 else None,
+                config=data.get("config"),
                 credentials=DataIntegrationCredentialsInput.from_dict(
-                    cast(Dict[str, Any], _v_credentials)
+                    cast(dict[str, Any], _v_credentials)
                 )
                 if (_v_credentials := data.get("credentials")) is not None
                 else None,
-                api_key=ApiKeyInstallation.from_dict(cast(Dict[str, Any], _v_api_key))
+                api_key=ApiKeyInstallation.from_dict(cast(dict[str, Any], _v_api_key))
                 if (_v_api_key := data.get("api_key")) is not None
                 else None,
                 custom_provider=CustomProviderDefinition.from_dict(
-                    cast(Dict[str, Any], _v_custom_provider)
+                    cast(dict[str, Any], _v_custom_provider)
                 )
                 if (_v_custom_provider := data.get("custom_provider")) is not None
                 else None,
@@ -69,9 +72,9 @@ class CreateDataIntegration:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateDataIntegration", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["provider"] = self.provider
         if self.description is not None:
             result["description"] = self.description
@@ -88,6 +91,8 @@ class CreateDataIntegration:
                 item.value if isinstance(item, Enum) else item
                 for item in self.auth_methods
             ]
+        if self.config is not None:
+            result["config"] = self.config
         if self.credentials is not None:
             result["credentials"] = self.credentials.to_dict()
         if self.api_key is not None:

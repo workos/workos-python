@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.create_user_password_hash_type import (
     CreateUserPasswordHashType,
@@ -17,33 +18,33 @@ class CreateUser:
 
     email: str
     """The email address of the user."""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """The first name of the user."""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """The last name of the user."""
-    name: Optional[str] = None
+    name: str | None = None
     """The user's full name."""
-    email_verified: Optional[bool] = None
+    email_verified: bool | None = None
     """Whether the user's email has been verified."""
-    metadata: Optional[Dict[str, str]] = None
+    metadata: dict[str, str] | None = None
     """Object containing metadata key/value pairs associated with the user."""
-    external_id: Optional[str] = None
+    external_id: str | None = None
     """The external ID of the user."""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """The IP address of the user's request."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """The user agent string from the user's request."""
-    signals_id: Optional[str] = None
+    signals_id: str | None = None
     """An optional Radar signals ID to correlate client-side signals with this request."""
-    password: Optional[str] = None
+    password: str | None = None
     """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
-    password_hash: Optional[str] = None
+    password_hash: str | None = None
     """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
-    password_hash_type: Optional["CreateUserPasswordHashType"] = None
+    password_hash_type: CreateUserPasswordHashType | None = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateUser":
+    def from_dict(cls, data: dict[str, Any]) -> CreateUser:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -66,9 +67,9 @@ class CreateUser:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUser", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         if self.first_name is not None:
             result["first_name"] = self.first_name

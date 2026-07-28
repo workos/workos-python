@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integration_access_token_response_error import (
+    DataIntegrationAccessTokenResponseError,
+)
 
 from .data_integration_access_token_response_access_token import (
     DataIntegrationAccessTokenResponseAccessToken,
-)
-from workos.common.models.data_integration_access_token_response_error import (
-    DataIntegrationAccessTokenResponseError,
 )
 
 
@@ -20,22 +20,22 @@ from workos.common.models.data_integration_access_token_response_error import (
 class DataIntegrationAccessTokenResponse:
     """Data Integration Access Token Response model."""
 
-    active: Optional[Literal[True]] = None
+    active: Literal[True] | None = None
     """Indicates whether the access token is valid and ready for use, or if reauthorization is required."""
-    access_token: Optional["DataIntegrationAccessTokenResponseAccessToken"] = None
+    access_token: DataIntegrationAccessTokenResponseAccessToken | None = None
     """The [access token](https://workos.com/docs/reference/pipes/access-token) object, present when `active` is `true`."""
-    error: Optional["DataIntegrationAccessTokenResponseError"] = None
+    error: DataIntegrationAccessTokenResponseError | None = None
     """- `"not_installed"`: The user does not have the integration installed.
 - `"needs_reauthorization"`: The user needs to reauthorize the integration."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationAccessTokenResponse":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationAccessTokenResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 active=data.get("active"),
                 access_token=DataIntegrationAccessTokenResponseAccessToken.from_dict(
-                    cast(Dict[str, Any], _v_access_token)
+                    cast(dict[str, Any], _v_access_token)
                 )
                 if (_v_access_token := data.get("access_token")) is not None
                 else None,
@@ -46,9 +46,9 @@ class DataIntegrationAccessTokenResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationAccessTokenResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.active is not None:
             result["active"] = self.active
         if self.access_token is not None:

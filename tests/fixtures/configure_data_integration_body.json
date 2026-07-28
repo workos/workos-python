@@ -5,5 +5,8 @@
     "user:email"
   ],
   "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
-  "client_secret": "••••••••"
+  "client_secret": "••••••••",
+  "config": {
+    "account_identifier": "acme-prod"
+  }
 }

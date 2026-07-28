@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -17,7 +16,7 @@ class PaginationOrder(str, Enum):
     ASC = "asc"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["PaginationOrder"]:
+    def _missing_(cls, value: object) -> PaginationOrder | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,7 +16,7 @@ class CreatePasswordResetToken:
     """The email address of the user requesting a password reset."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreatePasswordResetToken":
+    def from_dict(cls, data: dict[str, Any]) -> CreatePasswordResetToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class CreatePasswordResetToken:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreatePasswordResetToken", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         return result

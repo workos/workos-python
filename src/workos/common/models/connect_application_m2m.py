@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -19,11 +19,11 @@ class ConnectApplicationM2M:
     """The unique ID of the connect application."""
     client_id: str
     """The client ID of the connect application."""
-    description: Optional[str]
+    description: str | None
     """A description of the connect application."""
     name: str
     """The name of the connect application."""
-    scopes: List[str]
+    scopes: list[str]
     """The scopes available for this application."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -35,7 +35,7 @@ class ConnectApplicationM2M:
     """The ID of the organization the application belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationM2M":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectApplicationM2M:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -53,9 +53,9 @@ class ConnectApplicationM2M:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectApplicationM2M", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["client_id"] = self.client_id

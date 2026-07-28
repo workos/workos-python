@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
+from typing import Any, Literal, cast
 
-from workos.common.models.slim_role import SlimRole
+from workos._types import _raise_deserialize_error
 from workos.common.models.profile_connection_type import ProfileConnectionType
+from workos.common.models.slim_role import SlimRole
 
 
 @dataclass(slots=True)
@@ -20,35 +19,35 @@ class Profile:
     """Distinguishes the profile object."""
     id: str
     """Unique identifier of the profile."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The ID of the organization the user belongs to."""
     connection_id: str
     """The ID of the SSO connection used for authentication."""
-    connection_type: "ProfileConnectionType"
+    connection_type: ProfileConnectionType
     """The type of SSO connection."""
     idp_id: str
     """The user's unique identifier from the identity provider."""
     email: str
     """The user's email address."""
-    first_name: Optional[str]
+    first_name: str | None
     """The user's first name."""
-    last_name: Optional[str]
+    last_name: str | None
     """The user's last name."""
-    name: Optional[str]
+    name: str | None
     """The user's full name."""
-    raw_attributes: Dict[str, Any]
+    raw_attributes: dict[str, Any]
     """The complete set of raw attributes returned by the identity provider."""
-    role: Optional["SlimRole"] = None
+    role: SlimRole | None = None
     """The role assigned to the user within the organization, if applicable."""
-    roles: Optional[List["SlimRole"]] = None
+    roles: list[SlimRole] | None = None
     """The roles assigned to the user within the organization, if applicable."""
-    groups: Optional[List[str]] = None
+    groups: list[str] | None = None
     """The groups the user belongs to, as returned by the identity provider."""
-    custom_attributes: Optional[Dict[str, Any]] = None
+    custom_attributes: dict[str, Any] | None = None
     """Custom attribute mappings defined for the connection, returned as key-value pairs."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Profile":
+    def from_dict(cls, data: dict[str, Any]) -> Profile:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -63,11 +62,11 @@ class Profile:
                 last_name=data["last_name"],
                 name=data["name"],
                 raw_attributes=data["raw_attributes"],
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
+                role=SlimRole.from_dict(cast(dict[str, Any], _v_role))
                 if (_v_role := data.get("role")) is not None
                 else None,
                 roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
+                    SlimRole.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_roles)
                 ]
                 if (_v_roles := data.get("roles")) is not None
@@ -78,9 +77,9 @@ class Profile:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Profile", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         if self.organization_id is not None:

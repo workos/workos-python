@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.sso.models import (
     Connection,
     ConnectionDomain,
@@ -75,7 +74,6 @@ class TestModelRoundTrip:
         instance = Connection.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
-        assert "callback_endpoint" not in serialized
 
     def test_connection_round_trips_unknown_enum_values(self):
         data = {
@@ -93,7 +91,6 @@ class TestModelRoundTrip:
                     "domain": "foo-corp.com",
                 }
             ],
-            "callback_endpoint": "https://auth.workos.com/sso/saml/acs/conn_externalkey",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }

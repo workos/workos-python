@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .profile import Profile
@@ -21,22 +21,22 @@ class SSOTokenResponse:
     """An access token that can be exchanged for a user profile. Access tokens are short-lived — see the `expires_in` field for the exact lifetime."""
     expires_in: int
     """The lifetime of the access token in seconds."""
-    profile: "Profile"
+    profile: Profile
     """The user profile returned by the identity provider."""
-    oauth_tokens: Optional["SSOTokenResponseOAuthToken"] = None
+    oauth_tokens: SSOTokenResponseOAuthToken | None = None
     """OAuth tokens issued by the identity provider, if available."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SSOTokenResponse":
+    def from_dict(cls, data: dict[str, Any]) -> SSOTokenResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 token_type=data.get("token_type", "Bearer"),
                 access_token=data["access_token"],
                 expires_in=data["expires_in"],
-                profile=Profile.from_dict(cast(Dict[str, Any], data["profile"])),
+                profile=Profile.from_dict(cast(dict[str, Any], data["profile"])),
                 oauth_tokens=SSOTokenResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v_oauth_tokens)
+                    cast(dict[str, Any], _v_oauth_tokens)
                 )
                 if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
                 else None,
@@ -44,9 +44,9 @@ class SSOTokenResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SSOTokenResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["token_type"] = self.token_type
         result["access_token"] = self.access_token
         result["expires_in"] = self.expires_in

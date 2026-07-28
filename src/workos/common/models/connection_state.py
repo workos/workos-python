@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -20,7 +19,7 @@ class ConnectionState(str, Enum):
     DELETING = "deleting"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["ConnectionState"]:
+    def _missing_(cls, value: object) -> ConnectionState | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

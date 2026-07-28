@@ -1,5 +1,23 @@
 # Changelog
 
+## [10.1.0](https://github.com/workos/workos-python/compare/v10.0.1...v10.1.0) (2026-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* **sso:** SDK surface change: Parameter type changed for "request_options" on "SSO.authorize_logout" ([#704](https://github.com/workos/workos-python/issues/704))
+
+### Features
+
+* **pipes:** SDK surface change: Parameter type changed for "organization_id" on "Pipes.authorize_data_integration" ([#702](https://github.com/workos/workos-python/issues/702)) ([826ad56](https://github.com/workos/workos-python/commit/826ad56eba9bb292e48613c3c4b157327aed5cd7))
+* **sso:** SDK surface change: Parameter type changed for "request_options" on "SSO.authorize_logout" ([#704](https://github.com/workos/workos-python/issues/704)) ([dae8afd](https://github.com/workos/workos-python/commit/dae8afd8a7d49432363ebd21abc979db3068b8f4))
+* **user_management:** SDK surface change: Parameter type changed for "request_options" on "UserManagement.accept_invitation" ([#702](https://github.com/workos/workos-python/issues/702)) ([826ad56](https://github.com/workos/workos-python/commit/826ad56eba9bb292e48613c3c4b157327aed5cd7))
+
+
+### Miscellaneous Chores
+
+* release 10.1.0 ([1889026](https://github.com/workos/workos-python/commit/1889026b2ed71a75f4036a54ac20dcc69ee77bfd))
+
 ## [10.0.1](https://github.com/workos/workos-python/compare/v10.0.0...v10.0.1) (2026-07-27)
 
 

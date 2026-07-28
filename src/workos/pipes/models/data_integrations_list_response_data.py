@@ -4,18 +4,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
+from typing import Any, Literal, cast
 
-from .data_integrations_list_response_data_connected_account import (
-    DataIntegrationsListResponseDataConnectedAccount,
-)
+from workos._types import _raise_deserialize_error
 from workos.common.models.data_integrations_list_response_data_auth_methods import (
     DataIntegrationsListResponseDataAuthMethods,
 )
 from workos.common.models.data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership,
+)
+
+from .data_integrations_list_response_data_connected_account import (
+    DataIntegrationsListResponseDataConnectedAccount,
 )
 
 
@@ -29,7 +29,7 @@ class DataIntegrationsListResponseData:
     """The unique identifier of the provider."""
     name: str
     """The display name of the provider (e.g., "GitHub", "Slack")."""
-    description: Optional[str]
+    description: str | None
     """A description of the provider explaining how it will be used, if configured."""
     slug: str
     """The slug identifier used in API calls (e.g., `github`, `slack`, `notion`)."""
@@ -37,21 +37,21 @@ class DataIntegrationsListResponseData:
     """The type of integration (e.g., `github`, `slack`)."""
     credentials_type: str
     """The type of credentials used by the provider (e.g., `oauth2`)."""
-    scopes: Optional[List[str]]
+    scopes: list[str] | None
     """The OAuth scopes configured for this provider, or `null` if none are configured."""
-    ownership: "DataIntegrationsListResponseDataOwnership"
+    ownership: DataIntegrationsListResponseDataOwnership
     """Whether the provider is owned by a user or organization."""
     created_at: str
     """The timestamp when the provider was created."""
     updated_at: str
     """The timestamp when the provider was last updated."""
-    connected_account: Optional["DataIntegrationsListResponseDataConnectedAccount"]
+    connected_account: DataIntegrationsListResponseDataConnectedAccount | None
     """The user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` if the user has not connected."""
-    auth_methods: Optional[List["DataIntegrationsListResponseDataAuthMethods"]] = None
-    """The authentication methods supported by this provider (`oauth`, `api_key`, or both). Defaults to `["oauth"]` if absent."""
+    auth_methods: list[DataIntegrationsListResponseDataAuthMethods] | None = None
+    """The authentication methods supported by this provider (`oauth`, `api_key`, `client_credentials`, or a combination). Defaults to `["oauth"]` if absent."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationsListResponseData":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsListResponseData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -67,7 +67,7 @@ class DataIntegrationsListResponseData:
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
                 connected_account=DataIntegrationsListResponseDataConnectedAccount.from_dict(
-                    cast(Dict[str, Any], _v_connected_account)
+                    cast(dict[str, Any], _v_connected_account)
                 )
                 if (_v_connected_account := data["connected_account"]) is not None
                 else None,
@@ -81,9 +81,9 @@ class DataIntegrationsListResponseData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsListResponseData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["name"] = self.name

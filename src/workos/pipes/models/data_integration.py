@@ -5,18 +5,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .data_integration_credential import DataIntegrationCredential
-from .data_integration_custom_provider import DataIntegrationCustomProvider
-from .data_integration_installation import DataIntegrationInstallation
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.data_integration_auth_methods import (
     DataIntegrationAuthMethods,
 )
 from workos.common.models.data_integration_state import DataIntegrationState
+
+from .data_integration_credential import DataIntegrationCredential
+from .data_integration_custom_provider import DataIntegrationCustomProvider
+from .data_integration_installation import DataIntegrationInstallation
 
 
 @dataclass(slots=True)
@@ -31,23 +30,25 @@ class DataIntegration:
     """The provider slug for this Data Integration."""
     integration_type: str
     """The integration type derived from the provider."""
-    description: Optional[str]
+    description: str | None
     """An optional description of the Data Integration."""
     enabled: bool
     """Whether the Data Integration is enabled."""
-    state: "DataIntegrationState"
+    state: DataIntegrationState
     """The state of the Data Integration."""
-    scopes: Optional[List[str]]
+    scopes: list[str] | None
     """The OAuth scopes configured for the Data Integration. `null` when the provider's configured scopes are used."""
     redirect_uri: str
     """The OAuth redirect URI to register with the provider when configuring the custom application."""
-    auth_methods: List["DataIntegrationAuthMethods"]
+    auth_methods: list[DataIntegrationAuthMethods]
     """How accounts authenticate with the provider for this Data Integration."""
-    credentials: "DataIntegrationCredential"
+    credentials: DataIntegrationCredential
     """The credentials configured for the Data Integration."""
-    installation: Optional["DataIntegrationInstallation"]
+    installation: DataIntegrationInstallation | None
     """The tenant installation created when an API key was supplied at creation time; `null` otherwise. Not populated on list/get responses."""
-    custom_provider: Optional["DataIntegrationCustomProvider"]
+    config: dict[str, str]
+    """Provider-specific config values set on the Data Integration (e.g. a Snowflake `account_identifier`), keyed by config field. Only fields the provider declares are accepted."""
+    custom_provider: DataIntegrationCustomProvider | None
     """The OAuth definition when this is a custom provider; `null` for built-in providers."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -55,7 +56,7 @@ class DataIntegration:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegration":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegration:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -73,15 +74,16 @@ class DataIntegration:
                     for item in cast(list[Any], data["auth_methods"])
                 ],
                 credentials=DataIntegrationCredential.from_dict(
-                    cast(Dict[str, Any], data["credentials"])
+                    cast(dict[str, Any], data["credentials"])
                 ),
                 installation=DataIntegrationInstallation.from_dict(
-                    cast(Dict[str, Any], _v_installation)
+                    cast(dict[str, Any], _v_installation)
                 )
                 if (_v_installation := data["installation"]) is not None
                 else None,
+                config=data["config"],
                 custom_provider=DataIntegrationCustomProvider.from_dict(
-                    cast(Dict[str, Any], _v_custom_provider)
+                    cast(dict[str, Any], _v_custom_provider)
                 )
                 if (_v_custom_provider := data["custom_provider"]) is not None
                 else None,
@@ -91,9 +93,9 @@ class DataIntegration:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegration", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["slug"] = self.slug
@@ -119,6 +121,7 @@ class DataIntegration:
             result["installation"] = self.installation.to_dict()
         else:
             result["installation"] = None
+        result["config"] = self.config
         if self.custom_provider is not None:
             result["custom_provider"] = self.custom_provider.to_dict()
         else:

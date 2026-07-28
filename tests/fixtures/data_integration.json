@@ -20,6 +20,9 @@
     "redacted_client_secret": "6789"
   },
   "installation": null,
+  "config": {
+    "account_identifier": "acme-prod"
+  },
   "custom_provider": {
     "name": "My OAuth App",
     "authorization_url": "https://provider.example.com/oauth/authorize",

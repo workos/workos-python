@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.common.models import (
     AccessTokenAgentRegistrationCredentialIssuedDataDetail,
     ActionAuthenticationDenied,
@@ -39,22 +38,21 @@ from workos.common.models import (
     ApiKeyUpdatedData,
     ApiKeyUpdatedDataOwner,
     ApiKeyUpdatedDataPreviousAttribute,
-    AuthMethodMismatchError,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
     AuthenticationEmailVerificationSucceeded,
     AuthenticationEmailVerificationSucceededData,
-    AuthenticationMFAFailed,
-    AuthenticationMFAFailedData,
-    AuthenticationMFAFailedDataError,
-    AuthenticationMFASucceeded,
-    AuthenticationMFASucceededData,
     AuthenticationMagicAuthFailed,
     AuthenticationMagicAuthFailedData,
     AuthenticationMagicAuthFailedDataError,
     AuthenticationMagicAuthSucceeded,
     AuthenticationMagicAuthSucceededData,
+    AuthenticationMFAFailed,
+    AuthenticationMFAFailedData,
+    AuthenticationMFAFailedDataError,
+    AuthenticationMFASucceeded,
+    AuthenticationMFASucceededData,
     AuthenticationOAuthFailed,
     AuthenticationOAuthFailedData,
     AuthenticationOAuthFailedDataError,
@@ -88,6 +86,7 @@ from workos.common.models import (
     AuthenticationSSOTimedOutData,
     AuthenticationSSOTimedOutDataError,
     AuthenticationSSOTimedOutDataSSO,
+    AuthMethodMismatchError,
     ConnectApplicationM2M,
     ConnectApplicationOAuth,
     ConnectApplicationOAuthRedirectUris,

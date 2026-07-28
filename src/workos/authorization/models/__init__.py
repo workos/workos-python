@@ -3,12 +3,16 @@
 from workos.common.models.add_role_permission import (
     AddRolePermission as AddRolePermission,
 )
-from .assign_role import AssignRole as AssignRole
-from .authorization_assignment import AuthorizationAssignment as AuthorizationAssignment
-from .authorization_check import AuthorizationCheck as AuthorizationCheck
 from workos.common.models.authorization_permission import (
     AuthorizationPermission as AuthorizationPermission,
 )
+from workos.common.models.list_metadata import ListMetadata as ListMetadata
+from workos.common.models.pagination_order import PaginationOrder as PaginationOrder
+from workos.common.models.slim_role import SlimRole as SlimRole
+
+from .assign_role import AssignRole as AssignRole
+from .authorization_assignment import AuthorizationAssignment as AuthorizationAssignment
+from .authorization_check import AuthorizationCheck as AuthorizationCheck
 from .authorization_resource import AuthorizationResource as AuthorizationResource
 from .check_authorization import CheckAuthorization as CheckAuthorization
 from .create_authorization_permission import (
@@ -32,8 +36,6 @@ from .group_role_assignment_list import (
 from .group_role_assignment_resource import (
     GroupRoleAssignmentResource as GroupRoleAssignmentResource,
 )
-from workos.common.models.list_metadata import ListMetadata as ListMetadata
-from workos.common.models.pagination_order import PaginationOrder as PaginationOrder
 from .permission import Permission as Permission
 from .remove_role import RemoveRole as RemoveRole
 from .replace_group_role_assignment_entry import (
@@ -45,7 +47,6 @@ from .replace_group_role_assignments import (
 from .role import Role as Role
 from .role_list import RoleList as RoleList
 from .set_role_permissions import SetRolePermissions as SetRolePermissions
-from workos.common.models.slim_role import SlimRole as SlimRole
 from .update_authorization_permission import (
     UpdateAuthorizationPermission as UpdateAuthorizationPermission,
 )

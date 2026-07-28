@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Dict, Union, cast
+from typing import Any, ClassVar, Union, cast
+
 from workos._types import _raise_deserialize_error
 
 from .connect_application_m2m import ConnectApplicationM2M
@@ -14,15 +15,15 @@ from .connect_application_oauth import ConnectApplicationOAuth
 class ConnectApplicationUnknown:
     """Unknown variant of ConnectApplication not yet recognized by this SDK version."""
 
-    raw_data: Dict[str, Any]
+    raw_data: dict[str, Any]
     """The raw payload, preserved so callers can still inspect the data."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationUnknown":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectApplicationUnknown:
         """Wrap raw data in an unknown variant."""
         return cls(raw_data=data)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return the original raw data."""
         return dict(self.raw_data)
 
@@ -37,13 +38,13 @@ ConnectApplicationVariant = Union[
 class ConnectApplication:
     """Discriminated union dispatcher (discriminated by 'application_type')."""
 
-    _DISPATCH: ClassVar[Dict[str, type]] = {
+    _DISPATCH: ClassVar[dict[str, type]] = {
         "m2m": ConnectApplicationM2M,
         "oauth": ConnectApplicationOAuth,
     }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationVariant":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectApplicationVariant:
         """Deserialize from a dictionary, dispatching to the correct variant."""
         if "application_type" not in data:
             _raise_deserialize_error(

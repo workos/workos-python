@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .user_api_key_owner import UserApiKeyOwner
 
@@ -20,17 +19,17 @@ class UserApiKey:
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: "UserApiKeyOwner"
+    owner: UserApiKeyOwner
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
     obfuscated_value: str
     """An obfuscated representation of the API Key value."""
-    last_used_at: Optional[datetime]
+    last_used_at: datetime | None
     """Timestamp of when the API Key was last used."""
-    expires_at: Optional[datetime]
+    expires_at: datetime | None
     """Timestamp when the API Key expires. Null means the key does not expire."""
-    permissions: List[str]
+    permissions: list[str]
     """The permission slugs assigned to the API Key."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -38,13 +37,13 @@ class UserApiKey:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserApiKey":
+    def from_dict(cls, data: dict[str, Any]) -> UserApiKey:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=UserApiKeyOwner.from_dict(cast(Dict[str, Any], data["owner"])),
+                owner=UserApiKeyOwner.from_dict(cast(dict[str, Any], data["owner"])),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=_parse_datetime(_v_last_used_at)
@@ -60,9 +59,9 @@ class UserApiKey:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserApiKey", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["owner"] = self.owner.to_dict()

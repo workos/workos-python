@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,11 +14,11 @@ class AuthenticateResponseImpersonator:
 
     email: str
     """The email address of the WorkOS Dashboard user who is impersonating the user."""
-    reason: Optional[str]
+    reason: str | None
     """The justification the impersonator gave for impersonating the user."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticateResponseImpersonator":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticateResponseImpersonator:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class AuthenticateResponseImpersonator:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticateResponseImpersonator", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         if self.reason is not None:
             result["reason"] = self.reason

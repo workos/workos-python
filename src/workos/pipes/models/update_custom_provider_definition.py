@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.update_custom_provider_definition_authenticate_via import (
     UpdateCustomProviderDefinitionAuthenticateVia,
@@ -15,31 +16,31 @@ from workos.common.models.update_custom_provider_definition_authenticate_via imp
 class UpdateCustomProviderDefinition:
     """Update Custom Provider Definition model."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """A descriptive name for the custom provider."""
-    authorization_url: Optional[str] = None
+    authorization_url: str | None = None
     """The provider's OAuth authorization endpoint."""
-    token_url: Optional[str] = None
+    token_url: str | None = None
     """The provider's OAuth token endpoint."""
-    refresh_token_url: Optional[str] = None
+    refresh_token_url: str | None = None
     """The endpoint used to refresh tokens, if different from the token endpoint."""
-    pkce_enabled: Optional[bool] = None
+    pkce_enabled: bool | None = None
     """Whether PKCE is used during the authorization code flow."""
-    request_scope_separator: Optional[str] = None
+    request_scope_separator: str | None = None
     """The separator used to join requested scopes."""
-    scopes_required: Optional[bool] = None
+    scopes_required: bool | None = None
     """Whether at least one scope must be selected when connecting an account."""
-    client_secret_required: Optional[bool] = None
+    client_secret_required: bool | None = None
     """Whether a client secret is required for this provider."""
-    additional_authorization_parameters: Optional[Dict[str, str]] = None
+    additional_authorization_parameters: dict[str, str] | None = None
     """Additional static query parameters appended to the authorization request."""
-    token_body_content_type: Optional[str] = None
+    token_body_content_type: str | None = None
     """The Content-Type used when exchanging the token request."""
-    authenticate_via: Optional["UpdateCustomProviderDefinitionAuthenticateVia"] = None
+    authenticate_via: UpdateCustomProviderDefinitionAuthenticateVia | None = None
     """How client credentials are sent when exchanging authorization codes and refreshing tokens."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateCustomProviderDefinition":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateCustomProviderDefinition:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -64,9 +65,9 @@ class UpdateCustomProviderDefinition:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateCustomProviderDefinition", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.authorization_url is not None:

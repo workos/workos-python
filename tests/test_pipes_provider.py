@@ -2,13 +2,9 @@
 
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.pipes_provider.models import (
-    DataIntegrationConfigurationListResponse,
-    DataIntegrationConfigurationResponse,
-)
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -16,6 +12,10 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos.pipes_provider.models import (
+    DataIntegrationConfigurationListResponse,
+    DataIntegrationConfigurationResponse,
 )
 
 

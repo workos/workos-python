@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .connect_application_oauth_redirect_uris import ConnectApplicationOAuthRedirectUris
 
@@ -22,11 +21,11 @@ class ConnectApplicationOAuth:
     """The unique ID of the connect application."""
     client_id: str
     """The client ID of the connect application."""
-    description: Optional[str]
+    description: str | None
     """A description of the connect application."""
     name: str
     """The name of the connect application."""
-    scopes: List[str]
+    scopes: list[str]
     """The scopes available for this application."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -34,19 +33,19 @@ class ConnectApplicationOAuth:
     """An ISO 8601 timestamp."""
     application_type: Literal["oauth"]
     """The type of the application."""
-    redirect_uris: List["ConnectApplicationOAuthRedirectUris"]
+    redirect_uris: list[ConnectApplicationOAuthRedirectUris]
     """The redirect URIs configured for this application."""
     uses_pkce: bool
     """Whether the application uses PKCE for authorization."""
     is_first_party: bool
     """Whether the application is a first-party application."""
-    was_dynamically_registered: Optional[bool] = None
+    was_dynamically_registered: bool | None = None
     """Whether the application was dynamically registered."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the application belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationOAuth":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectApplicationOAuth:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -61,7 +60,7 @@ class ConnectApplicationOAuth:
                 application_type=data.get("application_type", "oauth"),
                 redirect_uris=[
                     ConnectApplicationOAuthRedirectUris.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], data["redirect_uris"])
                 ],
@@ -73,9 +72,9 @@ class ConnectApplicationOAuth:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectApplicationOAuth", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["client_id"] = self.client_id

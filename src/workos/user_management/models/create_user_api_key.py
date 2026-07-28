@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -17,13 +17,13 @@ class CreateUserApiKey:
     """A descriptive name for the API key."""
     organization_id: str
     """The ID of the organization the user API key is associated with. The user must have an active membership in this organization."""
-    permissions: Optional[List[str]] = None
+    permissions: list[str] | None = None
     """The permission slugs to assign to the API key. Each permission must be enabled for user API keys."""
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     """The timestamp when the API key should expire. Must be a future timestamp. If omitted, the key does not expire."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateUserApiKey":
+    def from_dict(cls, data: dict[str, Any]) -> CreateUserApiKey:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -37,9 +37,9 @@ class CreateUserApiKey:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUserApiKey", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["name"] = self.name
         result["organization_id"] = self.organization_id
         if self.permissions is not None:

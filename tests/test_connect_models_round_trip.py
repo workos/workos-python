@@ -5,7 +5,6 @@
 import pytest
 
 from tests.generated_helpers import load_fixture
-
 from workos.common.models import ConnectApplicationM2M
 from workos.connect.models import (
     ApplicationCredentialsListItem,

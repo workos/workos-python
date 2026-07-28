@@ -9,6 +9,9 @@
   "auth_methods": [
     "oauth"
   ],
+  "config": {
+    "account_identifier": "acme-prod"
+  },
   "credentials": {
     "type": "custom",
     "client_id": "Iv1.abc123",

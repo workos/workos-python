@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -19,7 +18,7 @@ class DataIntegrationCredentialsCredentialsType(str, Enum):
     @classmethod
     def _missing_(
         cls, value: object
-    ) -> Optional["DataIntegrationCredentialsCredentialsType"]:
+    ) -> DataIntegrationCredentialsCredentialsType | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

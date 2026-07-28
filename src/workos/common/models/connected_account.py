@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
+
 from .connected_account_auth_method import ConnectedAccountAuthMethod
 from .connected_account_state import ConnectedAccountState
 
@@ -18,13 +20,13 @@ class ConnectedAccount:
     """Distinguishes the connected account object."""
     id: str
     """The unique identifier of the connected account."""
-    user_id: Optional[str]
+    user_id: str | None
     """The [User](https://workos.com/docs/reference/authkit/user) identifier associated with this connection."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The [Organization](https://workos.com/docs/reference/organization) identifier associated with this connection, or `null` if not scoped to an organization."""
-    scopes: List[str]
+    scopes: list[str]
     """The OAuth scopes granted for this connection."""
-    state: "ConnectedAccountState"
+    state: ConnectedAccountState
     """The state of the connected account:
 - `connected`: The connection is active and tokens are valid.
 - `needs_reauthorization`: The user needs to reauthorize the connection, typically because required scopes have changed.
@@ -33,13 +35,13 @@ class ConnectedAccount:
     """The timestamp when the connection was created."""
     updated_at: str
     """The timestamp when the connection was last updated."""
-    auth_method: Optional["ConnectedAccountAuthMethod"] = None
-    """The authentication method used for this connection (`oauth` or `api_key`). Defaults to `oauth` if absent."""
-    api_key_last_4: Optional[str] = None
+    auth_method: ConnectedAccountAuthMethod | None = None
+    """The authentication method used for this connection (`oauth`, `api_key`, or `client_credentials`). Defaults to `oauth` if absent."""
+    api_key_last_4: str | None = None
     """The last four characters of the API key, or `null` for OAuth connections."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectedAccount":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectedAccount:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -59,9 +61,9 @@ class ConnectedAccount:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectedAccount", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         if self.user_id is not None:

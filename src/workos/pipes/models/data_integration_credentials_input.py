@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.data_integration_credentials_input_type import (
     DataIntegrationCredentialsInputType,
@@ -15,15 +16,15 @@ from workos.common.models.data_integration_credentials_input_type import (
 class DataIntegrationCredentialsInput:
     """Data Integration Credentials Input model."""
 
-    type: "DataIntegrationCredentialsInputType"
+    type: DataIntegrationCredentialsInputType
     """The credentials type. `custom` uses your own OAuth app credentials; `organization` has each organization supply its own credentials (configured per-organization)."""
-    client_id: Optional[str] = None
+    client_id: str | None = None
     """OAuth client ID for the provider app. Required when `type` is `custom`; omit for `organization`."""
-    client_secret: Optional[str] = None
+    client_secret: str | None = None
     """OAuth client secret for the provider app. Required when `type` is `custom`; omit for `organization`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationCredentialsInput":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationCredentialsInput:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +35,9 @@ class DataIntegrationCredentialsInput:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationCredentialsInput", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         if self.client_id is not None:
             result["client_id"] = self.client_id

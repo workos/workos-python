@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -17,13 +18,13 @@ class SendRadarSmsChallenge:
     """The pending authentication token from a previous authentication attempt that triggered the Radar challenge."""
     phone_number: str
     """The phone number to send the SMS verification code to."""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """The IP address of the user's request."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """The user agent string from the user's request."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SendRadarSmsChallenge":
+    def from_dict(cls, data: dict[str, Any]) -> SendRadarSmsChallenge:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -36,9 +37,9 @@ class SendRadarSmsChallenge:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SendRadarSmsChallenge", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         result["pending_authentication_token"] = self.pending_authentication_token
         result["phone_number"] = self.phone_number

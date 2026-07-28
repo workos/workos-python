@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integration_credentials_response_error import (
+    DataIntegrationCredentialsResponseError,
+)
 
 from .data_integration_credentials_response_credential import (
     DataIntegrationCredentialsResponseCredential,
-)
-from workos.common.models.data_integration_credentials_response_error import (
-    DataIntegrationCredentialsResponseError,
 )
 
 
@@ -20,23 +20,23 @@ from workos.common.models.data_integration_credentials_response_error import (
 class DataIntegrationCredentialsResponse:
     """Data Integration Credentials Response model."""
 
-    active: Optional[Literal[True]] = None
+    active: Literal[True] | None = None
     """Indicates credentials are available."""
-    credential: Optional["DataIntegrationCredentialsResponseCredential"] = None
+    credential: DataIntegrationCredentialsResponseCredential | None = None
     """The credential object containing the vended secret."""
-    error: Optional["DataIntegrationCredentialsResponseError"] = None
+    error: DataIntegrationCredentialsResponseError | None = None
     """The reason credentials are unavailable. Additional values may be added in the future; handle unknown values gracefully.
 - `"not_installed"`: The user does not have the integration installed.
 - `"needs_reauthorization"`: The user needs to reauthorize the integration."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationCredentialsResponse":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationCredentialsResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 active=data.get("active"),
                 credential=DataIntegrationCredentialsResponseCredential.from_dict(
-                    cast(Dict[str, Any], _v_credential)
+                    cast(dict[str, Any], _v_credential)
                 )
                 if (_v_credential := data.get("credential")) is not None
                 else None,
@@ -47,9 +47,9 @@ class DataIntegrationCredentialsResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationCredentialsResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.active is not None:
             result["active"] = self.active
         if self.credential is not None:

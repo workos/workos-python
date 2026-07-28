@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.data_integration_custom_provider_authenticate_via import (
     DataIntegrationCustomProviderAuthenticateVia,
@@ -17,11 +18,11 @@ class DataIntegrationCustomProvider:
 
     name: str
     """A descriptive name for the custom provider."""
-    authorization_url: Optional[str]
+    authorization_url: str | None
     """The provider's OAuth authorization endpoint."""
-    token_url: Optional[str]
+    token_url: str | None
     """The provider's OAuth token endpoint."""
-    refresh_token_url: Optional[str]
+    refresh_token_url: str | None
     """The endpoint used to refresh tokens, if different from the token endpoint."""
     pkce_enabled: bool
     """Whether PKCE is used during the authorization code flow."""
@@ -31,15 +32,15 @@ class DataIntegrationCustomProvider:
     """Whether at least one scope must be selected when connecting an account."""
     client_secret_required: bool
     """Whether a client secret is required for this provider."""
-    additional_authorization_parameters: Dict[str, str]
+    additional_authorization_parameters: dict[str, str]
     """Additional static query parameters appended to the authorization request."""
     token_body_content_type: str
     """The Content-Type used when exchanging the token request."""
-    authenticate_via: "DataIntegrationCustomProviderAuthenticateVia"
+    authenticate_via: DataIntegrationCustomProviderAuthenticateVia
     """How client credentials are sent when exchanging authorization codes and refreshing tokens."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationCustomProvider":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationCustomProvider:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -62,9 +63,9 @@ class DataIntegrationCustomProvider:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationCustomProvider", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["name"] = self.name
         if self.authorization_url is not None:
             result["authorization_url"] = self.authorization_url

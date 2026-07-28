@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -16,9 +15,7 @@ class CustomProviderDefinitionAuthenticateVia(str, Enum):
     BASIC_AUTH_HEADER = "basic_auth_header"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["CustomProviderDefinitionAuthenticateVia"]:
+    def _missing_(cls, value: object) -> CustomProviderDefinitionAuthenticateVia | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

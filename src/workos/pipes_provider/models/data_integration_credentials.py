@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.data_integration_credentials_credentials_type import (
     DataIntegrationCredentialsCredentialsType,
@@ -15,19 +16,19 @@ from workos.common.models.data_integration_credentials_credentials_type import (
 class DataIntegrationCredentials:
     """Organization-managed OAuth credential configuration. Present only for integrations whose credentials are supplied by the organization; absent otherwise."""
 
-    credentials_type: "DataIntegrationCredentialsCredentialsType"
+    credentials_type: DataIntegrationCredentialsCredentialsType
     """The credentials type for this integration (e.g., `shared`, `custom`, or `organization`)."""
     has_credentials: bool
     """Whether the organization has supplied OAuth credentials for this integration."""
-    client_id: Optional[str]
+    client_id: str | None
     """The OAuth client ID supplied by the organization, or `null` when none is configured."""
-    client_secret_last_four: Optional[str]
+    client_secret_last_four: str | None
     """The last four characters of the organization-supplied OAuth client secret, or `null` when none is configured."""
     redirect_uri: str
     """The redirect URI to register with the provider when configuring the organization-managed OAuth application."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationCredentials":
+    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationCredentials:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,9 +43,9 @@ class DataIntegrationCredentials:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationCredentials", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["credentials_type"] = (
             self.credentials_type.value
             if isinstance(self.credentials_type, Enum)

@@ -5,9 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.connected_account_input_state import (
     ConnectedAccountInputState,
 )
@@ -17,19 +17,19 @@ from workos.common.models.connected_account_input_state import (
 class ConnectedAccountInput:
     """Connected Account Input model."""
 
-    access_token: Optional[str] = None
+    access_token: str | None = None
     """The OAuth access token for the connected account."""
-    refresh_token: Optional[str] = None
+    refresh_token: str | None = None
     """The OAuth refresh token for the connected account."""
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     """The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes granted for this connection."""
-    state: Optional["ConnectedAccountInputState"] = None
+    state: ConnectedAccountInputState | None = None
     """Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectedAccountInput":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectedAccountInput:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -46,9 +46,9 @@ class ConnectedAccountInput:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectedAccountInput", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.access_token is not None:
             result["access_token"] = self.access_token
         if self.refresh_token is not None:

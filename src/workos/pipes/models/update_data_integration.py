@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .api_key_installation import ApiKeyInstallation
@@ -16,21 +16,21 @@ from .update_custom_provider_definition import UpdateCustomProviderDefinition
 class UpdateDataIntegration:
     """Update Data Integration model."""
 
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the Data Integration."""
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     """Whether the Data Integration is enabled."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes."""
-    credentials: Optional["DataIntegrationCredentialsInput"] = None
+    credentials: DataIntegrationCredentialsInput | None = None
     """New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`."""
-    api_key: Optional["ApiKeyInstallation"] = None
+    api_key: ApiKeyInstallation | None = None
     """An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`)."""
-    custom_provider: Optional["UpdateCustomProviderDefinition"] = None
+    custom_provider: UpdateCustomProviderDefinition | None = None
     """Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateDataIntegration":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateDataIntegration:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,15 +38,15 @@ class UpdateDataIntegration:
                 enabled=data.get("enabled"),
                 scopes=data.get("scopes"),
                 credentials=DataIntegrationCredentialsInput.from_dict(
-                    cast(Dict[str, Any], _v_credentials)
+                    cast(dict[str, Any], _v_credentials)
                 )
                 if (_v_credentials := data.get("credentials")) is not None
                 else None,
-                api_key=ApiKeyInstallation.from_dict(cast(Dict[str, Any], _v_api_key))
+                api_key=ApiKeyInstallation.from_dict(cast(dict[str, Any], _v_api_key))
                 if (_v_api_key := data.get("api_key")) is not None
                 else None,
                 custom_provider=UpdateCustomProviderDefinition.from_dict(
-                    cast(Dict[str, Any], _v_custom_provider)
+                    cast(dict[str, Any], _v_custom_provider)
                 )
                 if (_v_custom_provider := data.get("custom_provider")) is not None
                 else None,
@@ -54,9 +54,9 @@ class UpdateDataIntegration:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateDataIntegration", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.description is not None:
             result["description"] = self.description
         else:

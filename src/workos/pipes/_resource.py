@@ -2,12 +2,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from workos.common.models.connected_account import ConnectedAccount
+from workos.common.models.connected_account_input_state import (
+    ConnectedAccountInputState,
+)
+from workos.common.models.create_data_integration_auth_methods import (
+    CreateDataIntegrationAuthMethods,
+)
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     ApiKeyInstallation,
     CustomProviderDefinition,
@@ -19,31 +29,22 @@ from .models import (
     DataIntegrationsListResponse,
     UpdateCustomProviderDefinition,
 )
-from workos.common.models.connected_account import ConnectedAccount
-from workos.common.models.connected_account_input_state import (
-    ConnectedAccountInputState,
-)
-from workos.common.models.create_data_integration_auth_methods import (
-    CreateDataIntegrationAuthMethods,
-)
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class Pipes:
     """Pipes API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_data_integrations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[DataIntegration]:
         """List data integrations
 
@@ -86,16 +87,15 @@ class Pipes:
         self,
         *,
         provider: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        auth_methods: Optional[
-            List[Union[CreateDataIntegrationAuthMethods, str]]
-        ] = None,
-        credentials: Optional[DataIntegrationCredentialsInput] = None,
-        api_key: Optional[ApiKeyInstallation] = None,
-        custom_provider: Optional[CustomProviderDefinition] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        auth_methods: list[CreateDataIntegrationAuthMethods | str] | None = None,
+        config: dict[str, str] | None = None,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: CustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Create a data integration
 
@@ -107,6 +107,7 @@ class Pipes:
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
             auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request).
+            config: Provider-specific config values (e.g. a Snowflake `account_identifier`), keyed by the config field. Only fields the built-in provider declares are accepted.
             credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
@@ -125,12 +126,13 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "provider": provider,
                 "enabled": enabled,
                 "auth_methods": auth_methods,
+                "config": config,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -157,7 +159,7 @@ class Pipes:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Get a data integration
 
@@ -187,13 +189,13 @@ class Pipes:
         self,
         slug: str,
         *,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        credentials: Optional[DataIntegrationCredentialsInput] = None,
-        api_key: Optional[ApiKeyInstallation] = None,
-        custom_provider: Optional[UpdateCustomProviderDefinition] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: UpdateCustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Update a data integration
 
@@ -221,7 +223,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "enabled": enabled,
@@ -251,7 +253,7 @@ class Pipes:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a data integration
 
@@ -279,8 +281,8 @@ class Pipes:
         *,
         user_id: str,
         secret: str,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert an API key for a connected account
 
@@ -305,7 +307,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -327,9 +329,10 @@ class Pipes:
         slug: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
-        return_to: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        return_to: str | None = None,
+        config: dict[str, str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationAuthorizeUrlResponse:
         """Get authorization URL
 
@@ -340,6 +343,7 @@ class Pipes:
             user_id: The ID of the user to authorize.
             organization_id: An organization ID to scope the authorization to a specific organization.
             return_to: The URL to redirect the user to after authorization.
+            config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -353,12 +357,13 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
                 "return_to": return_to,
+                "config": config,
             }.items()
             if v is not None
         }
@@ -375,8 +380,8 @@ class Pipes:
         slug: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
 
@@ -398,7 +403,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -419,8 +424,8 @@ class Pipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
 
@@ -443,7 +448,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "user_id": user_id,
         }
         if not isinstance(organization_id, NotGiven):
@@ -461,8 +466,8 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Get a connected account
 
@@ -483,7 +488,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -509,13 +514,13 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
-        access_token: Optional[str] = None,
-        refresh_token: Optional[str] = None,
-        expires_at: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountInputState, str]] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_at: str | None = None,
+        scopes: list[str] | None = None,
+        state: ConnectedAccountInputState | str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Import a connected account
 
@@ -543,7 +548,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "access_token": access_token,
@@ -554,7 +559,7 @@ class Pipes:
             }.items()
             if v is not None
         }
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -581,13 +586,13 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
-        access_token: Optional[str] = None,
-        refresh_token: Optional[str] = None,
-        expires_at: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountInputState, str]] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_at: str | None = None,
+        scopes: list[str] | None = None,
+        state: ConnectedAccountInputState | str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Update a connected account
 
@@ -613,7 +618,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "access_token": access_token,
@@ -624,7 +629,7 @@ class Pipes:
             }.items()
             if v is not None
         }
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -651,8 +656,8 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a connected account
 
@@ -670,7 +675,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -694,8 +699,8 @@ class Pipes:
         self,
         user_id: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationsListResponse:
         """List providers for a user
 
@@ -715,7 +720,7 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -734,17 +739,17 @@ class Pipes:
 class AsyncPipes:
     """Pipes API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_data_integrations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[DataIntegration]:
         """List data integrations
 
@@ -787,16 +792,15 @@ class AsyncPipes:
         self,
         *,
         provider: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        auth_methods: Optional[
-            List[Union[CreateDataIntegrationAuthMethods, str]]
-        ] = None,
-        credentials: Optional[DataIntegrationCredentialsInput] = None,
-        api_key: Optional[ApiKeyInstallation] = None,
-        custom_provider: Optional[CustomProviderDefinition] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        auth_methods: list[CreateDataIntegrationAuthMethods | str] | None = None,
+        config: dict[str, str] | None = None,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: CustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Create a data integration
 
@@ -808,6 +812,7 @@ class AsyncPipes:
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
             auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request).
+            config: Provider-specific config values (e.g. a Snowflake `account_identifier`), keyed by the config field. Only fields the built-in provider declares are accepted.
             credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
@@ -826,12 +831,13 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "provider": provider,
                 "enabled": enabled,
                 "auth_methods": auth_methods,
+                "config": config,
                 "credentials": credentials.to_dict()
                 if credentials is not None
                 else None,
@@ -858,7 +864,7 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Get a data integration
 
@@ -888,13 +894,13 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        enabled: Optional[bool] = None,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        credentials: Optional[DataIntegrationCredentialsInput] = None,
-        api_key: Optional[ApiKeyInstallation] = None,
-        custom_provider: Optional[UpdateCustomProviderDefinition] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: UpdateCustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegration:
         """Update a data integration
 
@@ -922,7 +928,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "enabled": enabled,
@@ -952,7 +958,7 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a data integration
 
@@ -980,8 +986,8 @@ class AsyncPipes:
         *,
         user_id: str,
         secret: str,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert an API key for a connected account
 
@@ -1006,7 +1012,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -1028,9 +1034,10 @@ class AsyncPipes:
         slug: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
-        return_to: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        return_to: str | None = None,
+        config: dict[str, str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationAuthorizeUrlResponse:
         """Get authorization URL
 
@@ -1041,6 +1048,7 @@ class AsyncPipes:
             user_id: The ID of the user to authorize.
             organization_id: An organization ID to scope the authorization to a specific organization.
             return_to: The URL to redirect the user to after authorization.
+            config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1054,12 +1062,13 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
                 "return_to": return_to,
+                "config": config,
             }.items()
             if v is not None
         }
@@ -1076,8 +1085,8 @@ class AsyncPipes:
         slug: str,
         *,
         user_id: str,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
 
@@ -1099,7 +1108,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "user_id": user_id,
@@ -1120,8 +1129,8 @@ class AsyncPipes:
         provider: str,
         *,
         user_id: str,
-        organization_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
 
@@ -1144,7 +1153,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "user_id": user_id,
         }
         if not isinstance(organization_id, NotGiven):
@@ -1162,8 +1171,8 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Get a connected account
 
@@ -1184,7 +1193,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -1210,13 +1219,13 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
-        access_token: Optional[str] = None,
-        refresh_token: Optional[str] = None,
-        expires_at: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountInputState, str]] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_at: str | None = None,
+        scopes: list[str] | None = None,
+        state: ConnectedAccountInputState | str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Import a connected account
 
@@ -1244,7 +1253,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "access_token": access_token,
@@ -1255,7 +1264,7 @@ class AsyncPipes:
             }.items()
             if v is not None
         }
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -1282,13 +1291,13 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
-        access_token: Optional[str] = None,
-        refresh_token: Optional[str] = None,
-        expires_at: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        state: Optional[Union[ConnectedAccountInputState, str]] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_at: str | None = None,
+        scopes: list[str] | None = None,
+        state: ConnectedAccountInputState | str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Update a connected account
 
@@ -1314,7 +1323,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "access_token": access_token,
@@ -1325,7 +1334,7 @@ class AsyncPipes:
             }.items()
             if v is not None
         }
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -1352,8 +1361,8 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a connected account
 
@@ -1371,7 +1380,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -1395,8 +1404,8 @@ class AsyncPipes:
         self,
         user_id: str,
         *,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> DataIntegrationsListResponse:
         """List providers for a user
 
@@ -1416,7 +1425,7 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,

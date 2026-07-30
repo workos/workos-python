@@ -1,5 +1,36 @@
 # Changelog
 
+## [10.1.0](https://github.com/workos/workos-python/compare/v10.0.1...v10.1.0) (2026-07-28)
+
+### Miscellaneous Chores
+
+* release 10.1.0 ([1889026](https://github.com/workos/workos-python/commit/1889026b2ed71a75f4036a54ac20dcc69ee77bfd))
+
+* [#702](https://github.com/workos/workos-python/pull/702) feat(generated)!: regenerate from spec (2 changes)
+
+  **Features**
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added `config` to `DataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Added `client_credentials` to `DataIntegrationAuthMethods`
+    * Added `client_credentials` to `DataIntegrationsListResponseDataAuthMethods`
+    * Added `client_credentials` to `DataIntegrationsListResponseDataConnectedAccountAuthMethod`
+    * Added `config` to Pipes models
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added `client_credentials` to `ConnectedAccountAuthMethod`
+
+  **Fixes**
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed errors for endpoint `POST /user_management/invitations`
+    * Changed errors for endpoint `POST /user_management/invitations/{id}/resend`
+    * Changed errors for endpoint `POST /user_management/magic_auth`
+    * Changed errors for endpoint `POST /user_management/authenticate`
+
+* [#704](https://github.com/workos/workos-python/pull/704) feat(generated)!: regenerate from spec (1 change)
+
+  **Fixes**
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Removed `callback_endpoint` from `Connection`
+
 ## [10.0.1](https://github.com/workos/workos-python/compare/v10.0.0...v10.0.1) (2026-07-27)
 
 

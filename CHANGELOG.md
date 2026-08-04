@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.1.1](https://github.com/workos/workos-python/compare/v10.1.0...v10.1.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* bump cryptography to ~=50.0 for CVE-2026-69247 ([#707](https://github.com/workos/workos-python/issues/707)) ([d82226c](https://github.com/workos/workos-python/commit/d82226cca2cc5a5286a773c68a8c86ac415938c4))
+
 ## [10.1.0](https://github.com/workos/workos-python/compare/v10.0.1...v10.1.0) (2026-07-28)
 
 ### Miscellaneous Chores

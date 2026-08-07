@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -14,7 +14,7 @@ from .models import ClientApiTokenResponse
 class ClientApi:
     """Client Api API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def create_token(
@@ -22,7 +22,7 @@ class ClientApi:
         *,
         organization_id: str,
         user_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ClientApiTokenResponse:
         """Generate a Client API token
 
@@ -44,7 +44,7 @@ class ClientApi:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_id": organization_id,
             "user_id": user_id,
         }
@@ -60,7 +60,7 @@ class ClientApi:
 class AsyncClientApi:
     """Client Api API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def create_token(
@@ -68,7 +68,7 @@ class AsyncClientApi:
         *,
         organization_id: str,
         user_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ClientApiTokenResponse:
         """Generate a Client API token
 
@@ -90,7 +90,7 @@ class AsyncClientApi:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_id": organization_id,
             "user_id": user_id,
         }

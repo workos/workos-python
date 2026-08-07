@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Dict, Union, cast
-from workos._types import _raise_deserialize_error
+from typing import Any, ClassVar, Union, cast
 
+from workos._types import _raise_deserialize_error
 from workos.common.models.action_authentication_denied import ActionAuthenticationDenied
 from workos.common.models.action_user_registration_denied import (
     ActionUserRegistrationDenied,
@@ -25,6 +25,7 @@ from workos.common.models.agent_registration_expired import AgentRegistrationExp
 from workos.common.models.agent_registration_organization_switched import (
     AgentRegistrationOrganizationSwitched,
 )
+from workos.common.models.agent_registration_refreshed import AgentRegistrationRefreshed
 from workos.common.models.agent_registration_revoked import AgentRegistrationRevoked
 from workos.common.models.api_key_created import ApiKeyCreated
 from workos.common.models.api_key_revoked import ApiKeyRevoked
@@ -176,15 +177,15 @@ from workos.common.models.waitlist_user_denied import WaitlistUserDenied
 class EventSchemaUnknown:
     """Unknown variant of EventSchema not yet recognized by this SDK version."""
 
-    raw_data: Dict[str, Any]
+    raw_data: dict[str, Any]
     """The raw payload, preserved so callers can still inspect the data."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaUnknown":
+    def from_dict(cls, data: dict[str, Any]) -> EventSchemaUnknown:
         """Wrap raw data in an unknown variant."""
         return cls(raw_data=data)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return the original raw data."""
         return dict(self.raw_data)
 
@@ -199,6 +200,7 @@ EventSchemaVariant = Union[
     AgentRegistrationDeleted,
     AgentRegistrationExpired,
     AgentRegistrationOrganizationSwitched,
+    AgentRegistrationRefreshed,
     AgentRegistrationRevoked,
     ApiKeyCreated,
     ApiKeyRevoked,
@@ -307,7 +309,7 @@ EventSchemaVariant = Union[
 class EventSchema:
     """An event emitted by WorkOS."""
 
-    _DISPATCH: ClassVar[Dict[str, type]] = {
+    _DISPATCH: ClassVar[dict[str, type]] = {
         "action.authentication.denied": ActionAuthenticationDenied,
         "action.user_registration.denied": ActionUserRegistrationDenied,
         "agent.registration.claim.attempt.created": AgentRegistrationClaimAttemptCreated,
@@ -317,6 +319,7 @@ class EventSchema:
         "agent.registration.deleted": AgentRegistrationDeleted,
         "agent.registration.expired": AgentRegistrationExpired,
         "agent.registration.organization.switched": AgentRegistrationOrganizationSwitched,
+        "agent.registration.refreshed": AgentRegistrationRefreshed,
         "agent.registration.revoked": AgentRegistrationRevoked,
         "api_key.created": ApiKeyCreated,
         "api_key.revoked": ApiKeyRevoked,
@@ -421,7 +424,7 @@ class EventSchema:
     }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaVariant":
+    def from_dict(cls, data: dict[str, Any]) -> EventSchemaVariant:
         """Deserialize from a dictionary, dispatching to the correct variant."""
         if "event" not in data:
             _raise_deserialize_error(

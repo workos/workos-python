@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .flag_rule_updated_context_previous_attribute_context import (
@@ -19,25 +19,23 @@ from .flag_rule_updated_context_previous_attribute_data import (
 class FlagRuleUpdatedContextPreviousAttribute:
     """Attributes that changed from their previous values."""
 
-    data: Optional["FlagRuleUpdatedContextPreviousAttributeData"] = None
+    data: FlagRuleUpdatedContextPreviousAttributeData | None = None
     """The previous data attributes of the flag."""
-    context: Optional["FlagRuleUpdatedContextPreviousAttributeContext"] = None
+    context: FlagRuleUpdatedContextPreviousAttributeContext | None = None
     """The previous context attributes of the flag rule."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextPreviousAttribute":
+    def from_dict(cls, data: dict[str, Any]) -> FlagRuleUpdatedContextPreviousAttribute:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 data=FlagRuleUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v_data)
+                    cast(dict[str, Any], _v_data)
                 )
                 if (_v_data := data.get("data")) is not None
                 else None,
                 context=FlagRuleUpdatedContextPreviousAttributeContext.from_dict(
-                    cast(Dict[str, Any], _v_context)
+                    cast(dict[str, Any], _v_context)
                 )
                 if (_v_context := data.get("context")) is not None
                 else None,
@@ -45,9 +43,9 @@ class FlagRuleUpdatedContextPreviousAttribute:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextPreviousAttribute", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.data is not None:
             result["data"] = self.data.to_dict()
         if self.context is not None:

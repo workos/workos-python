@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,17 +16,17 @@ class UserObject:
     """Your application's user identifier, which will be stored as an [`external_id`](https://workos.com/docs/authkit/metadata/external-identifiers). Used for upserting and deduplication."""
     email: str
     """The user's email address."""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """The user's first name."""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """The user's last name."""
-    name: Optional[str] = None
+    name: str | None = None
     """The user's full name."""
-    metadata: Optional[Dict[str, str]] = None
+    metadata: dict[str, str] | None = None
     """A set of key-value pairs to attach to the user."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserObject":
+    def from_dict(cls, data: dict[str, Any]) -> UserObject:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,9 +40,9 @@ class UserObject:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserObject", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["email"] = self.email
         if self.first_name is not None:

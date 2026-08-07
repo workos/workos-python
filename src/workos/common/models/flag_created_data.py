@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .flag_created_data_owner import FlagCreatedDataOwner
 
@@ -25,11 +24,11 @@ class FlagCreatedData:
     """A unique key to reference the Feature Flag."""
     name: str
     """A descriptive name for the Feature Flag."""
-    description: Optional[str]
+    description: str | None
     """A description for the Feature Flag."""
-    owner: Optional["FlagCreatedDataOwner"]
+    owner: FlagCreatedDataOwner | None
     """The owner of the Feature Flag."""
-    tags: List[str]
+    tags: list[str]
     """Labels assigned to the Feature Flag for categorizing and filtering."""
     enabled: bool
     """Specifies whether the Feature Flag is active for the current environment."""
@@ -41,7 +40,7 @@ class FlagCreatedData:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> FlagCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -51,7 +50,7 @@ class FlagCreatedData:
                 slug=data["slug"],
                 name=data["name"],
                 description=data["description"],
-                owner=FlagCreatedDataOwner.from_dict(cast(Dict[str, Any], _v_owner))
+                owner=FlagCreatedDataOwner.from_dict(cast(dict[str, Any], _v_owner))
                 if (_v_owner := data["owner"]) is not None
                 else None,
                 tags=data["tags"],
@@ -63,9 +62,9 @@ class FlagCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["environment_id"] = self.environment_id

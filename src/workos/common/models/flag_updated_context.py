@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .flag_updated_context_actor import FlagUpdatedContextActor
@@ -17,22 +17,22 @@ class FlagUpdatedContext:
 
     client_id: str
     """The client ID associated with the flag event."""
-    actor: "FlagUpdatedContextActor"
+    actor: FlagUpdatedContextActor
     """The actor who performed the action."""
-    previous_attributes: Optional["FlagUpdatedContextPreviousAttribute"] = None
+    previous_attributes: FlagUpdatedContextPreviousAttribute | None = None
     """Attributes that changed from their previous values."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagUpdatedContext":
+    def from_dict(cls, data: dict[str, Any]) -> FlagUpdatedContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 client_id=data["client_id"],
                 actor=FlagUpdatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
+                    cast(dict[str, Any], data["actor"])
                 ),
                 previous_attributes=FlagUpdatedContextPreviousAttribute.from_dict(
-                    cast(Dict[str, Any], _v_previous_attributes)
+                    cast(dict[str, Any], _v_previous_attributes)
                 )
                 if (_v_previous_attributes := data.get("previous_attributes"))
                 is not None
@@ -41,9 +41,9 @@ class FlagUpdatedContext:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagUpdatedContext", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["actor"] = self.actor.to_dict()
         if self.previous_attributes is not None:

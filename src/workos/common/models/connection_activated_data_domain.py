@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,7 +20,7 @@ class ConnectionActivatedDataDomain:
     """The domain value."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionActivatedDataDomain":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectionActivatedDataDomain:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class ConnectionActivatedDataDomain:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectionActivatedDataDomain", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["domain"] = self.domain

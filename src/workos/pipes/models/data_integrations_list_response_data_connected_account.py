@@ -44,6 +44,12 @@ class DataIntegrationsListResponseDataConnectedAccount:
     """The authentication method used for this connection (`oauth`, `api_key`, or `client_credentials`). Defaults to `oauth` if absent."""
     api_key_last_4: str | None = None
     """The last four characters of the API key, or `null` for OAuth connections."""
+    client_id: str | None = None
+    """The client ID supplied for this connection. Only present when `auth_method` is `client_credentials`."""
+    client_secret_last_4: str | None = None
+    """The last four characters of the client secret supplied for this connection, or `null` when it can't be read. Only present when `auth_method` is `client_credentials`."""
+    config: dict[str, str] | None = None
+    """The connection-level configuration values stored for this connection — the fields the provider declares at `installation` scope, excluding any it declares as secret. Only present when `auth_method` is `client_credentials`."""
     userland_user_id: str | None = None
     """Use `user_id` instead.
 
@@ -72,6 +78,9 @@ class DataIntegrationsListResponseDataConnectedAccount:
                 if (_v_auth_method := data.get("auth_method")) is not None
                 else None,
                 api_key_last_4=data.get("api_key_last_4"),
+                client_id=data.get("client_id"),
+                client_secret_last_4=data.get("client_secret_last_4"),
+                config=data.get("config"),
                 userland_user_id=data.get("userlandUserId"),
             )
         except (KeyError, ValueError) as e:
@@ -108,6 +117,16 @@ class DataIntegrationsListResponseDataConnectedAccount:
             result["api_key_last_4"] = self.api_key_last_4
         else:
             result["api_key_last_4"] = None
+        if self.client_id is not None:
+            result["client_id"] = self.client_id
+        else:
+            result["client_id"] = None
+        if self.client_secret_last_4 is not None:
+            result["client_secret_last_4"] = self.client_secret_last_4
+        else:
+            result["client_secret_last_4"] = None
+        if self.config is not None:
+            result["config"] = self.config
         if self.userland_user_id is not None:
             result["userlandUserId"] = self.userland_user_id
         else:

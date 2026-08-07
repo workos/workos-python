@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
+from workos.common.models.claim_view_response_status import ClaimViewResponseStatus
 
 from .claim_view_response_organization import ClaimViewResponseOrganization
-from workos.common.models.claim_view_response_status import ClaimViewResponseStatus
 
 
 @dataclass(slots=True)
@@ -18,15 +18,15 @@ class ClaimViewResponse:
 
     id: str
     """The agent registration ID."""
-    status: "ClaimViewResponseStatus"
+    status: ClaimViewResponseStatus
     """Current status of the agent registration."""
     user_code: str
     """The user code the agent needs to complete the claim."""
-    organizations: List["ClaimViewResponseOrganization"]
+    organizations: list[ClaimViewResponseOrganization]
     """Organizations the user belongs to, offered as placement choices."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ClaimViewResponse":
+    def from_dict(cls, data: dict[str, Any]) -> ClaimViewResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,16 +34,16 @@ class ClaimViewResponse:
                 status=ClaimViewResponseStatus(data["status"]),
                 user_code=data["user_code"],
                 organizations=[
-                    ClaimViewResponseOrganization.from_dict(cast(Dict[str, Any], item))
+                    ClaimViewResponseOrganization.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["organizations"])
                 ],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ClaimViewResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["status"] = (
             self.status.value if isinstance(self.status, Enum) else self.status

@@ -26,6 +26,8 @@ from workos.common.models import (
     AgentRegistrationExpiredData,
     AgentRegistrationOrganizationSwitched,
     AgentRegistrationOrganizationSwitchedData,
+    AgentRegistrationRefreshed,
+    AgentRegistrationRefreshedData,
     AgentRegistrationRevoked,
     AgentRegistrationRevokedData,
     ApiKeyCreated,
@@ -742,12 +744,14 @@ class TestModelRoundTrip:
             "email": "marcelina.davis@example.com",
             "state": "pending",
             "approved_at": None,
+            "waitlist_id": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = WaitlistUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["approved_at"] is None
+        assert serialized["waitlist_id"] is None
 
     def test_waitlist_user_round_trips_unknown_enum_values(self):
         data = {
@@ -756,6 +760,7 @@ class TestModelRoundTrip:
             "email": "marcelina.davis@example.com",
             "state": "unexpected_waitlist_user_state",
             "approved_at": None,
+            "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -1610,6 +1615,58 @@ class TestModelRoundTrip:
         assert serialized["agent_registration_id"] == data["agent_registration_id"]
         assert serialized["from_organization_id"] == data["from_organization_id"]
         assert serialized["to_organization_id"] == data["to_organization_id"]
+
+    def test_agent_registration_refreshed_round_trip(self):
+        data = load_fixture("agent_registration_refreshed.json")
+        instance = AgentRegistrationRefreshed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentRegistrationRefreshed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_registration_refreshed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.registration.refreshed",
+            "data": {"agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentRegistrationRefreshed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_registration_refreshed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.registration.refreshed",
+            "data": {"agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentRegistrationRefreshed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_registration_refreshed_data_round_trip(self):
+        data = load_fixture("agent_registration_refreshed_data.json")
+        instance = AgentRegistrationRefreshedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentRegistrationRefreshedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_registration_refreshed_data_minimal_payload(self):
+        data = {"agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = AgentRegistrationRefreshedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["agent_registration_id"] == data["agent_registration_id"]
 
     def test_agent_registration_revoked_round_trip(self):
         data = load_fixture("agent_registration_revoked.json")
@@ -13522,6 +13579,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13546,6 +13604,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13574,6 +13633,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13598,6 +13658,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13626,6 +13687,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13650,6 +13712,7 @@ class TestModelRoundTrip:
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },

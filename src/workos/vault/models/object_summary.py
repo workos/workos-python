@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -17,11 +17,11 @@ class ObjectSummary:
     """Unique identifier of the object."""
     name: str
     """Unique name of the object."""
-    updated_at: Optional[datetime] = None
+    updated_at: datetime | None = None
     """Timestamp of the last update."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ObjectSummary":
+    def from_dict(cls, data: dict[str, Any]) -> ObjectSummary:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +34,9 @@ class ObjectSummary:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ObjectSummary", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["name"] = self.name
         if self.updated_at is not None:

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .object_metadata import ObjectMetadata
@@ -16,20 +16,20 @@ class VaultObject:
 
     id: str
     """Unique identifier of the object."""
-    metadata: "ObjectMetadata"
+    metadata: ObjectMetadata
     name: str
     """Unique name of the object."""
     value: str
     """Decrypted plaintext value."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "VaultObject":
+    def from_dict(cls, data: dict[str, Any]) -> VaultObject:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 id=data["id"],
                 metadata=ObjectMetadata.from_dict(
-                    cast(Dict[str, Any], data["metadata"])
+                    cast(dict[str, Any], data["metadata"])
                 ),
                 name=data["name"],
                 value=data["value"],
@@ -37,9 +37,9 @@ class VaultObject:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("VaultObject", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["metadata"] = self.metadata.to_dict()
         result["name"] = self.name

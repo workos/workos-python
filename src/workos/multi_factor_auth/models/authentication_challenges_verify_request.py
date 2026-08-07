@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,7 +16,7 @@ class AuthenticationChallengesVerifyRequest:
     """The one-time code to verify."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationChallengesVerifyRequest":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationChallengesVerifyRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class AuthenticationChallengesVerifyRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationChallengesVerifyRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["code"] = self.code
         return result

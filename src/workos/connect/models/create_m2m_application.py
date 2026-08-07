@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -17,13 +18,13 @@ class CreateM2MApplication:
     """The type of application to create."""
     organization_id: str
     """The organization ID this application belongs to."""
-    description: Optional[str] = None
+    description: str | None = None
     """A description for the application."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes granted to the application."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateM2MApplication":
+    def from_dict(cls, data: dict[str, Any]) -> CreateM2MApplication:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -36,9 +37,9 @@ class CreateM2MApplication:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateM2MApplication", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["name"] = self.name
         result["application_type"] = self.application_type
         result["organization_id"] = self.organization_id

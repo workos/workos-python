@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,11 +14,11 @@ class UpdateObjectRequest:
 
     value: str
     """New plaintext value."""
-    version_check: Optional[str] = None
+    version_check: str | None = None
     """ID of the expected current version for optimistic locking."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateObjectRequest":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateObjectRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class UpdateObjectRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateObjectRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["value"] = self.value
         if self.version_check is not None:
             result["version_check"] = self.version_check

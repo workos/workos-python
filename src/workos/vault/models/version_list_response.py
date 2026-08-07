@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List
-from workos._types import _raise_deserialize_error
+from typing import Any, cast
 
+from workos._types import _raise_deserialize_error
 from workos.common.models.list_metadata import ListMetadata
+
 from .object_version import ObjectVersion
 
 
@@ -15,29 +15,29 @@ from .object_version import ObjectVersion
 class VersionListResponse:
     """Version List Response model."""
 
-    data: List["ObjectVersion"]
+    data: list[ObjectVersion]
     """List of object versions."""
-    list_metadata: "ListMetadata"
+    list_metadata: ListMetadata
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "VersionListResponse":
+    def from_dict(cls, data: dict[str, Any]) -> VersionListResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 data=[
-                    ObjectVersion.from_dict(cast(Dict[str, Any], item))
+                    ObjectVersion.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["data"])
                 ],
                 list_metadata=ListMetadata.from_dict(
-                    cast(Dict[str, Any], data["list_metadata"])
+                    cast(dict[str, Any], data["list_metadata"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("VersionListResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["data"] = [item.to_dict() for item in self.data]
         result["list_metadata"] = self.list_metadata.to_dict()
         return result

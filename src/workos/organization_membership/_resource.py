@@ -2,18 +2,23 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import OrganizationMembership, UserOrganizationMembership
-from workos.common.models.group import Group
-from .models import UserManagementOrganizationMembershipStatuses
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 from dataclasses import dataclass
+
+from workos.common.models.group import Group
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import RequestOptions, enum_value
+from .models import (
+    OrganizationMembership,
+    UserManagementOrganizationMembershipStatuses,
+    UserOrganizationMembership,
+)
 
 
 @dataclass
@@ -27,28 +32,27 @@ class RoleSingle:
 class RoleMultiple:
     """Identify role multiple."""
 
-    role_slugs: List[str]
+    role_slugs: list[str]
 
 
 class OrganizationMembershipService:
     """Organization Membership Service API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_organization_memberships(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        statuses: list[UserManagementOrganizationMembershipStatuses | str]
+        | None = None,
+        user_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserOrganizationMembership]:
         """List organization memberships
 
@@ -103,8 +107,8 @@ class OrganizationMembershipService:
         *,
         user_id: str,
         organization_id: str,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
+        role: RoleSingle | RoleMultiple | None = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationMembership:
         """Create an organization membership
 
@@ -129,7 +133,7 @@ class OrganizationMembershipService:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "user_id": user_id,
             "organization_id": organization_id,
         }
@@ -150,7 +154,7 @@ class OrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Get an organization membership
 
@@ -180,8 +184,8 @@ class OrganizationMembershipService:
         self,
         id: str,
         *,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
+        role: RoleSingle | RoleMultiple | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Update an organization membership
 
@@ -202,7 +206,7 @@ class OrganizationMembershipService:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if role is not None:
             if isinstance(role, RoleSingle):
                 body["role_slug"] = role.role_slug
@@ -220,7 +224,7 @@ class OrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an organization membership
 
@@ -246,7 +250,7 @@ class OrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationMembership:
         """Deactivate an organization membership
 
@@ -283,7 +287,7 @@ class OrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Reactivate an organization membership
 
@@ -320,11 +324,11 @@ class OrganizationMembershipService:
         self,
         om_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Group]:
         """List groups
 
@@ -369,22 +373,21 @@ class OrganizationMembershipService:
 class AsyncOrganizationMembershipService:
     """Organization Membership Service API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_organization_memberships(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        statuses: list[UserManagementOrganizationMembershipStatuses | str]
+        | None = None,
+        user_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserOrganizationMembership]:
         """List organization memberships
 
@@ -439,8 +442,8 @@ class AsyncOrganizationMembershipService:
         *,
         user_id: str,
         organization_id: str,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
+        role: RoleSingle | RoleMultiple | None = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationMembership:
         """Create an organization membership
 
@@ -465,7 +468,7 @@ class AsyncOrganizationMembershipService:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "user_id": user_id,
             "organization_id": organization_id,
         }
@@ -486,7 +489,7 @@ class AsyncOrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Get an organization membership
 
@@ -516,8 +519,8 @@ class AsyncOrganizationMembershipService:
         self,
         id: str,
         *,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
+        role: RoleSingle | RoleMultiple | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Update an organization membership
 
@@ -538,7 +541,7 @@ class AsyncOrganizationMembershipService:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if role is not None:
             if isinstance(role, RoleSingle):
                 body["role_slug"] = role.role_slug
@@ -556,7 +559,7 @@ class AsyncOrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an organization membership
 
@@ -582,7 +585,7 @@ class AsyncOrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationMembership:
         """Deactivate an organization membership
 
@@ -619,7 +622,7 @@ class AsyncOrganizationMembershipService:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> UserOrganizationMembership:
         """Reactivate an organization membership
 
@@ -656,11 +659,11 @@ class AsyncOrganizationMembershipService:
         self,
         om_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Group]:
         """List groups
 

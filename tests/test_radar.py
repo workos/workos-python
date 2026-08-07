@@ -3,17 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import (
-    RadarStandaloneAssessRequestAction,
-    RadarStandaloneAssessRequestAuthMethod,
-)
-from workos.radar.models import (
-    RadarListEntryAlreadyPresentResponse,
-    RadarStandaloneResponse,
-)
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -21,6 +13,14 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos.common.models import (
+    RadarStandaloneAssessRequestAction,
+    RadarStandaloneAssessRequestAuthMethod,
+)
+from workos.radar.models import (
+    RadarListEntryAlreadyPresentResponse,
+    RadarStandaloneResponse,
 )
 
 

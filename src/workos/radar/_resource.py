@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
-from .models import RadarListAction, RadarListType
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
 )
@@ -17,11 +14,19 @@ from workos.common.models.radar_standalone_assess_request_auth_method import (
     RadarStandaloneAssessRequestAuthMethod,
 )
 
+from .._types import RequestOptions, enum_value
+from .models import (
+    RadarListAction,
+    RadarListEntryAlreadyPresentResponse,
+    RadarListType,
+    RadarStandaloneResponse,
+)
+
 
 class Radar:
     """Radar API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def create_attempt(
@@ -30,10 +35,10 @@ class Radar:
         ip_address: str,
         user_agent: str,
         email: str,
-        auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
-        action: Union[RadarStandaloneAssessRequestAction, str],
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        auth_method: RadarStandaloneAssessRequestAuthMethod | str,
+        action: RadarStandaloneAssessRequestAction | str,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarStandaloneResponse:
         """Create an attempt
 
@@ -57,7 +62,7 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "ip_address": ip_address,
@@ -81,9 +86,9 @@ class Radar:
         self,
         id: str,
         *,
-        challenge_status: Optional[Literal["success"]] = None,
-        attempt_status: Optional[Literal["success"]] = None,
-        request_options: Optional[RequestOptions] = None,
+        challenge_status: Literal["success"] | None = None,
+        attempt_status: Literal["success"] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Update a Radar attempt
 
@@ -102,7 +107,7 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "challenge_status": challenge_status,
@@ -119,11 +124,11 @@ class Radar:
 
     def add_list_entry(
         self,
-        type: Union[RadarListType, str],
-        action: Union[RadarListAction, str],
+        type: RadarListType | str,
+        action: RadarListAction | str,
         *,
         entry: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarListEntryAlreadyPresentResponse:
         """Add an entry to a Radar list
 
@@ -144,7 +149,7 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "entry": entry,
         }
         return self._client.request(
@@ -157,11 +162,11 @@ class Radar:
 
     def remove_list_entry(
         self,
-        type: Union[RadarListType, str],
-        action: Union[RadarListAction, str],
+        type: RadarListType | str,
+        action: RadarListAction | str,
         *,
         entry: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove an entry from a Radar list
 
@@ -180,7 +185,7 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "entry": entry,
         }
         self._client.request(
@@ -194,7 +199,7 @@ class Radar:
 class AsyncRadar:
     """Radar API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def create_attempt(
@@ -203,10 +208,10 @@ class AsyncRadar:
         ip_address: str,
         user_agent: str,
         email: str,
-        auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
-        action: Union[RadarStandaloneAssessRequestAction, str],
-        signals_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        auth_method: RadarStandaloneAssessRequestAuthMethod | str,
+        action: RadarStandaloneAssessRequestAction | str,
+        signals_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarStandaloneResponse:
         """Create an attempt
 
@@ -230,7 +235,7 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "ip_address": ip_address,
@@ -254,9 +259,9 @@ class AsyncRadar:
         self,
         id: str,
         *,
-        challenge_status: Optional[Literal["success"]] = None,
-        attempt_status: Optional[Literal["success"]] = None,
-        request_options: Optional[RequestOptions] = None,
+        challenge_status: Literal["success"] | None = None,
+        attempt_status: Literal["success"] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Update a Radar attempt
 
@@ -275,7 +280,7 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "challenge_status": challenge_status,
@@ -292,11 +297,11 @@ class AsyncRadar:
 
     async def add_list_entry(
         self,
-        type: Union[RadarListType, str],
-        action: Union[RadarListAction, str],
+        type: RadarListType | str,
+        action: RadarListAction | str,
         *,
         entry: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RadarListEntryAlreadyPresentResponse:
         """Add an entry to a Radar list
 
@@ -317,7 +322,7 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "entry": entry,
         }
         return await self._client.request(
@@ -330,11 +335,11 @@ class AsyncRadar:
 
     async def remove_list_entry(
         self,
-        type: Union[RadarListType, str],
-        action: Union[RadarListAction, str],
+        type: RadarListType | str,
+        action: RadarListAction | str,
         *,
         entry: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove an entry from a Radar list
 
@@ -353,7 +358,7 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "entry": entry,
         }
         await self._client.request(

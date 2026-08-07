@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,7 +20,7 @@ class UserApiKeyCreatedDataOwner:
     """The unique identifier of the organization the API key belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserApiKeyCreatedDataOwner":
+    def from_dict(cls, data: dict[str, Any]) -> UserApiKeyCreatedDataOwner:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class UserApiKeyCreatedDataOwner:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserApiKeyCreatedDataOwner", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         result["id"] = self.id
         result["organization_id"] = self.organization_id

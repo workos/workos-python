@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,21 +12,19 @@ from workos._types import _raise_deserialize_error
 class FlagUpdatedContextPreviousAttributeData:
     """The previous data attributes of the flag."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """The previous name of the flag."""
-    description: Optional[str] = None
+    description: str | None = None
     """The previous description of the flag."""
-    tags: Optional[List[str]] = None
+    tags: list[str] | None = None
     """The previous tags of the flag."""
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     """Whether the flag was previously enabled."""
-    default_value: Optional[bool] = None
+    default_value: bool | None = None
     """The previous default value of the flag."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagUpdatedContextPreviousAttributeData":
+    def from_dict(cls, data: dict[str, Any]) -> FlagUpdatedContextPreviousAttributeData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,9 +37,9 @@ class FlagUpdatedContextPreviousAttributeData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagUpdatedContextPreviousAttributeData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.description is not None:

@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .waitlist_user_state import WaitlistUserState
 
 
@@ -21,17 +22,19 @@ class WaitlistUser:
     """The unique ID of the Waitlist User."""
     email: str
     """The email address of the Waitlist User."""
-    state: "WaitlistUserState"
+    state: WaitlistUserState
     """The state of the Waitlist User."""
-    approved_at: Optional[datetime]
+    approved_at: datetime | None
     """The timestamp when the Waitlist User was approved, or null if not yet approved."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    waitlist_id: str | None = None
+    """The unique ID of the Waitlist that the Waitlist User joined."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WaitlistUser":
+    def from_dict(cls, data: dict[str, Any]) -> WaitlistUser:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -44,13 +47,14 @@ class WaitlistUser:
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                waitlist_id=data.get("waitlist_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("WaitlistUser", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["email"] = self.email
@@ -63,4 +67,8 @@ class WaitlistUser:
             result["approved_at"] = None
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        if self.waitlist_id is not None:
+            result["waitlist_id"] = self.waitlist_id
+        else:
+            result["waitlist_id"] = None
         return result

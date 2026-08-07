@@ -11,5 +11,6 @@
   "locale": "en-US",
   "password": "strong_password_123!",
   "password_hash": "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
-  "password_hash_type": "bcrypt"
+  "password_hash_type": "bcrypt",
+  "password_salt_position": "prefix"
 }

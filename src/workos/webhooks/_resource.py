@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import WebhookEndpoint
+import hashlib
+import hmac
+import json
+import time
+
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
@@ -19,11 +22,10 @@ from workos.common.models.update_webhook_endpoint_events import (
 from workos.common.models.update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus,
 )
+
 from .._pagination import AsyncPage, SyncPage
-import hashlib
-import hmac
-import json
-import time
+from .._types import RequestOptions, enum_value
+from .models import WebhookEndpoint
 
 # @oagen-ignore-start
 if TYPE_CHECKING:
@@ -34,17 +36,17 @@ if TYPE_CHECKING:
 class Webhooks:
     """Webhooks API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_webhook_endpoints(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[WebhookEndpoint]:
         """List Webhook Endpoints
 
@@ -87,8 +89,8 @@ class Webhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[Union[CreateWebhookEndpointEvents, str]],
-        request_options: Optional[RequestOptions] = None,
+        events: list[CreateWebhookEndpointEvents | str],
+        request_options: RequestOptions | None = None,
     ) -> WebhookEndpoint:
         """Create a Webhook Endpoint
 
@@ -109,7 +111,7 @@ class Webhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "endpoint_url": endpoint_url,
             "events": events,
         }
@@ -125,10 +127,10 @@ class Webhooks:
         self,
         id: str,
         *,
-        endpoint_url: Optional[str] = None,
-        status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
-        events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
-        request_options: Optional[RequestOptions] = None,
+        endpoint_url: str | None = None,
+        status: UpdateWebhookEndpointStatus | str | None = None,
+        events: list[UpdateWebhookEndpointEvents | str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> WebhookEndpoint:
         """Update a Webhook Endpoint
 
@@ -152,7 +154,7 @@ class Webhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "endpoint_url": endpoint_url,
@@ -173,7 +175,7 @@ class Webhooks:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Webhook Endpoint
 
@@ -201,11 +203,11 @@ class Webhooks:
     def verify_event(
         self,
         *,
-        event_body: Union[bytes, str],
+        event_body: bytes | str,
         event_signature: str,
         secret: str,
-        tolerance: Optional[int] = None,
-    ) -> "EventSchemaVariant":
+        tolerance: int | None = None,
+    ) -> EventSchemaVariant:
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -234,10 +236,10 @@ class Webhooks:
     def verify_header(
         self,
         *,
-        event_body: Union[bytes, str],
+        event_body: bytes | str,
         event_signature: str,
         secret: str,
-        tolerance: Optional[int] = None,
+        tolerance: int | None = None,
     ) -> None:
         """Verify the signature of a Webhook, raise ValueError if invalid.
 
@@ -291,17 +293,17 @@ class Webhooks:
 class AsyncWebhooks:
     """Webhooks API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_webhook_endpoints(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[WebhookEndpoint]:
         """List Webhook Endpoints
 
@@ -344,8 +346,8 @@ class AsyncWebhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[Union[CreateWebhookEndpointEvents, str]],
-        request_options: Optional[RequestOptions] = None,
+        events: list[CreateWebhookEndpointEvents | str],
+        request_options: RequestOptions | None = None,
     ) -> WebhookEndpoint:
         """Create a Webhook Endpoint
 
@@ -366,7 +368,7 @@ class AsyncWebhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "endpoint_url": endpoint_url,
             "events": events,
         }
@@ -382,10 +384,10 @@ class AsyncWebhooks:
         self,
         id: str,
         *,
-        endpoint_url: Optional[str] = None,
-        status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
-        events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
-        request_options: Optional[RequestOptions] = None,
+        endpoint_url: str | None = None,
+        status: UpdateWebhookEndpointStatus | str | None = None,
+        events: list[UpdateWebhookEndpointEvents | str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> WebhookEndpoint:
         """Update a Webhook Endpoint
 
@@ -409,7 +411,7 @@ class AsyncWebhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "endpoint_url": endpoint_url,
@@ -430,7 +432,7 @@ class AsyncWebhooks:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Webhook Endpoint
 
@@ -458,11 +460,11 @@ class AsyncWebhooks:
     def verify_event(
         self,
         *,
-        event_body: Union[bytes, str],
+        event_body: bytes | str,
         event_signature: str,
         secret: str,
-        tolerance: Optional[int] = None,
-    ) -> "EventSchemaVariant":
+        tolerance: int | None = None,
+    ) -> EventSchemaVariant:
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -491,10 +493,10 @@ class AsyncWebhooks:
     def verify_header(
         self,
         *,
-        event_body: Union[bytes, str],
+        event_body: bytes | str,
         event_signature: str,
         secret: str,
-        tolerance: Optional[int] = None,
+        tolerance: int | None = None,
     ) -> None:
         """Verify the signature of a Webhook, raise ValueError if invalid.
 

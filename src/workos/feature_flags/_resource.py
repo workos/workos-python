@@ -2,32 +2,33 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
 from workos.common.models.feature_flag import FeatureFlag
 from workos.common.models.flag import Flag
 from workos.common.models.pagination_order import PaginationOrder
+
 from .._pagination import AsyncPage, SyncPage
+from .._types import RequestOptions, enum_value
 
 
 class FeatureFlags:
     """Feature Flags API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_feature_flags(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Flag]:
         """List feature flags
 
@@ -73,7 +74,7 @@ class FeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Flag:
         """Get a feature flag
 
@@ -103,7 +104,7 @@ class FeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> FeatureFlag:
         """Disable a feature flag
 
@@ -133,7 +134,7 @@ class FeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> FeatureFlag:
         """Enable a feature flag
 
@@ -164,7 +165,7 @@ class FeatureFlags:
         resource_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Add a feature flag target
 
@@ -194,7 +195,7 @@ class FeatureFlags:
         resource_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a feature flag target
 
@@ -223,11 +224,11 @@ class FeatureFlags:
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for an organization
 
@@ -272,11 +273,11 @@ class FeatureFlags:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for a user
 
@@ -321,17 +322,17 @@ class FeatureFlags:
 class AsyncFeatureFlags:
     """Feature Flags API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_feature_flags(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Flag]:
         """List feature flags
 
@@ -377,7 +378,7 @@ class AsyncFeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Flag:
         """Get a feature flag
 
@@ -407,7 +408,7 @@ class AsyncFeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> FeatureFlag:
         """Disable a feature flag
 
@@ -437,7 +438,7 @@ class AsyncFeatureFlags:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> FeatureFlag:
         """Enable a feature flag
 
@@ -468,7 +469,7 @@ class AsyncFeatureFlags:
         resource_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Add a feature flag target
 
@@ -498,7 +499,7 @@ class AsyncFeatureFlags:
         resource_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a feature flag target
 
@@ -527,11 +528,11 @@ class AsyncFeatureFlags:
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for an organization
 
@@ -576,11 +577,11 @@ class AsyncFeatureFlags:
         self,
         user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for a user
 

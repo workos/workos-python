@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
+from typing import Any, cast
 
-from .audit_log_configuration_log_stream import AuditLogConfigurationLogStream
+from workos._types import _raise_deserialize_error
 from workos.common.models.audit_log_configuration_state import (
     AuditLogConfigurationState,
 )
+
+from .audit_log_configuration_log_stream import AuditLogConfigurationLogStream
 
 
 @dataclass(slots=True)
@@ -22,13 +22,13 @@ class AuditLogConfiguration:
     """Unique identifier of the Organization."""
     retention_period_in_days: int
     """The number of days Audit Log events will be retained before being permanently deleted."""
-    state: "AuditLogConfigurationState"
+    state: AuditLogConfigurationState
     """The current state of the audit log configuration for the organization."""
-    log_stream: Optional["AuditLogConfigurationLogStream"] = None
+    log_stream: AuditLogConfigurationLogStream | None = None
     """The Audit Log Stream currently configured for the organization, if any."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogConfiguration":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogConfiguration:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -36,7 +36,7 @@ class AuditLogConfiguration:
                 retention_period_in_days=data["retention_period_in_days"],
                 state=AuditLogConfigurationState(data["state"]),
                 log_stream=AuditLogConfigurationLogStream.from_dict(
-                    cast(Dict[str, Any], _v_log_stream)
+                    cast(dict[str, Any], _v_log_stream)
                 )
                 if (_v_log_stream := data.get("log_stream")) is not None
                 else None,
@@ -44,9 +44,9 @@ class AuditLogConfiguration:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogConfiguration", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["retention_period_in_days"] = self.retention_period_in_days
         result["state"] = (

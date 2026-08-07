@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Literal
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.slim_role import SlimRole
+
 from .user_role_assignment_resource import UserRoleAssignmentResource
 from .user_role_assignment_source import UserRoleAssignmentSource
 
@@ -24,11 +23,11 @@ class UserRoleAssignment:
     """Unique identifier of the role assignment."""
     organization_membership_id: str
     """The ID of the organization membership the role is assigned to."""
-    role: "SlimRole"
+    role: SlimRole
     """The role included in the assignment."""
-    resource: "UserRoleAssignmentResource"
+    resource: UserRoleAssignmentResource
     """The resource the role is assigned on."""
-    source: "UserRoleAssignmentSource"
+    source: UserRoleAssignmentSource
     """The origin of the role assignment."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -36,19 +35,19 @@ class UserRoleAssignment:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserRoleAssignment":
+    def from_dict(cls, data: dict[str, Any]) -> UserRoleAssignment:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "role_assignment"),
                 id=data["id"],
                 organization_membership_id=data["organization_membership_id"],
-                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
+                role=SlimRole.from_dict(cast(dict[str, Any], data["role"])),
                 resource=UserRoleAssignmentResource.from_dict(
-                    cast(Dict[str, Any], data["resource"])
+                    cast(dict[str, Any], data["resource"])
                 ),
                 source=UserRoleAssignmentSource.from_dict(
-                    cast(Dict[str, Any], data["source"])
+                    cast(dict[str, Any], data["source"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
@@ -56,9 +55,9 @@ class UserRoleAssignment:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserRoleAssignment", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["organization_membership_id"] = self.organization_membership_id

@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType,
@@ -15,19 +16,19 @@ from workos.common.models.authentication_factors_create_request_type import (
 class AuthenticationFactorsCreateRequest:
     """Authentication Factors Create Request model."""
 
-    type: "AuthenticationFactorsCreateRequestType"
+    type: AuthenticationFactorsCreateRequestType
     """The type of factor to enroll."""
-    phone_number: Optional[str] = None
+    phone_number: str | None = None
     """Required when type is 'sms'."""
-    totp_issuer: Optional[str] = None
+    totp_issuer: str | None = None
     """Required when type is 'totp'."""
-    totp_user: Optional[str] = None
+    totp_user: str | None = None
     """Required when type is 'totp'."""
-    user_id: Optional[str] = None
+    user_id: str | None = None
     """The ID of the user to associate the factor with."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationFactorsCreateRequest":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationFactorsCreateRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -40,9 +41,9 @@ class AuthenticationFactorsCreateRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationFactorsCreateRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         if self.phone_number is not None:
             result["phone_number"] = self.phone_number

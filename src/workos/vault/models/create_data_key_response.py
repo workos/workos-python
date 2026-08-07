@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,7 +12,7 @@ from workos._types import _raise_deserialize_error
 class CreateDataKeyResponse:
     """Create Data Key Response model."""
 
-    context: Dict[str, str]
+    context: dict[str, str]
     """Map of values used to determine the encryption key."""
     data_key: str
     """Base64-encoded data encryption key."""
@@ -21,7 +22,7 @@ class CreateDataKeyResponse:
     """Unique identifier for the generated data key."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateDataKeyResponse":
+    def from_dict(cls, data: dict[str, Any]) -> CreateDataKeyResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class CreateDataKeyResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateDataKeyResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["context"] = self.context
         result["data_key"] = self.data_key
         result["encrypted_keys"] = self.encrypted_keys

@@ -2,19 +2,20 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions
 from workos.common.models.organization_domain import OrganizationDomain
+
+from .._types import RequestOptions
 
 
 class OrganizationDomains:
     """Organization Domains API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def create_organization_domain(
@@ -22,7 +23,7 @@ class OrganizationDomains:
         *,
         domain: str,
         organization_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Create an Organization Domain
 
@@ -42,7 +43,7 @@ class OrganizationDomains:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "domain": domain,
             "organization_id": organization_id,
         }
@@ -58,7 +59,7 @@ class OrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Get an Organization Domain
 
@@ -88,7 +89,7 @@ class OrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an Organization Domain
 
@@ -114,7 +115,7 @@ class OrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Verify an Organization Domain
 
@@ -144,7 +145,7 @@ class OrganizationDomains:
 class AsyncOrganizationDomains:
     """Organization Domains API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def create_organization_domain(
@@ -152,7 +153,7 @@ class AsyncOrganizationDomains:
         *,
         domain: str,
         organization_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Create an Organization Domain
 
@@ -172,7 +173,7 @@ class AsyncOrganizationDomains:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "domain": domain,
             "organization_id": organization_id,
         }
@@ -188,7 +189,7 @@ class AsyncOrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Get an Organization Domain
 
@@ -218,7 +219,7 @@ class AsyncOrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an Organization Domain
 
@@ -244,7 +245,7 @@ class AsyncOrganizationDomains:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationDomain:
         """Verify an Organization Domain
 

@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -17,9 +16,7 @@ class OrganizationMembershipCreatedDataStatus(str, Enum):
     PENDING = "pending"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["OrganizationMembershipCreatedDataStatus"]:
+    def _missing_(cls, value: object) -> OrganizationMembershipCreatedDataStatus | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

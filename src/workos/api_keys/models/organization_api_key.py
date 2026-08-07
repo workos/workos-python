@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .organization_api_key_owner import OrganizationApiKeyOwner
 
@@ -20,17 +19,17 @@ class OrganizationApiKey:
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: "OrganizationApiKeyOwner"
+    owner: OrganizationApiKeyOwner
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
     obfuscated_value: str
     """An obfuscated representation of the API Key value."""
-    last_used_at: Optional[datetime]
+    last_used_at: datetime | None
     """Timestamp of when the API Key was last used."""
-    expires_at: Optional[datetime]
+    expires_at: datetime | None
     """Timestamp when the API Key expires. Null means the key does not expire."""
-    permissions: List[str]
+    permissions: list[str]
     """The permission slugs assigned to the API Key."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -38,14 +37,14 @@ class OrganizationApiKey:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationApiKey":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationApiKey:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
                 owner=OrganizationApiKeyOwner.from_dict(
-                    cast(Dict[str, Any], data["owner"])
+                    cast(dict[str, Any], data["owner"])
                 ),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
@@ -62,9 +61,9 @@ class OrganizationApiKey:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationApiKey", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["owner"] = self.owner.to_dict()

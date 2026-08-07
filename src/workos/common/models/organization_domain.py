@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .organization_domain_state import OrganizationDomainState
 from .organization_domain_verification_strategy import (
     OrganizationDomainVerificationStrategy,
@@ -30,17 +31,17 @@ class OrganizationDomain:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    state: Optional["OrganizationDomainState"] = None
+    state: OrganizationDomainState | None = None
     """Verification state of the domain."""
-    verification_prefix: Optional[str] = None
+    verification_prefix: str | None = None
     """The prefix used in DNS verification."""
-    verification_token: Optional[str] = None
+    verification_token: str | None = None
     """Validation token to be used in DNS TXT record."""
-    verification_strategy: Optional["OrganizationDomainVerificationStrategy"] = None
+    verification_strategy: OrganizationDomainVerificationStrategy | None = None
     """Strategy used to verify the domain."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationDomain":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationDomain:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -65,9 +66,9 @@ class OrganizationDomain:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationDomain", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["organization_id"] = self.organization_id

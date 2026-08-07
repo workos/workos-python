@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .flag_rule_updated_context_configured_target_organization import (
@@ -19,27 +19,25 @@ from .flag_rule_updated_context_configured_target_user import (
 class FlagRuleUpdatedContextConfiguredTarget:
     """The configured targets for the flag rule."""
 
-    organizations: List["FlagRuleUpdatedContextConfiguredTargetOrganization"]
+    organizations: list[FlagRuleUpdatedContextConfiguredTargetOrganization]
     """The organizations targeted by the flag rule."""
-    users: List["FlagRuleUpdatedContextConfiguredTargetUser"]
+    users: list[FlagRuleUpdatedContextConfiguredTargetUser]
     """The users targeted by the flag rule."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextConfiguredTarget":
+    def from_dict(cls, data: dict[str, Any]) -> FlagRuleUpdatedContextConfiguredTarget:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 organizations=[
                     FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], data["organizations"])
                 ],
                 users=[
                     FlagRuleUpdatedContextConfiguredTargetUser.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], data["users"])
                 ],
@@ -47,9 +45,9 @@ class FlagRuleUpdatedContextConfiguredTarget:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextConfiguredTarget", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organizations"] = [item.to_dict() for item in self.organizations]
         result["users"] = [item.to_dict() for item in self.users]
         return result

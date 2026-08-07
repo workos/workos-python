@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -25,7 +25,7 @@ class AgentRegistrationClaimClaimCompletion:
     """The timestamp when the claim was completed."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationClaimClaimCompletion":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationClaimClaimCompletion:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,9 +38,9 @@ class AgentRegistrationClaimClaimCompletion:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationClaimClaimCompletion", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

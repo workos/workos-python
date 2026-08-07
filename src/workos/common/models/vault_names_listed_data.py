@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
+
 from .vault_names_listed_data_actor_source import VaultNamesListedDataActorSource
 
 
@@ -15,12 +17,12 @@ class VaultNamesListedData:
 
     actor_id: str
     """The unique identifier of the actor."""
-    actor_source: "VaultNamesListedDataActorSource"
+    actor_source: VaultNamesListedDataActorSource
     actor_name: str
     """The name of the actor."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "VaultNamesListedData":
+    def from_dict(cls, data: dict[str, Any]) -> VaultNamesListedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -31,9 +33,9 @@ class VaultNamesListedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("VaultNamesListedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["actor_id"] = self.actor_id
         result["actor_source"] = (
             self.actor_source.value

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,15 +12,15 @@ from workos._types import _raise_deserialize_error
 class RadarStandaloneUpdateRadarAttemptRequest:
     """Radar Standalone Update Radar Attempt Request model."""
 
-    challenge_status: Optional[Literal["success"]] = None
+    challenge_status: Literal["success"] | None = None
     """Set to `"success"` to mark the challenge as completed."""
-    attempt_status: Optional[Literal["success"]] = None
+    attempt_status: Literal["success"] | None = None
     """Set to `"success"` to mark the authentication attempt as successful."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "RadarStandaloneUpdateRadarAttemptRequest":
+        cls, data: dict[str, Any]
+    ) -> RadarStandaloneUpdateRadarAttemptRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,9 +30,9 @@ class RadarStandaloneUpdateRadarAttemptRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneUpdateRadarAttemptRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.challenge_status is not None:
             result["challenge_status"] = self.challenge_status
         if self.attempt_status is not None:

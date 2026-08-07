@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -17,11 +17,11 @@ class AuthorizationResource:
     """Distinguishes the Resource object."""
     name: str
     """A human-readable name for the Resource."""
-    description: Optional[str]
+    description: str | None
     """An optional description of the Resource."""
     organization_id: str
     """The ID of the organization that owns the resource."""
-    parent_resource_id: Optional[str]
+    parent_resource_id: str | None
     """The ID of the parent resource, if this resource is nested."""
     id: str
     """The unique ID of the Resource."""
@@ -35,7 +35,7 @@ class AuthorizationResource:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthorizationResource":
+    def from_dict(cls, data: dict[str, Any]) -> AuthorizationResource:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -53,9 +53,9 @@ class AuthorizationResource:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthorizationResource", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["name"] = self.name
         if self.description is not None:

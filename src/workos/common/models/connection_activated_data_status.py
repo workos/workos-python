@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -16,7 +15,7 @@ class ConnectionActivatedDataStatus(str, Enum):
     UNLINKED = "unlinked"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["ConnectionActivatedDataStatus"]:
+    def _missing_(cls, value: object) -> ConnectionActivatedDataStatus | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

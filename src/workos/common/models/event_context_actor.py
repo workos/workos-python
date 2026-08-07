@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
+
 from .event_context_actor_source import EventContextActorSource
 
 
@@ -15,13 +17,13 @@ class EventContextActor:
 
     id: str
     """Unique identifier of the actor."""
-    source: "EventContextActorSource"
+    source: EventContextActorSource
     """The source of the actor that performed the action."""
-    name: Optional[str]
+    name: str | None
     """The name of the actor."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventContextActor":
+    def from_dict(cls, data: dict[str, Any]) -> EventContextActor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -32,9 +34,9 @@ class EventContextActor:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EventContextActor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["source"] = (
             self.source.value if isinstance(self.source, Enum) else self.source

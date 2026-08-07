@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,11 +12,11 @@ from workos._types import _raise_deserialize_error
 class AuditLogsRetention:
     """Audit Logs Retention model."""
 
-    retention_period_in_days: Optional[int]
+    retention_period_in_days: int | None
     """The number of days Audit Log events will be retained before being permanently deleted. Valid values are 30 and 365."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogsRetention":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogsRetention:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,9 +25,9 @@ class AuditLogsRetention:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogsRetention", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.retention_period_in_days is not None:
             result["retention_period_in_days"] = self.retention_period_in_days
         else:

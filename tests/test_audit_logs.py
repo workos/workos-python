@@ -3,9 +3,18 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
+from workos._errors import (
+    AuthenticationError,
+    BadRequestError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
+    UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
 from workos.audit_logs.models import (
     AuditLogAction,
     AuditLogEvent,
@@ -15,15 +24,6 @@ from workos.audit_logs.models import (
 )
 from workos.common.models import PaginationOrder
 from workos.organizations.models import AuditLogsRetention
-from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
 
 
 class TestAuditLogs:

@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
+
+from workos.common.models.agent_admin_validate_credential_request_type import (
+    AgentAdminValidateCredentialRequestType,
+)
 
 from .._types import RequestOptions, enum_value
 from .models import (
@@ -14,15 +18,12 @@ from .models import (
     AgentRegistration,
     ClaimViewResponse,
 )
-from workos.common.models.agent_admin_validate_credential_request_type import (
-    AgentAdminValidateCredentialRequestType,
-)
 
 
 class Agents:
     """Agents API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def update_attempts(
@@ -31,8 +32,8 @@ class Agents:
         type: Literal["link_external_user"],
         claim_attempt_token: str,
         user: AgentAdminLinkClaimAttemptToExternalUserRequestUser,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ClaimViewResponse:
         """Link a claim attempt to an external user
 
@@ -56,7 +57,7 @@ class Agents:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": type,
@@ -77,10 +78,10 @@ class Agents:
     def create_validate(
         self,
         *,
-        type: Union[AgentAdminValidateCredentialRequestType, str],
+        type: AgentAdminValidateCredentialRequestType | str,
         credential: str,
-        audience: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        audience: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AgentCredentialValidation:
         """Validate an agent credential
 
@@ -101,7 +102,7 @@ class Agents:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": enum_value(type),
@@ -122,7 +123,7 @@ class Agents:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AgentRegistration:
         """Get an agent registration
 
@@ -152,7 +153,7 @@ class Agents:
 class AsyncAgents:
     """Agents API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def update_attempts(
@@ -161,8 +162,8 @@ class AsyncAgents:
         type: Literal["link_external_user"],
         claim_attempt_token: str,
         user: AgentAdminLinkClaimAttemptToExternalUserRequestUser,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ClaimViewResponse:
         """Link a claim attempt to an external user
 
@@ -186,7 +187,7 @@ class AsyncAgents:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": type,
@@ -207,10 +208,10 @@ class AsyncAgents:
     async def create_validate(
         self,
         *,
-        type: Union[AgentAdminValidateCredentialRequestType, str],
+        type: AgentAdminValidateCredentialRequestType | str,
         credential: str,
-        audience: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        audience: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AgentCredentialValidation:
         """Validate an agent credential
 
@@ -231,7 +232,7 @@ class AsyncAgents:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": enum_value(type),
@@ -252,7 +253,7 @@ class AsyncAgents:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AgentRegistration:
         """Get an agent registration
 

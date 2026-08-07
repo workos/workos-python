@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,13 +12,13 @@ from workos._types import _raise_deserialize_error
 class UserConsentOptionChoice:
     """User Consent Option Choice model."""
 
-    value: Optional[str] = None
+    value: str | None = None
     """The value of this choice."""
-    label: Optional[str] = None
+    label: str | None = None
     """A human-readable label for this choice."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserConsentOptionChoice":
+    def from_dict(cls, data: dict[str, Any]) -> UserConsentOptionChoice:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class UserConsentOptionChoice:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserConsentOptionChoice", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.value is not None:
             result["value"] = self.value
         if self.label is not None:

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .redirect_uri_input import RedirectUriInput
@@ -20,19 +20,19 @@ class CreateOAuthApplication:
     """The type of application to create."""
     is_first_party: bool
     """Whether this is a first-party application. Third-party applications require an organization_id."""
-    description: Optional[str] = None
+    description: str | None = None
     """A description for the application."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes granted to the application."""
-    redirect_uris: Optional[List["RedirectUriInput"]] = None
+    redirect_uris: list[RedirectUriInput] | None = None
     """Redirect URIs for the application."""
-    uses_pkce: Optional[bool] = None
+    uses_pkce: bool | None = None
     """Whether the application uses PKCE (Proof Key for Code Exchange)."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The organization ID this application belongs to. Required when is_first_party is false."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateOAuthApplication":
+    def from_dict(cls, data: dict[str, Any]) -> CreateOAuthApplication:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,7 +42,7 @@ class CreateOAuthApplication:
                 description=data.get("description"),
                 scopes=data.get("scopes"),
                 redirect_uris=[
-                    RedirectUriInput.from_dict(cast(Dict[str, Any], item))
+                    RedirectUriInput.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_redirect_uris)
                 ]
                 if (_v_redirect_uris := data.get("redirect_uris")) is not None
@@ -53,9 +53,9 @@ class CreateOAuthApplication:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateOAuthApplication", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["name"] = self.name
         result["application_type"] = self.application_type
         result["is_first_party"] = self.is_first_party

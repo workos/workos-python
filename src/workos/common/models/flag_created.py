@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Literal
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .flag_created_context import FlagCreatedContext
 from .flag_created_data import FlagCreatedData
@@ -22,33 +21,33 @@ class FlagCreated:
     id: str
     """Unique identifier for the event."""
     event: Literal["flag.created"]
-    data: "FlagCreatedData"
+    data: FlagCreatedData
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
-    context: "FlagCreatedContext"
+    context: FlagCreatedContext
     """Additional context about the event."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagCreated":
+    def from_dict(cls, data: dict[str, Any]) -> FlagCreated:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "event"),
                 id=data["id"],
                 event=data.get("event", "flag.created"),
-                data=FlagCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
+                data=FlagCreatedData.from_dict(cast(dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 context=FlagCreatedContext.from_dict(
-                    cast(Dict[str, Any], data["context"])
+                    cast(dict[str, Any], data["context"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagCreated", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["event"] = self.event

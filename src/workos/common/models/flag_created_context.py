@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .flag_created_context_actor import FlagCreatedContextActor
@@ -16,25 +16,25 @@ class FlagCreatedContext:
 
     client_id: str
     """The client ID associated with the flag event."""
-    actor: "FlagCreatedContextActor"
+    actor: FlagCreatedContextActor
     """The actor who performed the action."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagCreatedContext":
+    def from_dict(cls, data: dict[str, Any]) -> FlagCreatedContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 client_id=data["client_id"],
                 actor=FlagCreatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
+                    cast(dict[str, Any], data["actor"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagCreatedContext", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["actor"] = self.actor.to_dict()
         return result

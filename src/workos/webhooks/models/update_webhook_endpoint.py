@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.update_webhook_endpoint_events import (
     UpdateWebhookEndpointEvents,
@@ -19,15 +19,15 @@ from workos.common.models.update_webhook_endpoint_status import (
 class UpdateWebhookEndpoint:
     """Update Webhook Endpoint model."""
 
-    endpoint_url: Optional[str] = None
+    endpoint_url: str | None = None
     """The HTTPS URL where webhooks will be sent."""
-    status: Optional["UpdateWebhookEndpointStatus"] = None
+    status: UpdateWebhookEndpointStatus | None = None
     """Whether the Webhook Endpoint is enabled or disabled."""
-    events: Optional[List["UpdateWebhookEndpointEvents"]] = None
+    events: list[UpdateWebhookEndpointEvents] | None = None
     """The events that the Webhook Endpoint is subscribed to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateWebhookEndpoint":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateWebhookEndpoint:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -45,9 +45,9 @@ class UpdateWebhookEndpoint:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateWebhookEndpoint", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.endpoint_url is not None:
             result["endpoint_url"] = self.endpoint_url
         if self.status is not None:

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
+from .flag_rule_updated_context_access_type import FlagRuleUpdatedContextAccessType
 from .flag_rule_updated_context_actor import FlagRuleUpdatedContextActor
 from .flag_rule_updated_context_configured_target import (
     FlagRuleUpdatedContextConfiguredTarget,
@@ -15,7 +16,6 @@ from .flag_rule_updated_context_configured_target import (
 from .flag_rule_updated_context_previous_attribute import (
     FlagRuleUpdatedContextPreviousAttribute,
 )
-from .flag_rule_updated_context_access_type import FlagRuleUpdatedContextAccessType
 
 
 @dataclass(slots=True)
@@ -24,38 +24,38 @@ class FlagRuleUpdatedContext:
 
     client_id: str
     """The client ID associated with the flag event."""
-    actor: "FlagRuleUpdatedContextActor"
+    actor: FlagRuleUpdatedContextActor
     """The actor who performed the action."""
-    access_type: "FlagRuleUpdatedContextAccessType"
+    access_type: FlagRuleUpdatedContextAccessType
     """The access type of the flag rule."""
-    configured_targets: "FlagRuleUpdatedContextConfiguredTarget"
+    configured_targets: FlagRuleUpdatedContextConfiguredTarget
     """The configured targets for the flag rule."""
-    previous_attributes: "FlagRuleUpdatedContextPreviousAttribute"
+    previous_attributes: FlagRuleUpdatedContextPreviousAttribute
     """Attributes that changed from their previous values."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagRuleUpdatedContext":
+    def from_dict(cls, data: dict[str, Any]) -> FlagRuleUpdatedContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 client_id=data["client_id"],
                 actor=FlagRuleUpdatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
+                    cast(dict[str, Any], data["actor"])
                 ),
                 access_type=FlagRuleUpdatedContextAccessType(data["access_type"]),
                 configured_targets=FlagRuleUpdatedContextConfiguredTarget.from_dict(
-                    cast(Dict[str, Any], data["configured_targets"])
+                    cast(dict[str, Any], data["configured_targets"])
                 ),
                 previous_attributes=FlagRuleUpdatedContextPreviousAttribute.from_dict(
-                    cast(Dict[str, Any], data["previous_attributes"])
+                    cast(dict[str, Any], data["previous_attributes"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContext", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["actor"] = self.actor.to_dict()
         result["access_type"] = (

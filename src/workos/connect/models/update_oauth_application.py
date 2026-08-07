@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .redirect_uri_input import RedirectUriInput
@@ -14,17 +14,17 @@ from .redirect_uri_input import RedirectUriInput
 class UpdateOAuthApplication:
     """Update O Auth Application model."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """The name of the application."""
-    description: Optional[str] = None
+    description: str | None = None
     """A description for the application."""
-    scopes: Optional[List[str]] = None
+    scopes: list[str] | None = None
     """The OAuth scopes granted to the application."""
-    redirect_uris: Optional[List["RedirectUriInput"]] = None
+    redirect_uris: list[RedirectUriInput] | None = None
     """Updated redirect URIs for the application. OAuth applications only."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateOAuthApplication":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateOAuthApplication:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -32,7 +32,7 @@ class UpdateOAuthApplication:
                 description=data.get("description"),
                 scopes=data.get("scopes"),
                 redirect_uris=[
-                    RedirectUriInput.from_dict(cast(Dict[str, Any], item))
+                    RedirectUriInput.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_redirect_uris)
                 ]
                 if (_v_redirect_uris := data.get("redirect_uris")) is not None
@@ -41,9 +41,9 @@ class UpdateOAuthApplication:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateOAuthApplication", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.description is not None:

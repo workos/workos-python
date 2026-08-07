@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
@@ -18,11 +18,11 @@ class CreateWebhookEndpoint:
 
     endpoint_url: str
     """The HTTPS URL where webhooks will be sent."""
-    events: List["CreateWebhookEndpointEvents"]
+    events: list[CreateWebhookEndpointEvents]
     """The events that the Webhook Endpoint is subscribed to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateWebhookEndpoint":
+    def from_dict(cls, data: dict[str, Any]) -> CreateWebhookEndpoint:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -35,9 +35,9 @@ class CreateWebhookEndpoint:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateWebhookEndpoint", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["endpoint_url"] = self.endpoint_url
         result["events"] = [
             item.value if isinstance(item, Enum) else item for item in self.events

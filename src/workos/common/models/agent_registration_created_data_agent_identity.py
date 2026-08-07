@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class AgentRegistrationCreatedDataAgentIdentity:
     """Distinguishes the agent identity object."""
     id: str
     """Unique identifier of the agent identity."""
-    userland_user_id: Union[str, Optional[Literal["null"]]]
+    userland_user_id: str | Literal["null"] | None
     """The ID of the userland user bound to this agent identity."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AgentRegistrationCreatedDataAgentIdentity":
+        cls, data: dict[str, Any]
+    ) -> AgentRegistrationCreatedDataAgentIdentity:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -32,9 +33,9 @@ class AgentRegistrationCreatedDataAgentIdentity:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationCreatedDataAgentIdentity", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["userland_user_id"] = self.userland_user_id

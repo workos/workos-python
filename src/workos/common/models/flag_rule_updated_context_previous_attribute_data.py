@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,15 +12,15 @@ from workos._types import _raise_deserialize_error
 class FlagRuleUpdatedContextPreviousAttributeData:
     """The previous data attributes of the flag."""
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     """Whether the flag was previously enabled."""
-    default_value: Optional[bool] = None
+    default_value: bool | None = None
     """The previous default value of the flag."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextPreviousAttributeData":
+        cls, data: dict[str, Any]
+    ) -> FlagRuleUpdatedContextPreviousAttributeData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,9 +30,9 @@ class FlagRuleUpdatedContextPreviousAttributeData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextPreviousAttributeData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.enabled is not None:
             result["enabled"] = self.enabled
         if self.default_value is not None:

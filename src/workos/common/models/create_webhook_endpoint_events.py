@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -19,6 +18,7 @@ class CreateWebhookEndpointEvents(str, Enum):
     AGENT_REGISTRATION_CLAIM_COMPLETED = "agent.registration.claim.completed"
     AGENT_REGISTRATION_CREDENTIAL_ISSUED = "agent.registration.credential.issued"
     AGENT_REGISTRATION_DELETED = "agent.registration.deleted"
+    AGENT_REGISTRATION_REFRESHED = "agent.registration.refreshed"
     AGENT_REGISTRATION_EXPIRED = "agent.registration.expired"
     AGENT_REGISTRATION_ORGANIZATION_SWITCHED = (
         "agent.registration.organization.switched"
@@ -120,7 +120,7 @@ class CreateWebhookEndpointEvents(str, Enum):
     WAITLIST_USER_DENIED = "waitlist_user.denied"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["CreateWebhookEndpointEvents"]:
+    def _missing_(cls, value: object) -> CreateWebhookEndpointEvents | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -135,6 +135,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "agent.registration.claim.completed",
     "agent.registration.credential.issued",
     "agent.registration.deleted",
+    "agent.registration.refreshed",
     "agent.registration.expired",
     "agent.registration.organization.switched",
     "agent.registration.revoked",

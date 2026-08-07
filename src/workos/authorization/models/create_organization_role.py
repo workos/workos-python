@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,15 +14,15 @@ class CreateOrganizationRole:
 
     name: str
     """A descriptive name for the role."""
-    slug: Optional[str] = None
+    slug: str | None = None
     """A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix."""
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the role's purpose."""
-    resource_type_slug: Optional[str] = None
+    resource_type_slug: str | None = None
     """The slug of the resource type the role is scoped to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateOrganizationRole":
+    def from_dict(cls, data: dict[str, Any]) -> CreateOrganizationRole:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class CreateOrganizationRole:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateOrganizationRole", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["name"] = self.name
         if self.slug is not None:
             result["slug"] = self.slug

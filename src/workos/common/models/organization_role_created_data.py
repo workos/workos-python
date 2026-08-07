@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -21,11 +21,11 @@ class OrganizationRoleCreatedData:
     """The slug identifier of the role."""
     name: str
     """The name of the role."""
-    description: Optional[str]
+    description: str | None
     """A description of the role."""
     resource_type_slug: str
     """The slug of the resource type the role applies to."""
-    permissions: List[str]
+    permissions: list[str]
     """The permissions granted by the role."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -33,7 +33,7 @@ class OrganizationRoleCreatedData:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationRoleCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationRoleCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -50,9 +50,9 @@ class OrganizationRoleCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationRoleCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["organization_id"] = self.organization_id
         result["slug"] = self.slug

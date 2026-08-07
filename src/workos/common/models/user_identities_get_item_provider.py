@@ -17,6 +17,8 @@ class UserIdentitiesGetItemProvider(str, Enum):
     GITHUB_OAUTH = "GithubOAuth"
     GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
+    GROK_OAUTH = "GrokOAuth"
+    XO_AUTH = "XOAuth"
     INTUIT_OAUTH = "IntuitOAuth"
     LINKED_IN_OAUTH = "LinkedInOAuth"
     MICROSOFT_OAUTH = "MicrosoftOAuth"
@@ -43,6 +45,8 @@ UserIdentitiesGetItemProviderLiteral: TypeAlias = Literal[
     "GithubOAuth",
     "GitLabOAuth",
     "GoogleOAuth",
+    "GrokOAuth",
+    "XOAuth",
     "IntuitOAuth",
     "LinkedInOAuth",
     "MicrosoftOAuth",

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class CreateUserOrganizationMembership:
     """The ID of the [user](https://workos.com/docs/reference/authkit/user)."""
     organization_id: str
     """The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to."""
-    role_slug: Optional[str] = None
+    role_slug: str | None = None
     """A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`."""
-    role_slugs: Optional[List[str]] = None
+    role_slugs: list[str] | None = None
     """An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateUserOrganizationMembership":
+    def from_dict(cls, data: dict[str, Any]) -> CreateUserOrganizationMembership:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class CreateUserOrganizationMembership:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUserOrganizationMembership", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
         if self.role_slug is not None:

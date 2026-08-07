@@ -19,12 +19,12 @@ class RadarSmsChallengeCodeSessionAuthenticateRequest:
     grant_type: Literal["urn:workos:oauth:grant-type:radar-sms-challenge:code"]
     code: str
     """The one-time code from the Radar SMS challenge."""
-    verification_id: str
-    """The ID of the Radar SMS verification being confirmed."""
-    phone_number: str
-    """The phone number the Radar SMS challenge was sent to."""
     pending_authentication_token: str
     """The pending authentication token from a previous authentication attempt."""
+    verification_id: str | None = None
+    """The ID of the Radar SMS verification being confirmed. Required for sign-up challenges; omitted for sign-in challenges, where the verification is resolved server-side."""
+    phone_number: str | None = None
+    """The phone number the Radar SMS challenge was sent to. Required for sign-up challenges; omitted for sign-in challenges, where the phone number on file is resolved server-side."""
     ip_address: str | None = None
     """The IP address of the user's request."""
     device_id: str | None = None
@@ -45,9 +45,9 @@ class RadarSmsChallengeCodeSessionAuthenticateRequest:
                     "grant_type", "urn:workos:oauth:grant-type:radar-sms-challenge:code"
                 ),
                 code=data["code"],
-                verification_id=data["verification_id"],
-                phone_number=data["phone_number"],
                 pending_authentication_token=data["pending_authentication_token"],
+                verification_id=data.get("verification_id"),
+                phone_number=data.get("phone_number"),
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),
                 user_agent=data.get("user_agent"),
@@ -64,9 +64,11 @@ class RadarSmsChallengeCodeSessionAuthenticateRequest:
         result["client_secret"] = self.client_secret
         result["grant_type"] = self.grant_type
         result["code"] = self.code
-        result["verification_id"] = self.verification_id
-        result["phone_number"] = self.phone_number
         result["pending_authentication_token"] = self.pending_authentication_token
+        if self.verification_id is not None:
+            result["verification_id"] = self.verification_id
+        if self.phone_number is not None:
+            result["phone_number"] = self.phone_number
         if self.ip_address is not None:
             result["ip_address"] = self.ip_address
         if self.device_id is not None:

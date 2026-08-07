@@ -10,6 +10,9 @@ from workos._types import _raise_deserialize_error
 from workos.common.models.create_user_password_hash_type import (
     CreateUserPasswordHashType,
 )
+from workos.common.models.create_user_password_salt_position import (
+    CreateUserPasswordSaltPosition,
+)
 
 
 @dataclass(slots=True)
@@ -37,11 +40,13 @@ class CreateUser:
     signals_id: str | None = None
     """An optional Radar signals ID to correlate client-side signals with this request."""
     password: str | None = None
-    """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
+    """The password to set for the user. Mutually exclusive with `password_hash`, `password_hash_type`, and `password_salt_position`."""
     password_hash: str | None = None
     """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
     password_hash_type: CreateUserPasswordHashType | None = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
+    password_salt_position: CreateUserPasswordSaltPosition | None = None
+    """The position of the salt relative to the password when the `password_hash` digest was computed: `prefix` for `hash(salt + password)` or `suffix` for `hash(password + salt)`. Only supported with the `ssha256` hash type and only valid when a `password_hash` is provided. Defaults to `suffix`. Mutually exclusive with `password`."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> CreateUser:
@@ -62,6 +67,12 @@ class CreateUser:
                 password_hash=data.get("password_hash"),
                 password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
                 if (_v_password_hash_type := data.get("password_hash_type")) is not None
+                else None,
+                password_salt_position=CreateUserPasswordSaltPosition(
+                    _v_password_salt_position
+                )
+                if (_v_password_salt_position := data.get("password_salt_position"))
+                is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
@@ -116,5 +127,11 @@ class CreateUser:
                 self.password_hash_type.value
                 if isinstance(self.password_hash_type, Enum)
                 else self.password_hash_type
+            )
+        if self.password_salt_position is not None:
+            result["password_salt_position"] = (
+                self.password_salt_position.value
+                if isinstance(self.password_salt_position, Enum)
+                else self.password_salt_position
             )
         return result

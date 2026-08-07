@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,13 +14,13 @@ class FeatureFlagOwner:
 
     email: str
     """The email address of the flag owner."""
-    first_name: Optional[str]
+    first_name: str | None
     """The first name of the flag owner."""
-    last_name: Optional[str]
+    last_name: str | None
     """The last name of the flag owner."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FeatureFlagOwner":
+    def from_dict(cls, data: dict[str, Any]) -> FeatureFlagOwner:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class FeatureFlagOwner:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FeatureFlagOwner", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["email"] = self.email
         if self.first_name is not None:
             result["first_name"] = self.first_name

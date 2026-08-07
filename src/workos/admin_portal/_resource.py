@@ -2,31 +2,32 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from workos.common.models.generate_link_intent import GenerateLinkIntent
+
 from .._types import RequestOptions, enum_value
 from .models import PortalLinkResponse
-from workos.common.models.generate_link_intent import GenerateLinkIntent
 
 
 class AdminPortal:
     """Admin Portal API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def generate_link(
         self,
         *,
         organization: str,
-        return_url: Optional[str] = None,
-        success_url: Optional[str] = None,
-        intent: Optional[Union[GenerateLinkIntent, str]] = None,
-        it_contact_emails: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        return_url: str | None = None,
+        success_url: str | None = None,
+        intent: GenerateLinkIntent | str | None = None,
+        it_contact_emails: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
 
@@ -59,7 +60,7 @@ class AdminPortal:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "return_url": return_url,
@@ -82,18 +83,18 @@ class AdminPortal:
 class AsyncAdminPortal:
     """Admin Portal API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def generate_link(
         self,
         *,
         organization: str,
-        return_url: Optional[str] = None,
-        success_url: Optional[str] = None,
-        intent: Optional[Union[GenerateLinkIntent, str]] = None,
-        it_contact_emails: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        return_url: str | None = None,
+        success_url: str | None = None,
+        intent: GenerateLinkIntent | str | None = None,
+        it_contact_emails: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
 
@@ -126,7 +127,7 @@ class AsyncAdminPortal:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "return_url": return_url,

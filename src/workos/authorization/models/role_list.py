@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .role import Role
@@ -15,26 +15,26 @@ class RoleList:
     """Role List model."""
 
     object: Literal["list"]
-    data: List["Role"]
+    data: list[Role]
     """The list of records for the current page."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RoleList":
+    def from_dict(cls, data: dict[str, Any]) -> RoleList:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "list"),
                 data=[
-                    Role.from_dict(cast(Dict[str, Any], item))
+                    Role.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["data"])
                 ],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RoleList", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["data"] = [item.to_dict() for item in self.data]
         return result

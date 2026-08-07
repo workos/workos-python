@@ -4,20 +4,20 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
 class ExpireApiKey:
     """Expire Api Key model."""
 
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     """When the API key should expire. If omitted or in the past, the key expires immediately. Use null to clear a scheduled future expiration."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ExpireApiKey":
+    def from_dict(cls, data: dict[str, Any]) -> ExpireApiKey:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -28,9 +28,9 @@ class ExpireApiKey:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ExpireApiKey", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.expires_at is not None:
             result["expires_at"] = _format_datetime(self.expires_at)
         else:

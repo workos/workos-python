@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from workos.common.models.pagination_order import PaginationOrder
+from workos.organizations.models.audit_logs_retention import AuditLogsRetention
+
+from .._pagination import AsyncPage, SyncPage
 from .._types import RequestOptions, enum_value
 from .models import (
     AuditLogAction,
@@ -17,22 +21,19 @@ from .models import (
     AuditLogSchemaActorInput,
     AuditLogSchemaTargetInput,
 )
-from workos.organizations.models.audit_logs_retention import AuditLogsRetention
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class AuditLogs:
     """Audit Logs API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def get_organization_audit_logs_retention(
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Get Retention
 
@@ -63,7 +64,7 @@ class AuditLogs:
         id: str,
         *,
         retention_period_in_days: int,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Set Retention
 
@@ -84,7 +85,7 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "retention_period_in_days": retention_period_in_days,
         }
         return self._client.request(
@@ -98,11 +99,11 @@ class AuditLogs:
     def list_actions(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuditLogAction]:
         """List Actions
 
@@ -147,11 +148,11 @@ class AuditLogs:
         self,
         action_name: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuditLogSchema]:
         """List Schemas
 
@@ -197,10 +198,10 @@ class AuditLogs:
         self,
         action_name: str,
         *,
-        targets: List[AuditLogSchemaTargetInput],
-        actor: Optional[AuditLogSchemaActorInput] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        request_options: Optional[RequestOptions] = None,
+        targets: list[AuditLogSchemaTargetInput],
+        actor: AuditLogSchemaActorInput | None = None,
+        metadata: dict[str, Any] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogSchema:
         """Create Schema
 
@@ -222,7 +223,7 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "actor": actor.to_dict() if actor is not None else None,
@@ -244,8 +245,8 @@ class AuditLogs:
         *,
         organization_id: str,
         event: AuditLogEvent,
-        idempotency_key: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        idempotency_key: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogEventCreateResponse:
         """Create Event
 
@@ -274,7 +275,7 @@ class AuditLogs:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_id": organization_id,
             "event": event.to_dict(),
         }
@@ -293,12 +294,12 @@ class AuditLogs:
         organization_id: str,
         range_start: str,
         range_end: str,
-        actions: Optional[List[str]] = None,
-        actors: Optional[List[str]] = None,
-        actor_names: Optional[List[str]] = None,
-        actor_ids: Optional[List[str]] = None,
-        targets: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        actions: list[str] | None = None,
+        actors: list[str] | None = None,
+        actor_names: list[str] | None = None,
+        actor_ids: list[str] | None = None,
+        targets: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogExport:
         """Create Export
 
@@ -324,7 +325,7 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -350,7 +351,7 @@ class AuditLogs:
         self,
         audit_log_export_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogExport:
         """Get Export
 
@@ -380,14 +381,14 @@ class AuditLogs:
 class AsyncAuditLogs:
     """Audit Logs API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def get_organization_audit_logs_retention(
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Get Retention
 
@@ -418,7 +419,7 @@ class AsyncAuditLogs:
         id: str,
         *,
         retention_period_in_days: int,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Set Retention
 
@@ -439,7 +440,7 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "retention_period_in_days": retention_period_in_days,
         }
         return await self._client.request(
@@ -453,11 +454,11 @@ class AsyncAuditLogs:
     async def list_actions(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuditLogAction]:
         """List Actions
 
@@ -502,11 +503,11 @@ class AsyncAuditLogs:
         self,
         action_name: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuditLogSchema]:
         """List Schemas
 
@@ -552,10 +553,10 @@ class AsyncAuditLogs:
         self,
         action_name: str,
         *,
-        targets: List[AuditLogSchemaTargetInput],
-        actor: Optional[AuditLogSchemaActorInput] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        request_options: Optional[RequestOptions] = None,
+        targets: list[AuditLogSchemaTargetInput],
+        actor: AuditLogSchemaActorInput | None = None,
+        metadata: dict[str, Any] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogSchema:
         """Create Schema
 
@@ -577,7 +578,7 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "actor": actor.to_dict() if actor is not None else None,
@@ -599,8 +600,8 @@ class AsyncAuditLogs:
         *,
         organization_id: str,
         event: AuditLogEvent,
-        idempotency_key: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        idempotency_key: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogEventCreateResponse:
         """Create Event
 
@@ -629,7 +630,7 @@ class AsyncAuditLogs:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_id": organization_id,
             "event": event.to_dict(),
         }
@@ -648,12 +649,12 @@ class AsyncAuditLogs:
         organization_id: str,
         range_start: str,
         range_end: str,
-        actions: Optional[List[str]] = None,
-        actors: Optional[List[str]] = None,
-        actor_names: Optional[List[str]] = None,
-        actor_ids: Optional[List[str]] = None,
-        targets: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        actions: list[str] | None = None,
+        actors: list[str] | None = None,
+        actor_names: list[str] | None = None,
+        actor_ids: list[str] | None = None,
+        targets: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogExport:
         """Create Export
 
@@ -679,7 +680,7 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -705,7 +706,7 @@ class AsyncAuditLogs:
         self,
         audit_log_export_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogExport:
         """Get Export
 

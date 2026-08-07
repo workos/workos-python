@@ -2,16 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import (
-    AuthenticationChallengeVerifyResponse,
-    UserAuthenticationFactorEnrollResponse,
-)
 from workos.common.models.authentication_challenge import AuthenticationChallenge
 from workos.common.models.authentication_factor import AuthenticationFactor
 from workos.common.models.authentication_factor_enrolled import (
@@ -21,13 +16,19 @@ from workos.common.models.authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType,
 )
 from workos.common.models.pagination_order import PaginationOrder
+
 from .._pagination import AsyncPage, SyncPage
+from .._types import RequestOptions, enum_value
+from .models import (
+    AuthenticationChallengeVerifyResponse,
+    UserAuthenticationFactorEnrollResponse,
+)
 
 
 class MultiFactorAuth:
     """Multi Factor Auth API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def verify_challenge(
@@ -35,7 +36,7 @@ class MultiFactorAuth:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationChallengeVerifyResponse:
         """Verify Challenge
 
@@ -57,7 +58,7 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return self._client.request(
@@ -71,12 +72,12 @@ class MultiFactorAuth:
     def enroll_factor(
         self,
         *,
-        type: Union[AuthenticationFactorsCreateRequestType, str],
-        phone_number: Optional[str] = None,
-        totp_issuer: Optional[str] = None,
-        totp_user: Optional[str] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        type: AuthenticationFactorsCreateRequestType | str,
+        phone_number: str | None = None,
+        totp_issuer: str | None = None,
+        totp_user: str | None = None,
+        user_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationFactorEnrolled:
         """Enroll Factor
 
@@ -99,7 +100,7 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": enum_value(type),
@@ -122,7 +123,7 @@ class MultiFactorAuth:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationFactor:
         """Get Factor
 
@@ -152,7 +153,7 @@ class MultiFactorAuth:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete Factor
 
@@ -178,8 +179,8 @@ class MultiFactorAuth:
         self,
         id: str,
         *,
-        sms_template: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        sms_template: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationChallenge:
         """Challenge Factor
 
@@ -200,7 +201,7 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "sms_template": sms_template,
@@ -219,11 +220,11 @@ class MultiFactorAuth:
         self,
         userland_user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
 
@@ -269,10 +270,10 @@ class MultiFactorAuth:
         userland_user_id: str,
         *,
         type: Literal["totp"],
-        totp_issuer: Optional[str] = None,
-        totp_user: Optional[str] = None,
-        totp_secret: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        totp_issuer: str | None = None,
+        totp_user: str | None = None,
+        totp_secret: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserAuthenticationFactorEnrollResponse:
         """Enroll an authentication factor
 
@@ -295,7 +296,7 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": type,
@@ -317,7 +318,7 @@ class MultiFactorAuth:
 class AsyncMultiFactorAuth:
     """Multi Factor Auth API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def verify_challenge(
@@ -325,7 +326,7 @@ class AsyncMultiFactorAuth:
         id: str,
         *,
         code: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationChallengeVerifyResponse:
         """Verify Challenge
 
@@ -347,7 +348,7 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "code": code,
         }
         return await self._client.request(
@@ -361,12 +362,12 @@ class AsyncMultiFactorAuth:
     async def enroll_factor(
         self,
         *,
-        type: Union[AuthenticationFactorsCreateRequestType, str],
-        phone_number: Optional[str] = None,
-        totp_issuer: Optional[str] = None,
-        totp_user: Optional[str] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        type: AuthenticationFactorsCreateRequestType | str,
+        phone_number: str | None = None,
+        totp_issuer: str | None = None,
+        totp_user: str | None = None,
+        user_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationFactorEnrolled:
         """Enroll Factor
 
@@ -389,7 +390,7 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": enum_value(type),
@@ -412,7 +413,7 @@ class AsyncMultiFactorAuth:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationFactor:
         """Get Factor
 
@@ -442,7 +443,7 @@ class AsyncMultiFactorAuth:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete Factor
 
@@ -468,8 +469,8 @@ class AsyncMultiFactorAuth:
         self,
         id: str,
         *,
-        sms_template: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        sms_template: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthenticationChallenge:
         """Challenge Factor
 
@@ -490,7 +491,7 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "sms_template": sms_template,
@@ -509,11 +510,11 @@ class AsyncMultiFactorAuth:
         self,
         userland_user_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors
 
@@ -559,10 +560,10 @@ class AsyncMultiFactorAuth:
         userland_user_id: str,
         *,
         type: Literal["totp"],
-        totp_issuer: Optional[str] = None,
-        totp_user: Optional[str] = None,
-        totp_secret: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        totp_issuer: str | None = None,
+        totp_user: str | None = None,
+        totp_secret: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> UserAuthenticationFactorEnrollResponse:
         """Enroll an authentication factor
 
@@ -585,7 +586,7 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "type": type,

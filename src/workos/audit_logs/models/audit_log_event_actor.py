@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Union
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class AuditLogEventActor:
     """Actor identifier."""
     type: str
     """Actor type."""
-    name: Optional[str] = None
+    name: str | None = None
     """Optional actor name."""
-    metadata: Optional[Dict[str, Union[str, float, bool]]] = None
+    metadata: dict[str, str | float | bool] | None = None
     """Additional data associated with the event or entity."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogEventActor":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogEventActor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class AuditLogEventActor:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogEventActor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["type"] = self.type
         if self.name is not None:

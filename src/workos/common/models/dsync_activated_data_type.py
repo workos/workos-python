@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -37,7 +36,7 @@ class DsyncActivatedDataType(str, Enum):
     WORKDAY = "workday"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["DsyncActivatedDataType"]:
+    def _missing_(cls, value: object) -> DsyncActivatedDataType | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

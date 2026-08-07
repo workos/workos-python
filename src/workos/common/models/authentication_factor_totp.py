@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -17,7 +18,7 @@ class AuthenticationFactorTotp:
     """The user's account name displayed in their authenticator app. Defaults to the user's email."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationFactorTotp":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationFactorTotp:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class AuthenticationFactorTotp:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationFactorTotp", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["issuer"] = self.issuer
         result["user"] = self.user
         return result

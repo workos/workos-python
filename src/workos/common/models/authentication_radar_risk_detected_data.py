@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
+
 from .authentication_radar_risk_detected_data_action import (
     AuthenticationRadarRiskDetectedDataAction,
 )
@@ -17,14 +19,14 @@ class AuthenticationRadarRiskDetectedData:
 
     auth_method: str
     """The authentication method used."""
-    action: "AuthenticationRadarRiskDetectedDataAction"
-    control: Optional[str]
+    action: AuthenticationRadarRiskDetectedDataAction
+    control: str | None
     """The control action taken for the detected risk."""
-    blocklist_type: Optional[str]
+    blocklist_type: str | None
     """The type of blocklist that triggered the risk detection."""
-    ip_address: Optional[str]
+    ip_address: str | None
     """The IP address of the request."""
-    user_agent: Optional[str]
+    user_agent: str | None
     """The user agent of the request."""
     user_id: str
     """The ID of the user."""
@@ -32,7 +34,7 @@ class AuthenticationRadarRiskDetectedData:
     """The email address of the user."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationRadarRiskDetectedData":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationRadarRiskDetectedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -48,9 +50,9 @@ class AuthenticationRadarRiskDetectedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationRadarRiskDetectedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["auth_method"] = self.auth_method
         result["action"] = (
             self.action.value if isinstance(self.action, Enum) else self.action

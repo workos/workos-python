@@ -2,35 +2,36 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
 from workos.common.models.group import Group
+from workos.common.models.pagination_order import PaginationOrder
 from workos.common.models.user_organization_membership_base_list_data import (
     UserOrganizationMembershipBaseListData,
 )
-from workos.common.models.pagination_order import PaginationOrder
+
 from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 
 
 class Groups:
     """Groups API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_organization_groups(
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Group]:
         """List groups
 
@@ -77,8 +78,8 @@ class Groups:
         organization_id: str,
         *,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Create a group
 
@@ -102,7 +103,7 @@ class Groups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "name": name,
         }
         if not isinstance(description, NotGiven):
@@ -120,7 +121,7 @@ class Groups:
         organization_id: str,
         group_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Get a group
 
@@ -153,9 +154,9 @@ class Groups:
         organization_id: str,
         group_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Update a group
 
@@ -180,7 +181,7 @@ class Groups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -202,7 +203,7 @@ class Groups:
         organization_id: str,
         group_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a group
 
@@ -231,11 +232,11 @@ class Groups:
         organization_id: str,
         group_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
 
@@ -290,7 +291,7 @@ class Groups:
         group_id: str,
         *,
         organization_membership_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Add a member to a Group
 
@@ -314,7 +315,7 @@ class Groups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_membership_id": organization_membership_id,
         }
         return self._client.request(
@@ -337,7 +338,7 @@ class Groups:
         group_id: str,
         om_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a member from a Group
 
@@ -373,18 +374,18 @@ class Groups:
 class AsyncGroups:
     """Groups API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_organization_groups(
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Group]:
         """List groups
 
@@ -431,8 +432,8 @@ class AsyncGroups:
         organization_id: str,
         *,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Create a group
 
@@ -456,7 +457,7 @@ class AsyncGroups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "name": name,
         }
         if not isinstance(description, NotGiven):
@@ -474,7 +475,7 @@ class AsyncGroups:
         organization_id: str,
         group_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Get a group
 
@@ -507,9 +508,9 @@ class AsyncGroups:
         organization_id: str,
         group_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Update a group
 
@@ -534,7 +535,7 @@ class AsyncGroups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -556,7 +557,7 @@ class AsyncGroups:
         organization_id: str,
         group_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a group
 
@@ -585,11 +586,11 @@ class AsyncGroups:
         organization_id: str,
         group_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
 
@@ -644,7 +645,7 @@ class AsyncGroups:
         group_id: str,
         *,
         organization_membership_id: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Group:
         """Add a member to a Group
 
@@ -668,7 +669,7 @@ class AsyncGroups:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "organization_membership_id": organization_membership_id,
         }
         return await self._client.request(
@@ -691,7 +692,7 @@ class AsyncGroups:
         group_id: str,
         om_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a member from a Group
 

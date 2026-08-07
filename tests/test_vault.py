@@ -3,20 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.vault.models import (
-    CreateDataKeyResponse,
-    DecryptResponse,
-    ObjectMetadata,
-    ObjectSummary,
-    ObjectWithoutValue,
-    VaultObject,
-    VersionListResponse,
-    VaultOrder,
-)
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -24,6 +13,17 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
+from workos.vault.models import (
+    CreateDataKeyResponse,
+    DecryptResponse,
+    ObjectMetadata,
+    ObjectSummary,
+    ObjectWithoutValue,
+    VaultObject,
+    VaultOrder,
+    VersionListResponse,
 )
 
 

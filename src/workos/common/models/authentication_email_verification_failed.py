@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .authentication_email_verification_failed_data import (
     AuthenticationEmailVerificationFailedData,
@@ -24,14 +23,14 @@ class AuthenticationEmailVerificationFailed:
     id: str
     """Unique identifier for the event."""
     event: Literal["authentication.email_verification_failed"]
-    data: "AuthenticationEmailVerificationFailedData"
+    data: AuthenticationEmailVerificationFailedData
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
-    context: Optional["EventContext"] = None
+    context: EventContext | None = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationEmailVerificationFailed":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationEmailVerificationFailed:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,19 +38,19 @@ class AuthenticationEmailVerificationFailed:
                 id=data["id"],
                 event=data.get("event", "authentication.email_verification_failed"),
                 data=AuthenticationEmailVerificationFailedData.from_dict(
-                    cast(Dict[str, Any], data["data"])
+                    cast(dict[str, Any], data["data"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
-                context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
+                context=EventContext.from_dict(cast(dict[str, Any], _v_context))
                 if (_v_context := data.get("context")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationEmailVerificationFailed", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["event"] = self.event

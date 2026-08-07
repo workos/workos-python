@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,11 +12,11 @@ from workos._types import _raise_deserialize_error
 class AuditLogSchemaActor:
     """The metadata schema for the actor."""
 
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
     """The JSON Schema definition for actor metadata."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaActor":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogSchemaActor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class AuditLogSchemaActor:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogSchemaActor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["metadata"] = self.metadata
         return result

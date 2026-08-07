@@ -54,6 +54,9 @@ from .data_integrations_list_response_data_connected_account import (
 from .data_integrations_upsert_api_key_request import (
     DataIntegrationsUpsertApiKeyRequest as DataIntegrationsUpsertApiKeyRequest,
 )
+from .data_integrations_upsert_client_credentials_request import (
+    DataIntegrationsUpsertClientCredentialsRequest as DataIntegrationsUpsertClientCredentialsRequest,
+)
 from .data_integrations_vend_credentials_request import (
     DataIntegrationsVendCredentialsRequest as DataIntegrationsVendCredentialsRequest,
 )

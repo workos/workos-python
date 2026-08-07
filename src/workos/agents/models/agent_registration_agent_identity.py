@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -15,7 +15,7 @@ class AgentRegistrationAgentIdentity:
 
     id: str
     """Unique identifier of the agent identity."""
-    userland_user_id: Optional[str]
+    userland_user_id: str | None
     """Identifier of the AuthKit user the agent identity is bound to, or `null` when the agent is not associated with a user."""
     created_at: datetime
     """The timestamp when the agent identity was created."""
@@ -23,7 +23,7 @@ class AgentRegistrationAgentIdentity:
     """The timestamp when the agent identity was last updated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationAgentIdentity":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationAgentIdentity:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -35,9 +35,9 @@ class AgentRegistrationAgentIdentity:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationAgentIdentity", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         if self.userland_user_id is not None:
             result["userland_user_id"] = self.userland_user_id

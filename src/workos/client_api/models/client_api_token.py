@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -17,7 +18,7 @@ class ClientApiToken:
     """The ID of the user to issue the Client API token for."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ClientApiToken":
+    def from_dict(cls, data: dict[str, Any]) -> ClientApiToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class ClientApiToken:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ClientApiToken", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["user_id"] = self.user_id
         return result

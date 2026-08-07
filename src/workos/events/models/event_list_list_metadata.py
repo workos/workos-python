@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,11 +12,11 @@ from workos._types import _raise_deserialize_error
 class EventListListMetadata:
     """Pagination cursor for navigating to the next page of results."""
 
-    after: Optional[str]
+    after: str | None
     """An object ID that defines your place in the list. When the ID is not present, you are at the end of the list."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventListListMetadata":
+    def from_dict(cls, data: dict[str, Any]) -> EventListListMetadata:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,9 +25,9 @@ class EventListListMetadata:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EventListListMetadata", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.after is not None:
             result["after"] = self.after
         else:

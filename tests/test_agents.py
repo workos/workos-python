@@ -3,16 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.agents.models import (
-    AgentAdminLinkClaimAttemptToExternalUserRequestUser,
-    AgentCredentialValidation,
-    AgentRegistration,
-    ClaimViewResponse,
-)
-from workos.common.models import AgentAdminValidateCredentialRequestType
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -21,6 +14,13 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos.agents.models import (
+    AgentAdminLinkClaimAttemptToExternalUserRequestUser,
+    AgentCredentialValidation,
+    AgentRegistration,
+    ClaimViewResponse,
+)
+from workos.common.models import AgentAdminValidateCredentialRequestType
 
 
 class TestAgents:

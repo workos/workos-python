@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.generate_link_intent import GenerateLinkIntent
 
@@ -15,11 +16,11 @@ class GenerateLink:
 
     organization: str
     """An [Organization](https://workos.com/docs/reference/organization) identifier."""
-    return_url: Optional[str] = None
+    return_url: str | None = None
     """The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used."""
-    success_url: Optional[str] = None
+    success_url: str | None = None
     """The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used."""
-    intent: Optional["GenerateLinkIntent"] = None
+    intent: GenerateLinkIntent | None = None
     """
       The intent of the Admin Portal.
         - `sso` - Launch Admin Portal for creating SSO connections
@@ -29,11 +30,11 @@ class GenerateLink:
         - `domain_verification` - Launch Admin Portal for Domain Verification
         - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
         - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key"""
-    it_contact_emails: Optional[List[str]] = None
+    it_contact_emails: list[str] | None = None
     """The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GenerateLink":
+    def from_dict(cls, data: dict[str, Any]) -> GenerateLink:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -48,9 +49,9 @@ class GenerateLink:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GenerateLink", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organization"] = self.organization
         if self.return_url is not None:
             result["return_url"] = self.return_url

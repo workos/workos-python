@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
+
 from .vault_byok_key_provider import VaultByokKeyProvider
 
 
@@ -15,10 +17,10 @@ class VaultByokKeyDeletedData:
 
     organization_id: str
     """The unique identifier of the organization."""
-    key_provider: "VaultByokKeyProvider"
+    key_provider: VaultByokKeyProvider
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "VaultByokKeyDeletedData":
+    def from_dict(cls, data: dict[str, Any]) -> VaultByokKeyDeletedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -28,9 +30,9 @@ class VaultByokKeyDeletedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("VaultByokKeyDeletedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["key_provider"] = (
             self.key_provider.value

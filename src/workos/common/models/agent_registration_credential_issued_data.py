@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal, Union
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .access_token_agent_registration_credential_issued_data_detail import (
@@ -25,10 +25,10 @@ class AgentRegistrationCredentialIssuedData:
     """Unique identifier of the agent registration credential."""
     agent_registration_id: str
     """The ID of the agent registration."""
-    detail: Union[
-        "AgentRegistrationCredentialIssuedDataDetail",
-        "AccessTokenAgentRegistrationCredentialIssuedDataDetail",
-    ]
+    detail: (
+        AgentRegistrationCredentialIssuedDataDetail
+        | AccessTokenAgentRegistrationCredentialIssuedDataDetail
+    )
     """Details of the issued credential."""
     created_at: str
     """The timestamp when the credential was issued."""
@@ -36,13 +36,13 @@ class AgentRegistrationCredentialIssuedData:
     """The timestamp when the credential was last updated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationCredentialIssuedData":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationCredentialIssuedData:
         """Deserialize from a dictionary."""
         try:
             _detail_raw = data["detail"]
-            _detail_data = cast(Dict[str, Any], _detail_raw)
+            _detail_data = cast(dict[str, Any], _detail_raw)
             _detail_disc = cast(str, _detail_data.get("kind"))
-            _detail_disc_map: Dict[str, Any] = {
+            _detail_disc_map: dict[str, Any] = {
                 "api_key": AgentRegistrationCredentialIssuedDataDetail,
                 "access_token": AccessTokenAgentRegistrationCredentialIssuedDataDetail,
             }
@@ -63,9 +63,9 @@ class AgentRegistrationCredentialIssuedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationCredentialIssuedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["agent_registration_id"] = self.agent_registration_id

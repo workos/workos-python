@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.radar_standalone_response_blocklist_type import (
     RadarStandaloneResponseBlocklistType,
@@ -21,19 +22,19 @@ from workos.common.models.radar_standalone_response_verdict import (
 class RadarStandaloneResponse:
     """Radar Standalone Response model."""
 
-    verdict: "RadarStandaloneResponseVerdict"
+    verdict: RadarStandaloneResponseVerdict
     """The verdict of the risk assessment."""
     reason: str
     """A human-readable reason for the verdict."""
     attempt_id: str
     """Unique identifier of the authentication attempt."""
-    control: Optional["RadarStandaloneResponseControl"] = None
+    control: RadarStandaloneResponseControl | None = None
     """The Radar control that triggered the verdict. Only present if the verdict is `block` or `challenge`."""
-    blocklist_type: Optional["RadarStandaloneResponseBlocklistType"] = None
+    blocklist_type: RadarStandaloneResponseBlocklistType | None = None
     """The type of blocklist entry that triggered the verdict. Only present if the control is `restriction`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RadarStandaloneResponse":
+    def from_dict(cls, data: dict[str, Any]) -> RadarStandaloneResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -50,9 +51,9 @@ class RadarStandaloneResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["verdict"] = (
             self.verdict.value if isinstance(self.verdict, Enum) else self.verdict
         )

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .audit_log_schema_actor_input import AuditLogSchemaActorInput
@@ -15,23 +15,23 @@ from .audit_log_schema_target_input import AuditLogSchemaTargetInput
 class AuditLogSchemaInput:
     """Audit Log Schema Input model."""
 
-    targets: List["AuditLogSchemaTargetInput"]
+    targets: list[AuditLogSchemaTargetInput]
     """The list of targets for the schema."""
-    actor: Optional["AuditLogSchemaActorInput"] = None
+    actor: AuditLogSchemaActorInput | None = None
     """The metadata schema for the actor."""
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
     """Optional JSON schema for event metadata."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaInput":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogSchemaInput:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 targets=[
-                    AuditLogSchemaTargetInput.from_dict(cast(Dict[str, Any], item))
+                    AuditLogSchemaTargetInput.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
-                actor=AuditLogSchemaActorInput.from_dict(cast(Dict[str, Any], _v_actor))
+                actor=AuditLogSchemaActorInput.from_dict(cast(dict[str, Any], _v_actor))
                 if (_v_actor := data.get("actor")) is not None
                 else None,
                 metadata=data.get("metadata"),
@@ -39,9 +39,9 @@ class AuditLogSchemaInput:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogSchemaInput", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["targets"] = [item.to_dict() for item in self.targets]
         if self.actor is not None:
             result["actor"] = self.actor.to_dict()

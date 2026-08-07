@@ -2,37 +2,38 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     ApiKey,
     ApiKeyValidationResponse,
     OrganizationApiKey,
     OrganizationApiKeyWithValue,
 )
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class ApiKeys:
     """Api Keys API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_organization_api_keys(
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[OrganizationApiKey]:
         """List API keys for an organization
 
@@ -78,9 +79,9 @@ class ApiKeys:
         organization_id: str,
         *,
         name: str,
-        permissions: Optional[List[str]] = None,
-        expires_at: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str] | None = None,
+        expires_at: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
 
@@ -103,7 +104,7 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -124,7 +125,7 @@ class ApiKeys:
         self,
         *,
         value: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ApiKeyValidationResponse:
         """Validate API key
 
@@ -143,7 +144,7 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "value": value,
         }
         return self._client.request(
@@ -158,7 +159,7 @@ class ApiKeys:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an API key
 
@@ -184,8 +185,8 @@ class ApiKeys:
         self,
         id: str,
         *,
-        expires_at: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        expires_at: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ApiKey:
         """Expire an API key
 
@@ -207,7 +208,7 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if not isinstance(expires_at, NotGiven):
             body["expires_at"] = expires_at
         return self._client.request(
@@ -222,18 +223,18 @@ class ApiKeys:
 class AsyncApiKeys:
     """Api Keys API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_organization_api_keys(
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[OrganizationApiKey]:
         """List API keys for an organization
 
@@ -279,9 +280,9 @@ class AsyncApiKeys:
         organization_id: str,
         *,
         name: str,
-        permissions: Optional[List[str]] = None,
-        expires_at: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str] | None = None,
+        expires_at: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
 
@@ -304,7 +305,7 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -325,7 +326,7 @@ class AsyncApiKeys:
         self,
         *,
         value: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ApiKeyValidationResponse:
         """Validate API key
 
@@ -344,7 +345,7 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "value": value,
         }
         return await self._client.request(
@@ -359,7 +360,7 @@ class AsyncApiKeys:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an API key
 
@@ -385,8 +386,8 @@ class AsyncApiKeys:
         self,
         id: str,
         *,
-        expires_at: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        expires_at: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ApiKey:
         """Expire an API key
 
@@ -408,7 +409,7 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         if not isinstance(expires_at, NotGiven):
             body["expires_at"] = expires_at
         return await self._client.request(

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,7 +20,7 @@ class GroupRoleAssignmentResource:
     """The slug of the resource type this resource belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GroupRoleAssignmentResource":
+    def from_dict(cls, data: dict[str, Any]) -> GroupRoleAssignmentResource:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class GroupRoleAssignmentResource:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GroupRoleAssignmentResource", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["external_id"] = self.external_id
         result["resource_type_slug"] = self.resource_type_slug

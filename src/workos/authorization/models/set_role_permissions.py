@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,11 +12,11 @@ from workos._types import _raise_deserialize_error
 class SetRolePermissions:
     """Set Role Permissions model."""
 
-    permissions: List[str]
+    permissions: list[str]
     """The permission slugs to assign to the role."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SetRolePermissions":
+    def from_dict(cls, data: dict[str, Any]) -> SetRolePermissions:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class SetRolePermissions:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SetRolePermissions", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["permissions"] = self.permissions
         return result

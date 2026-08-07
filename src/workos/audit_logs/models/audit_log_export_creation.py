@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -19,21 +19,21 @@ class AuditLogExportCreation:
     """ISO-8601 value for start of the export range."""
     range_end: datetime
     """ISO-8601 value for end of the export range."""
-    actions: Optional[List[str]] = None
+    actions: list[str] | None = None
     """List of actions to filter against."""
-    actors: Optional[List[str]] = None
+    actors: list[str] | None = None
     """Deprecated. Use `actor_names` instead.
 
     .. deprecated:: This field is deprecated."""
-    actor_names: Optional[List[str]] = None
+    actor_names: list[str] | None = None
     """List of actor names to filter against."""
-    actor_ids: Optional[List[str]] = None
+    actor_ids: list[str] | None = None
     """List of actor IDs to filter against."""
-    targets: Optional[List[str]] = None
+    targets: list[str] | None = None
     """List of target types to filter against."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogExportCreation":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogExportCreation:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -49,9 +49,9 @@ class AuditLogExportCreation:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogExportCreation", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["range_start"] = _format_datetime(self.range_start)
         result["range_end"] = _format_datetime(self.range_end)

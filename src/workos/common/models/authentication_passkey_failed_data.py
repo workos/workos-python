@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .authentication_passkey_failed_data_error import (
@@ -18,19 +18,19 @@ class AuthenticationPasskeyFailedData:
 
     type: Literal["passkey"]
     status: Literal["failed"]
-    ip_address: Optional[str]
+    ip_address: str | None
     """The IP address of the request."""
-    user_agent: Optional[str]
+    user_agent: str | None
     """The user agent of the request."""
-    user_id: Optional[str]
+    user_id: str | None
     """The ID of the user."""
-    email: Optional[str]
+    email: str | None
     """The email address of the user."""
-    error: "AuthenticationPasskeyFailedDataError"
+    error: AuthenticationPasskeyFailedDataError
     """Details about the authentication error."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationPasskeyFailedData":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationPasskeyFailedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -41,15 +41,15 @@ class AuthenticationPasskeyFailedData:
                 user_id=data["user_id"],
                 email=data["email"],
                 error=AuthenticationPasskeyFailedDataError.from_dict(
-                    cast(Dict[str, Any], data["error"])
+                    cast(dict[str, Any], data["error"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationPasskeyFailedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         result["status"] = self.status
         if self.ip_address is not None:

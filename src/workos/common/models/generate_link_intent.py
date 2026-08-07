@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -21,7 +20,7 @@ class GenerateLinkIntent(str, Enum):
     BRING_YOUR_OWN_KEY = "bring_your_own_key"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["GenerateLinkIntent"]:
+    def _missing_(cls, value: object) -> GenerateLinkIntent | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

@@ -2,35 +2,36 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import Directory, DirectoryUserWithGroups
 from workos.common.models.directory_group import DirectoryGroup
 from workos.common.models.pagination_order import PaginationOrder
+
 from .._pagination import AsyncPage, SyncPage
+from .._types import RequestOptions, enum_value
+from .models import Directory, DirectoryUserWithGroups
 
 
 class DirectorySync:
     """Directory Sync API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_directories(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        search: Optional[str] = None,
-        domain: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        search: str | None = None,
+        domain: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Directory]:
         """List Directories
 
@@ -81,7 +82,7 @@ class DirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Directory:
         """Get a Directory
 
@@ -112,7 +113,7 @@ class DirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Directory
 
@@ -137,13 +138,13 @@ class DirectorySync:
     def list_groups(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        directory: Optional[str] = None,
-        user: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        directory: str | None = None,
+        user: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[DirectoryGroup]:
         """List Directory Groups
 
@@ -193,7 +194,7 @@ class DirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DirectoryGroup:
         """Get a Directory Group
 
@@ -223,15 +224,15 @@ class DirectorySync:
     def list_users(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        directory: Optional[str] = None,
-        group: Optional[str] = None,
-        idp_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        directory: str | None = None,
+        group: str | None = None,
+        idp_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[DirectoryUserWithGroups]:
         """List Directory Users
 
@@ -285,7 +286,7 @@ class DirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DirectoryUserWithGroups:
         """Get a Directory User
 
@@ -316,20 +317,20 @@ class DirectorySync:
 class AsyncDirectorySync:
     """Directory Sync API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_directories(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        search: Optional[str] = None,
-        domain: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        search: str | None = None,
+        domain: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Directory]:
         """List Directories
 
@@ -380,7 +381,7 @@ class AsyncDirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Directory:
         """Get a Directory
 
@@ -411,7 +412,7 @@ class AsyncDirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Directory
 
@@ -436,13 +437,13 @@ class AsyncDirectorySync:
     async def list_groups(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        directory: Optional[str] = None,
-        user: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        directory: str | None = None,
+        user: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[DirectoryGroup]:
         """List Directory Groups
 
@@ -492,7 +493,7 @@ class AsyncDirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DirectoryGroup:
         """Get a Directory Group
 
@@ -522,15 +523,15 @@ class AsyncDirectorySync:
     async def list_users(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        directory: Optional[str] = None,
-        group: Optional[str] = None,
-        idp_id: Optional[str] = None,
-        email: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        directory: str | None = None,
+        group: str | None = None,
+        idp_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[DirectoryUserWithGroups]:
         """List Directory Users
 
@@ -584,7 +585,7 @@ class AsyncDirectorySync:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DirectoryUserWithGroups:
         """Get a Directory User
 

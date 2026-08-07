@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .pipe_connected_account_state import PipeConnectedAccountState
 
 
@@ -23,13 +24,13 @@ class PipeConnectedAccount:
     """The unique ID of the data integration."""
     provider_slug: str
     """The provider slug for this connected account."""
-    user_id: Optional[str]
+    user_id: str | None
     """The ID of the User the connected account belongs to."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The ID of the Organization the connected account belongs to."""
-    scopes: List[str]
+    scopes: list[str]
     """The OAuth scopes granted for this connected account."""
-    state: "PipeConnectedAccountState"
+    state: PipeConnectedAccountState
     """The state of the connected account."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -37,7 +38,7 @@ class PipeConnectedAccount:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PipeConnectedAccount":
+    def from_dict(cls, data: dict[str, Any]) -> PipeConnectedAccount:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -55,9 +56,9 @@ class PipeConnectedAccount:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("PipeConnectedAccount", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["data_integration_id"] = self.data_integration_id

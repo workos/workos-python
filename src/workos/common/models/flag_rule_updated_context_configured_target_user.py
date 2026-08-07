@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -18,8 +19,8 @@ class FlagRuleUpdatedContextConfiguredTargetUser:
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextConfiguredTargetUser":
+        cls, data: dict[str, Any]
+    ) -> FlagRuleUpdatedContextConfiguredTargetUser:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,9 +30,9 @@ class FlagRuleUpdatedContextConfiguredTargetUser:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextConfiguredTargetUser", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["email"] = self.email
         return result

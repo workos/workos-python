@@ -32,6 +32,8 @@ class ConnectionsConnectionType(str, Enum):
     GOOGLE_OAUTH = "GoogleOAuth"
     GOOGLE_OIDC = "GoogleOIDC"
     GOOGLE_SAML = "GoogleSAML"
+    GROK_OAUTH = "GrokOAuth"
+    XO_AUTH = "XOAuth"
     INTUIT_OAUTH = "IntuitOAuth"
     JUMP_CLOUD_SAML = "JumpCloudSAML"
     KEYCLOAK_SAML = "KeycloakSAML"
@@ -92,6 +94,8 @@ ConnectionsConnectionTypeLiteral: TypeAlias = Literal[
     "GoogleOAuth",
     "GoogleOIDC",
     "GoogleSAML",
+    "GrokOAuth",
+    "XOAuth",
     "IntuitOAuth",
     "JumpCloudSAML",
     "KeycloakSAML",

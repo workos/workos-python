@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Optional, Union
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .audit_log_event_actor import AuditLogEventActor
 from .audit_log_event_context import AuditLogEventContext
@@ -22,31 +21,31 @@ class AuditLogEvent:
     """Identifier of what happened."""
     occurred_at: datetime
     """ISO-8601 value of when the action occurred."""
-    actor: "AuditLogEventActor"
+    actor: AuditLogEventActor
     """The entity that performed the action."""
-    targets: List["AuditLogEventTarget"]
+    targets: list[AuditLogEventTarget]
     """The resources affected by the action."""
-    context: "AuditLogEventContext"
+    context: AuditLogEventContext
     """Additional context about where and how the action occurred."""
-    metadata: Optional[Dict[str, Union[str, float, bool]]] = None
+    metadata: dict[str, str | float | bool] | None = None
     """Additional data associated with the event or entity."""
-    version: Optional[int] = None
+    version: int | None = None
     """What schema version the event is associated with."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogEvent":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogEvent:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 action=data["action"],
                 occurred_at=_parse_datetime(data["occurred_at"]),
-                actor=AuditLogEventActor.from_dict(cast(Dict[str, Any], data["actor"])),
+                actor=AuditLogEventActor.from_dict(cast(dict[str, Any], data["actor"])),
                 targets=[
-                    AuditLogEventTarget.from_dict(cast(Dict[str, Any], item))
+                    AuditLogEventTarget.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
                 context=AuditLogEventContext.from_dict(
-                    cast(Dict[str, Any], data["context"])
+                    cast(dict[str, Any], data["context"])
                 ),
                 metadata=data.get("metadata"),
                 version=data.get("version"),
@@ -54,9 +53,9 @@ class AuditLogEvent:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogEvent", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["action"] = self.action
         result["occurred_at"] = _format_datetime(self.occurred_at)
         result["actor"] = self.actor.to_dict()

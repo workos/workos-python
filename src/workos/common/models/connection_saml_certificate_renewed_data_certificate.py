@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .connection_saml_certificate_renewed_data_certificate_certificate_type import (
     ConnectionSAMLCertificateRenewedDataCertificateCertificateType,
 )
@@ -17,15 +18,15 @@ from .connection_saml_certificate_renewed_data_certificate_certificate_type impo
 class ConnectionSAMLCertificateRenewedDataCertificate:
     """The renewed SAML certificate details."""
 
-    certificate_type: "ConnectionSAMLCertificateRenewedDataCertificateCertificateType"
+    certificate_type: ConnectionSAMLCertificateRenewedDataCertificateCertificateType
     """The type of the SAML certificate."""
     expiry_date: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewedDataCertificate":
+        cls, data: dict[str, Any]
+    ) -> ConnectionSAMLCertificateRenewedDataCertificate:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,9 +40,9 @@ class ConnectionSAMLCertificateRenewedDataCertificate:
                 "ConnectionSAMLCertificateRenewedDataCertificate", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["certificate_type"] = (
             self.certificate_type.value
             if isinstance(self.certificate_type, Enum)

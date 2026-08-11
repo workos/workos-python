@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,11 +14,11 @@ class AuditLogSchemaTarget:
 
     type: str
     """The type of the target resource."""
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
     """Additional data associated with the event or entity."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaTarget":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogSchemaTarget:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class AuditLogSchemaTarget:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogSchemaTarget", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         if self.metadata is not None:
             result["metadata"] = self.metadata

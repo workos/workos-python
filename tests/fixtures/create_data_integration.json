@@ -10,7 +10,7 @@
     "oauth"
   ],
   "config": {
-    "account_identifier": "acme-prod"
+    "account": "myorg-myaccount"
   },
   "credentials": {
     "type": "custom",

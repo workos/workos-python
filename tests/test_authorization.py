@@ -3,26 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import (
-    AuthorizationCheck,
-    AuthorizationResource,
-    GroupRoleAssignment,
-    GroupRoleAssignmentList,
-    Permission,
-    Role,
-    RoleList,
-    UserRoleAssignment,
-    AuthorizationAssignment,
-)
-from workos.common.models import (
-    AuthorizationPermission,
-    UserOrganizationMembershipBaseListData,
-    PaginationOrder,
-)
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -31,10 +14,27 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos._pagination import AsyncPage, SyncPage
 from workos.authorization._resource import (
-    ResourceTargetById,
-    ParentResourceById,
     ParentById,
+    ParentResourceById,
+    ResourceTargetById,
+)
+from workos.authorization.models import (
+    AuthorizationAssignment,
+    AuthorizationCheck,
+    AuthorizationResource,
+    GroupRoleAssignment,
+    GroupRoleAssignmentList,
+    Permission,
+    Role,
+    RoleList,
+    UserRoleAssignment,
+)
+from workos.common.models import (
+    AuthorizationPermission,
+    PaginationOrder,
+    UserOrganizationMembershipBaseListData,
 )
 
 

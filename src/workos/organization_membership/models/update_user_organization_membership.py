@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,13 +12,13 @@ from workos._types import _raise_deserialize_error
 class UpdateUserOrganizationMembership:
     """Update User Organization Membership model."""
 
-    role_slug: Optional[str] = None
+    role_slug: str | None = None
     """A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`."""
-    role_slugs: Optional[List[str]] = None
+    role_slugs: list[str] | None = None
     """An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateUserOrganizationMembership":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateUserOrganizationMembership:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class UpdateUserOrganizationMembership:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateUserOrganizationMembership", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.role_slug is not None:
             result["role_slug"] = self.role_slug
         if self.role_slugs is not None:

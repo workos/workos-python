@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .api_key import ApiKey
@@ -14,16 +14,16 @@ from .api_key import ApiKey
 class ApiKeyValidationResponse:
     """Api Key Validation Response model."""
 
-    api_key: Optional["ApiKey"]
-    agent_registration_id: Optional[str] = None
+    api_key: ApiKey | None
+    agent_registration_id: str | None = None
     """The ID of the agent registration this API Key was issued for. Present only when the API Key is assigned to an agent registration."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyValidationResponse":
+    def from_dict(cls, data: dict[str, Any]) -> ApiKeyValidationResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                api_key=ApiKey.from_dict(cast(Dict[str, Any], _v_api_key))
+                api_key=ApiKey.from_dict(cast(dict[str, Any], _v_api_key))
                 if (_v_api_key := data["api_key"]) is not None
                 else None,
                 agent_registration_id=data.get("agent_registration_id"),
@@ -31,9 +31,9 @@ class ApiKeyValidationResponse:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApiKeyValidationResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.api_key is not None:
             result["api_key"] = self.api_key.to_dict()
         else:

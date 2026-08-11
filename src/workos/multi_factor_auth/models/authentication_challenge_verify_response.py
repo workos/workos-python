@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
+from typing import Any, cast
 
+from workos._types import _raise_deserialize_error
 from workos.common.models.authentication_challenge import AuthenticationChallenge
 
 
@@ -14,27 +13,27 @@ from workos.common.models.authentication_challenge import AuthenticationChalleng
 class AuthenticationChallengeVerifyResponse:
     """Authentication Challenge Verify Response model."""
 
-    challenge: "AuthenticationChallenge"
+    challenge: AuthenticationChallenge
     """The authentication challenge object."""
     valid: bool
     """Whether the code was valid."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationChallengeVerifyResponse":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationChallengeVerifyResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 challenge=AuthenticationChallenge.from_dict(
-                    cast(Dict[str, Any], data["challenge"])
+                    cast(dict[str, Any], data["challenge"])
                 ),
                 valid=data["valid"],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationChallengeVerifyResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["challenge"] = self.challenge.to_dict()
         result["valid"] = self.valid
         return result

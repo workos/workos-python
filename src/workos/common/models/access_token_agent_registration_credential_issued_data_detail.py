@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class AccessTokenAgentRegistrationCredentialIssuedDataDetail:
     """The kind of credential issued."""
     jti: str
     """The JWT ID of the issued access token."""
-    expires_at: Union[str, Optional[Literal["null"]]]
+    expires_at: str | Literal["null"] | None
     """The timestamp when the access token expires."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AccessTokenAgentRegistrationCredentialIssuedDataDetail":
+        cls, data: dict[str, Any]
+    ) -> AccessTokenAgentRegistrationCredentialIssuedDataDetail:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +35,9 @@ class AccessTokenAgentRegistrationCredentialIssuedDataDetail:
                 "AccessTokenAgentRegistrationCredentialIssuedDataDetail", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["kind"] = self.kind
         result["jti"] = self.jti
         result["expires_at"] = self.expires_at

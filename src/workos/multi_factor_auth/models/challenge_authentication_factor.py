@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,11 +12,11 @@ from workos._types import _raise_deserialize_error
 class ChallengeAuthenticationFactor:
     """Challenge Authentication Factor model."""
 
-    sms_template: Optional[str] = None
+    sms_template: str | None = None
     """A custom template for the SMS message. Use the {{code}} placeholder to include the verification code."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ChallengeAuthenticationFactor":
+    def from_dict(cls, data: dict[str, Any]) -> ChallengeAuthenticationFactor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,9 +25,9 @@ class ChallengeAuthenticationFactor:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ChallengeAuthenticationFactor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.sms_template is not None:
             result["sms_template"] = self.sms_template
         return result

@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .connection_saml_certificate_renewed_data_certificate import (
     ConnectionSAMLCertificateRenewedDataCertificate,
@@ -21,32 +20,32 @@ from .connection_saml_certificate_renewed_data_connection import (
 class ConnectionSAMLCertificateRenewedData:
     """The event payload."""
 
-    connection: "ConnectionSAMLCertificateRenewedDataConnection"
+    connection: ConnectionSAMLCertificateRenewedDataConnection
     """The connection with the renewed certificate."""
-    certificate: "ConnectionSAMLCertificateRenewedDataCertificate"
+    certificate: ConnectionSAMLCertificateRenewedDataCertificate
     """The renewed SAML certificate details."""
     renewed_at: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionSAMLCertificateRenewedData":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectionSAMLCertificateRenewedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 connection=ConnectionSAMLCertificateRenewedDataConnection.from_dict(
-                    cast(Dict[str, Any], data["connection"])
+                    cast(dict[str, Any], data["connection"])
                 ),
                 certificate=ConnectionSAMLCertificateRenewedDataCertificate.from_dict(
-                    cast(Dict[str, Any], data["certificate"])
+                    cast(dict[str, Any], data["certificate"])
                 ),
                 renewed_at=_parse_datetime(data["renewed_at"]),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectionSAMLCertificateRenewedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["connection"] = self.connection.to_dict()
         result["certificate"] = self.certificate.to_dict()
         result["renewed_at"] = _format_datetime(self.renewed_at)

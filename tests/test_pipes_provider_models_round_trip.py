@@ -76,7 +76,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": None,
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
         }
@@ -104,7 +104,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": ["repo", "user:email"],
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
         }
@@ -121,7 +121,7 @@ class TestModelRoundTrip:
             "name": "GitHub",
             "enabled": True,
             "scopes": None,
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
             "credentials": {
@@ -156,7 +156,7 @@ class TestModelRoundTrip:
                     "name": "GitHub",
                     "enabled": True,
                     "scopes": ["repo", "user:email"],
-                    "config": {"account_identifier": "acme-prod"},
+                    "config": {"account": "myorg-myaccount"},
                     "created_at": "2024-01-15T10:30:00.000Z",
                     "updated_at": "2024-01-15T10:30:00.000Z",
                     "credentials": {

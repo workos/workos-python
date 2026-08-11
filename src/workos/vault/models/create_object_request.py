@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,7 +12,7 @@ from workos._types import _raise_deserialize_error
 class CreateObjectRequest:
     """Create Object Request model."""
 
-    key_context: Dict[str, str]
+    key_context: dict[str, str]
     """Map of values used to determine the encryption key."""
     name: str
     """Unique name for the object."""
@@ -19,7 +20,7 @@ class CreateObjectRequest:
     """Plaintext data to encrypt and store."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateObjectRequest":
+    def from_dict(cls, data: dict[str, Any]) -> CreateObjectRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class CreateObjectRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateObjectRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["key_context"] = self.key_context
         result["name"] = self.name
         result["value"] = self.value

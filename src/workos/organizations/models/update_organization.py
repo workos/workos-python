@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .organization_domain_data import OrganizationDomainData
@@ -14,25 +14,25 @@ from .organization_domain_data import OrganizationDomainData
 class UpdateOrganization:
     """Update Organization model."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """The name of the organization."""
-    allow_profiles_outside_organization: Optional[bool] = None
+    allow_profiles_outside_organization: bool | None = None
     """Whether the organization allows profiles from outside the organization to sign in."""
-    domains: Optional[List[str]] = None
+    domains: list[str] | None = None
     """The domains associated with the organization. Deprecated in favor of `domain_data`.
 
     .. deprecated:: This field is deprecated."""
-    domain_data: Optional[List["OrganizationDomainData"]] = None
+    domain_data: list[OrganizationDomainData] | None = None
     """The domains associated with the organization, including verification state."""
-    stripe_customer_id: Optional[str] = None
+    stripe_customer_id: str | None = None
     """The Stripe customer ID associated with the organization."""
-    metadata: Optional[Dict[str, str]] = None
+    metadata: dict[str, str] | None = None
     """Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization."""
-    external_id: Optional[str] = None
+    external_id: str | None = None
     """An external identifier for the Organization."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateOrganization":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateOrganization:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,7 +42,7 @@ class UpdateOrganization:
                 ),
                 domains=data.get("domains"),
                 domain_data=[
-                    OrganizationDomainData.from_dict(cast(Dict[str, Any], item))
+                    OrganizationDomainData.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_domain_data)
                 ]
                 if (_v_domain_data := data.get("domain_data")) is not None
@@ -54,9 +54,9 @@ class UpdateOrganization:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateOrganization", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.allow_profiles_outside_organization is not None:

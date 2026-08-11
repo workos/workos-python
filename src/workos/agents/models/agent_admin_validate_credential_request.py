@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.agent_admin_validate_credential_request_type import (
     AgentAdminValidateCredentialRequestType,
@@ -15,15 +16,15 @@ from workos.common.models.agent_admin_validate_credential_request_type import (
 class AgentAdminValidateCredentialRequest:
     """Agent Admin Validate Credential Request model."""
 
-    type: "AgentAdminValidateCredentialRequestType"
+    type: AgentAdminValidateCredentialRequestType
     """The kind of credential being validated — an agent API key or an agent access token."""
     credential: str
     """The credential value to validate: the API key value for `api_key`, or the access token (JWT) for `access_token`."""
-    audience: Optional[str] = None
+    audience: str | None = None
     """When provided, the access token's `aud` claim is verified against this value. Tokens issued for a different resource are rejected."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentAdminValidateCredentialRequest":
+    def from_dict(cls, data: dict[str, Any]) -> AgentAdminValidateCredentialRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +35,9 @@ class AgentAdminValidateCredentialRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentAdminValidateCredentialRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         result["credential"] = self.credential
         if self.audience is not None:

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .user_consent_option import UserConsentOption
@@ -17,20 +17,20 @@ class UserManagementLoginRequest:
 
     external_auth_id: str
     """Identifier provided when AuthKit redirected to your login page."""
-    user: "UserObject"
+    user: UserObject
     """The user to create or update in AuthKit."""
-    user_consent_options: Optional[List["UserConsentOption"]] = None
+    user_consent_options: list[UserConsentOption] | None = None
     """Array of [User Consent Options](https://workos.com/docs/reference/workos-connect/standalone/user-consent-options) to store with the session."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserManagementLoginRequest":
+    def from_dict(cls, data: dict[str, Any]) -> UserManagementLoginRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 external_auth_id=data["external_auth_id"],
-                user=UserObject.from_dict(cast(Dict[str, Any], data["user"])),
+                user=UserObject.from_dict(cast(dict[str, Any], data["user"])),
                 user_consent_options=[
-                    UserConsentOption.from_dict(cast(Dict[str, Any], item))
+                    UserConsentOption.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_user_consent_options)
                 ]
                 if (_v_user_consent_options := data.get("user_consent_options"))
@@ -40,9 +40,9 @@ class UserManagementLoginRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserManagementLoginRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["external_auth_id"] = self.external_auth_id
         result["user"] = self.user.to_dict()
         if self.user_consent_options is not None:

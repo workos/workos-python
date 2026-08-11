@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
@@ -24,15 +25,15 @@ class RadarStandaloneAssessRequest:
     """The user agent string of the request to assess."""
     email: str
     """The email address of the user making the request."""
-    auth_method: "RadarStandaloneAssessRequestAuthMethod"
+    auth_method: RadarStandaloneAssessRequestAuthMethod
     """The authentication method being used."""
-    action: "RadarStandaloneAssessRequestAction"
+    action: RadarStandaloneAssessRequestAction
     """The action being performed."""
-    signals_id: Optional[str] = None
+    signals_id: str | None = None
     """An optional Radar signals ID for the request."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RadarStandaloneAssessRequest":
+    def from_dict(cls, data: dict[str, Any]) -> RadarStandaloneAssessRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -46,9 +47,9 @@ class RadarStandaloneAssessRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneAssessRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["ip_address"] = self.ip_address
         result["user_agent"] = self.user_agent
         result["email"] = self.email

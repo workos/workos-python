@@ -5,10 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .dsync_activated_data_domain import DsyncActivatedDataDomain
 from .dsync_activated_data_state import DsyncActivatedDataState
@@ -23,9 +22,9 @@ class DsyncActivatedData:
     """Distinguishes the directory object."""
     id: str
     """Unique identifier of the directory."""
-    type: "DsyncActivatedDataType"
+    type: DsyncActivatedDataType
     """The type of the directory."""
-    state: "DsyncActivatedDataState"
+    state: DsyncActivatedDataState
     """The current state of the directory."""
     name: str
     """The name of the directory."""
@@ -35,13 +34,13 @@ class DsyncActivatedData:
     """An ISO 8601 timestamp."""
     external_key: str
     """The external key of the directory."""
-    domains: List["DsyncActivatedDataDomain"]
+    domains: list[DsyncActivatedDataDomain]
     """The domains associated with the directory."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the directory belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DsyncActivatedData":
+    def from_dict(cls, data: dict[str, Any]) -> DsyncActivatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -54,7 +53,7 @@ class DsyncActivatedData:
                 updated_at=_parse_datetime(data["updated_at"]),
                 external_key=data["external_key"],
                 domains=[
-                    DsyncActivatedDataDomain.from_dict(cast(Dict[str, Any], item))
+                    DsyncActivatedDataDomain.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["domains"])
                 ],
                 organization_id=data.get("organization_id"),
@@ -62,9 +61,9 @@ class DsyncActivatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DsyncActivatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type

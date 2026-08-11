@@ -2,14 +2,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from workos.common.models.connect_application import (
+    ConnectApplication,
+    ConnectApplicationVariant,
+)
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     ApplicationCredentialsListItem,
+    ApplicationsRegistrationTypes,
     CreateM2MApplication,
     CreateOAuthApplication,
     ExternalAuthCompleteResponse,
@@ -18,17 +26,12 @@ from .models import (
     UserConsentOption,
     UserObject,
 )
-from workos.common.models.connect_application import ConnectApplication
-from workos.common.models.connect_application import ConnectApplicationVariant
-from .models import ApplicationsRegistrationTypes
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class Connect:
     """Connect API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def complete_oauth2(
@@ -36,8 +39,8 @@ class Connect:
         *,
         external_auth_id: str,
         user: UserObject,
-        user_consent_options: Optional[List[UserConsentOption]] = None,
-        request_options: Optional[RequestOptions] = None,
+        user_consent_options: list[UserConsentOption] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ExternalAuthCompleteResponse:
         """Complete external authentication
 
@@ -69,7 +72,7 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "external_auth_id": external_auth_id,
@@ -93,15 +96,13 @@ class Connect:
     def list_applications(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        registration_types: Optional[
-            List[Union[ApplicationsRegistrationTypes, str]]
-        ] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        registration_types: list[ApplicationsRegistrationTypes | str] | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[ConnectApplicationVariant]:
         """List Connect Applications
 
@@ -153,8 +154,8 @@ class Connect:
     def create_application(
         self,
         *,
-        body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
-        request_options: Optional[RequestOptions] = None,
+        body: CreateOAuthApplication | CreateM2MApplication | dict[str, Any],
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Create a Connect Application
 
@@ -174,7 +175,7 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return cast(
             ConnectApplicationVariant,
             self._client.request(
@@ -191,15 +192,15 @@ class Connect:
         *,
         name: str,
         is_first_party: bool,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
-        uses_pkce: Optional[bool] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None = None,
+        scopes: list[str] | None = None,
+        redirect_uris: list[RedirectUriInput] | None = None,
+        uses_pkce: bool | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
-        """Create oauth application."""
-        body: Dict[str, Any] = {
+        """Create OAuth application."""
+        body: dict[str, Any] = {
             "application_type": "oauth",
             "name": name,
             "is_first_party": is_first_party,
@@ -231,12 +232,12 @@ class Connect:
         *,
         name: str,
         organization_id: str,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None = None,
+        scopes: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
-        """Create m2m application."""
-        body: Dict[str, Any] = {
+        """Create M2M application."""
+        body: dict[str, Any] = {
             "application_type": "m2m",
             "name": name,
             "organization_id": organization_id,
@@ -261,7 +262,7 @@ class Connect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Get a Connect Application
 
@@ -294,11 +295,11 @@ class Connect:
         self,
         id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        redirect_uris: list[RedirectUriInput] | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
 
@@ -322,7 +323,7 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -354,7 +355,7 @@ class Connect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Connect Application
 
@@ -380,8 +381,8 @@ class Connect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> List[ApplicationCredentialsListItem]:
+        request_options: RequestOptions | None = None,
+    ) -> list[ApplicationCredentialsListItem]:
         """List Client Secrets for a Connect Application
 
         List all client secrets associated with a Connect Application.
@@ -405,7 +406,7 @@ class Connect:
             request_options=request_options,
         )
         return [
-            ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
+            ApplicationCredentialsListItem.from_dict(cast(dict[str, Any], item))
             for item in raw
         ]
 
@@ -413,7 +414,7 @@ class Connect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> NewConnectApplicationSecret:
         """Create a new client secret for a Connect Application
 
@@ -433,7 +434,7 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         return self._client.request(
             method="post",
             path=("connect", "applications", str(id), "client_secrets"),
@@ -446,7 +447,7 @@ class Connect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Client Secret
 
@@ -472,7 +473,7 @@ class Connect:
 class AsyncConnect:
     """Connect API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def complete_oauth2(
@@ -480,8 +481,8 @@ class AsyncConnect:
         *,
         external_auth_id: str,
         user: UserObject,
-        user_consent_options: Optional[List[UserConsentOption]] = None,
-        request_options: Optional[RequestOptions] = None,
+        user_consent_options: list[UserConsentOption] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ExternalAuthCompleteResponse:
         """Complete external authentication
 
@@ -513,7 +514,7 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "external_auth_id": external_auth_id,
@@ -537,15 +538,13 @@ class AsyncConnect:
     async def list_applications(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        registration_types: Optional[
-            List[Union[ApplicationsRegistrationTypes, str]]
-        ] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        registration_types: list[ApplicationsRegistrationTypes | str] | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[ConnectApplicationVariant]:
         """List Connect Applications
 
@@ -597,8 +596,8 @@ class AsyncConnect:
     async def create_application(
         self,
         *,
-        body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
-        request_options: Optional[RequestOptions] = None,
+        body: CreateOAuthApplication | CreateM2MApplication | dict[str, Any],
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Create a Connect Application
 
@@ -618,7 +617,7 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return cast(
             ConnectApplicationVariant,
             await self._client.request(
@@ -635,15 +634,15 @@ class AsyncConnect:
         *,
         name: str,
         is_first_party: bool,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriInput]] = None,
-        uses_pkce: Optional[bool] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None = None,
+        scopes: list[str] | None = None,
+        redirect_uris: list[RedirectUriInput] | None = None,
+        uses_pkce: bool | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
-        """Create oauth application."""
-        body: Dict[str, Any] = {
+        """Create OAuth application."""
+        body: dict[str, Any] = {
             "application_type": "oauth",
             "name": name,
             "is_first_party": is_first_party,
@@ -675,12 +674,12 @@ class AsyncConnect:
         *,
         name: str,
         organization_id: str,
-        description: Optional[str] = None,
-        scopes: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None = None,
+        scopes: list[str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
-        """Create m2m application."""
-        body: Dict[str, Any] = {
+        """Create M2M application."""
+        body: dict[str, Any] = {
             "application_type": "m2m",
             "name": name,
             "organization_id": organization_id,
@@ -705,7 +704,7 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Get a Connect Application
 
@@ -738,11 +737,11 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        scopes: Union[List[str], None, NotGiven] = NOT_GIVEN,
-        redirect_uris: Union[List[RedirectUriInput], None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        redirect_uris: list[RedirectUriInput] | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
 
@@ -766,7 +765,7 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -798,7 +797,7 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Connect Application
 
@@ -824,8 +823,8 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> List[ApplicationCredentialsListItem]:
+        request_options: RequestOptions | None = None,
+    ) -> list[ApplicationCredentialsListItem]:
         """List Client Secrets for a Connect Application
 
         List all client secrets associated with a Connect Application.
@@ -849,7 +848,7 @@ class AsyncConnect:
             request_options=request_options,
         )
         return [
-            ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
+            ApplicationCredentialsListItem.from_dict(cast(dict[str, Any], item))
             for item in raw
         ]
 
@@ -857,7 +856,7 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> NewConnectApplicationSecret:
         """Create a new client secret for a Connect Application
 
@@ -877,7 +876,7 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {}
+        body: dict[str, Any] = {}
         return await self._client.request(
             method="post",
             path=("connect", "applications", str(id), "client_secrets"),
@@ -890,7 +889,7 @@ class AsyncConnect:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a Client Secret
 

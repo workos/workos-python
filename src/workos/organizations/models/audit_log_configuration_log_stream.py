@@ -5,9 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.audit_log_configuration_log_stream_state import (
     AuditLogConfigurationLogStreamState,
 )
@@ -22,17 +22,17 @@ class AuditLogConfigurationLogStream:
 
     id: str
     """Unique identifier of the Audit Log Stream."""
-    type: "AuditLogConfigurationLogStreamType"
+    type: AuditLogConfigurationLogStreamType
     """The type of the Audit Log Stream destination."""
-    state: "AuditLogConfigurationLogStreamState"
+    state: AuditLogConfigurationLogStreamState
     """The current state of the Audit Log Stream."""
-    last_synced_at: Optional[str]
+    last_synced_at: str | None
     """ISO-8601 timestamp of when the last event was successfully synced, or null if no events have been synced."""
     created_at: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogConfigurationLogStream":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogConfigurationLogStream:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -45,9 +45,9 @@ class AuditLogConfigurationLogStream:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogConfigurationLogStream", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         result["state"] = (

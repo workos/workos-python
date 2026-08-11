@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -21,17 +22,17 @@ class ActionAuthenticationDeniedData:
     """The verdict of the action."""
     user_id: str
     """The ID of the user."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The ID of the organization."""
     email: str
     """The email address of the user."""
-    ip_address: Optional[str]
+    ip_address: str | None
     """The IP address of the request."""
-    user_agent: Optional[str]
+    user_agent: str | None
     """The user agent of the request."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ActionAuthenticationDeniedData":
+    def from_dict(cls, data: dict[str, Any]) -> ActionAuthenticationDeniedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -48,9 +49,9 @@ class ActionAuthenticationDeniedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ActionAuthenticationDeniedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["action_endpoint_id"] = self.action_endpoint_id
         result["action_execution_id"] = self.action_execution_id
         result["type"] = self.type

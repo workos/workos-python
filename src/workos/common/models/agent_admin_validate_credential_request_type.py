@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -16,9 +15,7 @@ class AgentAdminValidateCredentialRequestType(str, Enum):
     ACCESS_TOKEN = "access_token"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["AgentAdminValidateCredentialRequestType"]:
+    def _missing_(cls, value: object) -> AgentAdminValidateCredentialRequestType | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)

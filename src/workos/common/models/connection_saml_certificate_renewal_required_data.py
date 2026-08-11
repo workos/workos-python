@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .connection_saml_certificate_renewal_required_data_certificate import (
@@ -19,34 +19,34 @@ from .connection_saml_certificate_renewal_required_data_connection import (
 class ConnectionSAMLCertificateRenewalRequiredData:
     """The event payload."""
 
-    connection: "ConnectionSAMLCertificateRenewalRequiredDataConnection"
+    connection: ConnectionSAMLCertificateRenewalRequiredDataConnection
     """The connection with the expiring certificate."""
-    certificate: "ConnectionSAMLCertificateRenewalRequiredDataCertificate"
+    certificate: ConnectionSAMLCertificateRenewalRequiredDataCertificate
     """The SAML certificate details."""
     days_until_expiry: int
     """The number of days until the certificate expires."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewalRequiredData":
+        cls, data: dict[str, Any]
+    ) -> ConnectionSAMLCertificateRenewalRequiredData:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 connection=ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-                    cast(Dict[str, Any], data["connection"])
+                    cast(dict[str, Any], data["connection"])
                 ),
                 certificate=ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-                    cast(Dict[str, Any], data["certificate"])
+                    cast(dict[str, Any], data["certificate"])
                 ),
                 days_until_expiry=data["days_until_expiry"],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectionSAMLCertificateRenewalRequiredData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["connection"] = self.connection.to_dict()
         result["certificate"] = self.certificate.to_dict()
         result["days_until_expiry"] = self.days_until_expiry

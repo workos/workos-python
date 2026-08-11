@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,15 +12,15 @@ from workos._types import _raise_deserialize_error
 class DirectoryUserEmail:
     """Directory User Email model."""
 
-    primary: Optional[bool] = None
+    primary: bool | None = None
     """Whether this is the primary email address."""
-    type: Optional[str] = None
+    type: str | None = None
     """The type of email address."""
-    value: Optional[str] = None
+    value: str | None = None
     """The email address value."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DirectoryUserEmail":
+    def from_dict(cls, data: dict[str, Any]) -> DirectoryUserEmail:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class DirectoryUserEmail:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DirectoryUserEmail", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.primary is not None:
             result["primary"] = self.primary
         if self.type is not None:

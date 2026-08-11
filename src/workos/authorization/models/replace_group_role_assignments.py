@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .replace_group_role_assignment_entry import ReplaceGroupRoleAssignmentEntry
@@ -14,17 +14,17 @@ from .replace_group_role_assignment_entry import ReplaceGroupRoleAssignmentEntry
 class ReplaceGroupRoleAssignments:
     """Replace Group Role Assignments model."""
 
-    role_assignments: List["ReplaceGroupRoleAssignmentEntry"]
+    role_assignments: list[ReplaceGroupRoleAssignmentEntry]
     """The list of role assignments that should exist for the group. All existing assignments will be replaced."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ReplaceGroupRoleAssignments":
+    def from_dict(cls, data: dict[str, Any]) -> ReplaceGroupRoleAssignments:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 role_assignments=[
                     ReplaceGroupRoleAssignmentEntry.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], data["role_assignments"])
                 ],
@@ -32,8 +32,8 @@ class ReplaceGroupRoleAssignments:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ReplaceGroupRoleAssignments", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["role_assignments"] = [item.to_dict() for item in self.role_assignments]
         return result

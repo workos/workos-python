@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -15,13 +15,13 @@ class AgentCredentialValidation:
 
     valid: bool
     """Whether the presented credential is valid."""
-    registration_id: Optional[str]
+    registration_id: str | None
     """Identifier of the agent registration the credential belongs to, or `null` when the credential is invalid."""
-    expires_at: Optional[datetime]
+    expires_at: datetime | None
     """The timestamp when the credential expires, or `null` when the credential is invalid."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentCredentialValidation":
+    def from_dict(cls, data: dict[str, Any]) -> AgentCredentialValidation:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -34,9 +34,9 @@ class AgentCredentialValidation:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentCredentialValidation", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["valid"] = self.valid
         if self.registration_id is not None:
             result["registration_id"] = self.registration_id

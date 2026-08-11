@@ -51,6 +51,8 @@ from .models import (
 from .models import (
     AgentRegistrationOrganizationSwitchedData as AgentRegistrationOrganizationSwitchedData,
 )
+from .models import AgentRegistrationRefreshed as AgentRegistrationRefreshed
+from .models import AgentRegistrationRefreshedData as AgentRegistrationRefreshedData
 from .models import AgentRegistrationRevoked as AgentRegistrationRevoked
 from .models import AgentRegistrationRevokedData as AgentRegistrationRevokedData
 from .models import AgentRegistrationStatus as AgentRegistrationStatus
@@ -225,6 +227,7 @@ from .models import ConnectionType as ConnectionType
 from .models import CreateDataIntegrationAuthMethods as CreateDataIntegrationAuthMethods
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
+from .models import CreateUserPasswordSaltPosition as CreateUserPasswordSaltPosition
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
     CustomProviderDefinitionAuthenticateVia as CustomProviderDefinitionAuthenticateVia,
@@ -482,6 +485,7 @@ from .models import (
     UpdateCustomProviderDefinitionAuthenticateVia as UpdateCustomProviderDefinitionAuthenticateVia,
 )
 from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
+from .models import UpdateUserPasswordSaltPosition as UpdateUserPasswordSaltPosition
 from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
 from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
 from .models import User as User

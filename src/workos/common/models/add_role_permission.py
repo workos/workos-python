@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,7 +16,7 @@ class AddRolePermission:
     """The slug of the permission to add to the role."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AddRolePermission":
+    def from_dict(cls, data: dict[str, Any]) -> AddRolePermission:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class AddRolePermission:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AddRolePermission", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["slug"] = self.slug
         return result

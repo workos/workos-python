@@ -75,6 +75,12 @@ from .agent_registration_organization_switched import (
 from .agent_registration_organization_switched_data import (
     AgentRegistrationOrganizationSwitchedData as AgentRegistrationOrganizationSwitchedData,
 )
+from .agent_registration_refreshed import (
+    AgentRegistrationRefreshed as AgentRegistrationRefreshed,
+)
+from .agent_registration_refreshed_data import (
+    AgentRegistrationRefreshedData as AgentRegistrationRefreshedData,
+)
 from .agent_registration_revoked import (
     AgentRegistrationRevoked as AgentRegistrationRevoked,
 )
@@ -369,6 +375,9 @@ from .create_user_invite_options_locale import (
 )
 from .create_user_password_hash_type import (
     CreateUserPasswordHashType as CreateUserPasswordHashType,
+)
+from .create_user_password_salt_position import (
+    CreateUserPasswordSaltPosition as CreateUserPasswordSaltPosition,
 )
 from .create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents as CreateWebhookEndpointEvents,
@@ -770,6 +779,9 @@ from .update_custom_provider_definition_authenticate_via import (
 )
 from .update_user_password_hash_type import (
     UpdateUserPasswordHashType as UpdateUserPasswordHashType,
+)
+from .update_user_password_salt_position import (
+    UpdateUserPasswordSaltPosition as UpdateUserPasswordSaltPosition,
 )
 from .update_webhook_endpoint_events import (
     UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents,

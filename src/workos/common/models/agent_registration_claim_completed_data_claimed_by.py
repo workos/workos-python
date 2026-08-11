@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional, Union
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,13 +14,13 @@ class AgentRegistrationClaimCompletedDataClaimedBy:
 
     user_id: str
     """The ID of the user who completed the claim."""
-    organization_id: Union[str, Optional[Literal["null"]]]
+    organization_id: str | Literal["null"] | None
     """The ID of the organization the claiming user belongs to."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AgentRegistrationClaimCompletedDataClaimedBy":
+        cls, data: dict[str, Any]
+    ) -> AgentRegistrationClaimCompletedDataClaimedBy:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,9 +30,9 @@ class AgentRegistrationClaimCompletedDataClaimedBy:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationClaimCompletedDataClaimedBy", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
         return result

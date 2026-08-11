@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .agent_admin_link_claim_attempt_to_external_user_request_user import (
@@ -20,22 +20,22 @@ class AgentAdminLinkClaimAttemptToExternalUserRequest:
     """The operation to perform on the claim attempt. Currently only `link_external_user` is supported."""
     claim_attempt_token: str
     """The token identifying the claim attempt."""
-    user: "AgentAdminLinkClaimAttemptToExternalUserRequestUser"
+    user: AgentAdminLinkClaimAttemptToExternalUserRequestUser
     """The user to attach to the claim attempt, identified by email and external ID."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The organization to place the agent in. Required when the user belongs to more than one organization."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AgentAdminLinkClaimAttemptToExternalUserRequest":
+        cls, data: dict[str, Any]
+    ) -> AgentAdminLinkClaimAttemptToExternalUserRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 type=data.get("type", "link_external_user"),
                 claim_attempt_token=data["claim_attempt_token"],
                 user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                    cast(Dict[str, Any], data["user"])
+                    cast(dict[str, Any], data["user"])
                 ),
                 organization_id=data.get("organization_id"),
             )
@@ -44,9 +44,9 @@ class AgentAdminLinkClaimAttemptToExternalUserRequest:
                 "AgentAdminLinkClaimAttemptToExternalUserRequest", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         result["claim_attempt_token"] = self.claim_attempt_token
         result["user"] = self.user.to_dict()

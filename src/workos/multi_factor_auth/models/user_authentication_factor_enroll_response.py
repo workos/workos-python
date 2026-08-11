@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
+from typing import Any, cast
 
+from workos._types import _raise_deserialize_error
 from workos.common.models.authentication_challenge import AuthenticationChallenge
 from workos.common.models.authentication_factor_enrolled import (
     AuthenticationFactorEnrolled,
@@ -17,31 +16,29 @@ from workos.common.models.authentication_factor_enrolled import (
 class UserAuthenticationFactorEnrollResponse:
     """User Authentication Factor Enroll Response model."""
 
-    authentication_factor: "AuthenticationFactorEnrolled"
+    authentication_factor: AuthenticationFactorEnrolled
     """The [authentication factor](https://workos.com/docs/reference/authkit/mfa/authentication-factor) object that represents the additional authentication method used on top of the existing authentication strategy."""
-    authentication_challenge: "AuthenticationChallenge"
+    authentication_challenge: AuthenticationChallenge
     """The [authentication challenge](https://workos.com/docs/reference/authkit/mfa/authentication-challenge) object that is used to complete the authentication process."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "UserAuthenticationFactorEnrollResponse":
+    def from_dict(cls, data: dict[str, Any]) -> UserAuthenticationFactorEnrollResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 authentication_factor=AuthenticationFactorEnrolled.from_dict(
-                    cast(Dict[str, Any], data["authentication_factor"])
+                    cast(dict[str, Any], data["authentication_factor"])
                 ),
                 authentication_challenge=AuthenticationChallenge.from_dict(
-                    cast(Dict[str, Any], data["authentication_challenge"])
+                    cast(dict[str, Any], data["authentication_challenge"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserAuthenticationFactorEnrollResponse", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["authentication_factor"] = self.authentication_factor.to_dict()
         result["authentication_challenge"] = self.authentication_challenge.to_dict()
         return result

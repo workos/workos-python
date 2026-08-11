@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -19,17 +20,17 @@ class CreateAuthorizationResource:
     """The slug of the resource type."""
     organization_id: str
     """The ID of the organization this resource belongs to."""
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the resource."""
-    parent_resource_id: Optional[str] = None
+    parent_resource_id: str | None = None
     """The ID of the parent resource. Mutually exclusive with `parent_resource_external_id` and `parent_resource_type_slug`."""
-    parent_resource_external_id: Optional[str] = None
+    parent_resource_external_id: str | None = None
     """The external ID of the parent resource. Required with `parent_resource_type_slug`. Mutually exclusive with `parent_resource_id`."""
-    parent_resource_type_slug: Optional[str] = None
+    parent_resource_type_slug: str | None = None
     """The resource type slug of the parent resource. Required with `parent_resource_external_id`. Mutually exclusive with `parent_resource_id`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateAuthorizationResource":
+    def from_dict(cls, data: dict[str, Any]) -> CreateAuthorizationResource:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -45,9 +46,9 @@ class CreateAuthorizationResource:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateAuthorizationResource", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["external_id"] = self.external_id
         result["name"] = self.name
         result["resource_type_slug"] = self.resource_type_slug

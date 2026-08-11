@@ -119,6 +119,8 @@
     "src/workos/common/models/agent_registration_kind.py",
     "src/workos/common/models/agent_registration_organization_switched.py",
     "src/workos/common/models/agent_registration_organization_switched_data.py",
+    "src/workos/common/models/agent_registration_refreshed.py",
+    "src/workos/common/models/agent_registration_refreshed_data.py",
     "src/workos/common/models/agent_registration_revoked.py",
     "src/workos/common/models/agent_registration_revoked_data.py",
     "src/workos/common/models/agent_registration_status.py",
@@ -240,6 +242,7 @@
     "src/workos/common/models/create_data_integration_auth_methods.py",
     "src/workos/common/models/create_user_invite_options_locale.py",
     "src/workos/common/models/create_user_password_hash_type.py",
+    "src/workos/common/models/create_user_password_salt_position.py",
     "src/workos/common/models/create_webhook_endpoint_events.py",
     "src/workos/common/models/custom_provider_definition_authenticate_via.py",
     "src/workos/common/models/data_integration_access_token_response_error.py",
@@ -465,6 +468,7 @@
     "src/workos/common/models/slim_role.py",
     "src/workos/common/models/update_custom_provider_definition_authenticate_via.py",
     "src/workos/common/models/update_user_password_hash_type.py",
+    "src/workos/common/models/update_user_password_salt_position.py",
     "src/workos/common/models/update_webhook_endpoint_events.py",
     "src/workos/common/models/update_webhook_endpoint_status.py",
     "src/workos/common/models/user.py",
@@ -620,6 +624,7 @@
     "src/workos/pipes/models/data_integrations_list_response_data.py",
     "src/workos/pipes/models/data_integrations_list_response_data_connected_account.py",
     "src/workos/pipes/models/data_integrations_upsert_api_key_request.py",
+    "src/workos/pipes/models/data_integrations_upsert_client_credentials_request.py",
     "src/workos/pipes/models/data_integrations_vend_credentials_request.py",
     "src/workos/pipes/models/update_custom_provider_definition.py",
     "src/workos/pipes/models/update_data_integration.py",
@@ -801,6 +806,8 @@
     "tests/fixtures/agent_registration_expired_data.json",
     "tests/fixtures/agent_registration_organization_switched.json",
     "tests/fixtures/agent_registration_organization_switched_data.json",
+    "tests/fixtures/agent_registration_refreshed.json",
+    "tests/fixtures/agent_registration_refreshed_data.json",
     "tests/fixtures/agent_registration_revoked.json",
     "tests/fixtures/agent_registration_revoked_data.json",
     "tests/fixtures/api_key.json",
@@ -982,6 +989,7 @@
     "tests/fixtures/data_integrations_list_response_data.json",
     "tests/fixtures/data_integrations_list_response_data_connected_account.json",
     "tests/fixtures/data_integrations_upsert_api_key_request.json",
+    "tests/fixtures/data_integrations_upsert_client_credentials_request.json",
     "tests/fixtures/data_integrations_vend_credentials_request.json",
     "tests/fixtures/decrypt_request.json",
     "tests/fixtures/decrypt_response.json",
@@ -2217,6 +2225,10 @@
     "GET /audit_logs/exports/{auditLogExportId}": {
       "sdkMethod": "get_export",
       "service": "audit_logs"
+    },
+    "PUT /data-integrations/{slug}/client-credentials": {
+      "sdkMethod": "update_data_integration_client_credentials",
+      "service": "pipes"
     }
   }
 }

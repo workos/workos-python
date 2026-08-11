@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -18,8 +19,8 @@ class AgentRegistrationCredentialIssuedDataDetail:
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AgentRegistrationCredentialIssuedDataDetail":
+        cls, data: dict[str, Any]
+    ) -> AgentRegistrationCredentialIssuedDataDetail:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -29,9 +30,9 @@ class AgentRegistrationCredentialIssuedDataDetail:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationCredentialIssuedDataDetail", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["kind"] = self.kind
         result["api_key_id"] = self.api_key_id
         return result

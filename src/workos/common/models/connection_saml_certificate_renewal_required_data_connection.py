@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,13 +14,13 @@ class ConnectionSAMLCertificateRenewalRequiredDataConnection:
 
     id: str
     """Unique identifier of the connection."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the connection belongs to."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewalRequiredDataConnection":
+        cls, data: dict[str, Any]
+    ) -> ConnectionSAMLCertificateRenewalRequiredDataConnection:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -31,9 +32,9 @@ class ConnectionSAMLCertificateRenewalRequiredDataConnection:
                 "ConnectionSAMLCertificateRenewalRequiredDataConnection", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id

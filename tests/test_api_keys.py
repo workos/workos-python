@@ -3,17 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.api_keys.models import (
-    ApiKey,
-    ApiKeyValidationResponse,
-    OrganizationApiKey,
-    OrganizationApiKeyWithValue,
-)
-from workos.common.models import PaginationOrder
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -22,6 +14,14 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos._pagination import AsyncPage, SyncPage
+from workos.api_keys.models import (
+    ApiKey,
+    ApiKeyValidationResponse,
+    OrganizationApiKey,
+    OrganizationApiKeyWithValue,
+)
+from workos.common.models import PaginationOrder
 
 
 class TestApiKeys:

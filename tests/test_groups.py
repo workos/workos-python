@@ -3,15 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import (
-    Group,
-    UserOrganizationMembershipBaseListData,
-    PaginationOrder,
-)
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -19,6 +13,12 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import (
+    Group,
+    PaginationOrder,
+    UserOrganizationMembershipBaseListData,
 )
 
 
@@ -46,12 +46,14 @@ class TestGroups:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            search="value search/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["search"] == "value search/test"
 
     def test_create_organization_group(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -286,12 +288,14 @@ class TestAsyncGroups:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            search="value search/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["search"] == "value search/test"
 
     @pytest.mark.asyncio
     async def test_create_organization_group(self, async_workos, httpx_mock):

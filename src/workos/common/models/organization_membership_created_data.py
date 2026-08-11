@@ -5,15 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .slim_role import SlimRole
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .organization_membership_created_data_status import (
     OrganizationMembershipCreatedDataStatus,
 )
+from .slim_role import SlimRole
 
 
 @dataclass(slots=True)
@@ -28,11 +27,11 @@ class OrganizationMembershipCreatedData:
     """The ID of the user."""
     organization_id: str
     """The ID of the organization."""
-    status: "OrganizationMembershipCreatedDataStatus"
+    status: OrganizationMembershipCreatedDataStatus
     """The status of the organization membership."""
-    role: "SlimRole"
+    role: SlimRole
     """The role associated with the membership."""
-    custom_attributes: Dict[str, Any]
+    custom_attributes: dict[str, Any]
     """Custom attributes associated with the membership."""
     directory_managed: bool
     """Whether the membership is managed by a directory sync provider."""
@@ -40,11 +39,11 @@ class OrganizationMembershipCreatedData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    roles: Optional[List["SlimRole"]] = None
+    roles: list[SlimRole] | None = None
     """The roles associated with the membership."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationMembershipCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationMembershipCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -53,13 +52,13 @@ class OrganizationMembershipCreatedData:
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 status=OrganizationMembershipCreatedDataStatus(data["status"]),
-                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
+                role=SlimRole.from_dict(cast(dict[str, Any], data["role"])),
                 custom_attributes=data["custom_attributes"],
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
+                    SlimRole.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_roles)
                 ]
                 if (_v_roles := data.get("roles")) is not None
@@ -68,9 +67,9 @@ class OrganizationMembershipCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationMembershipCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["user_id"] = self.user_id

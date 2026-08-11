@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -25,7 +25,7 @@ class ObjectVersion:
     """Number of bytes of stored data."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ObjectVersion":
+    def from_dict(cls, data: dict[str, Any]) -> ObjectVersion:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,9 +38,9 @@ class ObjectVersion:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ObjectVersion", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["created_at"] = _format_datetime(self.created_at)
         result["current_version"] = self.current_version
         result["etag"] = self.etag

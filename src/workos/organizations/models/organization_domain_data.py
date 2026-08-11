@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.organization_domain_data_state import (
     OrganizationDomainDataState,
@@ -17,11 +18,11 @@ class OrganizationDomainData:
 
     domain: str
     """The domain value."""
-    state: "OrganizationDomainDataState"
+    state: OrganizationDomainDataState
     """The verification state of the domain."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationDomainData":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationDomainData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -31,9 +32,9 @@ class OrganizationDomainData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationDomainData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["domain"] = self.domain
         result["state"] = (
             self.state.value if isinstance(self.state, Enum) else self.state

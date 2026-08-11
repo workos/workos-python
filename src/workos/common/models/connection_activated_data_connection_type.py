@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 from typing import Literal, TypeAlias
 
 
@@ -34,6 +33,8 @@ class ConnectionActivatedDataConnectionType(str, Enum):
     GOOGLE_OAUTH = "GoogleOAuth"
     GOOGLE_OIDC = "GoogleOIDC"
     GOOGLE_SAML = "GoogleSAML"
+    GROK_OAUTH = "GrokOAuth"
+    XO_AUTH = "XOAuth"
     INTUIT_OAUTH = "IntuitOAuth"
     JUMP_CLOUD_SAML = "JumpCloudSAML"
     KEYCLOAK_SAML = "KeycloakSAML"
@@ -64,9 +65,7 @@ class ConnectionActivatedDataConnectionType(str, Enum):
     XERO_OAUTH = "XeroOAuth"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["ConnectionActivatedDataConnectionType"]:
+    def _missing_(cls, value: object) -> ConnectionActivatedDataConnectionType | None:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -98,6 +97,8 @@ ConnectionActivatedDataConnectionTypeLiteral: TypeAlias = Literal[
     "GoogleOAuth",
     "GoogleOIDC",
     "GoogleSAML",
+    "GrokOAuth",
+    "XOAuth",
     "IntuitOAuth",
     "JumpCloudSAML",
     "KeycloakSAML",

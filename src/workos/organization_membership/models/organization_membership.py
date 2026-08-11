@@ -5,16 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from workos.common.models.slim_role import SlimRole
-from workos.common.models.user import User
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.organization_membership_status import (
     OrganizationMembershipStatus,
 )
+from workos.common.models.slim_role import SlimRole
+from workos.common.models.user import User
 
 
 @dataclass(slots=True)
@@ -29,7 +27,7 @@ class OrganizationMembership:
     """The ID of the user."""
     organization_id: str
     """The ID of the organization which the user belongs to."""
-    status: "OrganizationMembershipStatus"
+    status: OrganizationMembershipStatus
     """The status of the organization membership. One of `active`, `inactive`, or `pending`."""
     directory_managed: bool
     """Whether this organization membership is managed by a directory sync connection."""
@@ -37,19 +35,19 @@ class OrganizationMembership:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    role: "SlimRole"
+    role: SlimRole
     """The primary role assigned to the user within the organization."""
-    roles: List["SlimRole"]
+    roles: list[SlimRole]
     """The list of roles assigned to the user within the organization."""
-    user: "User"
+    user: User
     """The user that belongs to the organization through this membership."""
-    organization_name: Optional[str] = None
+    organization_name: str | None = None
     """The name of the organization which the user belongs to."""
-    custom_attributes: Optional[Dict[str, Any]] = None
+    custom_attributes: dict[str, Any] | None = None
     """An object containing IdP-sourced attributes from the linked [Directory User](https://workos.com/docs/reference/directory-sync/directory-user) or [SSO Profile](https://workos.com/docs/reference/sso/profile). Directory User attributes take precedence when both are linked."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationMembership":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationMembership:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -61,21 +59,21 @@ class OrganizationMembership:
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
+                role=SlimRole.from_dict(cast(dict[str, Any], data["role"])),
                 roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
+                    SlimRole.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["roles"])
                 ],
-                user=User.from_dict(cast(Dict[str, Any], data["user"])),
+                user=User.from_dict(cast(dict[str, Any], data["user"])),
                 organization_name=data.get("organization_name"),
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationMembership", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["user_id"] = self.user_id

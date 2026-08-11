@@ -2,12 +2,59 @@
 
 ## [10.2.0](https://github.com/workos/workos-python/compare/v10.1.1...v10.2.0) (2026-08-11)
 
+* [#710](https://github.com/workos/workos-python/pull/710) feat(generated)!: regenerate from spec (3 changes)
 
-### Features
+  **⚠️ Breaking**
+  * **[events](https://workos.com/docs/reference/events)**:
+    * Changed required status for parameter `Events.list.events`
 
-* **events:** Change required status for parameter `Events.list.events` ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
-* **pipes:** SDK surface change: Symbol "CreateDataIntegrationAuthMethodsLiteral" was removed ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
-* **user_management:** SDK surface change: Parameter type changed for "verification_id" on "UserManagement.authenticate_with_radar_sms_challenge" ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
+  **Features**
+  * **[groups](https://workos.com/docs/reference/groups)**:
+    * Added parameter `Groups.list.search`
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added `client_id` to `ConnectedAccount`
+    * Added `client_secret_last_4` to `ConnectedAccount`
+    * Added `config` to `ConnectedAccount`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added `client_id` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Added `client_secret_last_4` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Added `config` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Changed errors for endpoint `POST /data-integrations/{slug}/credentials`
+    * Made `CustomProviderDefinition.authorization_url` optional
+    * Made `CustomProviderDefinition.token_url` optional
+    * Added model `DataIntegrationsUpsertClientCredentialsRequest`
+    * Added `client_credentials` to `CreateDataIntegrationAuthMethods`
+    * Added endpoint `PUT /data-integrations/{slug}/client-credentials`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Added `XOAuth` to `ConnectionType`
+    * Added `XOAuth` to `ProfileConnectionType`
+    * Added `XOAuth` to `ConnectionsConnectionType`
+    * Added `GrokOAuth` to `ConnectionType`
+    * Added `GrokOAuth` to `ProfileConnectionType`
+    * Added `GrokOAuth` to `ConnectionsConnectionType`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed errors for endpoint `DELETE /user_management/users/{id}`
+    * Added `password_salt_position` to `CreateUser`
+    * Added `password_salt_position` to `UpdateUser`
+    * Made `RadarSmsChallengeCodeSessionAuthenticateRequest.verification_id` optional
+    * Made `RadarSmsChallengeCodeSessionAuthenticateRequest.phone_number` optional
+    * Added enum `CreateUserPasswordSaltPosition`
+    * Added enum `UpdateUserPasswordSaltPosition`
+    * Added `XOAuth` to `AuthenticateResponseAuthenticationMethod`
+    * Added `XOAuth` to `UserIdentitiesGetItemProvider`
+    * Added `GrokOAuth` to `AuthenticateResponseAuthenticationMethod`
+    * Added `GrokOAuth` to `UserIdentitiesGetItemProvider`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `agent.registration.refreshed` to `CreateWebhookEndpointEvents`
+    * Added `agent.registration.refreshed` to `UpdateWebhookEndpointEvents`
+
+  **Fixes**
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Changed the type of `DataIntegration.credentials`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed errors for endpoint `POST /user_management/authenticate`
+    * Changed errors for endpoint `POST /user_management/users`
+    * Changed errors for endpoint `PUT /user_management/users/{id}`
 
 ## [10.1.1](https://github.com/workos/workos-python/compare/v10.1.0...v10.1.1) (2026-08-04)
 

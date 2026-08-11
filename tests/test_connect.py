@@ -3,17 +3,9 @@
 import json
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import ConnectApplicationOAuth, PaginationOrder
-from workos.connect.models import (
-    ApplicationCredentialsListItem,
-    ExternalAuthCompleteResponse,
-    NewConnectApplicationSecret,
-    UserObject,
-)
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -21,6 +13,17 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
     UnprocessableEntityError,
+)
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import (
+    ConnectApplicationOAuth,
+    PaginationOrder,
+)
+from workos.connect.models import (
+    ApplicationCredentialsListItem,
+    ExternalAuthCompleteResponse,
+    NewConnectApplicationSecret,
+    UserObject,
 )
 
 

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,11 +14,11 @@ class RedirectUriInput:
 
     uri: str
     """The redirect URI."""
-    default: Optional[bool] = None
+    default: bool | None = None
     """Whether this is the default redirect URI."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RedirectUriInput":
+    def from_dict(cls, data: dict[str, Any]) -> RedirectUriInput:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class RedirectUriInput:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RedirectUriInput", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["uri"] = self.uri
         if self.default is not None:
             result["default"] = self.default

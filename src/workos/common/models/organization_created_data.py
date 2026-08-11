@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .organization_created_data_domain import OrganizationCreatedDataDomain
 
@@ -22,21 +21,21 @@ class OrganizationCreatedData:
     """Unique identifier of the Organization."""
     name: str
     """A descriptive name for the Organization. This field does not need to be unique."""
-    domains: List["OrganizationCreatedDataDomain"]
+    domains: list[OrganizationCreatedDataDomain]
     """List of Organization Domains."""
-    metadata: Dict[str, str]
+    metadata: dict[str, str]
     """Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization."""
-    external_id: Optional[str]
+    external_id: str | None
     """The external ID of the Organization."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    stripe_customer_id: Optional[str] = None
+    stripe_customer_id: str | None = None
     """The Stripe customer ID of the Organization."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> OrganizationCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -44,7 +43,7 @@ class OrganizationCreatedData:
                 id=data["id"],
                 name=data["name"],
                 domains=[
-                    OrganizationCreatedDataDomain.from_dict(cast(Dict[str, Any], item))
+                    OrganizationCreatedDataDomain.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["domains"])
                 ],
                 metadata=data["metadata"],
@@ -56,9 +55,9 @@ class OrganizationCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["name"] = self.name

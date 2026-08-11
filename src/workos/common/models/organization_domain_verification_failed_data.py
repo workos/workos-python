@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .organization_domain_verification_failed_data_organization_domain import (
@@ -20,29 +20,29 @@ from .organization_domain_verification_failed_data_reason import (
 class OrganizationDomainVerificationFailedData:
     """The event payload."""
 
-    reason: "OrganizationDomainVerificationFailedDataReason"
+    reason: OrganizationDomainVerificationFailedDataReason
     """The reason the domain verification failed."""
-    organization_domain: "OrganizationDomainVerificationFailedDataOrganizationDomain"
+    organization_domain: OrganizationDomainVerificationFailedDataOrganizationDomain
     """The organization domain that failed verification."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "OrganizationDomainVerificationFailedData":
+        cls, data: dict[str, Any]
+    ) -> OrganizationDomainVerificationFailedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 reason=OrganizationDomainVerificationFailedDataReason(data["reason"]),
                 organization_domain=OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-                    cast(Dict[str, Any], data["organization_domain"])
+                    cast(dict[str, Any], data["organization_domain"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationDomainVerificationFailedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["reason"] = (
             self.reason.value if isinstance(self.reason, Enum) else self.reason
         )

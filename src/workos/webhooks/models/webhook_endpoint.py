@@ -5,9 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Literal
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.webhook_endpoint_status import WebhookEndpointStatus
 
 
@@ -23,9 +23,9 @@ class WebhookEndpoint:
     """The URL to which webhooks are sent."""
     secret: str
     """The secret used to sign webhook payloads."""
-    status: "WebhookEndpointStatus"
+    status: WebhookEndpointStatus
     """Whether the Webhook Endpoint is enabled or disabled."""
-    events: List[str]
+    events: list[str]
     """The events that the Webhook Endpoint is subscribed to."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -33,7 +33,7 @@ class WebhookEndpoint:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WebhookEndpoint":
+    def from_dict(cls, data: dict[str, Any]) -> WebhookEndpoint:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -49,9 +49,9 @@ class WebhookEndpoint:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("WebhookEndpoint", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["endpoint_url"] = self.endpoint_url

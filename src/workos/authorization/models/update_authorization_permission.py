@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,13 +12,13 @@ from workos._types import _raise_deserialize_error
 class UpdateAuthorizationPermission:
     """Update Authorization Permission model."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """A descriptive name for the Permission."""
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the Permission."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UpdateAuthorizationPermission":
+    def from_dict(cls, data: dict[str, Any]) -> UpdateAuthorizationPermission:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class UpdateAuthorizationPermission:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateAuthorizationPermission", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.description is not None:

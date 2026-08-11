@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .authentication_sso_started_data_sso import AuthenticationSSOStartedDataSSO
@@ -16,19 +16,19 @@ class AuthenticationSSOStartedData:
 
     type: Literal["sso"]
     status: Literal["started"]
-    ip_address: Optional[str]
+    ip_address: str | None
     """The IP address of the request."""
-    user_agent: Optional[str]
+    user_agent: str | None
     """The user agent of the request."""
-    user_id: Optional[str]
+    user_id: str | None
     """The ID of the user."""
-    email: Optional[str]
+    email: str | None
     """The email address of the user."""
-    sso: "AuthenticationSSOStartedDataSSO"
+    sso: AuthenticationSSOStartedDataSSO
     """SSO connection details."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationSSOStartedData":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationSSOStartedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -39,15 +39,15 @@ class AuthenticationSSOStartedData:
                 user_id=data["user_id"],
                 email=data["email"],
                 sso=AuthenticationSSOStartedDataSSO.from_dict(
-                    cast(Dict[str, Any], data["sso"])
+                    cast(dict[str, Any], data["sso"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationSSOStartedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         result["status"] = self.status
         if self.ip_address is not None:

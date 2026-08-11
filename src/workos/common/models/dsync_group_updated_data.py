@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -29,12 +29,12 @@ class DsyncGroupUpdatedData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    raw_attributes: Optional[Dict[str, Any]] = None
+    raw_attributes: dict[str, Any] | None = None
     """The raw attributes received from the directory provider."""
-    previous_attributes: Optional[Dict[str, Any]] = None
+    previous_attributes: dict[str, Any] | None = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DsyncGroupUpdatedData":
+    def from_dict(cls, data: dict[str, Any]) -> DsyncGroupUpdatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -52,9 +52,9 @@ class DsyncGroupUpdatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DsyncGroupUpdatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["idp_id"] = self.idp_id

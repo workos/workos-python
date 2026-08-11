@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
 
@@ -14,15 +14,15 @@ from workos.common.models.widget_session_token_scopes import WidgetSessionTokenS
 class WidgetSessionToken:
     """Widget Session Token model."""
 
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization to scope the widget session to. Required when scopes are provided. Optional when issuing a token for user-only widgets (e.g. `UserProfile`, `UserSecurity`) that do not require organization context."""
-    user_id: Optional[str] = None
+    user_id: str | None = None
     """The ID of the user to issue the widget session token for."""
-    scopes: Optional[List["WidgetSessionTokenScopes"]] = None
+    scopes: list[WidgetSessionTokenScopes] | None = None
     """The scopes to grant the widget session."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WidgetSessionToken":
+    def from_dict(cls, data: dict[str, Any]) -> WidgetSessionToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,9 +38,9 @@ class WidgetSessionToken:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("WidgetSessionToken", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.user_id is not None:

@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
-from .flag_rule_updated_context_previous_attribute_context_configured_target import (
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
-)
 from .flag_rule_updated_context_previous_attribute_context_access_type import (
     FlagRuleUpdatedContextPreviousAttributeContextAccessType,
+)
+from .flag_rule_updated_context_previous_attribute_context_configured_target import (
+    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
 )
 
 
@@ -20,19 +20,17 @@ from .flag_rule_updated_context_previous_attribute_context_access_type import (
 class FlagRuleUpdatedContextPreviousAttributeContext:
     """The previous context attributes of the flag rule."""
 
-    access_type: Optional[
-        "FlagRuleUpdatedContextPreviousAttributeContextAccessType"
-    ] = None
+    access_type: FlagRuleUpdatedContextPreviousAttributeContextAccessType | None = None
     """The previous access type of the flag rule."""
-    configured_targets: Optional[
-        "FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget"
-    ] = None
+    configured_targets: (
+        FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget | None
+    ) = None
     """The previous configured targets for the flag rule."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextPreviousAttributeContext":
+        cls, data: dict[str, Any]
+    ) -> FlagRuleUpdatedContextPreviousAttributeContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,7 +40,7 @@ class FlagRuleUpdatedContextPreviousAttributeContext:
                 if (_v_access_type := data.get("access_type")) is not None
                 else None,
                 configured_targets=FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
-                    cast(Dict[str, Any], _v_configured_targets)
+                    cast(dict[str, Any], _v_configured_targets)
                 )
                 if (_v_configured_targets := data.get("configured_targets")) is not None
                 else None,
@@ -52,9 +50,9 @@ class FlagRuleUpdatedContextPreviousAttributeContext:
                 "FlagRuleUpdatedContextPreviousAttributeContext", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.access_type is not None:
             result["access_type"] = (
                 self.access_type.value

@@ -2,13 +2,23 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from dataclasses import dataclass
+
+from workos.common.models.authorization_permission import AuthorizationPermission
+from workos.common.models.pagination_order import PaginationOrder
+from workos.common.models.user_organization_membership_base_list_data import (
+    UserOrganizationMembershipBaseListData,
+)
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
+    AuthorizationAssignment,
     AuthorizationCheck,
     AuthorizationResource,
     GroupRoleAssignment,
@@ -19,14 +29,6 @@ from .models import (
     RoleList,
     UserRoleAssignment,
 )
-from workos.common.models.authorization_permission import AuthorizationPermission
-from workos.common.models.user_organization_membership_base_list_data import (
-    UserOrganizationMembershipBaseListData,
-)
-from .models import AuthorizationAssignment
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
-from dataclasses import dataclass
 
 
 @dataclass
@@ -77,18 +79,18 @@ class ParentByExternalId:
 class Authorization:
     """Authorization API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_group_role_assignments(
         self,
         group_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[GroupRoleAssignment]:
         """List role assignments for a group
 
@@ -135,10 +137,10 @@ class Authorization:
         group_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignment:
         """Assign a role to a group
 
@@ -164,7 +166,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "role_slug": role_slug,
@@ -186,8 +188,8 @@ class Authorization:
         self,
         group_id: str,
         *,
-        role_assignments: List[ReplaceGroupRoleAssignmentEntry],
-        request_options: Optional[RequestOptions] = None,
+        role_assignments: list[ReplaceGroupRoleAssignmentEntry],
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignmentList:
         """Replace all role assignments for a group
 
@@ -209,7 +211,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_assignments": [item.to_dict() for item in role_assignments],
         }
         return self._client.request(
@@ -225,10 +227,10 @@ class Authorization:
         group_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove group role assignments by criteria
 
@@ -250,7 +252,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "role_slug": role_slug,
@@ -272,7 +274,7 @@ class Authorization:
         group_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignment:
         """Get a group role assignment
 
@@ -311,7 +313,7 @@ class Authorization:
         group_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a group role assignment
 
@@ -346,8 +348,8 @@ class Authorization:
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationCheck:
         """Check authorization
 
@@ -370,7 +372,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permission_slug": permission_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -395,13 +397,13 @@ class Authorization:
         self,
         organization_membership_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        parent_resource: ParentResourceById | ParentResourceByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizationResource]:
         """List resources for organization membership
 
@@ -469,11 +471,11 @@ class Authorization:
         organization_membership_id: str,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
 
@@ -530,11 +532,11 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
 
@@ -591,14 +593,14 @@ class Authorization:
         self,
         organization_membership_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments
 
@@ -656,8 +658,8 @@ class Authorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> UserRoleAssignment:
         """Assign a role
 
@@ -680,7 +682,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_slug": role_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -706,8 +708,8 @@ class Authorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a role assignment
 
@@ -727,7 +729,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_slug": role_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -752,7 +754,7 @@ class Authorization:
         organization_membership_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a role assignment by ID
 
@@ -786,7 +788,7 @@ class Authorization:
         self,
         organization_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RoleList:
         """List custom roles
 
@@ -818,10 +820,10 @@ class Authorization:
         organization_id: str,
         *,
         name: str,
-        slug: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        slug: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Create a custom role
 
@@ -848,7 +850,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -872,7 +874,7 @@ class Authorization:
         organization_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Get a custom role
 
@@ -911,9 +913,9 @@ class Authorization:
         organization_id: str,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Update a custom role
 
@@ -938,7 +940,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -966,7 +968,7 @@ class Authorization:
         organization_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a custom role
 
@@ -1004,7 +1006,7 @@ class Authorization:
         slug: str,
         *,
         body_slug: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Add a permission to a custom role
 
@@ -1028,7 +1030,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "slug": body_slug,
         }
         return self._client.request(
@@ -1051,8 +1053,8 @@ class Authorization:
         organization_id: str,
         slug: str,
         *,
-        permissions: List[str],
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str],
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Set permissions for a custom role
 
@@ -1075,7 +1077,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permissions": permissions,
         }
         return self._client.request(
@@ -1099,7 +1101,7 @@ class Authorization:
         slug: str,
         permission_slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a permission from a custom role
 
@@ -1138,7 +1140,7 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Get a resource by external ID
 
@@ -1180,12 +1182,10 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
 
@@ -1213,7 +1213,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -1253,8 +1253,8 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        cascade_delete: Optional[bool] = None,
-        request_options: Optional[RequestOptions] = None,
+        cascade_delete: bool | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorization resource by external ID
 
@@ -1276,7 +1276,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "cascade_delete": cascade_delete,
@@ -1303,13 +1303,13 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        assignment: AuthorizationAssignment | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List memberships for a resource by external ID
 
@@ -1375,12 +1375,12 @@ class Authorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        role_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        role_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments for a resource by external ID
 
@@ -1437,15 +1437,15 @@ class Authorization:
     def list_resources(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        parent: Optional[Union[ParentById, ParentByExternalId]] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        resource_type_slug: str | None = None,
+        resource_external_id: str | None = None,
+        parent: ParentById | ParentByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizationResource]:
         """List resources
 
@@ -1507,11 +1507,9 @@ class Authorization:
         name: str,
         resource_type_slug: str,
         organization_id: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
 
@@ -1539,7 +1537,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "external_id": external_id,
             "name": name,
             "resource_type_slug": resource_type_slug,
@@ -1569,7 +1567,7 @@ class Authorization:
         self,
         resource_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Get a resource
 
@@ -1601,12 +1599,10 @@ class Authorization:
         self,
         resource_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Update a resource
 
@@ -1632,7 +1628,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -1663,8 +1659,8 @@ class Authorization:
         self,
         resource_id: str,
         *,
-        cascade_delete: Optional[bool] = None,
-        request_options: Optional[RequestOptions] = None,
+        cascade_delete: bool | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorization resource
 
@@ -1684,7 +1680,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "cascade_delete": cascade_delete,
@@ -1702,13 +1698,13 @@ class Authorization:
         self,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        assignment: AuthorizationAssignment | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List organization memberships for resource
 
@@ -1767,12 +1763,12 @@ class Authorization:
         self,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        role_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        role_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments for a resource
 
@@ -1819,7 +1815,7 @@ class Authorization:
     def list_environment_roles(
         self,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RoleList:
         """List environment roles
 
@@ -1846,9 +1842,9 @@ class Authorization:
         *,
         slug: str,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Create an environment role
 
@@ -1874,7 +1870,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -1897,7 +1893,7 @@ class Authorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Get an environment role
 
@@ -1928,9 +1924,9 @@ class Authorization:
         self,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Update an environment role
 
@@ -1954,7 +1950,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -1976,7 +1972,7 @@ class Authorization:
         slug: str,
         *,
         body_slug: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Add a permission to an environment role
 
@@ -1999,7 +1995,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "slug": body_slug,
         }
         return self._client.request(
@@ -2014,8 +2010,8 @@ class Authorization:
         self,
         slug: str,
         *,
-        permissions: List[str],
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str],
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Set permissions for an environment role
 
@@ -2038,7 +2034,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permissions": permissions,
         }
         return self._client.request(
@@ -2052,11 +2048,11 @@ class Authorization:
     def list_permissions(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List permissions
 
@@ -2101,9 +2097,9 @@ class Authorization:
         *,
         slug: str,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Permission:
         """Create a permission
 
@@ -2128,7 +2124,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -2151,7 +2147,7 @@ class Authorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationPermission:
         """Get a permission
 
@@ -2181,9 +2177,9 @@ class Authorization:
         self,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationPermission:
         """Update a permission
 
@@ -2206,7 +2202,7 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -2227,7 +2223,7 @@ class Authorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a permission
 
@@ -2254,18 +2250,18 @@ class Authorization:
 class AsyncAuthorization:
     """Authorization API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_group_role_assignments(
         self,
         group_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[GroupRoleAssignment]:
         """List role assignments for a group
 
@@ -2312,10 +2308,10 @@ class AsyncAuthorization:
         group_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignment:
         """Assign a role to a group
 
@@ -2341,7 +2337,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "role_slug": role_slug,
@@ -2363,8 +2359,8 @@ class AsyncAuthorization:
         self,
         group_id: str,
         *,
-        role_assignments: List[ReplaceGroupRoleAssignmentEntry],
-        request_options: Optional[RequestOptions] = None,
+        role_assignments: list[ReplaceGroupRoleAssignmentEntry],
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignmentList:
         """Replace all role assignments for a group
 
@@ -2386,7 +2382,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_assignments": [item.to_dict() for item in role_assignments],
         }
         return await self._client.request(
@@ -2402,10 +2398,10 @@ class AsyncAuthorization:
         group_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove group role assignments by criteria
 
@@ -2427,7 +2423,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "role_slug": role_slug,
@@ -2449,7 +2445,7 @@ class AsyncAuthorization:
         group_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> GroupRoleAssignment:
         """Get a group role assignment
 
@@ -2488,7 +2484,7 @@ class AsyncAuthorization:
         group_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a group role assignment
 
@@ -2523,8 +2519,8 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationCheck:
         """Check authorization
 
@@ -2547,7 +2543,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permission_slug": permission_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -2572,13 +2568,13 @@ class AsyncAuthorization:
         self,
         organization_membership_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        parent_resource: ParentResourceById | ParentResourceByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizationResource]:
         """List resources for organization membership
 
@@ -2646,11 +2642,11 @@ class AsyncAuthorization:
         organization_membership_id: str,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
 
@@ -2707,11 +2703,11 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
 
@@ -2768,14 +2764,14 @@ class AsyncAuthorization:
         self,
         organization_membership_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        resource_id: str | None = None,
+        resource_external_id: str | None = None,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments
 
@@ -2833,8 +2829,8 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> UserRoleAssignment:
         """Assign a role
 
@@ -2857,7 +2853,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_slug": role_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -2883,8 +2879,8 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
-        request_options: Optional[RequestOptions] = None,
+        resource_target: ResourceTargetById | ResourceTargetByExternalId,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a role assignment
 
@@ -2904,7 +2900,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "role_slug": role_slug,
         }
         if isinstance(resource_target, ResourceTargetById):
@@ -2929,7 +2925,7 @@ class AsyncAuthorization:
         organization_membership_id: str,
         role_assignment_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a role assignment by ID
 
@@ -2963,7 +2959,7 @@ class AsyncAuthorization:
         self,
         organization_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RoleList:
         """List custom roles
 
@@ -2995,10 +2991,10 @@ class AsyncAuthorization:
         organization_id: str,
         *,
         name: str,
-        slug: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        slug: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Create a custom role
 
@@ -3025,7 +3021,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -3049,7 +3045,7 @@ class AsyncAuthorization:
         organization_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Get a custom role
 
@@ -3088,9 +3084,9 @@ class AsyncAuthorization:
         organization_id: str,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Update a custom role
 
@@ -3115,7 +3111,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -3143,7 +3139,7 @@ class AsyncAuthorization:
         organization_id: str,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a custom role
 
@@ -3181,7 +3177,7 @@ class AsyncAuthorization:
         slug: str,
         *,
         body_slug: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Add a permission to a custom role
 
@@ -3205,7 +3201,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "slug": body_slug,
         }
         return await self._client.request(
@@ -3228,8 +3224,8 @@ class AsyncAuthorization:
         organization_id: str,
         slug: str,
         *,
-        permissions: List[str],
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str],
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Set permissions for a custom role
 
@@ -3252,7 +3248,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permissions": permissions,
         }
         return await self._client.request(
@@ -3276,7 +3272,7 @@ class AsyncAuthorization:
         slug: str,
         permission_slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Remove a permission from a custom role
 
@@ -3315,7 +3311,7 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Get a resource by external ID
 
@@ -3357,12 +3353,10 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
 
@@ -3390,7 +3384,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -3430,8 +3424,8 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        cascade_delete: Optional[bool] = None,
-        request_options: Optional[RequestOptions] = None,
+        cascade_delete: bool | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorization resource by external ID
 
@@ -3453,7 +3447,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "cascade_delete": cascade_delete,
@@ -3480,13 +3474,13 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        assignment: AuthorizationAssignment | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List memberships for a resource by external ID
 
@@ -3552,12 +3546,12 @@ class AsyncAuthorization:
         resource_type_slug: str,
         external_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        role_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        role_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments for a resource by external ID
 
@@ -3614,15 +3608,15 @@ class AsyncAuthorization:
     async def list_resources(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        parent: Optional[Union[ParentById, ParentByExternalId]] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        resource_type_slug: str | None = None,
+        resource_external_id: str | None = None,
+        parent: ParentById | ParentByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizationResource]:
         """List resources
 
@@ -3684,11 +3678,9 @@ class AsyncAuthorization:
         name: str,
         resource_type_slug: str,
         organization_id: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
 
@@ -3716,7 +3708,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "external_id": external_id,
             "name": name,
             "resource_type_slug": resource_type_slug,
@@ -3746,7 +3738,7 @@ class AsyncAuthorization:
         self,
         resource_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Get a resource
 
@@ -3778,12 +3770,10 @@ class AsyncAuthorization:
         self,
         resource_id: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        parent_resource: ParentResourceById | ParentResourceByExternalId | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationResource:
         """Update a resource
 
@@ -3809,7 +3799,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -3840,8 +3830,8 @@ class AsyncAuthorization:
         self,
         resource_id: str,
         *,
-        cascade_delete: Optional[bool] = None,
-        request_options: Optional[RequestOptions] = None,
+        cascade_delete: bool | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an authorization resource
 
@@ -3861,7 +3851,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "cascade_delete": cascade_delete,
@@ -3879,13 +3869,13 @@ class AsyncAuthorization:
         self,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
         permission_slug: str,
-        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
-        request_options: Optional[RequestOptions] = None,
+        assignment: AuthorizationAssignment | str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List organization memberships for resource
 
@@ -3944,12 +3934,12 @@ class AsyncAuthorization:
         self,
         resource_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        role_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        role_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments for a resource
 
@@ -3996,7 +3986,7 @@ class AsyncAuthorization:
     async def list_environment_roles(
         self,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> RoleList:
         """List environment roles
 
@@ -4023,9 +4013,9 @@ class AsyncAuthorization:
         *,
         slug: str,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Create an environment role
 
@@ -4051,7 +4041,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -4074,7 +4064,7 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Get an environment role
 
@@ -4105,9 +4095,9 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Update an environment role
 
@@ -4131,7 +4121,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -4153,7 +4143,7 @@ class AsyncAuthorization:
         slug: str,
         *,
         body_slug: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Add a permission to an environment role
 
@@ -4176,7 +4166,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "slug": body_slug,
         }
         return await self._client.request(
@@ -4191,8 +4181,8 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        permissions: List[str],
-        request_options: Optional[RequestOptions] = None,
+        permissions: list[str],
+        request_options: RequestOptions | None = None,
     ) -> Role:
         """Set permissions for an environment role
 
@@ -4215,7 +4205,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "permissions": permissions,
         }
         return await self._client.request(
@@ -4229,11 +4219,11 @@ class AsyncAuthorization:
     async def list_permissions(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List permissions
 
@@ -4278,9 +4268,9 @@ class AsyncAuthorization:
         *,
         slug: str,
         name: str,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        resource_type_slug: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        resource_type_slug: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> Permission:
         """Create a permission
 
@@ -4305,7 +4295,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "slug": slug,
@@ -4328,7 +4318,7 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationPermission:
         """Get a permission
 
@@ -4358,9 +4348,9 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        name: Optional[str] = None,
-        description: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> AuthorizationPermission:
         """Update a permission
 
@@ -4383,7 +4373,7 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -4404,7 +4394,7 @@ class AsyncAuthorization:
         self,
         slug: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a permission
 

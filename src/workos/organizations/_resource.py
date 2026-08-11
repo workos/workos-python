@@ -2,38 +2,39 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     AuditLogConfiguration,
     Organization,
     OrganizationAuthorizedConnectApplicationListData,
     OrganizationDomainData,
 )
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class Organizations:
     """Organizations API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_organizations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        domains: Optional[List[str]] = None,
-        search: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        domains: list[str] | None = None,
+        search: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[Organization]:
         """List Organizations
 
@@ -83,12 +84,12 @@ class Organizations:
         self,
         *,
         name: str,
-        allow_profiles_outside_organization: Optional[bool] = None,
-        domains: Optional[List[str]] = None,
-        domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        allow_profiles_outside_organization: bool | None = None,
+        domains: list[str] | None = None,
+        domain_data: list[OrganizationDomainData] | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Create an Organization
 
@@ -114,7 +115,7 @@ class Organizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -142,7 +143,7 @@ class Organizations:
         self,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Get an Organization by External ID
 
@@ -172,7 +173,7 @@ class Organizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Get an Organization
 
@@ -202,14 +203,14 @@ class Organizations:
         self,
         id: str,
         *,
-        name: Optional[str] = None,
-        allow_profiles_outside_organization: Optional[bool] = None,
-        domains: Optional[List[str]] = None,
-        domain_data: Optional[List[OrganizationDomainData]] = None,
-        stripe_customer_id: Optional[str] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        allow_profiles_outside_organization: bool | None = None,
+        domains: list[str] | None = None,
+        domain_data: list[OrganizationDomainData] | None = None,
+        stripe_customer_id: str | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Update an Organization
 
@@ -239,7 +240,7 @@ class Organizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -268,7 +269,7 @@ class Organizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an Organization
 
@@ -294,7 +295,7 @@ class Organizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogConfiguration:
         """Get Audit Log Configuration
 
@@ -324,11 +325,11 @@ class Organizations:
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[OrganizationAuthorizedConnectApplicationListData]:
         """List authorized applications
 
@@ -374,19 +375,19 @@ class Organizations:
 class AsyncOrganizations:
     """Organizations API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_organizations(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        domains: Optional[List[str]] = None,
-        search: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        domains: list[str] | None = None,
+        search: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[Organization]:
         """List Organizations
 
@@ -436,12 +437,12 @@ class AsyncOrganizations:
         self,
         *,
         name: str,
-        allow_profiles_outside_organization: Optional[bool] = None,
-        domains: Optional[List[str]] = None,
-        domain_data: Optional[List[OrganizationDomainData]] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        allow_profiles_outside_organization: bool | None = None,
+        domains: list[str] | None = None,
+        domain_data: list[OrganizationDomainData] | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Create an Organization
 
@@ -467,7 +468,7 @@ class AsyncOrganizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -495,7 +496,7 @@ class AsyncOrganizations:
         self,
         external_id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Get an Organization by External ID
 
@@ -525,7 +526,7 @@ class AsyncOrganizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Get an Organization
 
@@ -555,14 +556,14 @@ class AsyncOrganizations:
         self,
         id: str,
         *,
-        name: Optional[str] = None,
-        allow_profiles_outside_organization: Optional[bool] = None,
-        domains: Optional[List[str]] = None,
-        domain_data: Optional[List[OrganizationDomainData]] = None,
-        stripe_customer_id: Optional[str] = None,
-        metadata: Union[Dict[str, str], None, NotGiven] = NOT_GIVEN,
-        external_id: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        name: str | None = None,
+        allow_profiles_outside_organization: bool | None = None,
+        domains: list[str] | None = None,
+        domain_data: list[OrganizationDomainData] | None = None,
+        stripe_customer_id: str | None = None,
+        metadata: dict[str, str] | None | NotGiven = NOT_GIVEN,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> Organization:
         """Update an Organization
 
@@ -592,7 +593,7 @@ class AsyncOrganizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "name": name,
@@ -621,7 +622,7 @@ class AsyncOrganizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an Organization
 
@@ -647,7 +648,7 @@ class AsyncOrganizations:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> AuditLogConfiguration:
         """Get Audit Log Configuration
 
@@ -677,11 +678,11 @@ class AsyncOrganizations:
         self,
         organization_id: str,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[OrganizationAuthorizedConnectApplicationListData]:
         """List authorized applications
 

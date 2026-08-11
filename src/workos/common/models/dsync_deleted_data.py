@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .dsync_deleted_data_state import DsyncDeletedDataState
 from .dsync_deleted_data_type import DsyncDeletedDataType
 
@@ -20,9 +21,9 @@ class DsyncDeletedData:
     """Distinguishes the directory object."""
     id: str
     """Unique identifier of the directory."""
-    type: "DsyncDeletedDataType"
+    type: DsyncDeletedDataType
     """The type of the directory."""
-    state: "DsyncDeletedDataState"
+    state: DsyncDeletedDataState
     """The current state of the directory."""
     name: str
     """The name of the directory."""
@@ -30,11 +31,11 @@ class DsyncDeletedData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the directory belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DsyncDeletedData":
+    def from_dict(cls, data: dict[str, Any]) -> DsyncDeletedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -50,9 +51,9 @@ class DsyncDeletedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DsyncDeletedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type

@@ -2,12 +2,9 @@
 
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import DirectoryGroup, PaginationOrder
-from workos.directory_sync.models import Directory, DirectoryUserWithGroups
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -16,6 +13,9 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import DirectoryGroup, PaginationOrder
+from workos.directory_sync.models import Directory, DirectoryUserWithGroups
 
 
 class TestDirectorySync:

@@ -15,6 +15,9 @@ from workos.common.models.create_user_invite_options_locale import (
 from workos.common.models.create_user_password_hash_type import (
     CreateUserPasswordHashType,
 )
+from workos.common.models.create_user_password_salt_position import (
+    CreateUserPasswordSaltPosition,
+)
 from workos.common.models.pagination_order import PaginationOrder
 from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
@@ -83,6 +86,7 @@ class PasswordHashed:
 
     password_hash: str
     password_hash_type: CreateUserPasswordHashType | str
+    password_salt_position: CreateUserPasswordSaltPosition | str | None = None
 
 
 class UserManagement:
@@ -508,8 +512,8 @@ class UserManagement:
         self,
         *,
         code: str,
-        verification_id: str,
-        phone_number: str,
+        verification_id: str | None = None,
+        phone_number: str | None = None,
         pending_authentication_token: str,
         ip_address: str | None = None,
         device_id: str | None = None,
@@ -520,14 +524,16 @@ class UserManagement:
         body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
             "code": code,
-            "verification_id": verification_id,
-            "phone_number": phone_number,
             "pending_authentication_token": pending_authentication_token,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
+        if verification_id is not None:
+            body["verification_id"] = verification_id
+        if phone_number is not None:
+            body["phone_number"] = phone_number
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -1153,6 +1159,10 @@ class UserManagement:
             elif isinstance(password, PasswordHashed):
                 body["password_hash"] = password.password_hash
                 body["password_hash_type"] = enum_value(password.password_hash_type)
+                if password.password_salt_position is not None:
+                    body["password_salt_position"] = enum_value(
+                        password.password_salt_position
+                    )
         return self._client.request(
             method="post",
             path=("user_management", "users"),
@@ -1286,6 +1296,10 @@ class UserManagement:
             elif isinstance(password, PasswordHashed):
                 body["password_hash"] = password.password_hash
                 body["password_hash_type"] = enum_value(password.password_hash_type)
+                if password.password_salt_position is not None:
+                    body["password_salt_position"] = enum_value(
+                        password.password_salt_position
+                    )
         return self._client.request(
             method="put",
             path=("user_management", "users", str(id)),
@@ -1310,6 +1324,7 @@ class UserManagement:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -2865,8 +2880,8 @@ class AsyncUserManagement:
         self,
         *,
         code: str,
-        verification_id: str,
-        phone_number: str,
+        verification_id: str | None = None,
+        phone_number: str | None = None,
         pending_authentication_token: str,
         ip_address: str | None = None,
         device_id: str | None = None,
@@ -2877,14 +2892,16 @@ class AsyncUserManagement:
         body: dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:radar-sms-challenge:code",
             "code": code,
-            "verification_id": verification_id,
-            "phone_number": phone_number,
             "pending_authentication_token": pending_authentication_token,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
+        if verification_id is not None:
+            body["verification_id"] = verification_id
+        if phone_number is not None:
+            body["phone_number"] = phone_number
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -3510,6 +3527,10 @@ class AsyncUserManagement:
             elif isinstance(password, PasswordHashed):
                 body["password_hash"] = password.password_hash
                 body["password_hash_type"] = enum_value(password.password_hash_type)
+                if password.password_salt_position is not None:
+                    body["password_salt_position"] = enum_value(
+                        password.password_salt_position
+                    )
         return await self._client.request(
             method="post",
             path=("user_management", "users"),
@@ -3643,6 +3664,10 @@ class AsyncUserManagement:
             elif isinstance(password, PasswordHashed):
                 body["password_hash"] = password.password_hash
                 body["password_hash_type"] = enum_value(password.password_hash_type)
+                if password.password_salt_position is not None:
+                    body["password_salt_position"] = enum_value(
+                        password.password_salt_position
+                    )
         return await self._client.request(
             method="put",
             path=("user_management", "users", str(id)),
@@ -3667,6 +3692,7 @@ class AsyncUserManagement:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.

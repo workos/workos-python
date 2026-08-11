@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -23,13 +23,13 @@ class AuthenticationChallenge:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     """The timestamp when the challenge will expire. Does not apply to TOTP factors."""
-    code: Optional[str] = None
+    code: str | None = None
     """The one-time code for the challenge."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationChallenge":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationChallenge:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -46,9 +46,9 @@ class AuthenticationChallenge:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationChallenge", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["authentication_factor_id"] = self.authentication_factor_id

@@ -5,14 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .dsync_user_updated_data_email import DsyncUserUpdatedDataEmail
-from .slim_role import SlimRole
 from .dsync_user_updated_data_state import DsyncUserUpdatedDataState
+from .slim_role import SlimRole
 
 
 @dataclass(slots=True)
@@ -29,45 +28,45 @@ class DsyncUserUpdatedData:
     """The identifier for the Organization in which the Directory resides."""
     idp_id: str
     """Unique identifier for the user, assigned by the Directory Provider. Different Directory Providers use different ID formats."""
-    email: Optional[str]
+    email: str | None
     """The email address of the user."""
-    state: "DsyncUserUpdatedDataState"
+    state: DsyncUserUpdatedDataState
     """The state of the user."""
-    custom_attributes: Dict[str, Any]
+    custom_attributes: dict[str, Any]
     """An object containing the custom attribute mapping for the Directory Provider."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """The first name of the user."""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """The last name of the user."""
-    name: Optional[str] = None
+    name: str | None = None
     """The full name of the user."""
-    emails: Optional[List["DsyncUserUpdatedDataEmail"]] = None
+    emails: list[DsyncUserUpdatedDataEmail] | None = None
     """A list of email addresses for the user.
 
     .. deprecated:: This field is deprecated."""
-    job_title: Optional[str] = None
+    job_title: str | None = None
     """The job title of the user.
 
     .. deprecated:: This field is deprecated."""
-    username: Optional[str] = None
+    username: str | None = None
     """The username of the user.
 
     .. deprecated:: This field is deprecated."""
-    raw_attributes: Optional[Dict[str, Any]] = None
+    raw_attributes: dict[str, Any] | None = None
     """The raw attributes received from the directory provider.
 
     .. deprecated:: This field is deprecated."""
-    role: Optional["SlimRole"] = None
-    roles: Optional[List["SlimRole"]] = None
+    role: SlimRole | None = None
+    roles: list[SlimRole] | None = None
     """All roles assigned to the user."""
-    previous_attributes: Optional[Dict[str, Any]] = None
+    previous_attributes: dict[str, Any] | None = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DsyncUserUpdatedData":
+    def from_dict(cls, data: dict[str, Any]) -> DsyncUserUpdatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -85,7 +84,7 @@ class DsyncUserUpdatedData:
                 last_name=data.get("last_name"),
                 name=data.get("name"),
                 emails=[
-                    DsyncUserUpdatedDataEmail.from_dict(cast(Dict[str, Any], item))
+                    DsyncUserUpdatedDataEmail.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_emails)
                 ]
                 if (_v_emails := data.get("emails")) is not None
@@ -93,11 +92,11 @@ class DsyncUserUpdatedData:
                 job_title=data.get("job_title"),
                 username=data.get("username"),
                 raw_attributes=data.get("raw_attributes"),
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
+                role=SlimRole.from_dict(cast(dict[str, Any], _v_role))
                 if (_v_role := data.get("role")) is not None
                 else None,
                 roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
+                    SlimRole.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], _v_roles)
                 ]
                 if (_v_roles := data.get("roles")) is not None
@@ -107,9 +106,9 @@ class DsyncUserUpdatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DsyncUserUpdatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["directory_id"] = self.directory_id

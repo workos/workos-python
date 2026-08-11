@@ -7,6 +7,6 @@
   "client_id": "client_01EHZNVPK3SFK441A1RGBFSHRT",
   "client_secret": "••••••••",
   "config": {
-    "account_identifier": "acme-prod"
+    "account": "myorg-myaccount"
   }
 }

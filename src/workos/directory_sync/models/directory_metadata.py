@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .directory_metadata_user import DirectoryMetadataUser
@@ -14,27 +14,27 @@ from .directory_metadata_user import DirectoryMetadataUser
 class DirectoryMetadata:
     """Aggregate counts of directory users and groups synced from the provider."""
 
-    users: "DirectoryMetadataUser"
+    users: DirectoryMetadataUser
     """Counts of active and inactive directory users."""
     groups: int
     """Count of directory groups."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DirectoryMetadata":
+    def from_dict(cls, data: dict[str, Any]) -> DirectoryMetadata:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 users=DirectoryMetadataUser.from_dict(
-                    cast(Dict[str, Any], data["users"])
+                    cast(dict[str, Any], data["users"])
                 ),
                 groups=data["groups"],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DirectoryMetadata", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["users"] = self.users.to_dict()
         result["groups"] = self.groups
         return result

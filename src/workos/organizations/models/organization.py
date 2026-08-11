@@ -4,11 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.organization_domain import OrganizationDomain
 
 
@@ -22,25 +20,25 @@ class Organization:
     """Unique identifier of the Organization."""
     name: str
     """A descriptive name for the Organization. This field does not need to be unique."""
-    domains: List["OrganizationDomain"]
+    domains: list[OrganizationDomain]
     """List of Organization Domains."""
-    metadata: Dict[str, str]
+    metadata: dict[str, str]
     """Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization."""
-    external_id: Optional[str]
+    external_id: str | None
     """The external ID of the Organization."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    stripe_customer_id: Optional[str] = None
+    stripe_customer_id: str | None = None
     """The Stripe customer ID of the Organization."""
-    allow_profiles_outside_organization: Optional[bool] = None
+    allow_profiles_outside_organization: bool | None = None
     """Whether the Organization allows profiles outside of its managed domains.
 
     .. deprecated:: This field is deprecated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Organization":
+    def from_dict(cls, data: dict[str, Any]) -> Organization:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -48,7 +46,7 @@ class Organization:
                 id=data["id"],
                 name=data["name"],
                 domains=[
-                    OrganizationDomain.from_dict(cast(Dict[str, Any], item))
+                    OrganizationDomain.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["domains"])
                 ],
                 metadata=data["metadata"],
@@ -63,9 +61,9 @@ class Organization:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Organization", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["name"] = self.name

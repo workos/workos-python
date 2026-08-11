@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,15 +14,15 @@ class CheckAuthorization:
 
     permission_slug: str
     """The slug of the permission to check."""
-    resource_id: Optional[str] = None
+    resource_id: str | None = None
     """The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`."""
-    resource_external_id: Optional[str] = None
+    resource_external_id: str | None = None
     """The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`."""
-    resource_type_slug: Optional[str] = None
+    resource_type_slug: str | None = None
     """The slug of the resource type. Required with `resource_external_id`. Mutually exclusive with `resource_id`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CheckAuthorization":
+    def from_dict(cls, data: dict[str, Any]) -> CheckAuthorization:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class CheckAuthorization:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CheckAuthorization", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["permission_slug"] = self.permission_slug
         if self.resource_id is not None:
             result["resource_id"] = self.resource_id

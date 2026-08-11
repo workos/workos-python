@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value, NOT_GIVEN, NotGiven
+# @oagen-ignore-start — client-side AES-GCM imports (hand-maintained)
+import base64
+import os
+from dataclasses import dataclass
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     CreateDataKeyResponse,
     DecryptResponse,
@@ -15,19 +24,10 @@ from .models import (
     ObjectSummary,
     ObjectWithoutValue,
     VaultObject,
+    VaultOrder,
     VersionListResponse,
 )
-from .models import VaultOrder
-from .._pagination import AsyncPage, SyncPage
 
-# @oagen-ignore-start — client-side AES-GCM imports (hand-maintained)
-import base64
-import os
-from dataclasses import dataclass
-from typing import Tuple
-
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
 # @oagen-ignore-end
 
 # @oagen-ignore-start — client-side AES-GCM helpers (hand-maintained)
@@ -42,8 +42,8 @@ class DecodedKeys:
 
 
 def _aes_gcm_encrypt(
-    plaintext: bytes, key: bytes, iv: bytes, aad: Optional[bytes]
-) -> Dict[str, bytes]:
+    plaintext: bytes, key: bytes, iv: bytes, aad: bytes | None
+) -> dict[str, bytes]:
     encryptor = Cipher(
         algorithms.AES(key), modes.GCM(iv), backend=default_backend()
     ).encryptor()
@@ -58,7 +58,7 @@ def _aes_gcm_decrypt(
     key: bytes,
     iv: bytes,
     tag: bytes,
-    aad: Optional[bytes] = None,
+    aad: bytes | None = None,
 ) -> bytes:
     decryptor = Cipher(
         algorithms.AES(key), modes.GCM(iv, tag), backend=default_backend()
@@ -83,7 +83,7 @@ def _encode_u32_leb128(value: int) -> bytes:
     return bytes(encoded)
 
 
-def _decode_u32_leb128(buf: bytes) -> Tuple[int, int]:
+def _decode_u32_leb128(buf: bytes) -> tuple[int, int]:
     res = 0
     bit = 0
     for i, b in enumerate(buf):
@@ -119,14 +119,14 @@ def _decode_encrypted_payload(encrypted_data_b64: str) -> DecodedKeys:
 class Vault:
     """Vault API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def create_data_key(
         self,
         *,
-        context: Dict[str, str],
-        request_options: Optional[RequestOptions] = None,
+        context: dict[str, str],
+        request_options: RequestOptions | None = None,
     ) -> CreateDataKeyResponse:
         """Create a data key
 
@@ -146,7 +146,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "context": context,
         }
         return self._client.request(
@@ -161,7 +161,7 @@ class Vault:
         self,
         *,
         keys: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DecryptResponse:
         """Decrypt a data key
 
@@ -180,7 +180,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "keys": keys,
         }
         return self._client.request(
@@ -194,9 +194,9 @@ class Vault:
     def create_rekey(
         self,
         *,
-        context: Dict[str, str],
+        context: dict[str, str],
         encrypted_keys: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> CreateDataKeyResponse:
         """Re-encrypt a data key
 
@@ -217,7 +217,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "context": context,
             "encrypted_keys": encrypted_keys,
         }
@@ -232,13 +232,13 @@ class Vault:
     def list_kv(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[VaultOrder, str]] = None,
-        search: Optional[str] = None,
-        updated_after: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: VaultOrder | str | None = None,
+        search: str | None = None,
+        updated_after: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[ObjectSummary]:
         """List objects
 
@@ -285,10 +285,10 @@ class Vault:
     def create_kv(
         self,
         *,
-        key_context: Dict[str, str],
+        key_context: dict[str, str],
         name: str,
         value: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ObjectMetadata:
         """Create an object
 
@@ -311,7 +311,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "key_context": key_context,
             "name": name,
             "value": value,
@@ -328,7 +328,7 @@ class Vault:
         self,
         name: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VaultObject:
         """Read an object by name
 
@@ -359,7 +359,7 @@ class Vault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VaultObject:
         """Read an object by ID
 
@@ -391,8 +391,8 @@ class Vault:
         id: str,
         *,
         value: str,
-        version_check: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        version_check: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ObjectWithoutValue:
         """Update an object
 
@@ -414,7 +414,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "value": value,
         }
         if not isinstance(version_check, NotGiven):
@@ -431,8 +431,8 @@ class Vault:
         self,
         id: str,
         *,
-        version_check: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        version_check: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an object
 
@@ -450,7 +450,7 @@ class Vault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "version_check": version_check,
@@ -468,7 +468,7 @@ class Vault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ObjectWithoutValue:
         """Describe an object
 
@@ -499,7 +499,7 @@ class Vault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VersionListResponse:
         """List object versions
 
@@ -532,8 +532,8 @@ class Vault:
         self,
         *,
         data: str,
-        key_context: Dict[str, str],
-        associated_data: Optional[str] = None,
+        key_context: dict[str, str],
+        associated_data: str | None = None,
     ) -> str:
         """Encrypt data locally using AES-GCM with a data key derived from the context."""
         key_pair = self.create_data_key(context=key_context)
@@ -556,7 +556,7 @@ class Vault:
         return base64.b64encode(combined).decode("utf-8")
 
     def decrypt(
-        self, *, encrypted_data: str, associated_data: Optional[str] = None
+        self, *, encrypted_data: str, associated_data: str | None = None
     ) -> str:
         """Decrypt data that was previously encrypted using the encrypt method."""
         decoded = _decode_encrypted_payload(encrypted_data)
@@ -580,14 +580,14 @@ class Vault:
 class AsyncVault:
     """Vault API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def create_data_key(
         self,
         *,
-        context: Dict[str, str],
-        request_options: Optional[RequestOptions] = None,
+        context: dict[str, str],
+        request_options: RequestOptions | None = None,
     ) -> CreateDataKeyResponse:
         """Create a data key
 
@@ -607,7 +607,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "context": context,
         }
         return await self._client.request(
@@ -622,7 +622,7 @@ class AsyncVault:
         self,
         *,
         keys: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> DecryptResponse:
         """Decrypt a data key
 
@@ -641,7 +641,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "keys": keys,
         }
         return await self._client.request(
@@ -655,9 +655,9 @@ class AsyncVault:
     async def create_rekey(
         self,
         *,
-        context: Dict[str, str],
+        context: dict[str, str],
         encrypted_keys: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> CreateDataKeyResponse:
         """Re-encrypt a data key
 
@@ -678,7 +678,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "context": context,
             "encrypted_keys": encrypted_keys,
         }
@@ -693,13 +693,13 @@ class AsyncVault:
     async def list_kv(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[VaultOrder, str]] = None,
-        search: Optional[str] = None,
-        updated_after: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: VaultOrder | str | None = None,
+        search: str | None = None,
+        updated_after: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[ObjectSummary]:
         """List objects
 
@@ -746,10 +746,10 @@ class AsyncVault:
     async def create_kv(
         self,
         *,
-        key_context: Dict[str, str],
+        key_context: dict[str, str],
         name: str,
         value: str,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ObjectMetadata:
         """Create an object
 
@@ -772,7 +772,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "key_context": key_context,
             "name": name,
             "value": value,
@@ -789,7 +789,7 @@ class AsyncVault:
         self,
         name: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VaultObject:
         """Read an object by name
 
@@ -820,7 +820,7 @@ class AsyncVault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VaultObject:
         """Read an object by ID
 
@@ -852,8 +852,8 @@ class AsyncVault:
         id: str,
         *,
         value: str,
-        version_check: Union[str, None, NotGiven] = NOT_GIVEN,
-        request_options: Optional[RequestOptions] = None,
+        version_check: str | None | NotGiven = NOT_GIVEN,
+        request_options: RequestOptions | None = None,
     ) -> ObjectWithoutValue:
         """Update an object
 
@@ -875,7 +875,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "value": value,
         }
         if not isinstance(version_check, NotGiven):
@@ -892,8 +892,8 @@ class AsyncVault:
         self,
         id: str,
         *,
-        version_check: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        version_check: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> None:
         """Delete an object
 
@@ -911,7 +911,7 @@ class AsyncVault:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v
             for k, v in {
                 "version_check": version_check,
@@ -929,7 +929,7 @@ class AsyncVault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> ObjectWithoutValue:
         """Describe an object
 
@@ -960,7 +960,7 @@ class AsyncVault:
         self,
         id: str,
         *,
-        request_options: Optional[RequestOptions] = None,
+        request_options: RequestOptions | None = None,
     ) -> VersionListResponse:
         """List object versions
 
@@ -993,8 +993,8 @@ class AsyncVault:
         self,
         *,
         data: str,
-        key_context: Dict[str, str],
-        associated_data: Optional[str] = None,
+        key_context: dict[str, str],
+        associated_data: str | None = None,
     ) -> str:
         """Encrypt data locally using AES-GCM with a data key derived from the context."""
         key_pair = await self.create_data_key(context=key_context)
@@ -1016,7 +1016,7 @@ class AsyncVault:
         return base64.b64encode(combined).decode("utf-8")
 
     async def decrypt(
-        self, *, encrypted_data: str, associated_data: Optional[str] = None
+        self, *, encrypted_data: str, associated_data: str | None = None
     ) -> str:
         """Decrypt data that was previously encrypted using the encrypt method."""
         decoded = _decode_encrypted_payload(encrypted_data)

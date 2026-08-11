@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .agent_registration_claim_completed_data_claimed_by import (
@@ -24,7 +24,7 @@ class AgentRegistrationClaimCompletedData:
     """The ID of the agent registration."""
     completed_by_attempt_id: str
     """The ID of the claim attempt that completed the claim."""
-    claimed_by: "AgentRegistrationClaimCompletedDataClaimedBy"
+    claimed_by: AgentRegistrationClaimCompletedDataClaimedBy
     """The user who completed the claim."""
     completed_at: str
     """The timestamp when the claim was completed."""
@@ -34,7 +34,7 @@ class AgentRegistrationClaimCompletedData:
     """The timestamp when the claim was last updated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationClaimCompletedData":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationClaimCompletedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -43,7 +43,7 @@ class AgentRegistrationClaimCompletedData:
                 agent_registration_id=data["agent_registration_id"],
                 completed_by_attempt_id=data["completed_by_attempt_id"],
                 claimed_by=AgentRegistrationClaimCompletedDataClaimedBy.from_dict(
-                    cast(Dict[str, Any], data["claimed_by"])
+                    cast(dict[str, Any], data["claimed_by"])
                 ),
                 completed_at=data["completed_at"],
                 created_at=data["created_at"],
@@ -52,9 +52,9 @@ class AgentRegistrationClaimCompletedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationClaimCompletedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["agent_registration_id"] = self.agent_registration_id

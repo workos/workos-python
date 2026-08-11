@@ -93,26 +93,20 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_custom_provider_definition_minimal_payload(self):
-        data = {
-            "name": "My OAuth App",
-            "authorization_url": "https://provider.example.com/oauth/authorize",
-            "token_url": "https://provider.example.com/oauth/token",
-        }
+        data = {"name": "My OAuth App"}
         instance = CustomProviderDefinition.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["name"] == data["name"]
-        assert serialized["authorization_url"] == data["authorization_url"]
-        assert serialized["token_url"] == data["token_url"]
 
     def test_custom_provider_definition_omits_absent_optional_non_nullable_fields(self):
         data = {
             "name": "My OAuth App",
-            "authorization_url": "https://provider.example.com/oauth/authorize",
-            "token_url": "https://provider.example.com/oauth/token",
             "refresh_token_url": "https://provider.example.com/oauth/token",
         }
         instance = CustomProviderDefinition.from_dict(data)
         serialized = instance.to_dict()
+        assert "authorization_url" not in serialized
+        assert "token_url" not in serialized
         assert "pkce_enabled" not in serialized
         assert "request_scope_separator" not in serialized
         assert "scopes_required" not in serialized
@@ -241,13 +235,9 @@ class TestModelRoundTrip:
             "scopes": None,
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
             "auth_methods": ["oauth"],
-            "credentials": {
-                "type": "custom",
-                "client_id": "Iv1.abc123",
-                "redacted_client_secret": "6789",
-            },
+            "credentials": None,
             "installation": None,
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -283,13 +273,9 @@ class TestModelRoundTrip:
             "scopes": None,
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
             "auth_methods": ["oauth"],
-            "credentials": {
-                "type": "custom",
-                "client_id": "Iv1.abc123",
-                "redacted_client_secret": "6789",
-            },
+            "credentials": None,
             "installation": None,
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "custom_provider": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -298,6 +284,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
         assert serialized["scopes"] is None
+        assert serialized["credentials"] is None
         assert serialized["installation"] is None
         assert serialized["custom_provider"] is None
 
@@ -319,7 +306,7 @@ class TestModelRoundTrip:
                 "redacted_client_secret": "6789",
             },
             "installation": None,
-            "config": {"account_identifier": "acme-prod"},
+            "config": {"account": "myorg-myaccount"},
             "custom_provider": {
                 "name": "My OAuth App",
                 "authorization_url": "https://provider.example.com/oauth/authorize",
@@ -474,6 +461,8 @@ class TestModelRoundTrip:
             "organization_id": None,
             "scopes": ["repo", "user:email"],
             "api_key_last_4": None,
+            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+            "client_secret_last_4": "cdef",
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -481,6 +470,7 @@ class TestModelRoundTrip:
         instance = ConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert "auth_method" not in serialized
+        assert "config" not in serialized
 
     def test_connected_account_preserves_nullable_fields(self):
         data = {
@@ -491,6 +481,9 @@ class TestModelRoundTrip:
             "scopes": ["repo", "user:email"],
             "auth_method": "oauth",
             "api_key_last_4": None,
+            "client_id": None,
+            "client_secret_last_4": None,
+            "config": {"instance_url": "https://example.my.salesforce.com"},
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -500,6 +493,8 @@ class TestModelRoundTrip:
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
+        assert serialized["client_id"] is None
+        assert serialized["client_secret_last_4"] is None
 
     def test_connected_account_round_trips_unknown_enum_values(self):
         data = {
@@ -510,6 +505,9 @@ class TestModelRoundTrip:
             "scopes": ["repo", "user:email"],
             "auth_method": "unexpected_connected_account_auth_method",
             "api_key_last_4": None,
+            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+            "client_secret_last_4": "cdef",
+            "config": {"instance_url": "https://example.my.salesforce.com"},
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -550,6 +548,9 @@ class TestModelRoundTrip:
                         "scopes": ["repo", "user:email"],
                         "auth_method": "oauth",
                         "api_key_last_4": None,
+                        "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                        "client_secret_last_4": "cdef",
+                        "config": {"instance_url": "https://example.my.salesforce.com"},
                         "state": "connected",
                         "created_at": "2024-01-16T14:20:00.000Z",
                         "updated_at": "2024-01-16T14:20:00.000Z",
@@ -624,6 +625,9 @@ class TestModelRoundTrip:
                 "scopes": ["repo", "user:email"],
                 "auth_method": "oauth",
                 "api_key_last_4": None,
+                "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                "client_secret_last_4": "cdef",
+                "config": {"instance_url": "https://example.my.salesforce.com"},
                 "state": "connected",
                 "created_at": "2024-01-16T14:20:00.000Z",
                 "updated_at": "2024-01-16T14:20:00.000Z",
@@ -678,6 +682,9 @@ class TestModelRoundTrip:
                 "scopes": ["repo", "user:email"],
                 "auth_method": "oauth",
                 "api_key_last_4": None,
+                "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                "client_secret_last_4": "cdef",
+                "config": {"instance_url": "https://example.my.salesforce.com"},
                 "state": "connected",
                 "created_at": "2024-01-16T14:20:00.000Z",
                 "updated_at": "2024-01-16T14:20:00.000Z",
@@ -956,6 +963,8 @@ class TestModelRoundTrip:
             "organization_id": None,
             "scopes": ["repo", "user:email"],
             "api_key_last_4": None,
+            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+            "client_secret_last_4": "cdef",
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -964,6 +973,7 @@ class TestModelRoundTrip:
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert "auth_method" not in serialized
+        assert "config" not in serialized
 
     def test_data_integrations_list_response_data_connected_account_preserves_nullable_fields(
         self,
@@ -976,6 +986,9 @@ class TestModelRoundTrip:
             "scopes": ["repo", "user:email"],
             "auth_method": "oauth",
             "api_key_last_4": None,
+            "client_id": None,
+            "client_secret_last_4": None,
+            "config": {"instance_url": "https://example.my.salesforce.com"},
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",
@@ -986,6 +999,8 @@ class TestModelRoundTrip:
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
+        assert serialized["client_id"] is None
+        assert serialized["client_secret_last_4"] is None
         assert serialized["userlandUserId"] is None
 
     def test_data_integrations_list_response_data_connected_account_round_trips_unknown_enum_values(
@@ -999,6 +1014,9 @@ class TestModelRoundTrip:
             "scopes": ["repo", "user:email"],
             "auth_method": "unexpected_data_integrations_list_response_data_connected_account_auth_method",
             "api_key_last_4": None,
+            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+            "client_secret_last_4": "cdef",
+            "config": {"instance_url": "https://example.my.salesforce.com"},
             "state": "connected",
             "created_at": "2024-01-16T14:20:00.000Z",
             "updated_at": "2024-01-16T14:20:00.000Z",

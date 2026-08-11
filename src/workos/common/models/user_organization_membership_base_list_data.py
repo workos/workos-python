@@ -5,10 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .user import User
 from .user_organization_membership_base_list_data_status import (
@@ -28,7 +27,7 @@ class UserOrganizationMembershipBaseListData:
     """The ID of the user."""
     organization_id: str
     """The ID of the organization which the user belongs to."""
-    status: "UserOrganizationMembershipBaseListDataStatus"
+    status: UserOrganizationMembershipBaseListDataStatus
     """The status of the organization membership. One of `active`, `inactive`, or `pending`."""
     directory_managed: bool
     """Whether this organization membership is managed by a directory sync connection."""
@@ -36,17 +35,15 @@ class UserOrganizationMembershipBaseListData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    user: "User"
+    user: User
     """The user that belongs to the organization through this membership."""
-    organization_name: Optional[str] = None
+    organization_name: str | None = None
     """The name of the organization which the user belongs to."""
-    custom_attributes: Optional[Dict[str, Any]] = None
+    custom_attributes: dict[str, Any] | None = None
     """An object containing IdP-sourced attributes from the linked [Directory User](https://workos.com/docs/reference/directory-sync/directory-user) or [SSO Profile](https://workos.com/docs/reference/sso/profile). Directory User attributes take precedence when both are linked."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "UserOrganizationMembershipBaseListData":
+    def from_dict(cls, data: dict[str, Any]) -> UserOrganizationMembershipBaseListData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -58,16 +55,16 @@ class UserOrganizationMembershipBaseListData:
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                user=User.from_dict(cast(Dict[str, Any], data["user"])),
+                user=User.from_dict(cast(dict[str, Any], data["user"])),
                 organization_name=data.get("organization_name"),
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserOrganizationMembershipBaseListData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["user_id"] = self.user_id

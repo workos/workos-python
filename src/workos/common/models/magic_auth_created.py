@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .event_context import EventContext
 from .magic_auth_created_data import MagicAuthCreatedData
@@ -22,32 +21,32 @@ class MagicAuthCreated:
     id: str
     """Unique identifier for the event."""
     event: Literal["magic_auth.created"]
-    data: "MagicAuthCreatedData"
+    data: MagicAuthCreatedData
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
-    context: Optional["EventContext"] = None
+    context: EventContext | None = None
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "MagicAuthCreated":
+    def from_dict(cls, data: dict[str, Any]) -> MagicAuthCreated:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "event"),
                 id=data["id"],
                 event=data.get("event", "magic_auth.created"),
-                data=MagicAuthCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
+                data=MagicAuthCreatedData.from_dict(cast(dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
-                context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
+                context=EventContext.from_dict(cast(dict[str, Any], _v_context))
                 if (_v_context := data.get("context")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("MagicAuthCreated", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["event"] = self.event

@@ -18,10 +18,10 @@ class CustomProviderDefinition:
 
     name: str
     """A descriptive name for the custom provider."""
-    authorization_url: str
-    """The provider's OAuth authorization endpoint."""
-    token_url: str
-    """The provider's OAuth token endpoint."""
+    authorization_url: str | None = None
+    """The provider's OAuth authorization endpoint. Required for OAuth providers; omit for `api_key` providers."""
+    token_url: str | None = None
+    """The provider's OAuth token endpoint. Required for OAuth providers; omit for `api_key` providers."""
     refresh_token_url: str | None = None
     """The endpoint used to refresh tokens, if different from the token endpoint."""
     pkce_enabled: bool | None = None
@@ -45,8 +45,8 @@ class CustomProviderDefinition:
         try:
             return cls(
                 name=data["name"],
-                authorization_url=data["authorization_url"],
-                token_url=data["token_url"],
+                authorization_url=data.get("authorization_url"),
+                token_url=data.get("token_url"),
                 refresh_token_url=data.get("refresh_token_url"),
                 pkce_enabled=data.get("pkce_enabled"),
                 request_scope_separator=data.get("request_scope_separator"),
@@ -69,8 +69,10 @@ class CustomProviderDefinition:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["name"] = self.name
-        result["authorization_url"] = self.authorization_url
-        result["token_url"] = self.token_url
+        if self.authorization_url is not None:
+            result["authorization_url"] = self.authorization_url
+        if self.token_url is not None:
+            result["token_url"] = self.token_url
         if self.refresh_token_url is not None:
             result["refresh_token_url"] = self.refresh_token_url
         else:

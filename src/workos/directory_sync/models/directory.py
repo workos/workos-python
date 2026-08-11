@@ -5,14 +5,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .directory_metadata import DirectoryMetadata
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.directory_state import DirectoryState
 from workos.common.models.directory_type import DirectoryType
+
+from .directory_metadata import DirectoryMetadata
 
 
 @dataclass(slots=True)
@@ -27,9 +26,9 @@ class Directory:
     """The unique identifier for the Organization in which the directory resides."""
     external_key: str
     """External Key for the Directory."""
-    type: "DirectoryType"
+    type: DirectoryType
     """The type of external Directory Provider integrated with."""
-    state: "DirectoryState"
+    state: DirectoryState
     """Describes whether the Directory has been successfully connected to an external provider."""
     name: str
     """The name of the directory."""
@@ -37,13 +36,13 @@ class Directory:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    domain: Optional[str] = None
+    domain: str | None = None
     """The URL associated with an Enterprise Client."""
-    metadata: Optional["DirectoryMetadata"] = None
+    metadata: DirectoryMetadata | None = None
     """Aggregate counts of directory users and groups synced from the provider."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Directory":
+    def from_dict(cls, data: dict[str, Any]) -> Directory:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -57,16 +56,16 @@ class Directory:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 domain=data.get("domain"),
-                metadata=DirectoryMetadata.from_dict(cast(Dict[str, Any], _v_metadata))
+                metadata=DirectoryMetadata.from_dict(cast(dict[str, Any], _v_metadata))
                 if (_v_metadata := data.get("metadata")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Directory", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["organization_id"] = self.organization_id

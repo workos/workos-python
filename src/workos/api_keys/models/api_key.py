@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional, Union
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+from workos.user_management.models.user_api_key_owner import UserApiKeyOwner
 
 from .api_key_owner import ApiKeyOwner
-from workos.user_management.models.user_api_key_owner import UserApiKeyOwner
 
 
 @dataclass(slots=True)
@@ -21,17 +20,17 @@ class ApiKey:
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: Union["ApiKeyOwner", "UserApiKeyOwner"]
+    owner: ApiKeyOwner | UserApiKeyOwner
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
     obfuscated_value: str
     """An obfuscated representation of the API Key value."""
-    last_used_at: Optional[datetime]
+    last_used_at: datetime | None
     """Timestamp of when the API Key was last used."""
-    expires_at: Optional[datetime]
+    expires_at: datetime | None
     """Timestamp when the API Key expires. Null means the key does not expire."""
-    permissions: List[str]
+    permissions: list[str]
     """The permission slugs assigned to the API Key."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -39,13 +38,13 @@ class ApiKey:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ApiKey":
+    def from_dict(cls, data: dict[str, Any]) -> ApiKey:
         """Deserialize from a dictionary."""
         try:
             _owner_raw = data["owner"]
-            _owner_data = cast(Dict[str, Any], _owner_raw)
+            _owner_data = cast(dict[str, Any], _owner_raw)
             _owner_disc = cast(str, _owner_data.get("type"))
-            _owner_disc_map: Dict[str, Any] = {
+            _owner_disc_map: dict[str, Any] = {
                 "organization": ApiKeyOwner,
                 "user": UserApiKeyOwner,
             }
@@ -74,9 +73,9 @@ class ApiKey:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApiKey", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["owner"] = self.owner.to_dict()

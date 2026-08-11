@@ -139,6 +139,29 @@ class TestPipes:
         body = json.loads(request.content)
         assert body["user_id"] == "test_user_id"
 
+    def test_update_data_integration_client_credentials(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.update_data_integration_client_credentials(
+            "test_slug",
+            user_id="test_user_id",
+            client_id="test_client_id",
+            client_secret="test_client_secret",
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/data-integrations/test_slug/client-credentials"
+        )
+        body = json.loads(request.content)
+        assert body["user_id"] == "test_user_id"
+        assert body["client_id"] == "test_client_id"
+        assert body["client_secret"] == "test_client_secret"
+
     def test_create_data_integration_credential(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_credentials_response.json"),
@@ -464,6 +487,26 @@ class TestAsyncPipes:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/data-integrations/test_slug/authorize")
+
+    @pytest.mark.asyncio
+    async def test_update_data_integration_client_credentials(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.update_data_integration_client_credentials(
+            "test_slug",
+            user_id="test_user_id",
+            client_id="test_client_id",
+            client_secret="test_client_secret",
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/data-integrations/test_slug/client-credentials"
+        )
 
     @pytest.mark.asyncio
     async def test_create_data_integration_credential(self, async_workos, httpx_mock):

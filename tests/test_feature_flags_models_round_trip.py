@@ -3,7 +3,6 @@
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
 from tests.generated_helpers import load_fixture
-
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 
 

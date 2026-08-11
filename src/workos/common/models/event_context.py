@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .event_context_actor import EventContextActor
@@ -15,29 +15,27 @@ from .event_context_google_analytics_session import EventContextGoogleAnalyticsS
 class EventContext:
     """Additional context about the event."""
 
-    google_analytics_client_id: Optional[str] = None
+    google_analytics_client_id: str | None = None
     """The Google Analytics client ID."""
-    google_analytics_sessions: Optional[List["EventContextGoogleAnalyticsSession"]] = (
-        None
-    )
+    google_analytics_sessions: list[EventContextGoogleAnalyticsSession] | None = None
     """The Google Analytics sessions associated with the event."""
-    ajs_anonymous_id: Optional[str] = None
+    ajs_anonymous_id: str | None = None
     """The anonymous ID from analytics."""
-    client_id: Optional[str] = None
+    client_id: str | None = None
     """The client ID associated with the event."""
-    actor: Optional["EventContextActor"] = None
-    previous_attributes: Optional[Dict[str, Any]] = None
+    actor: EventContextActor | None = None
+    previous_attributes: dict[str, Any] | None = None
     """Attributes that changed from their previous values."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventContext":
+    def from_dict(cls, data: dict[str, Any]) -> EventContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 google_analytics_client_id=data.get("google_analytics_client_id"),
                 google_analytics_sessions=[
                     EventContextGoogleAnalyticsSession.from_dict(
-                        cast(Dict[str, Any], item)
+                        cast(dict[str, Any], item)
                     )
                     for item in cast(list[Any], _v_google_analytics_sessions)
                 ]
@@ -50,7 +48,7 @@ class EventContext:
                 else None,
                 ajs_anonymous_id=data.get("ajs_anonymous_id"),
                 client_id=data.get("client_id"),
-                actor=EventContextActor.from_dict(cast(Dict[str, Any], _v_actor))
+                actor=EventContextActor.from_dict(cast(dict[str, Any], _v_actor))
                 if (_v_actor := data.get("actor")) is not None
                 else None,
                 previous_attributes=data.get("previous_attributes"),
@@ -58,9 +56,9 @@ class EventContext:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EventContext", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.google_analytics_client_id is not None:
             result["google_analytics_client_id"] = self.google_analytics_client_id
         if self.google_analytics_sessions is not None:

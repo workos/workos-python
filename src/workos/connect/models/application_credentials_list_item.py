@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -19,7 +19,7 @@ class ApplicationCredentialsListItem:
     """The unique ID of the client secret."""
     secret_hint: str
     """A hint showing the last few characters of the secret value."""
-    last_used_at: Optional[datetime]
+    last_used_at: datetime | None
     """The timestamp when the client secret was last used, or null if never used."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -27,7 +27,7 @@ class ApplicationCredentialsListItem:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ApplicationCredentialsListItem":
+    def from_dict(cls, data: dict[str, Any]) -> ApplicationCredentialsListItem:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -43,9 +43,9 @@ class ApplicationCredentialsListItem:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApplicationCredentialsListItem", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["secret_hint"] = self.secret_hint

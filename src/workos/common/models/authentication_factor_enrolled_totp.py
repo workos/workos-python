@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -23,7 +24,7 @@ class AuthenticationFactorEnrolledTotp:
     """The `otpauth` URI that is encoded by the provided `qr_code`."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationFactorEnrolledTotp":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationFactorEnrolledTotp:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -36,9 +37,9 @@ class AuthenticationFactorEnrolledTotp:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationFactorEnrolledTotp", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["issuer"] = self.issuer
         result["user"] = self.user
         result["secret"] = self.secret

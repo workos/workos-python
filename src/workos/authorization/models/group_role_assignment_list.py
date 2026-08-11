@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
+from workos.common.models.list_metadata import ListMetadata
 
 from .group_role_assignment import GroupRoleAssignment
-from workos.common.models.list_metadata import ListMetadata
 
 
 @dataclass(slots=True)
@@ -17,30 +17,30 @@ class GroupRoleAssignmentList:
 
     object: Literal["list"]
     """Indicates this is a list response."""
-    data: List["GroupRoleAssignment"]
+    data: list[GroupRoleAssignment]
     """The list of records for the current page."""
-    list_metadata: "ListMetadata"
+    list_metadata: ListMetadata
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GroupRoleAssignmentList":
+    def from_dict(cls, data: dict[str, Any]) -> GroupRoleAssignmentList:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "list"),
                 data=[
-                    GroupRoleAssignment.from_dict(cast(Dict[str, Any], item))
+                    GroupRoleAssignment.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["data"])
                 ],
                 list_metadata=ListMetadata.from_dict(
-                    cast(Dict[str, Any], data["list_metadata"])
+                    cast(dict[str, Any], data["list_metadata"])
                 ),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GroupRoleAssignmentList", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["data"] = [item.to_dict() for item in self.data]
         result["list_metadata"] = self.list_metadata.to_dict()

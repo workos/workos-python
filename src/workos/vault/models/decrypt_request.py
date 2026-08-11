@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,7 +16,7 @@ class DecryptRequest:
     """Base64-encoded encrypted data key to decrypt."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "DecryptRequest":
+    def from_dict(cls, data: dict[str, Any]) -> DecryptRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -24,8 +25,8 @@ class DecryptRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DecryptRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["keys"] = self.keys
         return result

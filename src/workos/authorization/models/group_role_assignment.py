@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Literal
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+from workos.common.models.slim_role import SlimRole
 
 from .group_role_assignment_resource import GroupRoleAssignmentResource
-from workos.common.models.slim_role import SlimRole
 
 
 @dataclass(slots=True)
@@ -23,9 +22,9 @@ class GroupRoleAssignment:
     """Unique identifier of the group role assignment."""
     group_id: str
     """The ID of the group the role is assigned to."""
-    role: "SlimRole"
+    role: SlimRole
     """The role included in the assignment."""
-    resource: "GroupRoleAssignmentResource"
+    resource: GroupRoleAssignmentResource
     """The resource the role is assigned on."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -33,16 +32,16 @@ class GroupRoleAssignment:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "GroupRoleAssignment":
+    def from_dict(cls, data: dict[str, Any]) -> GroupRoleAssignment:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "group_role_assignment"),
                 id=data["id"],
                 group_id=data["group_id"],
-                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
+                role=SlimRole.from_dict(cast(dict[str, Any], data["role"])),
                 resource=GroupRoleAssignmentResource.from_dict(
-                    cast(Dict[str, Any], data["resource"])
+                    cast(dict[str, Any], data["resource"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
@@ -50,9 +49,9 @@ class GroupRoleAssignment:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GroupRoleAssignment", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["group_id"] = self.group_id

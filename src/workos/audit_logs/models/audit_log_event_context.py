@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,11 +14,11 @@ class AuditLogEventContext:
 
     location: str
     """IP Address or some other geolocation identifier."""
-    user_agent: Optional[str] = None
+    user_agent: str | None = None
     """User agent string."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogEventContext":
+    def from_dict(cls, data: dict[str, Any]) -> AuditLogEventContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class AuditLogEventContext:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogEventContext", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["location"] = self.location
         if self.user_agent is not None:
             result["user_agent"] = self.user_agent

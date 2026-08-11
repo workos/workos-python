@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import cast
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .agent_registration_claim_claim_completion import (
     AgentRegistrationClaimClaimCompletion,
@@ -20,7 +19,7 @@ class AgentRegistrationClaim:
 
     id: str
     """Unique identifier of the claim."""
-    claim_completion: Optional["AgentRegistrationClaimClaimCompletion"]
+    claim_completion: AgentRegistrationClaimClaimCompletion | None
     """The completion record for the claim, or `null` if the claim has not been completed."""
     created_at: datetime
     """The timestamp when the claim was created."""
@@ -30,13 +29,13 @@ class AgentRegistrationClaim:
     """The timestamp when the claim expires."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationClaim":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationClaim:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 id=data["id"],
                 claim_completion=AgentRegistrationClaimClaimCompletion.from_dict(
-                    cast(Dict[str, Any], _v_claim_completion)
+                    cast(dict[str, Any], _v_claim_completion)
                 )
                 if (_v_claim_completion := data["claim_completion"]) is not None
                 else None,
@@ -47,9 +46,9 @@ class AgentRegistrationClaim:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationClaim", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         if self.claim_completion is not None:
             result["claim_completion"] = self.claim_completion.to_dict()

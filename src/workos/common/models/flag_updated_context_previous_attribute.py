@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, cast
+
 from workos._types import _raise_deserialize_error
 
 from .flag_updated_context_previous_attribute_data import (
@@ -16,16 +16,16 @@ from .flag_updated_context_previous_attribute_data import (
 class FlagUpdatedContextPreviousAttribute:
     """Attributes that changed from their previous values."""
 
-    data: Optional["FlagUpdatedContextPreviousAttributeData"] = None
+    data: FlagUpdatedContextPreviousAttributeData | None = None
     """The previous data attributes of the flag."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "FlagUpdatedContextPreviousAttribute":
+    def from_dict(cls, data: dict[str, Any]) -> FlagUpdatedContextPreviousAttribute:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 data=FlagUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v_data)
+                    cast(dict[str, Any], _v_data)
                 )
                 if (_v_data := data.get("data")) is not None
                 else None,
@@ -33,9 +33,9 @@ class FlagUpdatedContextPreviousAttribute:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagUpdatedContextPreviousAttribute", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.data is not None:
             result["data"] = self.data.to_dict()
         return result

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -19,25 +19,25 @@ class PipesConnectedAccountConnectionFailedData:
     """The unique ID of the data integration."""
     provider_slug: str
     """The provider slug for this connection attempt."""
-    user_id: Optional[str]
+    user_id: str | None
     """The ID of the User the connection attempt belongs to."""
-    organization_id: Optional[str]
+    organization_id: str | None
     """The ID of the Organization the connection attempt belongs to."""
     error_code: str
     """A machine-readable error code for the failure."""
-    error_reason: Optional[str]
+    error_reason: str | None
     """A human-readable explanation of the failure."""
-    provider_error: Optional[str]
+    provider_error: str | None
     """The raw error code returned by the OAuth provider."""
-    provider_error_description: Optional[str]
+    provider_error_description: str | None
     """The raw error description returned by the OAuth provider."""
     created_at: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "PipesConnectedAccountConnectionFailedData":
+        cls, data: dict[str, Any]
+    ) -> PipesConnectedAccountConnectionFailedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -55,9 +55,9 @@ class PipesConnectedAccountConnectionFailedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("PipesConnectedAccountConnectionFailedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["data_integration_id"] = self.data_integration_id
         result["provider_slug"] = self.provider_slug

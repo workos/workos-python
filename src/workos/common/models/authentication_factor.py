@@ -5,10 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 from .authentication_factor_sms import AuthenticationFactorSms
 from .authentication_factor_totp import AuthenticationFactorTotp
@@ -23,21 +22,21 @@ class AuthenticationFactor:
     """Distinguishes the authentication factor object."""
     id: str
     """The unique ID of the factor."""
-    type: "AuthenticationFactorType"
+    type: AuthenticationFactorType
     """The type of the factor to enroll."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    user_id: Optional[str] = None
+    user_id: str | None = None
     """The ID of the [user](https://workos.com/docs/reference/authkit/user)."""
-    sms: Optional["AuthenticationFactorSms"] = None
+    sms: AuthenticationFactorSms | None = None
     """SMS-based authentication factor details."""
-    totp: Optional["AuthenticationFactorTotp"] = None
+    totp: AuthenticationFactorTotp | None = None
     """TOTP-based authentication factor details."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationFactor":
+    def from_dict(cls, data: dict[str, Any]) -> AuthenticationFactor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -47,19 +46,19 @@ class AuthenticationFactor:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 user_id=data.get("user_id"),
-                sms=AuthenticationFactorSms.from_dict(cast(Dict[str, Any], _v_sms))
+                sms=AuthenticationFactorSms.from_dict(cast(dict[str, Any], _v_sms))
                 if (_v_sms := data.get("sms")) is not None
                 else None,
-                totp=AuthenticationFactorTotp.from_dict(cast(Dict[str, Any], _v_totp))
+                totp=AuthenticationFactorTotp.from_dict(cast(dict[str, Any], _v_totp))
                 if (_v_totp := data.get("totp")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationFactor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type

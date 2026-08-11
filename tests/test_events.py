@@ -2,11 +2,9 @@
 
 
 import pytest
-from workos import WorkOSClient, AsyncWorkOSClient
-from tests.generated_helpers import load_fixture
 
-from workos.common.models import ActionAuthenticationDenied, PaginationOrder
-from workos._pagination import AsyncPage, SyncPage
+from tests.generated_helpers import load_fixture
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     BadRequestError,
@@ -15,6 +13,8 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos._pagination import AsyncPage, SyncPage
+from workos.common.models import ActionAuthenticationDenied, PaginationOrder
 
 
 class TestEvents:
@@ -22,14 +22,14 @@ class TestEvents:
         httpx_mock.add_response(
             json=load_fixture("list_event_schema.json"),
         )
-        page = workos.events.list_events()
+        page = workos.events.list_events(events=[])
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], ActionAuthenticationDenied)
 
     def test_list_events_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.events.list_events()
+        page = workos.events.list_events(events=[])
         assert isinstance(page, SyncPage)
         assert page.data == []
 
@@ -58,7 +58,7 @@ class TestEvents:
     def test_list_events_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         workos.events.list_events(
-            request_options={"extra_headers": {"X-Custom": "value"}}
+            events=[], request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
@@ -69,7 +69,7 @@ class TestEvents:
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.events.list_events()
+            workos.events.list_events(events=[])
 
     def test_list_events_not_found(self, httpx_mock):
         workos = WorkOSClient(
@@ -78,7 +78,7 @@ class TestEvents:
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.events.list_events()
+                workos.events.list_events(events=[])
         finally:
             workos.close()
 
@@ -93,7 +93,7 @@ class TestEvents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                workos.events.list_events()
+                workos.events.list_events(events=[])
         finally:
             workos.close()
 
@@ -104,7 +104,7 @@ class TestEvents:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.events.list_events()
+                workos.events.list_events(events=[])
         finally:
             workos.close()
 
@@ -115,7 +115,7 @@ class TestEvents:
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.events.list_events()
+                workos.events.list_events(events=[])
         finally:
             workos.close()
 
@@ -126,7 +126,7 @@ class TestEvents:
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.events.list_events()
+                workos.events.list_events(events=[])
         finally:
             workos.close()
 
@@ -135,7 +135,7 @@ class TestAsyncEvents:
     @pytest.mark.asyncio
     async def test_list_events(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_event_schema.json"))
-        page = await async_workos.events.list_events()
+        page = await async_workos.events.list_events(events=[])
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], ActionAuthenticationDenied)
@@ -143,7 +143,7 @@ class TestAsyncEvents:
     @pytest.mark.asyncio
     async def test_list_events_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.events.list_events()
+        page = await async_workos.events.list_events(events=[])
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
@@ -174,7 +174,7 @@ class TestAsyncEvents:
     async def test_list_events_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         await async_workos.events.list_events(
-            request_options={"extra_headers": {"X-Custom": "value"}}
+            events=[], request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
@@ -183,7 +183,7 @@ class TestAsyncEvents:
     async def test_list_events_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.events.list_events()
+            await async_workos.events.list_events(events=[])
 
     @pytest.mark.asyncio
     async def test_list_events_not_found(self, httpx_mock):
@@ -193,7 +193,7 @@ class TestAsyncEvents:
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.events.list_events()
+                await workos.events.list_events(events=[])
         finally:
             await workos.close()
 
@@ -209,7 +209,7 @@ class TestAsyncEvents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                await workos.events.list_events()
+                await workos.events.list_events(events=[])
         finally:
             await workos.close()
 
@@ -221,7 +221,7 @@ class TestAsyncEvents:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.events.list_events()
+                await workos.events.list_events(events=[])
         finally:
             await workos.close()
 
@@ -233,7 +233,7 @@ class TestAsyncEvents:
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.events.list_events()
+                await workos.events.list_events(events=[])
         finally:
             await workos.close()
 
@@ -245,6 +245,6 @@ class TestAsyncEvents:
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.events.list_events()
+                await workos.events.list_events(events=[])
         finally:
             await workos.close()

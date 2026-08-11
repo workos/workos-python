@@ -5,15 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, cast
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+from workos.common.models.agent_registration_kind import AgentRegistrationKind
+from workos.common.models.agent_registration_status import AgentRegistrationStatus
 
 from .agent_registration_agent_identity import AgentRegistrationAgentIdentity
 from .agent_registration_claim import AgentRegistrationClaim
-from workos.common.models.agent_registration_kind import AgentRegistrationKind
-from workos.common.models.agent_registration_status import AgentRegistrationStatus
 
 
 @dataclass(slots=True)
@@ -22,15 +21,15 @@ class AgentRegistration:
 
     id: str
     """Unique identifier of the agent registration."""
-    agent_identity: "AgentRegistrationAgentIdentity"
+    agent_identity: AgentRegistrationAgentIdentity
     """The agent identity associated with this registration."""
     organization_id: str
     """Identifier of the organization the agent is registered to."""
-    status: "AgentRegistrationStatus"
+    status: AgentRegistrationStatus
     """The current verification status of the registration."""
-    kind: "AgentRegistrationKind"
+    kind: AgentRegistrationKind
     """The kind of agent registration."""
-    claim: Optional["AgentRegistrationClaim"]
+    claim: AgentRegistrationClaim | None
     """The claim associated with this registration, or `null` if the registration has no claim."""
     created_at: datetime
     """The timestamp when the registration was created."""
@@ -38,18 +37,18 @@ class AgentRegistration:
     """The timestamp when the registration was last updated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistration":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistration:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 id=data["id"],
                 agent_identity=AgentRegistrationAgentIdentity.from_dict(
-                    cast(Dict[str, Any], data["agent_identity"])
+                    cast(dict[str, Any], data["agent_identity"])
                 ),
                 organization_id=data["organization_id"],
                 status=AgentRegistrationStatus(data["status"]),
                 kind=AgentRegistrationKind(data["kind"]),
-                claim=AgentRegistrationClaim.from_dict(cast(Dict[str, Any], _v_claim))
+                claim=AgentRegistrationClaim.from_dict(cast(dict[str, Any], _v_claim))
                 if (_v_claim := data["claim"]) is not None
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
@@ -58,9 +57,9 @@ class AgentRegistration:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistration", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["id"] = self.id
         result["agent_identity"] = self.agent_identity.to_dict()
         result["organization_id"] = self.organization_id

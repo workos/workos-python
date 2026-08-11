@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,15 +14,15 @@ class EnrollUserAuthenticationFactor:
 
     type: Literal["totp"]
     """The type of the factor to enroll."""
-    totp_issuer: Optional[str] = None
+    totp_issuer: str | None = None
     """Your application or company name displayed in the user's authenticator app."""
-    totp_user: Optional[str] = None
+    totp_user: str | None = None
     """The user's account name displayed in their authenticator app."""
-    totp_secret: Optional[str] = None
+    totp_secret: str | None = None
     """The Base32-encoded shared secret for TOTP factors. This can be provided when creating the auth factor, otherwise it will be generated. The algorithm used to derive TOTP codes is SHA-1, the code length is 6 digits, and the timestep is 30 seconds – the secret must be compatible with these parameters."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EnrollUserAuthenticationFactor":
+    def from_dict(cls, data: dict[str, Any]) -> EnrollUserAuthenticationFactor:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class EnrollUserAuthenticationFactor:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EnrollUserAuthenticationFactor", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["type"] = self.type
         if self.totp_issuer is not None:
             result["totp_issuer"] = self.totp_issuer

@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -15,13 +16,13 @@ class CreateAuthorizationPermission:
     """A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks."""
     name: str
     """A descriptive name for the Permission."""
-    description: Optional[str] = None
+    description: str | None = None
     """An optional description of the Permission."""
-    resource_type_slug: Optional[str] = None
+    resource_type_slug: str | None = None
     """The slug of the resource type this permission is scoped to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "CreateAuthorizationPermission":
+    def from_dict(cls, data: dict[str, Any]) -> CreateAuthorizationPermission:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -33,9 +34,9 @@ class CreateAuthorizationPermission:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateAuthorizationPermission", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["slug"] = self.slug
         result["name"] = self.name
         if self.description is not None:

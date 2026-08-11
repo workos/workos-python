@@ -858,8 +858,6 @@ class TestUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_radar_sms_challenge(
             code="test_code",
-            verification_id="test_verification_id",
-            phone_number="test_phone_number",
             pending_authentication_token="test_pending_authentication_token",
         )
         assert isinstance(result, AuthenticateResponse)
@@ -1766,8 +1764,6 @@ class TestAsyncUserManagement:
         result = (
             await async_workos.user_management.authenticate_with_radar_sms_challenge(
                 code="test_code",
-                verification_id="test_verification_id",
-                phone_number="test_phone_number",
                 pending_authentication_token="test_pending_authentication_token",
             )
         )

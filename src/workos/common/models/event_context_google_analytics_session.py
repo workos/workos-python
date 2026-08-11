@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -13,13 +14,13 @@ class EventContextGoogleAnalyticsSession:
 
     container_id: str
     """The Google Analytics container ID."""
-    session_id: Optional[str] = None
+    session_id: str | None = None
     """The Google Analytics session ID."""
-    session_number: Optional[str] = None
+    session_number: str | None = None
     """The Google Analytics session number."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventContextGoogleAnalyticsSession":
+    def from_dict(cls, data: dict[str, Any]) -> EventContextGoogleAnalyticsSession:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +31,9 @@ class EventContextGoogleAnalyticsSession:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EventContextGoogleAnalyticsSession", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["containerId"] = self.container_id
         if self.session_id is not None:
             result["sessionId"] = self.session_id

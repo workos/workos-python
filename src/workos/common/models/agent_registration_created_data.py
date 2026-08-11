@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .agent_registration_created_data_agent_identity import (
@@ -24,15 +24,15 @@ class AgentRegistrationCreatedData:
     """Distinguishes the agent registration object."""
     id: str
     """Unique identifier of the agent registration."""
-    agent_identity: "AgentRegistrationCreatedDataAgentIdentity"
+    agent_identity: AgentRegistrationCreatedDataAgentIdentity
     """The agent identity for this registration."""
     organization_id: str
     """The ID of the organization the registration belongs to."""
-    status: "AgentRegistrationCreatedDataStatus"
+    status: AgentRegistrationCreatedDataStatus
     """The current status of the registration."""
-    kind: "AgentRegistrationCreatedDataKind"
+    kind: AgentRegistrationCreatedDataKind
     """The kind of the registration."""
-    method: "AgentRegistrationCreatedDataMethod"
+    method: AgentRegistrationCreatedDataMethod
     """The authentication method of the registration."""
     created_at: str
     """The timestamp when the registration was created."""
@@ -40,14 +40,14 @@ class AgentRegistrationCreatedData:
     """The timestamp when the registration was last updated."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AgentRegistrationCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "agent_registration"),
                 id=data["id"],
                 agent_identity=AgentRegistrationCreatedDataAgentIdentity.from_dict(
-                    cast(Dict[str, Any], data["agent_identity"])
+                    cast(dict[str, Any], data["agent_identity"])
                 ),
                 organization_id=data["organization_id"],
                 status=AgentRegistrationCreatedDataStatus(data["status"]),
@@ -59,9 +59,9 @@ class AgentRegistrationCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["agent_identity"] = self.agent_identity.to_dict()

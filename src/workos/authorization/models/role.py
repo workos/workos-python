@@ -5,9 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 from workos.common.models.role_type import RoleType
 
 
@@ -23,13 +23,13 @@ class Role:
     """Unique identifier of the role."""
     name: str
     """A descriptive name for the role."""
-    description: Optional[str]
+    description: str | None
     """An optional description of the role."""
-    type: "RoleType"
+    type: RoleType
     """Whether the role is scoped to the environment or an organization (custom role)."""
     resource_type_slug: str
     """The slug of the resource type the role is scoped to."""
-    permissions: List[str]
+    permissions: list[str]
     """The permission slugs assigned to the role."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -37,7 +37,7 @@ class Role:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Role":
+    def from_dict(cls, data: dict[str, Any]) -> Role:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -55,9 +55,9 @@ class Role:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Role", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["slug"] = self.slug
         result["object"] = self.object
         result["id"] = self.id

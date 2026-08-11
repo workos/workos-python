@@ -5,15 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal, cast
 
-from .connection_activated_data_domain import ConnectionActivatedDataDomain
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
+
 from .connection_activated_data_connection_type import (
     ConnectionActivatedDataConnectionType,
 )
+from .connection_activated_data_domain import ConnectionActivatedDataDomain
 from .connection_activated_data_state import ConnectionActivatedDataState
 from .connection_activated_data_status import ConnectionActivatedDataStatus
 
@@ -26,11 +25,11 @@ class ConnectionActivatedData:
     """Distinguishes the connection object."""
     id: str
     """Unique identifier of the connection."""
-    state: "ConnectionActivatedDataState"
+    state: ConnectionActivatedDataState
     """The current state of the connection."""
     name: str
     """The name of the connection."""
-    connection_type: "ConnectionActivatedDataConnectionType"
+    connection_type: ConnectionActivatedDataConnectionType
     """The type of the connection."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -38,15 +37,15 @@ class ConnectionActivatedData:
     """An ISO 8601 timestamp."""
     external_key: str
     """The external key of the connection."""
-    status: "ConnectionActivatedDataStatus"
+    status: ConnectionActivatedDataStatus
     """Deprecated. Use state instead."""
-    domains: List["ConnectionActivatedDataDomain"]
+    domains: list[ConnectionActivatedDataDomain]
     """The domains associated with the connection."""
-    organization_id: Optional[str] = None
+    organization_id: str | None = None
     """The ID of the organization the connection belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionActivatedData":
+    def from_dict(cls, data: dict[str, Any]) -> ConnectionActivatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -62,7 +61,7 @@ class ConnectionActivatedData:
                 external_key=data["external_key"],
                 status=ConnectionActivatedDataStatus(data["status"]),
                 domains=[
-                    ConnectionActivatedDataDomain.from_dict(cast(Dict[str, Any], item))
+                    ConnectionActivatedDataDomain.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["domains"])
                 ],
                 organization_id=data.get("organization_id"),
@@ -70,9 +69,9 @@ class ConnectionActivatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectionActivatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["state"] = (

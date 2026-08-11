@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+from typing import Any, Literal
+
+from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -23,11 +23,11 @@ class RoleCreatedData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    permissions: Optional[List[str]] = None
+    permissions: list[str] | None = None
     """The permissions granted by the role."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RoleCreatedData":
+    def from_dict(cls, data: dict[str, Any]) -> RoleCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -41,9 +41,9 @@ class RoleCreatedData:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RoleCreatedData", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["slug"] = self.slug
         result["resource_type_slug"] = self.resource_type_slug

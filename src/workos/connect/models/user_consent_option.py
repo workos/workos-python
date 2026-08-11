@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal, cast
+
 from workos._types import _raise_deserialize_error
 
 from .user_consent_option_choice import UserConsentOptionChoice
@@ -20,11 +20,11 @@ class UserConsentOption:
     """The type of consent option."""
     label: str
     """A human-readable label for this consent option."""
-    choices: List["UserConsentOptionChoice"]
+    choices: list[UserConsentOptionChoice]
     """The available choices for this consent option."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "UserConsentOption":
+    def from_dict(cls, data: dict[str, Any]) -> UserConsentOption:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -32,16 +32,16 @@ class UserConsentOption:
                 type=data.get("type", "enum"),
                 label=data["label"],
                 choices=[
-                    UserConsentOptionChoice.from_dict(cast(Dict[str, Any], item))
+                    UserConsentOptionChoice.from_dict(cast(dict[str, Any], item))
                     for item in cast(list[Any], data["choices"])
                 ],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserConsentOption", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["claim"] = self.claim
         result["type"] = self.type
         result["label"] = self.label

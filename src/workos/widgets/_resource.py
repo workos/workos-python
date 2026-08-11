@@ -2,29 +2,30 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
+
 from .._types import RequestOptions
 from .models import WidgetSessionTokenResponse
-from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
 
 
 class Widgets:
     """Widgets API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def create_token(
         self,
         *,
-        organization_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        user_id: str | None = None,
+        scopes: list[WidgetSessionTokenScopes | str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token
 
@@ -47,7 +48,7 @@ class Widgets:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
@@ -68,16 +69,16 @@ class Widgets:
 class AsyncWidgets:
     """Widgets API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def create_token(
         self,
         *,
-        organization_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
-        request_options: Optional[RequestOptions] = None,
+        organization_id: str | None = None,
+        user_id: str | None = None,
+        scopes: list[WidgetSessionTokenScopes | str] | None = None,
+        request_options: RequestOptions | None = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token
 
@@ -100,7 +101,7 @@ class AsyncWidgets:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,

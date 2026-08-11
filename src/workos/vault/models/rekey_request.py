@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,13 +12,13 @@ from workos._types import _raise_deserialize_error
 class RekeyRequest:
     """Rekey Request model."""
 
-    context: Dict[str, str]
+    context: dict[str, str]
     """Map of values used to determine the new encryption key."""
     encrypted_keys: str
     """Base64-encoded encrypted data key blob to re-encrypt."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RekeyRequest":
+    def from_dict(cls, data: dict[str, Any]) -> RekeyRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class RekeyRequest:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RekeyRequest", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["context"] = self.context
         result["encrypted_keys"] = self.encrypted_keys
         return result

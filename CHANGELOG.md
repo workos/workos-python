@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.2.0](https://github.com/workos/workos-python/compare/v10.1.1...v10.2.0) (2026-08-11)
+
+
+### Features
+
+* **events:** Change required status for parameter `Events.list.events` ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
+* **pipes:** SDK surface change: Symbol "CreateDataIntegrationAuthMethodsLiteral" was removed ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
+* **user_management:** SDK surface change: Parameter type changed for "verification_id" on "UserManagement.authenticate_with_radar_sms_challenge" ([#710](https://github.com/workos/workos-python/issues/710)) ([f7188a1](https://github.com/workos/workos-python/commit/f7188a1f9757d4953656e88aeeef6f03c8a62219))
+
 ## [10.1.1](https://github.com/workos/workos-python/compare/v10.1.0...v10.1.1) (2026-08-04)
 
 

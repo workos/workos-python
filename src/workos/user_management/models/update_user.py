@@ -10,6 +10,9 @@ from workos._types import _raise_deserialize_error
 from workos.common.models.update_user_password_hash_type import (
     UpdateUserPasswordHashType,
 )
+from workos.common.models.update_user_password_salt_position import (
+    UpdateUserPasswordSaltPosition,
+)
 
 
 @dataclass(slots=True)
@@ -33,11 +36,13 @@ class UpdateUser:
     locale: str | None = None
     """The user's preferred locale."""
     password: str | None = None
-    """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
+    """The password to set for the user. Mutually exclusive with `password_hash`, `password_hash_type`, and `password_salt_position`."""
     password_hash: str | None = None
     """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
     password_hash_type: UpdateUserPasswordHashType | None = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
+    password_salt_position: UpdateUserPasswordSaltPosition | None = None
+    """The position of the salt relative to the password when the `password_hash` digest was computed: `prefix` for `hash(salt + password)` or `suffix` for `hash(password + salt)`. Only supported with the `ssha256` hash type and only valid when a `password_hash` is provided. Defaults to `suffix`. Mutually exclusive with `password`."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> UpdateUser:
@@ -56,6 +61,12 @@ class UpdateUser:
                 password_hash=data.get("password_hash"),
                 password_hash_type=UpdateUserPasswordHashType(_v_password_hash_type)
                 if (_v_password_hash_type := data.get("password_hash_type")) is not None
+                else None,
+                password_salt_position=UpdateUserPasswordSaltPosition(
+                    _v_password_salt_position
+                )
+                if (_v_password_salt_position := data.get("password_salt_position"))
+                is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
@@ -95,5 +106,11 @@ class UpdateUser:
                 self.password_hash_type.value
                 if isinstance(self.password_hash_type, Enum)
                 else self.password_hash_type
+            )
+        if self.password_salt_position is not None:
+            result["password_salt_position"] = (
+                self.password_salt_position.value
+                if isinstance(self.password_salt_position, Enum)
+                else self.password_salt_position
             )
         return result

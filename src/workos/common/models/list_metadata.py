@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
+
 from workos._types import _raise_deserialize_error
 
 
@@ -11,13 +12,13 @@ from workos._types import _raise_deserialize_error
 class ListMetadata:
     """Cursor-based pagination metadata."""
 
-    after: Optional[str] = None
+    after: str | None = None
     """Cursor for the next page of results."""
-    before: Optional[str] = None
+    before: str | None = None
     """Cursor for the previous page of results."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ListMetadata":
+    def from_dict(cls, data: dict[str, Any]) -> ListMetadata:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +28,9 @@ class ListMetadata:
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ListMetadata", e)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         if self.after is not None:
             result["after"] = self.after
         else:

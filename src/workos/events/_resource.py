@@ -2,35 +2,36 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union, cast
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from workos.common.models.pagination_order import PaginationOrder
+
+from .._pagination import AsyncPage, SyncPage
 from .._types import RequestOptions, enum_value
 from .models import EventSchema, EventSchemaVariant
-from workos.common.models.pagination_order import PaginationOrder
-from .._pagination import AsyncPage, SyncPage
 
 
 class Events:
     """Events API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: WorkOSClient) -> None:
         self._client = client
 
     def list_events(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        events: Optional[List[str]] = None,
-        range_start: Optional[str] = None,
-        range_end: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        events: list[str],
+        range_start: str | None = None,
+        range_end: str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> SyncPage[EventSchemaVariant]:
         """List events
 
@@ -64,9 +65,7 @@ class Events:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
-                "events": ",".join(str(v) for v in events)
-                if events is not None
-                else None,
+                "events": ",".join(str(v) for v in events),
                 "range_start": range_start,
                 "range_end": range_end,
                 "organization_id": organization_id,
@@ -88,21 +87,21 @@ class Events:
 class AsyncEvents:
     """Events API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
 
     async def list_events(
         self,
         *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        events: Optional[List[str]] = None,
-        range_start: Optional[str] = None,
-        range_end: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        events: list[str],
+        range_start: str | None = None,
+        range_end: str | None = None,
+        organization_id: str | None = None,
+        request_options: RequestOptions | None = None,
     ) -> AsyncPage[EventSchemaVariant]:
         """List events
 
@@ -136,9 +135,7 @@ class AsyncEvents:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
-                "events": ",".join(str(v) for v in events)
-                if events is not None
-                else None,
+                "events": ",".join(str(v) for v in events),
                 "range_start": range_start,
                 "range_end": range_end,
                 "organization_id": organization_id,

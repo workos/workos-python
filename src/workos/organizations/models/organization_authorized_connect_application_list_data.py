@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import cast
-from typing import Any, Dict, List, Literal, Optional
-from workos._types import _raise_deserialize_error
+from typing import Any, Literal, cast
 
+from workos._types import _raise_deserialize_error
 from workos.common.models.connect_application import (
     ConnectApplication,
     ConnectApplicationVariant,
@@ -21,18 +20,18 @@ class OrganizationAuthorizedConnectApplicationListData:
     """Distinguishes the authorized connect application object."""
     id: str
     """The unique ID of the authorized connect application."""
-    granted_scopes: List[str]
+    granted_scopes: list[str]
     """The scopes granted by the user to the application."""
-    application: "ConnectApplicationVariant"
+    application: ConnectApplicationVariant
     user_id: str
     """The ID of the user who authorized the application."""
-    oauth_resource: Optional[str] = None
+    oauth_resource: str | None = None
     """The OAuth resource associated with the authorized connect application, if one was requested."""
 
     @classmethod
     def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "OrganizationAuthorizedConnectApplicationListData":
+        cls, data: dict[str, Any]
+    ) -> OrganizationAuthorizedConnectApplicationListData:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -40,7 +39,7 @@ class OrganizationAuthorizedConnectApplicationListData:
                 id=data["id"],
                 granted_scopes=data["granted_scopes"],
                 application=ConnectApplication.from_dict(
-                    cast(Dict[str, Any], data["application"])
+                    cast(dict[str, Any], data["application"])
                 ),
                 user_id=data["user_id"],
                 oauth_resource=data.get("oauth_resource"),
@@ -50,9 +49,9 @@ class OrganizationAuthorizedConnectApplicationListData:
                 "OrganizationAuthorizedConnectApplicationListData", e
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
         result["granted_scopes"] = self.granted_scopes

@@ -30,6 +30,11 @@
         ],
         "auth_method": "oauth",
         "api_key_last_4": null,
+        "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+        "client_secret_last_4": "cdef",
+        "config": {
+          "instance_url": "https://example.my.salesforce.com"
+        },
         "state": "connected",
         "created_at": "2024-01-16T14:20:00.000Z",
         "updated_at": "2024-01-16T14:20:00.000Z",

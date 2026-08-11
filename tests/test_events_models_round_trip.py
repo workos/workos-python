@@ -5,7 +5,6 @@
 import pytest
 
 from tests.generated_helpers import load_fixture
-
 from workos.common.models import ActionAuthenticationDenied
 from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 

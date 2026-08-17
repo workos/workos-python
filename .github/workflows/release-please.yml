@@ -65,7 +65,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout release PR branch
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # 6.1.0
         with:
           ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
           token: ${{ steps.generate-token.outputs.token }}
@@ -190,7 +190,7 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # 6.1.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
@@ -221,7 +221,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # 6.1.0
 
       - name: Install uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # 8.3.2

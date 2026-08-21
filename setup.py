@@ -35,7 +35,7 @@ setup(
             "pytest-cov==2.8.1",
             "six==1.16.0",
             "black==22.3.0",
-            "twine==4.0.2",
+            "twine==5.1.1",
             "requests==2.30.0",
             "urllib3==2.0.2",
         ],

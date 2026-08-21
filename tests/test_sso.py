@@ -424,6 +424,40 @@ class TestSSO(object):
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.to_dict() == mock_profile
 
+    def test_get_profile_and_token_from_id_token_returns_expected_workosprofile_object(
+        self, setup_with_client_id, mock_profile, mock_request_method
+    ):
+        response_dict = {
+            "profile": {
+                "object": "profile",
+                "id": mock_profile["id"],
+                "email": mock_profile["email"],
+                "first_name": mock_profile["first_name"],
+                "groups": mock_profile["groups"],
+                "organization_id": mock_profile["organization_id"],
+                "connection_id": mock_profile["connection_id"],
+                "connection_type": mock_profile["connection_type"],
+                "last_name": mock_profile["last_name"],
+                "idp_id": mock_profile["idp_id"],
+                "raw_attributes": {
+                    "email": mock_profile["raw_attributes"]["email"],
+                    "first_name": mock_profile["raw_attributes"]["first_name"],
+                    "last_name": mock_profile["raw_attributes"]["last_name"],
+                    "groups": mock_profile["raw_attributes"]["groups"],
+                },
+            },
+            "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
+        }
+
+        mock_request_method("post", response_dict, 200)
+
+        profile_and_token = self.sso.get_profile_and_token_from_id_token(
+            "eyJhbGciOiJSUzI1NiJ9.id.token", "org_01EHQMYV6MBK39QC5PZXHY59C3"
+        )
+
+        assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
+        assert profile_and_token.profile.to_dict() == mock_profile
+
     def test_get_profile_and_token_without_first_name_or_last_name_returns_expected_workosprofile_object(
         self, setup_with_client_id, mock_magic_link_profile, mock_request_method
     ):

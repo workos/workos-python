@@ -33,7 +33,7 @@ setup(
             "flake8",
             "pytest==8.1.1",
             "pytest-cov==2.8.1",
-            "six==1.13.0",
+            "six==1.16.0",
             "black==22.3.0",
             "twine==4.0.2",
             "requests==2.30.0",

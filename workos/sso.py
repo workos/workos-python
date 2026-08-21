@@ -24,6 +24,8 @@ TOKEN_PATH = "sso/token"
 PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
+TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange"
+ID_TOKEN_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:id_token"
 
 RESPONSE_LIMIT = 10
 
@@ -154,6 +156,39 @@ class SSO(WorkOSListResource):
             "client_secret": workos.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
+        }
+
+        response = self.request_helper.request(
+            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
+        )
+
+        return WorkOSProfileAndToken.construct_from_response(response)
+
+    def get_profile_and_token_from_id_token(self, id_token, organization_id):
+        """Exchange an externally issued OIDC ID token for a Profile and Token
+
+        For flows where the user authenticates natively with the identity
+        provider (for example a mobile app using MSAL against Microsoft Entra)
+        and no browser redirect occurs. The ID token is exchanged for the same
+        WorkOS profile the authorization code flow would return. The connection
+        must have an ID token trust configured for the token's issuer and
+        audience.
+
+        Args:
+            id_token (str): The OIDC ID token issued to the client.
+            organization_id (str): The organization whose connection the ID
+                token should be validated against.
+
+        Returns:
+            WorkOSProfileAndToken: WorkOSProfileAndToken object representing the User
+        """
+        params = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "grant_type": TOKEN_EXCHANGE_GRANT_TYPE,
+            "subject_token": id_token,
+            "subject_token_type": ID_TOKEN_SUBJECT_TOKEN_TYPE,
+            "organization_id": organization_id,
         }
 
         response = self.request_helper.request(

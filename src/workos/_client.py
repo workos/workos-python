@@ -18,6 +18,7 @@ from .pipes._resource import Pipes, AsyncPipes
 from .directory_sync._resource import DirectorySync, AsyncDirectorySync
 from .events._resource import Events, AsyncEvents
 from .feature_flags._resource import FeatureFlags, AsyncFeatureFlags
+from .flag_target_types._resource import FlagTargetTypes, AsyncFlagTargetTypes
 from .organization_domains._resource import (
     OrganizationDomains,
     AsyncOrganizationDomains,
@@ -37,6 +38,7 @@ from .vault._resource import Vault, AsyncVault
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+from .flag_targets._resource import FlagTargets, AsyncFlagTargets
 from .passwordless import AsyncPasswordless, Passwordless
 from .actions import Actions, AsyncActions
 from .pkce import PKCE
@@ -94,6 +96,11 @@ class WorkOSClient(_SyncBase):
     def feature_flags(self) -> FeatureFlags:
         """Feature Flags API resources."""
         return FeatureFlags(self)
+
+    @functools.cached_property
+    def flag_target_types(self) -> FlagTargetTypes:
+        """Flag Target Types API resources."""
+        return FlagTargetTypes(self)
 
     @functools.cached_property
     def organization_domains(self) -> OrganizationDomains:
@@ -159,6 +166,11 @@ class WorkOSClient(_SyncBase):
     def audit_logs(self) -> AuditLogs:
         """Audit Logs API resources."""
         return AuditLogs(self)
+
+    @functools.cached_property
+    def flag_targets(self) -> FlagTargets:
+        """Flag Targets API resources."""
+        return FlagTargets(self)
 
     @functools.cached_property
     def mfa(self) -> MultiFactorAuth:
@@ -239,6 +251,11 @@ class AsyncWorkOSClient(_AsyncBase):
         return AsyncFeatureFlags(self)
 
     @functools.cached_property
+    def flag_target_types(self) -> AsyncFlagTargetTypes:
+        """Flag Target Types API resources."""
+        return AsyncFlagTargetTypes(self)
+
+    @functools.cached_property
     def organization_domains(self) -> AsyncOrganizationDomains:
         """Organization Domains API resources."""
         return AsyncOrganizationDomains(self)
@@ -302,6 +319,11 @@ class AsyncWorkOSClient(_AsyncBase):
     def audit_logs(self) -> AsyncAuditLogs:
         """Audit Logs API resources."""
         return AsyncAuditLogs(self)
+
+    @functools.cached_property
+    def flag_targets(self) -> AsyncFlagTargets:
+        """Flag Targets API resources."""
+        return AsyncFlagTargets(self)
 
     @functools.cached_property
     def mfa(self) -> AsyncMultiFactorAuth:

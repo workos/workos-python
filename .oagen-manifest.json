@@ -562,6 +562,16 @@
     "src/workos/feature_flags/__init__.py",
     "src/workos/feature_flags/_resource.py",
     "src/workos/feature_flags/models/__init__.py",
+    "src/workos/flag_target_types/__init__.py",
+    "src/workos/flag_target_types/_resource.py",
+    "src/workos/flag_target_types/models/__init__.py",
+    "src/workos/flag_target_types/models/create_flag_target_type.py",
+    "src/workos/flag_target_types/models/flag_target_type.py",
+    "src/workos/flag_targets/__init__.py",
+    "src/workos/flag_targets/_resource.py",
+    "src/workos/flag_targets/models/__init__.py",
+    "src/workos/flag_targets/models/create_flag_target.py",
+    "src/workos/flag_targets/models/flag_target.py",
     "src/workos/groups/__init__.py",
     "src/workos/groups/_resource.py",
     "src/workos/groups/models/__init__.py",
@@ -671,6 +681,8 @@
     "src/workos/types/directory_sync/__init__.py",
     "src/workos/types/events/__init__.py",
     "src/workos/types/feature_flags/__init__.py",
+    "src/workos/types/flag_target_types/__init__.py",
+    "src/workos/types/flag_targets/__init__.py",
     "src/workos/types/groups/__init__.py",
     "src/workos/types/multi_factor_auth/__init__.py",
     "src/workos/types/organization_domains/__init__.py",
@@ -950,6 +962,8 @@
     "tests/fixtures/create_data_integration.json",
     "tests/fixtures/create_data_key_request.json",
     "tests/fixtures/create_data_key_response.json",
+    "tests/fixtures/create_flag_target.json",
+    "tests/fixtures/create_flag_target_type.json",
     "tests/fixtures/create_group.json",
     "tests/fixtures/create_group_membership.json",
     "tests/fixtures/create_group_role_assignment.json",
@@ -1071,6 +1085,8 @@
     "tests/fixtures/flag_rule_updated_context_previous_attribute_data.json",
     "tests/fixtures/flag_rule_updated_data.json",
     "tests/fixtures/flag_rule_updated_data_owner.json",
+    "tests/fixtures/flag_target.json",
+    "tests/fixtures/flag_target_type.json",
     "tests/fixtures/flag_updated.json",
     "tests/fixtures/flag_updated_context.json",
     "tests/fixtures/flag_updated_context_actor.json",
@@ -1117,6 +1133,8 @@
     "tests/fixtures/list_directory_user_with_groups.json",
     "tests/fixtures/list_event_schema.json",
     "tests/fixtures/list_flag.json",
+    "tests/fixtures/list_flag_target.json",
+    "tests/fixtures/list_flag_target_type.json",
     "tests/fixtures/list_group.json",
     "tests/fixtures/list_group_role_assignment.json",
     "tests/fixtures/list_metadata.json",
@@ -1354,6 +1372,10 @@
     "tests/test_events_models_round_trip.py",
     "tests/test_feature_flags.py",
     "tests/test_feature_flags_models_round_trip.py",
+    "tests/test_flag_target_types.py",
+    "tests/test_flag_target_types_models_round_trip.py",
+    "tests/test_flag_targets.py",
+    "tests/test_flag_targets_models_round_trip.py",
     "tests/test_groups.py",
     "tests/test_groups_models_round_trip.py",
     "tests/test_multi_factor_auth.py",
@@ -2229,6 +2251,34 @@
     "PUT /data-integrations/{slug}/client-credentials": {
       "sdkMethod": "update_data_integration_client_credentials",
       "service": "pipes"
+    },
+    "GET /flag_target_types": {
+      "sdkMethod": "list_flag_target_types",
+      "service": "flag_target_types"
+    },
+    "POST /flag_target_types": {
+      "sdkMethod": "create_flag_target_type",
+      "service": "flag_target_types"
+    },
+    "GET /flag_target_types/{id}": {
+      "sdkMethod": "get_flag_target_type",
+      "service": "flag_target_types"
+    },
+    "GET /flag_targets": {
+      "sdkMethod": "list_flag_targets",
+      "service": "flag_targets"
+    },
+    "POST /flag_targets": {
+      "sdkMethod": "create_flag_target",
+      "service": "flag_targets"
+    },
+    "GET /flag_targets/{id}": {
+      "sdkMethod": "get_flag_target",
+      "service": "flag_targets"
+    },
+    "DELETE /flag_targets/{id}": {
+      "sdkMethod": "delete_flag_target",
+      "service": "flag_targets"
     }
   }
 }

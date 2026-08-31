@@ -523,6 +523,7 @@
     "src/workos/common/models/vault_names_listed.py",
     "src/workos/common/models/vault_names_listed_data.py",
     "src/workos/common/models/vault_names_listed_data_actor_source.py",
+    "src/workos/common/models/waitlist_entry_state.py",
     "src/workos/common/models/waitlist_user.py",
     "src/workos/common/models/waitlist_user_approved.py",
     "src/workos/common/models/waitlist_user_created.py",
@@ -701,6 +702,7 @@
     "src/workos/user_management/models/create_user.py",
     "src/workos/user_management/models/create_user_api_key.py",
     "src/workos/user_management/models/create_user_invite_options.py",
+    "src/workos/user_management/models/create_waitlist_entry.py",
     "src/workos/user_management/models/device_authorization_response.py",
     "src/workos/user_management/models/device_code_session_authenticate_request.py",
     "src/workos/user_management/models/email_change.py",
@@ -743,8 +745,11 @@
     "src/workos/user_management/models/user_invite.py",
     "src/workos/user_management/models/user_management_authentication_provider.py",
     "src/workos/user_management/models/user_management_authentication_screen_hint.py",
+    "src/workos/user_management/models/user_management_waitlists_state.py",
     "src/workos/user_management/models/verify_email_address.py",
     "src/workos/user_management/models/verify_email_response.py",
+    "src/workos/user_management/models/waitlist.py",
+    "src/workos/user_management/models/waitlist_entry.py",
     "src/workos/vault/__init__.py",
     "src/workos/vault/_resource.py",
     "src/workos/vault/models/__init__.py",
@@ -968,6 +973,7 @@
     "tests/fixtures/create_user_api_key.json",
     "tests/fixtures/create_user_invite_options.json",
     "tests/fixtures/create_user_organization_membership.json",
+    "tests/fixtures/create_waitlist_entry.json",
     "tests/fixtures/create_webhook_endpoint.json",
     "tests/fixtures/custom_provider_definition.json",
     "tests/fixtures/data_integration.json",
@@ -1132,6 +1138,8 @@
     "tests/fixtures/list_user_organization_membership_base_list_data.json",
     "tests/fixtures/list_user_role_assignment.json",
     "tests/fixtures/list_user_sessions_list_item.json",
+    "tests/fixtures/list_waitlist.json",
+    "tests/fixtures/list_waitlist_entry.json",
     "tests/fixtures/list_webhook_endpoint.json",
     "tests/fixtures/magic_auth.json",
     "tests/fixtures/magic_auth_code_session_authenticate_request.json",
@@ -1326,6 +1334,8 @@
     "tests/fixtures/verify_email_address.json",
     "tests/fixtures/verify_email_response.json",
     "tests/fixtures/version_list_response.json",
+    "tests/fixtures/waitlist.json",
+    "tests/fixtures/waitlist_entry.json",
     "tests/fixtures/waitlist_user.json",
     "tests/fixtures/waitlist_user_approved.json",
     "tests/fixtures/waitlist_user_created.json",
@@ -2229,6 +2239,146 @@
     "PUT /data-integrations/{slug}/client-credentials": {
       "sdkMethod": "update_data_integration_client_credentials",
       "service": "pipes"
+    },
+    "GET /agents/blueprints": {
+      "sdkMethod": "list_blueprints",
+      "service": "agents"
+    },
+    "POST /agents/blueprints": {
+      "sdkMethod": "create_blueprint",
+      "service": "agents"
+    },
+    "GET /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "get_blueprint",
+      "service": "agents"
+    },
+    "PATCH /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "update_blueprint",
+      "service": "agents"
+    },
+    "DELETE /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "delete_blueprint",
+      "service": "agents"
+    },
+    "POST /agents/blueprints/{agent_blueprint_id}/tokens": {
+      "sdkMethod": "create_blueprint_token",
+      "service": "agents"
+    },
+    "GET /agents/instances": {
+      "sdkMethod": "list_instances",
+      "service": "agents"
+    },
+    "GET /agents/instances/{agent_instance_id}": {
+      "sdkMethod": "get_instance",
+      "service": "agents"
+    },
+    "DELETE /agents/instances/{agent_instance_id}": {
+      "sdkMethod": "delete_instance",
+      "service": "agents"
+    },
+    "GET /agents/sessions": {
+      "sdkMethod": "list_sessions",
+      "service": "agents"
+    },
+    "GET /agents/sessions/{agent_instance_session_id}": {
+      "sdkMethod": "get_session",
+      "service": "agents"
+    },
+    "POST /agents/sessions/{agent_instance_session_id}/revoke": {
+      "sdkMethod": "revoke_session",
+      "service": "agents"
+    },
+    "POST /connections": {
+      "sdkMethod": "create_connection",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_idp_signing_certs": {
+      "sdkMethod": "list_connection_saml_idp_signing_certs",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_idp_signing_certs": {
+      "sdkMethod": "create_connection_saml_idp_signing_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_idp_signing_certs/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_idp_signing_cert",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_sp_encryption_certs": {
+      "sdkMethod": "list_connection_saml_sp_encryption_certs",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_sp_encryption_certs": {
+      "sdkMethod": "create_connection_saml_sp_encryption_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_sp_encryption_certs/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_sp_encryption_cert",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_sp_signing_cert": {
+      "sdkMethod": "list_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_sp_signing_cert": {
+      "sdkMethod": "create_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_sp_signing_cert/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "PATCH /connections/{id}": {
+      "sdkMethod": "update_connection",
+      "service": "sso"
+    },
+    "GET /organizations/{organization_id}/it_contacts": {
+      "sdkMethod": "list_it_contacts",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts": {
+      "sdkMethod": "create_it_contact",
+      "service": "organizations"
+    },
+    "DELETE /organizations/{organization_id}/it_contacts/{contact_id}": {
+      "sdkMethod": "delete_it_contact",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts/{contact_id}/invite": {
+      "sdkMethod": "invite_it_contact",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts/{contact_id}/revoke": {
+      "sdkMethod": "revoke_it_contact",
+      "service": "organizations"
+    },
+    "DELETE /user_management/waitlist_entries/{id}": {
+      "sdkMethod": "delete_waitlist_entry",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlist_entries/{id}/approve": {
+      "sdkMethod": "create_waitlist_entry_approve",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlist_entries/{id}/deny": {
+      "sdkMethod": "create_waitlist_entry_deny",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists": {
+      "sdkMethod": "list_waitlists",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists/{id}": {
+      "sdkMethod": "get_waitlist",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists/{id}/entries": {
+      "sdkMethod": "list_waitlist_entries",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlists/{id}/entries": {
+      "sdkMethod": "create_waitlist_entry",
+      "service": "user_management"
     }
   }
 }

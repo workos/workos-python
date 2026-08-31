@@ -865,6 +865,7 @@ from .vault_metadata_read_data_actor_source import *
 from .vault_names_listed import VaultNamesListed as VaultNamesListed
 from .vault_names_listed_data import VaultNamesListedData as VaultNamesListedData
 from .vault_names_listed_data_actor_source import *
+from .waitlist_entry_state import WaitlistEntryState as WaitlistEntryState
 from .waitlist_user import WaitlistUser as WaitlistUser
 from .waitlist_user_approved import WaitlistUserApproved as WaitlistUserApproved
 from .waitlist_user_created import WaitlistUserCreated as WaitlistUserCreated

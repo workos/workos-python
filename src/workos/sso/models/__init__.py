@@ -20,4 +20,4 @@ from .sso_token_response import SSOTokenResponse as SSOTokenResponse
 from .sso_token_response_oauth_token import (
     SSOTokenResponseOAuthToken as SSOTokenResponseOAuthToken,
 )
-from .token_query import TokenQuery as TokenQuery
+from .token_query import *

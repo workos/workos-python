@@ -21,14 +21,14 @@ class AgentBlueprintsCreateRequest:
 
     name: str
     """Human-readable name of the agent blueprint."""
-    session_settings: AgentBlueprintsCreateRequestSessionSetting
-    """Token and session lifetimes for sessions minted from this blueprint."""
     description: str | None = None
     """Human-readable description of the agent blueprint."""
     permissions: list[str] | None = None
     """Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment."""
     invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None
     """Who may mint sessions from this blueprint."""
+    session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None
+    """Token and session lifetimes for sessions minted from this blueprint."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AgentBlueprintsCreateRequest:
@@ -36,15 +36,17 @@ class AgentBlueprintsCreateRequest:
         try:
             return cls(
                 name=data["name"],
-                session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
-                    cast(dict[str, Any], data["session_settings"])
-                ),
                 description=data.get("description"),
                 permissions=data.get("permissions"),
                 invocable_by=AgentBlueprintsCreateRequestInvocableBy.from_dict(
                     cast(dict[str, Any], _v_invocable_by)
                 )
                 if (_v_invocable_by := data.get("invocable_by")) is not None
+                else None,
+                session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
+                    cast(dict[str, Any], _v_session_settings)
+                )
+                if (_v_session_settings := data.get("session_settings")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
@@ -54,11 +56,12 @@ class AgentBlueprintsCreateRequest:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["name"] = self.name
-        result["session_settings"] = self.session_settings.to_dict()
         if self.description is not None:
             result["description"] = self.description
         if self.permissions is not None:
             result["permissions"] = self.permissions
         if self.invocable_by is not None:
             result["invocable_by"] = self.invocable_by.to_dict()
+        if self.session_settings is not None:
+            result["session_settings"] = self.session_settings.to_dict()
         return result

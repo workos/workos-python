@@ -20,6 +20,7 @@ from workos.agents.models import (
     AgentRegistrationClaim,
     AgentRegistrationClaimClaimCompletion,
     AgentToken,
+    AgentTokenValidation,
     ClaimViewResponse,
     ClaimViewResponseOrganization,
 )
@@ -326,6 +327,54 @@ class TestModelRoundTrip:
             serialized["agent_instance_session_id"] == data["agent_instance_session_id"]
         )
         assert serialized["permissions"] == data["permissions"]
+
+    def test_agent_token_validation_round_trip(self):
+        data = load_fixture("agent_token_validation.json")
+        instance = AgentTokenValidation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentTokenValidation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_token_validation_minimal_payload(self):
+        data = {
+            "valid": True,
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_session_id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "permissions": ["crm:read"],
+            "intent": None,
+            "acting_user_id": None,
+            "session_expires_at": "2024-01-01T00:00:00.000Z",
+        }
+        instance = AgentTokenValidation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["valid"] == data["valid"]
+        assert serialized["agent_instance_id"] == data["agent_instance_id"]
+        assert (
+            serialized["agent_instance_session_id"] == data["agent_instance_session_id"]
+        )
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["intent"] == data["intent"]
+        assert serialized["acting_user_id"] == data["acting_user_id"]
+        assert serialized["session_expires_at"] == data["session_expires_at"]
+
+    def test_agent_token_validation_preserves_nullable_fields(self):
+        data = {
+            "valid": True,
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_session_id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "permissions": ["crm:read"],
+            "intent": None,
+            "acting_user_id": None,
+            "session_expires_at": "2024-01-01T00:00:00.000Z",
+        }
+        instance = AgentTokenValidation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["intent"] is None
+        assert serialized["acting_user_id"] is None
 
     def test_agent_instance_session_round_trip(self):
         data = load_fixture("agent_instance_session.json")

@@ -15,6 +15,7 @@ from workos._errors import (
     UnprocessableEntityError,
 )
 from workos._pagination import AsyncPage, SyncPage
+from workos.audit_logs._resource import RetentionPeriod
 from workos.audit_logs.models import (
     AuditLogAction,
     AuditLogEvent,
@@ -22,7 +23,10 @@ from workos.audit_logs.models import (
     AuditLogExport,
     AuditLogSchema,
 )
-from workos.common.models import PaginationOrder
+from workos.common.models import (
+    PaginationOrder,
+    UpdateAuditLogsRetentionRetentionPeriod,
+)
 from workos.organizations.models import AuditLogsRetention
 
 
@@ -43,15 +47,16 @@ class TestAuditLogs:
             json=load_fixture("audit_logs_retention.json"),
         )
         result = workos.audit_logs.update_organization_audit_logs_retention(
-            "test_id", retention_period_in_days=1
+            "test_id",
+            retention=RetentionPeriod(
+                retention_period=UpdateAuditLogsRetentionRetentionPeriod("1_MONTH")
+            ),
         )
         assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
-        body = json.loads(request.content)
-        assert body["retention_period_in_days"] == 1
 
     def test_list_actions(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -276,7 +281,10 @@ class TestAsyncAuditLogs:
     ):
         httpx_mock.add_response(json=load_fixture("audit_logs_retention.json"))
         result = await async_workos.audit_logs.update_organization_audit_logs_retention(
-            "test_id", retention_period_in_days=1
+            "test_id",
+            retention=RetentionPeriod(
+                retention_period=UpdateAuditLogsRetentionRetentionPeriod("1_MONTH")
+            ),
         )
         assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30

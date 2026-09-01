@@ -3,24 +3,37 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.update_audit_logs_retention_retention_period import (
+    UpdateAuditLogsRetentionRetentionPeriod,
+)
 
 
 @dataclass(slots=True)
 class UpdateAuditLogsRetention:
     """Update Audit Logs Retention model."""
 
-    retention_period_in_days: int
-    """The number of days Audit Log events will be retained. Valid values are `30` and `365`."""
+    retention_period: UpdateAuditLogsRetentionRetentionPeriod | None = None
+    """The period Audit Log events will be retained. Valid values are `1_MONTH` through `11_MONTHS` in one-month increments and `1_YEAR` through `10_YEARS` in one-year increments. Mutually exclusive with `retention_period_in_days`."""
+    retention_period_in_days: int | None = None
+    """The number of days Audit Log events will be retained. Valid values are `30` through `330` in 30-day increments and `365` through `3650` in 365-day increments. Deprecated: use `retention_period` instead. Mutually exclusive with `retention_period`.
+
+    .. deprecated:: This field is deprecated."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> UpdateAuditLogsRetention:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                retention_period_in_days=data["retention_period_in_days"],
+                retention_period=UpdateAuditLogsRetentionRetentionPeriod(
+                    _v_retention_period
+                )
+                if (_v_retention_period := data.get("retention_period")) is not None
+                else None,
+                retention_period_in_days=data.get("retention_period_in_days"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateAuditLogsRetention", e)
@@ -28,5 +41,12 @@ class UpdateAuditLogsRetention:
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
-        result["retention_period_in_days"] = self.retention_period_in_days
+        if self.retention_period is not None:
+            result["retention_period"] = (
+                self.retention_period.value
+                if isinstance(self.retention_period, Enum)
+                else self.retention_period
+            )
+        if self.retention_period_in_days is not None:
+            result["retention_period_in_days"] = self.retention_period_in_days
         return result

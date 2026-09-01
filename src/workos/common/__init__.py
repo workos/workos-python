@@ -537,6 +537,7 @@ from .models import VaultMetadataRead as VaultMetadataRead
 from .models import VaultMetadataReadData as VaultMetadataReadData
 from .models import VaultNamesListed as VaultNamesListed
 from .models import VaultNamesListedData as VaultNamesListedData
+from .models import WaitlistEntryState as WaitlistEntryState
 from .models import WaitlistUser as WaitlistUser
 from .models import WaitlistUserApproved as WaitlistUserApproved
 from .models import WaitlistUserCreated as WaitlistUserCreated

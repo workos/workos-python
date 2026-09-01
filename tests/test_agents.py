@@ -14,16 +14,128 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos._pagination import AsyncPage, SyncPage
 from workos.agents.models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
+    AgentBlueprint,
+    AgentBlueprintsCreateRequestSessionSetting,
     AgentCredentialValidation,
+    AgentInstance,
+    AgentInstanceSession,
     AgentRegistration,
+    AgentToken,
     ClaimViewResponse,
 )
-from workos.common.models import AgentAdminValidateCredentialRequestType
+from workos.common.models import (
+    AgentAdminValidateCredentialRequestType,
+    AgentBlueprintsTokenMintTokenRequestType,
+    PaginationOrder,
+)
 
 
 class TestAgents:
+    def test_list_blueprints(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_agent_blueprint.json"),
+        )
+        page = workos.agents.list_blueprints()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentBlueprint)
+
+    def test_list_blueprints_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.agents.list_blueprints()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_blueprints_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.agents.list_blueprints(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    def test_create_blueprint(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_blueprint.json"),
+        )
+        result = workos.agents.create_blueprint(
+            name="test_name",
+            session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
+                load_fixture("agent_blueprints_create_request_session_setting.json")
+            ),
+        )
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/agents/blueprints")
+        body = json.loads(request.content)
+        assert body["name"] == "test_name"
+        assert "session_settings" in body
+
+    def test_get_blueprint(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_blueprint.json"),
+        )
+        result = workos.agents.get_blueprint("test_agent_blueprint_id")
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    def test_update_blueprint(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_blueprint.json"),
+        )
+        result = workos.agents.update_blueprint("test_agent_blueprint_id")
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    def test_delete_blueprint(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.agents.delete_blueprint("test_agent_blueprint_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    def test_create_blueprint_token(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_token.json"),
+        )
+        result = workos.agents.create_blueprint_token(
+            "test_agent_blueprint_id",
+            type=AgentBlueprintsTokenMintTokenRequestType("user_delegated"),
+        )
+        assert isinstance(result, AgentToken)
+        assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+        assert result.token_type == "Bearer"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/blueprints/test_agent_blueprint_id/tokens"
+        )
+        body = json.loads(request.content)
+        assert body["type"] == AgentBlueprintsTokenMintTokenRequestType(
+            "user_delegated"
+        )
+
     def test_update_attempts(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("claim_view_response.json"),
@@ -78,57 +190,152 @@ class TestAgents:
         assert request.method == "GET"
         assert request.url.path.endswith("/agents/registrations/test_id")
 
-    def test_update_attempts_with_request_options(self, workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("claim_view_response.json"))
-        workos.agents.update_attempts(
-            type="link_external_user",
-            claim_attempt_token="test_claim_attempt_token",
-            user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                load_fixture(
-                    "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                )
-            ),
-            request_options={"extra_headers": {"X-Custom": "value"}},
+    def test_list_instances(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_agent_instance.json"),
+        )
+        page = workos.agents.list_instances()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentInstance)
+
+    def test_list_instances_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.agents.list_instances()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_instances_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.agents.list_instances(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
+            agent_blueprint_id="value agent_blueprint_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
+        )
+
+    def test_get_instance(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_instance.json"),
+        )
+        result = workos.agents.get_instance("test_agent_instance_id")
+        assert isinstance(result, AgentInstance)
+        assert result.object == "agent_instance"
+        assert result.id == "agent_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/agents/instances/test_agent_instance_id")
+
+    def test_delete_instance(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.agents.delete_instance("test_agent_instance_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/agents/instances/test_agent_instance_id")
+
+    def test_list_sessions(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_agent_instance_session.json"),
+        )
+        page = workos.agents.list_sessions()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentInstanceSession)
+
+    def test_list_sessions_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.agents.list_sessions()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_sessions_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.agents.list_sessions(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            agent_blueprint_id="value agent_blueprint_id/test",
+            agent_instance_id="value agent_instance_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert (
+            request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
+        )
+        assert request.url.params["agent_instance_id"] == "value agent_instance_id/test"
+
+    def test_get_session(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_instance_session.json"),
+        )
+        result = workos.agents.get_session("test_agent_instance_session_id")
+        assert isinstance(result, AgentInstanceSession)
+        assert result.object == "agent_instance_session"
+        assert result.id == "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/agents/sessions/test_agent_instance_session_id"
+        )
+
+    def test_revoke_session(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_instance_session.json"),
+        )
+        result = workos.agents.revoke_session("test_agent_instance_session_id")
+        assert isinstance(result, AgentInstanceSession)
+        assert result.object == "agent_instance_session"
+        assert result.id == "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/sessions/test_agent_instance_session_id/revoke"
+        )
+
+    def test_list_blueprints_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.agents.list_blueprints(
+            request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
-    def test_update_attempts_unauthorized(self, workos, httpx_mock):
+    def test_list_blueprints_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.agents.update_attempts(
-                type="link_external_user",
-                claim_attempt_token="test_claim_attempt_token",
-                user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                    load_fixture(
-                        "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                    )
-                ),
-            )
+            workos.agents.list_blueprints()
 
-    def test_update_attempts_not_found(self, httpx_mock):
+    def test_list_blueprints_not_found(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                workos.agents.list_blueprints()
         finally:
             workos.close()
 
-    def test_update_attempts_rate_limited(self, httpx_mock):
+    def test_list_blueprints_rate_limited(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -139,77 +346,138 @@ class TestAgents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                workos.agents.list_blueprints()
         finally:
             workos.close()
 
-    def test_update_attempts_server_error(self, httpx_mock):
+    def test_list_blueprints_server_error(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                workos.agents.list_blueprints()
         finally:
             workos.close()
 
-    def test_update_attempts_bad_request(self, httpx_mock):
+    def test_list_blueprints_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                workos.agents.list_blueprints()
         finally:
             workos.close()
 
-    def test_update_attempts_unprocessable(self, httpx_mock):
+    def test_list_blueprints_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                workos.agents.list_blueprints()
         finally:
             workos.close()
 
 
 class TestAsyncAgents:
+    @pytest.mark.asyncio
+    async def test_list_blueprints(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_agent_blueprint.json"))
+        page = await async_workos.agents.list_blueprints()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentBlueprint)
+
+    @pytest.mark.asyncio
+    async def test_list_blueprints_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.agents.list_blueprints()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_blueprints_encodes_query_params(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.agents.list_blueprints(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    @pytest.mark.asyncio
+    async def test_create_blueprint(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_blueprint.json"))
+        result = await async_workos.agents.create_blueprint(
+            name="test_name",
+            session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
+                load_fixture("agent_blueprints_create_request_session_setting.json")
+            ),
+        )
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/agents/blueprints")
+
+    @pytest.mark.asyncio
+    async def test_get_blueprint(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_blueprint.json"))
+        result = await async_workos.agents.get_blueprint("test_agent_blueprint_id")
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    @pytest.mark.asyncio
+    async def test_update_blueprint(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_blueprint.json"))
+        result = await async_workos.agents.update_blueprint("test_agent_blueprint_id")
+        assert isinstance(result, AgentBlueprint)
+        assert result.object == "agent_blueprint"
+        assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    @pytest.mark.asyncio
+    async def test_delete_blueprint(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.agents.delete_blueprint("test_agent_blueprint_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/agents/blueprints/test_agent_blueprint_id")
+
+    @pytest.mark.asyncio
+    async def test_create_blueprint_token(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_token.json"))
+        result = await async_workos.agents.create_blueprint_token(
+            "test_agent_blueprint_id",
+            type=AgentBlueprintsTokenMintTokenRequestType("user_delegated"),
+        )
+        assert isinstance(result, AgentToken)
+        assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+        assert result.token_type == "Bearer"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/blueprints/test_agent_blueprint_id/tokens"
+        )
+
     @pytest.mark.asyncio
     async def test_update_attempts(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("claim_view_response.json"))
@@ -255,57 +523,154 @@ class TestAsyncAgents:
         assert request.url.path.endswith("/agents/registrations/test_id")
 
     @pytest.mark.asyncio
-    async def test_update_attempts_with_request_options(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("claim_view_response.json"))
-        await async_workos.agents.update_attempts(
-            type="link_external_user",
-            claim_attempt_token="test_claim_attempt_token",
-            user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                load_fixture(
-                    "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                )
-            ),
-            request_options={"extra_headers": {"X-Custom": "value"}},
+    async def test_list_instances(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_agent_instance.json"))
+        page = await async_workos.agents.list_instances()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentInstance)
+
+    @pytest.mark.asyncio
+    async def test_list_instances_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.agents.list_instances()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_instances_encodes_query_params(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.agents.list_instances(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
+            agent_blueprint_id="value agent_blueprint_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_instance(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_instance.json"))
+        result = await async_workos.agents.get_instance("test_agent_instance_id")
+        assert isinstance(result, AgentInstance)
+        assert result.object == "agent_instance"
+        assert result.id == "agent_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/agents/instances/test_agent_instance_id")
+
+    @pytest.mark.asyncio
+    async def test_delete_instance(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.agents.delete_instance("test_agent_instance_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/agents/instances/test_agent_instance_id")
+
+    @pytest.mark.asyncio
+    async def test_list_sessions(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_agent_instance_session.json"))
+        page = await async_workos.agents.list_sessions()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AgentInstanceSession)
+
+    @pytest.mark.asyncio
+    async def test_list_sessions_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.agents.list_sessions()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_sessions_encodes_query_params(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.agents.list_sessions(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            agent_blueprint_id="value agent_blueprint_id/test",
+            agent_instance_id="value agent_instance_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert (
+            request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
+        )
+        assert request.url.params["agent_instance_id"] == "value agent_instance_id/test"
+
+    @pytest.mark.asyncio
+    async def test_get_session(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_instance_session.json"))
+        result = await async_workos.agents.get_session("test_agent_instance_session_id")
+        assert isinstance(result, AgentInstanceSession)
+        assert result.object == "agent_instance_session"
+        assert result.id == "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/agents/sessions/test_agent_instance_session_id"
+        )
+
+    @pytest.mark.asyncio
+    async def test_revoke_session(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_instance_session.json"))
+        result = await async_workos.agents.revoke_session(
+            "test_agent_instance_session_id"
+        )
+        assert isinstance(result, AgentInstanceSession)
+        assert result.object == "agent_instance_session"
+        assert result.id == "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/sessions/test_agent_instance_session_id/revoke"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_blueprints_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.agents.list_blueprints(
+            request_options={"extra_headers": {"X-Custom": "value"}}
         )
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_update_attempts_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_blueprints_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.agents.update_attempts(
-                type="link_external_user",
-                claim_attempt_token="test_claim_attempt_token",
-                user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                    load_fixture(
-                        "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                    )
-                ),
-            )
+            await async_workos.agents.list_blueprints()
 
     @pytest.mark.asyncio
-    async def test_update_attempts_not_found(self, httpx_mock):
+    async def test_list_blueprints_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                await workos.agents.list_blueprints()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_attempts_rate_limited(self, httpx_mock):
+    async def test_list_blueprints_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -316,74 +681,42 @@ class TestAsyncAgents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                await workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                await workos.agents.list_blueprints()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_attempts_server_error(self, httpx_mock):
+    async def test_list_blueprints_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                await workos.agents.list_blueprints()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_attempts_bad_request(self, httpx_mock):
+    async def test_list_blueprints_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                await workos.agents.list_blueprints()
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_update_attempts_unprocessable(self, httpx_mock):
+    async def test_list_blueprints_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.agents.update_attempts(
-                    type="link_external_user",
-                    claim_attempt_token="test_claim_attempt_token",
-                    user=AgentAdminLinkClaimAttemptToExternalUserRequestUser.from_dict(
-                        load_fixture(
-                            "agent_admin_link_claim_attempt_to_external_user_request_user.json"
-                        )
-                    ),
-                )
+                await workos.agents.list_blueprints()
         finally:
             await workos.close()

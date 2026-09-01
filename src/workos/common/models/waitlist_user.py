@@ -16,29 +16,30 @@ from .waitlist_user_state import WaitlistUserState
 class WaitlistUser:
     """Waitlist User model."""
 
-    object: Literal["waitlist_user"]
-    """Distinguishes the Waitlist User object."""
     id: str
-    """The unique ID of the Waitlist User."""
+    """The unique ID of the waitlist entry."""
     email: str
-    """The email address of the Waitlist User."""
+    """The email address of the user on the waitlist."""
     state: WaitlistUserState
-    """The state of the Waitlist User."""
+    """The state of the waitlist entry."""
     approved_at: datetime | None
-    """The timestamp when the Waitlist User was approved, or null if not yet approved."""
+    """The timestamp when the entry was approved, or null if not yet approved."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    object: Literal["waitlist_user"]
+    """Distinguishes the Waitlist User object."""
+    additional_fields: dict[str, str] | None = None
+    """Additional fields submitted when the user joined the waitlist. Values are user-provided — treat them as untrusted input when rendering or exporting."""
     waitlist_id: str | None = None
-    """The unique ID of the Waitlist that the Waitlist User joined."""
+    """The unique ID of the waitlist the entry belongs to."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> WaitlistUser:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data.get("object", "waitlist_user"),
                 id=data["id"],
                 email=data["email"],
                 state=WaitlistUserState(data["state"]),
@@ -47,6 +48,8 @@ class WaitlistUser:
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                object=data.get("object", "waitlist_user"),
+                additional_fields=data.get("additional_fields"),
                 waitlist_id=data.get("waitlist_id"),
             )
         except (KeyError, ValueError) as e:
@@ -55,7 +58,6 @@ class WaitlistUser:
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
-        result["object"] = self.object
         result["id"] = self.id
         result["email"] = self.email
         result["state"] = (
@@ -67,6 +69,9 @@ class WaitlistUser:
             result["approved_at"] = None
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        result["object"] = self.object
+        if self.additional_fields is not None:
+            result["additional_fields"] = self.additional_fields
         if self.waitlist_id is not None:
             result["waitlist_id"] = self.waitlist_id
         else:

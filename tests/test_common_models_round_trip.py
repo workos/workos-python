@@ -9,6 +9,24 @@ from workos.common.models import (
     ActionAuthenticationDeniedData,
     ActionUserRegistrationDenied,
     ActionUserRegistrationDeniedData,
+    AgentBlueprintCreated,
+    AgentBlueprintCreatedData,
+    AgentBlueprintCreatedDataInvocableBy,
+    AgentBlueprintCreatedDataSessionSetting,
+    AgentBlueprintDeleted,
+    AgentBlueprintDeletedData,
+    AgentBlueprintUpdated,
+    AgentBlueprintUpdatedData,
+    AgentBlueprintUpdatedDataInvocableBy,
+    AgentBlueprintUpdatedDataSessionSetting,
+    AgentInstanceCreated,
+    AgentInstanceCreatedData,
+    AgentInstanceDeleted,
+    AgentInstanceDeletedData,
+    AgentInstanceSessionCreated,
+    AgentInstanceSessionCreatedData,
+    AgentInstanceSessionRevoked,
+    AgentInstanceSessionRevokedData,
     AgentRegistrationClaimAttemptCreated,
     AgentRegistrationClaimAttemptCreatedData,
     AgentRegistrationClaimCompleted,
@@ -236,6 +254,14 @@ from workos.common.models import (
     PipesConnectedAccountReauthorizationNeeded,
     RadarChallengeCreated,
     RadarChallengeCreatedData,
+    ResourceExportCompleted,
+    ResourceExportCompletedData,
+    ResourceExportCreated,
+    ResourceExportCreatedData,
+    ResourceExportDownloaded,
+    ResourceExportDownloadedData,
+    ResourceExportFailed,
+    ResourceExportFailedData,
     RoleCreated,
     RoleCreatedData,
     RoleDeleted,
@@ -719,34 +745,50 @@ class TestModelRoundTrip:
 
     def test_waitlist_user_minimal_payload(self):
         data = {
-            "object": "waitlist_user",
             "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
             "email": "marcelina.davis@example.com",
             "state": "pending",
             "approved_at": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_user",
         }
         instance = WaitlistUser.from_dict(data)
         serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
         assert serialized["email"] == data["email"]
         assert serialized["state"] == data["state"]
         assert serialized["approved_at"] == data["approved_at"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["object"] == data["object"]
 
-    def test_waitlist_user_preserves_nullable_fields(self):
+    def test_waitlist_user_omits_absent_optional_non_nullable_fields(self):
         data = {
-            "object": "waitlist_user",
             "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
             "email": "marcelina.davis@example.com",
             "state": "pending",
             "approved_at": None,
+            "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_user",
+        }
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "additional_fields" not in serialized
+
+    def test_waitlist_user_preserves_nullable_fields(self):
+        data = {
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "additional_fields": {"company": "Example Corp"},
             "waitlist_id": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_user",
         }
         instance = WaitlistUser.from_dict(data)
         serialized = instance.to_dict()
@@ -755,14 +797,15 @@ class TestModelRoundTrip:
 
     def test_waitlist_user_round_trips_unknown_enum_values(self):
         data = {
-            "object": "waitlist_user",
             "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
             "email": "marcelina.davis@example.com",
             "state": "unexpected_waitlist_user_state",
             "approved_at": None,
+            "additional_fields": {"company": "Example Corp"},
             "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_user",
         }
         instance = WaitlistUser.from_dict(data)
         assert instance.to_dict() == data
@@ -977,6 +1020,865 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
+
+    def test_agent_blueprint_created_round_trip(self):
+        data = load_fixture("agent_blueprint_created.json")
+        instance = AgentBlueprintCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.created",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "description": "Finds and qualifies sales prospects.",
+                "permissions": ["crm:read", "email:send"],
+                "invocable_by": {
+                    "role_slugs": ["manager"],
+                    "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                },
+                "session_settings": {
+                    "max_age_seconds": 3600,
+                    "access_token_ttl_seconds": 300,
+                    "refresh_token_ttl_seconds": 3600,
+                },
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_blueprint_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.created",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "description": "Finds and qualifies sales prospects.",
+                "permissions": ["crm:read", "email:send"],
+                "invocable_by": {
+                    "role_slugs": ["manager"],
+                    "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                },
+                "session_settings": {
+                    "max_age_seconds": 3600,
+                    "access_token_ttl_seconds": 300,
+                    "refresh_token_ttl_seconds": 3600,
+                },
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_blueprint_created_data_round_trip(self):
+        data = load_fixture("agent_blueprint_created_data.json")
+        instance = AgentBlueprintCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_data_minimal_payload(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["session_settings"] == data["session_settings"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_blueprint_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_agent_blueprint_created_data_invocable_by_round_trip(self):
+        data = load_fixture("agent_blueprint_created_data_invocable_by.json")
+        instance = AgentBlueprintCreatedDataInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreatedDataInvocableBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_data_invocable_by_minimal_payload(self):
+        data = {
+            "role_slugs": ["manager"],
+            "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+        }
+        instance = AgentBlueprintCreatedDataInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slugs"] == data["role_slugs"]
+        assert serialized["organization_ids"] == data["organization_ids"]
+
+    def test_agent_blueprint_created_data_session_setting_round_trip(self):
+        data = load_fixture("agent_blueprint_created_data_session_setting.json")
+        instance = AgentBlueprintCreatedDataSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreatedDataSessionSetting.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_data_session_setting_minimal_payload(self):
+        data = {
+            "max_age_seconds": 3600,
+            "access_token_ttl_seconds": 300,
+            "refresh_token_ttl_seconds": 3600,
+        }
+        instance = AgentBlueprintCreatedDataSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["max_age_seconds"] == data["max_age_seconds"]
+        assert (
+            serialized["access_token_ttl_seconds"] == data["access_token_ttl_seconds"]
+        )
+        assert (
+            serialized["refresh_token_ttl_seconds"] == data["refresh_token_ttl_seconds"]
+        )
+
+    def test_agent_blueprint_deleted_round_trip(self):
+        data = load_fixture("agent_blueprint_deleted.json")
+        instance = AgentBlueprintDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.deleted",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_blueprint_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.deleted",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_blueprint_deleted_data_round_trip(self):
+        data = load_fixture("agent_blueprint_deleted_data.json")
+        instance = AgentBlueprintDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_deleted_data_minimal_payload(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_blueprint_updated_round_trip(self):
+        data = load_fixture("agent_blueprint_updated.json")
+        instance = AgentBlueprintUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.updated",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "description": "Finds and qualifies sales prospects.",
+                "permissions": ["crm:read", "email:send"],
+                "invocable_by": {
+                    "role_slugs": ["manager"],
+                    "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                },
+                "session_settings": {
+                    "max_age_seconds": 3600,
+                    "access_token_ttl_seconds": 300,
+                    "refresh_token_ttl_seconds": 3600,
+                },
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_blueprint_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.blueprint.updated",
+            "data": {
+                "object": "agent_blueprint",
+                "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Prospecting Agent",
+                "description": "Finds and qualifies sales prospects.",
+                "permissions": ["crm:read", "email:send"],
+                "invocable_by": {
+                    "role_slugs": ["manager"],
+                    "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                },
+                "session_settings": {
+                    "max_age_seconds": 3600,
+                    "access_token_ttl_seconds": 300,
+                    "refresh_token_ttl_seconds": 3600,
+                },
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_blueprint_updated_data_round_trip(self):
+        data = load_fixture("agent_blueprint_updated_data.json")
+        instance = AgentBlueprintUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_data_minimal_payload(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["session_settings"] == data["session_settings"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_blueprint_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_agent_blueprint_updated_data_invocable_by_round_trip(self):
+        data = load_fixture("agent_blueprint_updated_data_invocable_by.json")
+        instance = AgentBlueprintUpdatedDataInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdatedDataInvocableBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_data_invocable_by_minimal_payload(self):
+        data = {
+            "role_slugs": ["manager"],
+            "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+        }
+        instance = AgentBlueprintUpdatedDataInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slugs"] == data["role_slugs"]
+        assert serialized["organization_ids"] == data["organization_ids"]
+
+    def test_agent_blueprint_updated_data_session_setting_round_trip(self):
+        data = load_fixture("agent_blueprint_updated_data_session_setting.json")
+        instance = AgentBlueprintUpdatedDataSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdatedDataSessionSetting.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_data_session_setting_minimal_payload(self):
+        data = {
+            "max_age_seconds": 3600,
+            "access_token_ttl_seconds": 300,
+            "refresh_token_ttl_seconds": 3600,
+        }
+        instance = AgentBlueprintUpdatedDataSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["max_age_seconds"] == data["max_age_seconds"]
+        assert (
+            serialized["access_token_ttl_seconds"] == data["access_token_ttl_seconds"]
+        )
+        assert (
+            serialized["refresh_token_ttl_seconds"] == data["refresh_token_ttl_seconds"]
+        )
+
+    def test_agent_instance_created_round_trip(self):
+        data = load_fixture("agent_instance_created.json")
+        instance = AgentInstanceCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.created",
+            "data": {
+                "object": "agent_instance",
+                "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "delegated",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_instance_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.created",
+            "data": {
+                "object": "agent_instance",
+                "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "delegated",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_instance_created_data_round_trip(self):
+        data = load_fixture("agent_instance_created_data.json")
+        instance = AgentInstanceCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_created_data_minimal_payload(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_blueprint_id"] == data["agent_blueprint_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert (
+            serialized["organization_membership_id"]
+            == data["organization_membership_id"]
+        )
+        assert serialized["type"] == data["type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_instance_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_membership_id"] is None
+
+    def test_agent_instance_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_agent_instance_created_data_type",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_agent_instance_deleted_round_trip(self):
+        data = load_fixture("agent_instance_deleted.json")
+        instance = AgentInstanceDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.deleted",
+            "data": {
+                "object": "agent_instance",
+                "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "delegated",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_instance_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.deleted",
+            "data": {
+                "object": "agent_instance",
+                "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "delegated",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_instance_deleted_data_round_trip(self):
+        data = load_fixture("agent_instance_deleted_data.json")
+        instance = AgentInstanceDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_deleted_data_minimal_payload(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_blueprint_id"] == data["agent_blueprint_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert (
+            serialized["organization_membership_id"]
+            == data["organization_membership_id"]
+        )
+        assert serialized["type"] == data["type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_instance_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_membership_id"] is None
+
+    def test_agent_instance_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_agent_instance_deleted_data_type",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_agent_instance_session_created_round_trip(self):
+        data = load_fixture("agent_instance_session_created.json")
+        instance = AgentInstanceSessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_session_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.session.created",
+            "data": {
+                "object": "agent_instance_session",
+                "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "expires_at": "2026-01-15T13:00:00.000Z",
+                "revoked_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "permission_slugs": ["crm:read"],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_instance_session_created_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.session.created",
+            "data": {
+                "object": "agent_instance_session",
+                "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "expires_at": "2026-01-15T13:00:00.000Z",
+                "revoked_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "permission_slugs": ["crm:read"],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_instance_session_created_data_round_trip(self):
+        data = load_fixture("agent_instance_session_created_data.json")
+        instance = AgentInstanceSessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_session_created_data_minimal_payload(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "permission_slugs": ["crm:read"],
+        }
+        instance = AgentInstanceSessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_instance_id"] == data["agent_instance_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["permission_slugs"] == data["permission_slugs"]
+
+    def test_agent_instance_session_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "permission_slugs": ["crm:read"],
+        }
+        instance = AgentInstanceSessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["revoked_at"] is None
+
+    def test_agent_instance_session_revoked_round_trip(self):
+        data = load_fixture("agent_instance_session_revoked.json")
+        instance = AgentInstanceSessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionRevoked.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_session_revoked_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.session.revoked",
+            "data": {
+                "object": "agent_instance_session",
+                "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "expires_at": "2026-01-15T13:00:00.000Z",
+                "revoked_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_agent_instance_session_revoked_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "agent.instance.session.revoked",
+            "data": {
+                "object": "agent_instance_session",
+                "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "expires_at": "2026-01-15T13:00:00.000Z",
+                "revoked_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_agent_instance_session_revoked_data_round_trip(self):
+        data = load_fixture("agent_instance_session_revoked_data.json")
+        instance = AgentInstanceSessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionRevokedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_session_revoked_data_minimal_payload(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_instance_id"] == data["agent_instance_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_instance_session_revoked_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["revoked_at"] is None
 
     def test_agent_registration_claim_attempt_created_round_trip(self):
         data = load_fixture("agent_registration_claim_attempt_created.json")
@@ -2885,6 +3787,7 @@ class TestModelRoundTrip:
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
                 },
+                "provider": "GoogleOAuth",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -2914,6 +3817,7 @@ class TestModelRoundTrip:
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
                 },
+                "provider": "GoogleOAuth",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -2952,6 +3856,25 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
         assert serialized["error"] == data["error"]
 
+    def test_authentication_oauth_failed_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "type": "oauth",
+            "status": "failed",
+            "ip_address": "203.0.113.42",
+            "user_agent": "Mozilla/5.0",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationOAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "provider" not in serialized
+
     def test_authentication_oauth_failed_data_preserves_nullable_fields(self):
         data = {
             "type": "oauth",
@@ -2964,6 +3887,7 @@ class TestModelRoundTrip:
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
             },
+            "provider": "GoogleOAuth",
         }
         instance = AuthenticationOAuthFailedData.from_dict(data)
         serialized = instance.to_dict()
@@ -3010,6 +3934,7 @@ class TestModelRoundTrip:
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "user@example.com",
+                "provider": "GoogleOAuth",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -3035,6 +3960,7 @@ class TestModelRoundTrip:
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "user@example.com",
+                "provider": "GoogleOAuth",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -3068,6 +3994,21 @@ class TestModelRoundTrip:
         assert serialized["user_id"] == data["user_id"]
         assert serialized["email"] == data["email"]
 
+    def test_authentication_oauth_succeeded_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "type": "oauth",
+            "status": "succeeded",
+            "ip_address": "203.0.113.42",
+            "user_agent": "Mozilla/5.0",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationOAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "provider" not in serialized
+
     def test_authentication_oauth_succeeded_data_preserves_nullable_fields(self):
         data = {
             "type": "oauth",
@@ -3076,6 +4017,7 @@ class TestModelRoundTrip:
             "user_agent": None,
             "user_id": None,
             "email": "user@example.com",
+            "provider": "GoogleOAuth",
         }
         instance = AuthenticationOAuthSucceededData.from_dict(data)
         serialized = instance.to_dict()
@@ -11758,6 +12700,278 @@ class TestModelRoundTrip:
         assert serialized["user_id"] == data["user_id"]
         assert serialized["email"] == data["email"]
 
+    def test_resource_export_completed_round_trip(self):
+        data = load_fixture("resource_export_completed.json")
+        instance = ResourceExportCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportCompleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_completed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.completed",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_resource_export_completed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.completed",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_resource_export_completed_data_round_trip(self):
+        data = load_fixture("resource_export_completed_data.json")
+        instance = ResourceExportCompletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportCompletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_completed_data_minimal_payload(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "users",
+        }
+        instance = ResourceExportCompletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["resource_type"] == data["resource_type"]
+
+    def test_resource_export_completed_data_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "unexpected_resource_export_completed_data_resource_type",
+        }
+        instance = ResourceExportCompletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_resource_export_created_round_trip(self):
+        data = load_fixture("resource_export_created.json")
+        instance = ResourceExportCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.created",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_resource_export_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.created",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_resource_export_created_data_round_trip(self):
+        data = load_fixture("resource_export_created_data.json")
+        instance = ResourceExportCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_created_data_minimal_payload(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "users",
+        }
+        instance = ResourceExportCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["resource_type"] == data["resource_type"]
+
+    def test_resource_export_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "unexpected_resource_export_created_data_resource_type",
+        }
+        instance = ResourceExportCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_resource_export_downloaded_round_trip(self):
+        data = load_fixture("resource_export_downloaded.json")
+        instance = ResourceExportDownloaded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportDownloaded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_downloaded_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.downloaded",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportDownloaded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_resource_export_downloaded_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.downloaded",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportDownloaded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_resource_export_downloaded_data_round_trip(self):
+        data = load_fixture("resource_export_downloaded_data.json")
+        instance = ResourceExportDownloadedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportDownloadedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_downloaded_data_minimal_payload(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "users",
+        }
+        instance = ResourceExportDownloadedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["resource_type"] == data["resource_type"]
+
+    def test_resource_export_downloaded_data_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "unexpected_resource_export_downloaded_data_resource_type",
+        }
+        instance = ResourceExportDownloadedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_resource_export_failed_round_trip(self):
+        data = load_fixture("resource_export_failed.json")
+        instance = ResourceExportFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_failed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.failed",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_resource_export_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "resource_export.failed",
+            "data": {
+                "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+                "resource_type": "users",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ResourceExportFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_resource_export_failed_data_round_trip(self):
+        data = load_fixture("resource_export_failed_data.json")
+        instance = ResourceExportFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceExportFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_export_failed_data_minimal_payload(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "users",
+        }
+        instance = ResourceExportFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["resource_type"] == data["resource_type"]
+
+    def test_resource_export_failed_data_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "resource_export_01HWZBQZY2M3AMQW166Q22K88F",
+            "resource_type": "unexpected_resource_export_failed_data_resource_type",
+        }
+        instance = ResourceExportFailedData.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_role_created_round_trip(self):
         data = load_fixture("role_created.json")
         instance = RoleCreated.from_dict(data)
@@ -13574,14 +14788,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.approved",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13599,14 +14814,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.approved",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13628,14 +14844,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.created",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13653,14 +14870,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.created",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13682,14 +14900,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.denied",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13707,14 +14926,15 @@ class TestModelRoundTrip:
             "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
             "event": "waitlist_user.denied",
             "data": {
-                "object": "waitlist_user",
                 "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "marcelina.davis@example.com",
                 "state": "pending",
                 "approved_at": None,
+                "additional_fields": {"company": "Example Corp"},
                 "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "object": "waitlist_user",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }

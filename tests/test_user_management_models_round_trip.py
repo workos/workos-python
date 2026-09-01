@@ -37,6 +37,8 @@ from workos.user_management.models import (
     UserSessionsImpersonator,
     UserSessionsListItem,
     VerifyEmailResponse,
+    Waitlist,
+    WaitlistEntry,
 )
 
 
@@ -798,6 +800,103 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "verification_uri_complete" not in serialized
         assert "interval" not in serialized
+
+    def test_waitlist_round_trip(self):
+        data = load_fixture("waitlist.json")
+        instance = Waitlist.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Waitlist.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_minimal_payload(self):
+        data = {
+            "object": "waitlist",
+            "id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Waitlist.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_waitlist_entry_round_trip(self):
+        data = load_fixture("waitlist_entry.json")
+        instance = WaitlistEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntry.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entry_minimal_payload(self):
+        data = {
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_entry",
+        }
+        instance = WaitlistEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["approved_at"] == data["approved_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_entry_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_entry",
+        }
+        instance = WaitlistEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert "additional_fields" not in serialized
+
+    def test_waitlist_entry_preserves_nullable_fields(self):
+        data = {
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "additional_fields": {"company": "Example Corp"},
+            "waitlist_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_entry",
+        }
+        instance = WaitlistEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["approved_at"] is None
+        assert serialized["waitlist_id"] is None
+
+    def test_waitlist_entry_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_waitlist_entry_state",
+            "approved_at": None,
+            "additional_fields": {"company": "Example Corp"},
+            "waitlist_id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "object": "waitlist_entry",
+        }
+        instance = WaitlistEntry.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_jwks_response_round_trip(self):
         data = load_fixture("jwks_response.json")

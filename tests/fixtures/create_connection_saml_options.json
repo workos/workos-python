@@ -1,0 +1,20 @@
+{
+  "idp_metadata_url": "https://idp.example.com/metadata.xml",
+  "acs_url": "https://example.auth0.com/login/callback?connection=123",
+  "sp_entity_id": "https://example.auth0.com/login/callback?connection=123",
+  "idp_entity_id": "https://idp.example.com/entity",
+  "idp_sso_url": "https://idp.example.com/sso",
+  "idp_signing_certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----"
+  ],
+  "sp_signing_key_pair": {
+    "key": "-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----",
+    "cert": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----"
+  },
+  "sp_encryption_key_pairs": [
+    {
+      "key": "-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----",
+      "cert": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----"
+    }
+  ]
+}

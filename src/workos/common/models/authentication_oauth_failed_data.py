@@ -26,6 +26,8 @@ class AuthenticationOAuthFailedData:
     """The email address of the user."""
     error: AuthenticationOAuthFailedDataError
     """Details about the authentication error."""
+    provider: str | None = None
+    """The OAuth provider used for authentication."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuthenticationOAuthFailedData:
@@ -41,6 +43,7 @@ class AuthenticationOAuthFailedData:
                 error=AuthenticationOAuthFailedDataError.from_dict(
                     cast(dict[str, Any], data["error"])
                 ),
+                provider=data.get("provider"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationOAuthFailedData", e)
@@ -67,4 +70,6 @@ class AuthenticationOAuthFailedData:
         else:
             result["email"] = None
         result["error"] = self.error.to_dict()
+        if self.provider is not None:
+            result["provider"] = self.provider
         return result

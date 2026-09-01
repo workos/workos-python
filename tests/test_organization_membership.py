@@ -68,7 +68,7 @@ class TestOrganizationMembership:
         result = workos.organization_membership.create_organization_membership(
             user_id="test_user_id",
             organization_id="test_organization_id",
-            role=RoleSingle(role_slug="test_value"),
+            role=RoleSingle(role_slug="test_role_slug"),
         )
         assert isinstance(result, OrganizationMembership)
         assert result.object == "organization_membership"
@@ -99,7 +99,7 @@ class TestOrganizationMembership:
             json=load_fixture("user_organization_membership.json"),
         )
         result = workos.organization_membership.update_organization_membership(
-            "test_id", role=RoleSingle(role_slug="test_value")
+            "test_id", role=RoleSingle(role_slug="test_role_slug")
         )
         assert isinstance(result, UserOrganizationMembership)
         assert result.object == "organization_membership"
@@ -322,7 +322,7 @@ class TestAsyncOrganizationMembership:
             await async_workos.organization_membership.create_organization_membership(
                 user_id="test_user_id",
                 organization_id="test_organization_id",
-                role=RoleSingle(role_slug="test_value"),
+                role=RoleSingle(role_slug="test_role_slug"),
             )
         )
         assert isinstance(result, OrganizationMembership)
@@ -352,7 +352,7 @@ class TestAsyncOrganizationMembership:
         httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
         result = (
             await async_workos.organization_membership.update_organization_membership(
-                "test_id", role=RoleSingle(role_slug="test_value")
+                "test_id", role=RoleSingle(role_slug="test_role_slug")
             )
         )
         assert isinstance(result, UserOrganizationMembership)

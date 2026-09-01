@@ -7,7 +7,12 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from dataclasses import dataclass
+
 from workos.common.models.pagination_order import PaginationOrder
+from workos.common.models.update_audit_logs_retention_retention_period import (
+    UpdateAuditLogsRetentionRetentionPeriod,
+)
 from workos.organizations.models.audit_logs_retention import AuditLogsRetention
 
 from .._pagination import AsyncPage, SyncPage
@@ -21,6 +26,20 @@ from .models import (
     AuditLogSchemaActorInput,
     AuditLogSchemaTargetInput,
 )
+
+
+@dataclass
+class RetentionPeriod:
+    """Identify retention period."""
+
+    retention_period: UpdateAuditLogsRetentionRetentionPeriod | str
+
+
+@dataclass
+class RetentionPeriodInDays:
+    """Identify retention period in days."""
+
+    retention_period_in_days: int
 
 
 class AuditLogs:
@@ -63,7 +82,7 @@ class AuditLogs:
         self,
         id: str,
         *,
-        retention_period_in_days: int,
+        retention: RetentionPeriod | RetentionPeriodInDays,
         request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Set Retention
@@ -72,7 +91,7 @@ class AuditLogs:
 
         Args:
             id: Unique identifier of the Organization.
-            retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+            retention: Identifies the retention. One of: RetentionPeriod, RetentionPeriodInDays.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -85,9 +104,11 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            "retention_period_in_days": retention_period_in_days,
-        }
+        body: dict[str, Any] = {}
+        if isinstance(retention, RetentionPeriod):
+            body["retention_period"] = enum_value(retention.retention_period)
+        elif isinstance(retention, RetentionPeriodInDays):
+            body["retention_period_in_days"] = retention.retention_period_in_days
         return self._client.request(
             method="put",
             path=("organizations", str(id), "audit_logs_retention"),
@@ -418,7 +439,7 @@ class AsyncAuditLogs:
         self,
         id: str,
         *,
-        retention_period_in_days: int,
+        retention: RetentionPeriod | RetentionPeriodInDays,
         request_options: RequestOptions | None = None,
     ) -> AuditLogsRetention:
         """Set Retention
@@ -427,7 +448,7 @@ class AsyncAuditLogs:
 
         Args:
             id: Unique identifier of the Organization.
-            retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+            retention: Identifies the retention. One of: RetentionPeriod, RetentionPeriodInDays.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -440,9 +461,11 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            "retention_period_in_days": retention_period_in_days,
-        }
+        body: dict[str, Any] = {}
+        if isinstance(retention, RetentionPeriod):
+            body["retention_period"] = enum_value(retention.retention_period)
+        elif isinstance(retention, RetentionPeriodInDays):
+            body["retention_period_in_days"] = retention.retention_period_in_days
         return await self._client.request(
             method="put",
             path=("organizations", str(id), "audit_logs_retention"),

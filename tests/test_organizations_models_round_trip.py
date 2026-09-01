@@ -7,6 +7,9 @@ from workos.organizations.models import (
     AuditLogConfiguration,
     AuditLogConfigurationLogStream,
     AuditLogsRetention,
+    ItContact,
+    ItContactList,
+    ItContactListListMetadata,
     Organization,
     OrganizationAuthorizedConnectApplicationListData,
     OrganizationDomainData,
@@ -58,6 +61,61 @@ class TestModelRoundTrip:
         instance = AuditLogsRetention.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["retention_period_in_days"] is None
+
+    def test_it_contact_round_trip(self):
+        data = load_fixture("it_contact.json")
+        instance = ItContact.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContact.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contact_minimal_payload(self):
+        data = {
+            "object": "it_contact",
+            "id": "it_contact_01HXYZ123456789ABCDEFGHIJ",
+            "email": "it-contact@example.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ItContact.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_it_contact_list_round_trip(self):
+        data = load_fixture("it_contact_list.json")
+        instance = ItContactList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contact_list_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "it_contact",
+                    "id": "it_contact_01HXYZ123456789ABCDEFGHIJ",
+                    "email": "it-contact@example.com",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "list_metadata": {
+                "before": "it_contact_01HXYZ123456789ABCDEFGHIJ",
+                "after": "it_contact_01HXYZ987654321KJIHGFEDCBA",
+            },
+        }
+        instance = ItContactList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+        assert serialized["list_metadata"] == data["list_metadata"]
 
     def test_organization_round_trip(self):
         data = load_fixture("organization.json")
@@ -255,6 +313,28 @@ class TestModelRoundTrip:
         }
         instance = AuditLogConfigurationLogStream.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_it_contact_list_list_metadata_round_trip(self):
+        data = load_fixture("it_contact_list_list_metadata.json")
+        instance = ItContactListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactListListMetadata.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contact_list_list_metadata_minimal_payload(self):
+        data = {"before": None, "after": None}
+        instance = ItContactListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["before"] == data["before"]
+        assert serialized["after"] == data["after"]
+
+    def test_it_contact_list_list_metadata_preserves_nullable_fields(self):
+        data = {"before": None, "after": None}
+        instance = ItContactListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["before"] is None
+        assert serialized["after"] is None
 
     def test_organization_authorized_connect_application_list_data_round_trip(self):
         data = load_fixture(

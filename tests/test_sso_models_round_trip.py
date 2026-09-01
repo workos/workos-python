@@ -6,7 +6,21 @@ from tests.generated_helpers import load_fixture
 from workos.sso.models import (
     Connection,
     ConnectionDomain,
+    CreateConnectionAttributeMaps,
+    CreateConnectionKeyPair,
+    CreateConnectionOIDCOptions,
+    CreateConnectionSAMLOptions,
+    CreateConnectionStandardAttributes,
+    PatchConnectionAttributeMaps,
+    PatchConnectionOIDCOptions,
+    PatchConnectionSAMLOptions,
+    PatchConnectionStandardAttributes,
     Profile,
+    SAMLIdpSigningCertificate,
+    SAMLIdpSigningCertificateList,
+    SAMLSpEncryptionCertificate,
+    SAMLSpEncryptionCertificateList,
+    SAMLSpSigningCertificate,
     SSOAuthorizeUrlResponse,
     SSOLogoutAuthorizeResponse,
     SSOTokenResponse,
@@ -15,6 +29,323 @@ from workos.sso.models import (
 
 
 class TestModelRoundTrip:
+    def test_create_connection_key_pair_round_trip(self):
+        data = load_fixture("create_connection_key_pair.json")
+        instance = CreateConnectionKeyPair.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateConnectionKeyPair.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_connection_key_pair_minimal_payload(self):
+        data = {
+            "key": "-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----",
+            "cert": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----",
+        }
+        instance = CreateConnectionKeyPair.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["key"] == data["key"]
+        assert serialized["cert"] == data["cert"]
+
+    def test_create_connection_saml_options_round_trip(self):
+        data = load_fixture("create_connection_saml_options.json")
+        instance = CreateConnectionSAMLOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateConnectionSAMLOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_connection_saml_options_minimal_payload(self):
+        data = {}
+        instance = CreateConnectionSAMLOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_create_connection_saml_options_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = CreateConnectionSAMLOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "idp_metadata_url" not in serialized
+        assert "acs_url" not in serialized
+        assert "sp_entity_id" not in serialized
+        assert "idp_entity_id" not in serialized
+        assert "idp_sso_url" not in serialized
+        assert "idp_signing_certs" not in serialized
+        assert "sp_signing_key_pair" not in serialized
+        assert "sp_encryption_key_pairs" not in serialized
+
+    def test_create_connection_oidc_options_round_trip(self):
+        data = load_fixture("create_connection_oidc_options.json")
+        instance = CreateConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateConnectionOIDCOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_connection_oidc_options_minimal_payload(self):
+        data = {
+            "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+            "client_id": "client_123",
+        }
+        instance = CreateConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["discovery_endpoint"] == data["discovery_endpoint"]
+        assert serialized["client_id"] == data["client_id"]
+
+    def test_create_connection_oidc_options_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+            "client_id": "client_123",
+        }
+        instance = CreateConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "client_secret" not in serialized
+        assert "redirect_uri" not in serialized
+        assert "pkce" not in serialized
+        assert "token_authentication_method" not in serialized
+        assert "jwt_signing_key_pair" not in serialized
+        assert "id_token_signature_algorithm" not in serialized
+        assert "fetch_user_info" not in serialized
+
+    def test_create_connection_oidc_options_round_trips_unknown_enum_values(self):
+        data = {
+            "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+            "client_id": "client_123",
+            "client_secret": "secret_xyz",
+            "redirect_uri": "https://auth.workos.com/sso/oidc/conn_externalkey/callback",
+            "pkce": True,
+            "token_authentication_method": "unexpected_create_connection_oidc_options_token_authentication_method",
+            "jwt_signing_key_pair": {
+                "key": "-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----",
+                "cert": "-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----",
+            },
+            "id_token_signature_algorithm": "RS256",
+            "fetch_user_info": False,
+        }
+        instance = CreateConnectionOIDCOptions.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_create_connection_standard_attributes_round_trip(self):
+        data = load_fixture("create_connection_standard_attributes.json")
+        instance = CreateConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateConnectionStandardAttributes.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_connection_standard_attributes_minimal_payload(self):
+        data = {}
+        instance = CreateConnectionStandardAttributes.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_create_connection_standard_attributes_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"groups": "memberOf", "name": "displayName"}
+        instance = CreateConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert "idp_id" not in serialized
+        assert "email" not in serialized
+        assert "first_name" not in serialized
+        assert "last_name" not in serialized
+
+    def test_create_connection_standard_attributes_preserves_nullable_fields(self):
+        data = {
+            "idp_id": "sub",
+            "email": "email",
+            "first_name": "given_name",
+            "last_name": "family_name",
+            "groups": None,
+            "name": None,
+        }
+        instance = CreateConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["groups"] is None
+        assert serialized["name"] is None
+
+    def test_create_connection_attribute_maps_round_trip(self):
+        data = load_fixture("create_connection_attribute_maps.json")
+        instance = CreateConnectionAttributeMaps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateConnectionAttributeMaps.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_connection_attribute_maps_minimal_payload(self):
+        data = {}
+        instance = CreateConnectionAttributeMaps.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_create_connection_attribute_maps_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = CreateConnectionAttributeMaps.from_dict(data)
+        serialized = instance.to_dict()
+        assert "standard_attributes" not in serialized
+        assert "custom_attributes" not in serialized
+
+    def test_patch_connection_saml_options_round_trip(self):
+        data = load_fixture("patch_connection_saml_options.json")
+        instance = PatchConnectionSAMLOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PatchConnectionSAMLOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_patch_connection_saml_options_minimal_payload(self):
+        data = {}
+        instance = PatchConnectionSAMLOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_patch_connection_saml_options_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "idp_metadata_url": "https://idp.example.com/metadata.xml",
+            "acs_url": "https://example.auth0.com/login/callback?connection=123",
+            "sp_entity_id": "https://example.auth0.com/login/callback?connection=123",
+        }
+        instance = PatchConnectionSAMLOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "idp_entity_id" not in serialized
+        assert "idp_sso_url" not in serialized
+
+    def test_patch_connection_saml_options_preserves_nullable_fields(self):
+        data = {
+            "idp_metadata_url": None,
+            "acs_url": None,
+            "sp_entity_id": None,
+            "idp_entity_id": "https://idp.example.com/entity",
+            "idp_sso_url": "https://idp.example.com/sso",
+        }
+        instance = PatchConnectionSAMLOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["idp_metadata_url"] is None
+        assert serialized["acs_url"] is None
+        assert serialized["sp_entity_id"] is None
+
+    def test_patch_connection_oidc_options_round_trip(self):
+        data = load_fixture("patch_connection_oidc_options.json")
+        instance = PatchConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PatchConnectionOIDCOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_patch_connection_oidc_options_minimal_payload(self):
+        data = {}
+        instance = PatchConnectionOIDCOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_patch_connection_oidc_options_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "redirect_uri": "https://auth.workos.com/sso/oidc/conn_externalkey/callback"
+        }
+        instance = PatchConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "discovery_endpoint" not in serialized
+        assert "client_id" not in serialized
+        assert "client_secret" not in serialized
+        assert "pkce" not in serialized
+        assert "token_authentication_method" not in serialized
+        assert "id_token_signature_algorithm" not in serialized
+        assert "fetch_user_info" not in serialized
+
+    def test_patch_connection_oidc_options_preserves_nullable_fields(self):
+        data = {
+            "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+            "client_id": "client_123",
+            "client_secret": "secret_xyz",
+            "redirect_uri": None,
+            "pkce": True,
+            "token_authentication_method": "client_secret_basic",
+            "id_token_signature_algorithm": "RS256",
+            "fetch_user_info": False,
+        }
+        instance = PatchConnectionOIDCOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["redirect_uri"] is None
+
+    def test_patch_connection_oidc_options_round_trips_unknown_enum_values(self):
+        data = {
+            "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+            "client_id": "client_123",
+            "client_secret": "secret_xyz",
+            "redirect_uri": "https://auth.workos.com/sso/oidc/conn_externalkey/callback",
+            "pkce": True,
+            "token_authentication_method": "unexpected_patch_connection_oidc_options_token_authentication_method",
+            "id_token_signature_algorithm": "RS256",
+            "fetch_user_info": False,
+        }
+        instance = PatchConnectionOIDCOptions.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_patch_connection_standard_attributes_round_trip(self):
+        data = load_fixture("patch_connection_standard_attributes.json")
+        instance = PatchConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PatchConnectionStandardAttributes.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_patch_connection_standard_attributes_minimal_payload(self):
+        data = {}
+        instance = PatchConnectionStandardAttributes.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_patch_connection_standard_attributes_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"groups": "memberOf", "name": "displayName"}
+        instance = PatchConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert "idp_id" not in serialized
+        assert "email" not in serialized
+        assert "first_name" not in serialized
+        assert "last_name" not in serialized
+
+    def test_patch_connection_standard_attributes_preserves_nullable_fields(self):
+        data = {
+            "idp_id": "sub",
+            "email": "email",
+            "first_name": "given_name",
+            "last_name": "family_name",
+            "groups": None,
+            "name": None,
+        }
+        instance = PatchConnectionStandardAttributes.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["groups"] is None
+        assert serialized["name"] is None
+
+    def test_patch_connection_attribute_maps_round_trip(self):
+        data = load_fixture("patch_connection_attribute_maps.json")
+        instance = PatchConnectionAttributeMaps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PatchConnectionAttributeMaps.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_patch_connection_attribute_maps_minimal_payload(self):
+        data = {}
+        instance = PatchConnectionAttributeMaps.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_patch_connection_attribute_maps_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = PatchConnectionAttributeMaps.from_dict(data)
+        serialized = instance.to_dict()
+        assert "standard_attributes" not in serialized
+        assert "custom_attributes" not in serialized
+
     def test_connection_round_trip(self):
         data = load_fixture("connection.json")
         instance = Connection.from_dict(data)
@@ -96,6 +427,180 @@ class TestModelRoundTrip:
         }
         instance = Connection.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_saml_idp_signing_certificate_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificate.json")
+        instance = SAMLIdpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificate.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificate_minimal_payload(self):
+        data = {
+            "object": "saml_idp_signing_certificate",
+            "id": "saml_x509_cert_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLIdpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["value"] == data["value"]
+        assert serialized["not_before"] == data["not_before"]
+        assert serialized["not_after"] == data["not_after"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_saml_idp_signing_certificate_preserves_nullable_fields(self):
+        data = {
+            "object": "saml_idp_signing_certificate",
+            "id": "saml_x509_cert_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLIdpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["not_before"] is None
+        assert serialized["not_after"] is None
+
+    def test_saml_idp_signing_certificate_list_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificate_list.json")
+        instance = SAMLIdpSigningCertificateList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificateList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificate_list_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "saml_idp_signing_certificate",
+                    "id": "saml_x509_cert_01E4ZCR3C56J083X43JQXF3JK5",
+                    "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+                    "not_before": "2026-01-15T12:00:00.000Z",
+                    "not_after": "2026-01-15T12:00:00.000Z",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+        }
+        instance = SAMLIdpSigningCertificateList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+
+    def test_saml_sp_encryption_certificate_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificate.json")
+        instance = SAMLSpEncryptionCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificate.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificate_minimal_payload(self):
+        data = {
+            "object": "saml_sp_encryption_certificate",
+            "id": "saml_enc_key_pair_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLSpEncryptionCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["value"] == data["value"]
+        assert serialized["not_before"] == data["not_before"]
+        assert serialized["not_after"] == data["not_after"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_saml_sp_encryption_certificate_preserves_nullable_fields(self):
+        data = {
+            "object": "saml_sp_encryption_certificate",
+            "id": "saml_enc_key_pair_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLSpEncryptionCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["not_before"] is None
+        assert serialized["not_after"] is None
+
+    def test_saml_sp_encryption_certificate_list_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificate_list.json")
+        instance = SAMLSpEncryptionCertificateList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificateList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificate_list_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "saml_sp_encryption_certificate",
+                    "id": "saml_enc_key_pair_01E4ZCR3C56J083X43JQXF3JK5",
+                    "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+                    "not_before": "2026-01-15T12:00:00.000Z",
+                    "not_after": "2026-01-15T12:00:00.000Z",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+        }
+        instance = SAMLSpEncryptionCertificateList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+
+    def test_saml_sp_signing_certificate_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificate.json")
+        instance = SAMLSpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificate.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificate_minimal_payload(self):
+        data = {
+            "object": "saml_sp_signing_certificate",
+            "id": "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLSpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["value"] == data["value"]
+        assert serialized["not_before"] == data["not_before"]
+        assert serialized["not_after"] == data["not_after"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_saml_sp_signing_certificate_preserves_nullable_fields(self):
+        data = {
+            "object": "saml_sp_signing_certificate",
+            "id": "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5",
+            "value": "-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----",
+            "not_before": None,
+            "not_after": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SAMLSpSigningCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["not_before"] is None
+        assert serialized["not_after"] is None
 
     def test_sso_authorize_url_response_round_trip(self):
         data = load_fixture("sso_authorize_url_response.json")

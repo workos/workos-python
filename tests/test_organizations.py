@@ -18,6 +18,8 @@ from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import PaginationOrder
 from workos.organizations.models import (
     AuditLogConfiguration,
+    ItContact,
+    ItContactList,
     Organization,
     OrganizationAuthorizedConnectApplicationListData,
 )
@@ -166,6 +168,71 @@ class TestOrganizations:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+
+    def test_list_it_contacts(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("it_contact_list.json"),
+        )
+        result = workos.organizations.list_it_contacts("test_organization_id")
+        assert isinstance(result, ItContactList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts"
+        )
+
+    def test_create_it_contact(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("it_contact.json"),
+        )
+        result = workos.organizations.create_it_contact(
+            "test_organization_id", email="test_email"
+        )
+        assert isinstance(result, ItContact)
+        assert result.object == "it_contact"
+        assert result.id == "it_contact_01HXYZ123456789ABCDEFGHIJ"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts"
+        )
+        body = json.loads(request.content)
+        assert body["email"] == "test_email"
+
+    def test_delete_it_contact(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.organizations.delete_it_contact(
+            "test_organization_id", "test_contact_id"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id"
+        )
+
+    def test_invite_it_contact(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.organizations.invite_it_contact(
+            "test_organization_id", "test_contact_id", intents=[]
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id/invite"
+        )
+
+    def test_revoke_it_contact(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.organizations.revoke_it_contact(
+            "test_organization_id", "test_contact_id"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id/revoke"
+        )
 
     def test_list_organizations_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -392,6 +459,72 @@ class TestAsyncOrganizations:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+
+    @pytest.mark.asyncio
+    async def test_list_it_contacts(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("it_contact_list.json"))
+        result = await async_workos.organizations.list_it_contacts(
+            "test_organization_id"
+        )
+        assert isinstance(result, ItContactList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_it_contact(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("it_contact.json"))
+        result = await async_workos.organizations.create_it_contact(
+            "test_organization_id", email="test_email"
+        )
+        assert isinstance(result, ItContact)
+        assert result.object == "it_contact"
+        assert result.id == "it_contact_01HXYZ123456789ABCDEFGHIJ"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_it_contact(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.organizations.delete_it_contact(
+            "test_organization_id", "test_contact_id"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id"
+        )
+
+    @pytest.mark.asyncio
+    async def test_invite_it_contact(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        await async_workos.organizations.invite_it_contact(
+            "test_organization_id", "test_contact_id", intents=[]
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id/invite"
+        )
+
+    @pytest.mark.asyncio
+    async def test_revoke_it_contact(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        await async_workos.organizations.revoke_it_contact(
+            "test_organization_id", "test_contact_id"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/it_contacts/test_contact_id/revoke"
+        )
 
     @pytest.mark.asyncio
     async def test_list_organizations_with_request_options(

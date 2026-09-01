@@ -42,6 +42,7 @@ from .models import (
     DeviceCodeSessionAuthenticateRequest,
     EmailChange,
     EmailChangeConfirmation,
+    EmailCompletionSessionAuthenticateRequest,
     EmailVerification,
     EmailVerificationCodeSessionAuthenticateRequest,
     Invitation,
@@ -69,7 +70,10 @@ from .models import (
     UserInvite,
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,
+    UserManagementWaitlistsState,
     VerifyEmailResponse,
+    Waitlist,
+    WaitlistEntry,
 )
 
 
@@ -134,6 +138,7 @@ class UserManagement:
         | MagicAuthCodeSessionAuthenticateRequest
         | EmailVerificationCodeSessionAuthenticateRequest
         | MFATotpSessionAuthenticateRequest
+        | EmailCompletionSessionAuthenticateRequest
         | OrganizationSelectionSessionAuthenticateRequest
         | RadarEmailChallengeCodeSessionAuthenticateRequest
         | RadarSmsChallengeCodeSessionAuthenticateRequest
@@ -146,7 +151,7 @@ class UserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, EmailCompletionSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1324,7 +1329,6 @@ class UserManagement:
 
         Raises:
             NotFoundError: If the resource is not found (404).
-            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -2169,6 +2173,277 @@ class UserManagement:
             request_options=request_options,
         )
 
+    def delete_waitlist_entry(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete a waitlist entry
+
+        Remove the entry from the waitlist. Its email address can join again unless a user with that email now exists in the environment. Deleting the entry does not revoke an invitation created by approving it — [revoke that invitation](https://workos.com/docs/reference/authkit/invitation/revoke) separately to withdraw access.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("user_management", "waitlist_entries", str(id)),
+            request_options=request_options,
+        )
+
+    def create_waitlist_entry_approve(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Approve a waitlist entry
+
+        Approve a waitlist entry, create an invitation for its email address, and send the invitation email. Approving a denied entry reverses the denial. The approval is saved even when the invitation steps fail, so instead of retrying the approval, recover based on the outcome:
+
+        - `200` — the entry is approved. If invitation creation failed, no invitation exists yet; [send](https://workos.com/docs/reference/authkit/invitation/send) one.
+        - `422` with code `invitation_email_not_sent` — the entry is approved and an invitation exists, but its email was not sent; [resend](https://workos.com/docs/reference/authkit/invitation/resend) it.
+        - `422` with code `invalid_state` — the entry was already approved.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("user_management", "waitlist_entries", str(id), "approve"),
+            model=WaitlistEntry,
+            request_options=request_options,
+        )
+
+    def create_waitlist_entry_deny(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Deny a waitlist entry
+
+        Deny a pending waitlist entry. Denying an entry that is not pending fails with the code `invalid_state`. A denial can be reversed by approving the entry.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("user_management", "waitlist_entries", str(id), "deny"),
+            model=WaitlistEntry,
+            request_options=request_options,
+        )
+
+    def list_waitlists(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[Waitlist]:
+        """List waitlists
+
+        Get a list of the waitlists in the environment. All waitlists are returned in a single response — this endpoint is not paginated, so the `list_metadata` cursors are always `null`.
+
+        Args:
+            limit: The limit.
+            before: The before.
+            after: The after.
+            order: The order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[Waitlist]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": order,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("user_management", "waitlists"),
+            model=Waitlist,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_waitlist(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> Waitlist:
+        """Get a waitlist
+
+        Get the details of an existing waitlist.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Waitlist
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("user_management", "waitlists", str(id)),
+            model=Waitlist,
+            request_options=request_options,
+        )
+
+    def list_waitlist_entries(
+        self,
+        id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        state: UserManagementWaitlistsState | str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[WaitlistEntry]:
+        """List waitlist entries
+
+        Get a list of entries on a waitlist matching the criteria specified.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            state: Filter waitlist entries by their state.
+            email: Filter waitlist entries by their exact email address.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[WaitlistEntry]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "state": enum_value(state) if state is not None else None,
+                "email": email,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("user_management", "waitlists", str(id), "entries"),
+            model=WaitlistEntry,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_waitlist_entry(
+        self,
+        id: str,
+        *,
+        email: str,
+        additional_fields: dict[str, str] | None = None,
+        send_confirmation_email: bool | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Create a waitlist entry
+
+        Add an email address to the waitlist. Email addresses are normalized and unique per environment: a request for an email address already on the waitlist returns the existing entry unchanged (still with status `201`) and does not send another confirmation email. If a user with the email address already exists in the environment, the request fails with the code `user_already_exists`.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. Use `default` when adding the first entry — the default waitlist is created automatically.
+            email: The email address of the user joining the waitlist.
+            additional_fields: Object containing additional key/value pairs collected with the waitlist entry. Supports up to 50 string pairs, with keys up to 40 characters and values up to 600 characters. Values are user-provided — treat them as untrusted input when rendering or exporting.
+            send_confirmation_email: Whether to send the waitlist confirmation email to the user. Defaults to `false`. No email is sent when the waitlist confirmation email is disabled in the environment, even if `send_confirmation_email` is `true`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "email": email,
+                "additional_fields": additional_fields,
+                "send_confirmation_email": send_confirmation_email,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("user_management", "waitlists", str(id), "entries"),
+            body=body,
+            model=WaitlistEntry,
+            request_options=request_options,
+        )
+
     def list_user_api_keys(
         self,
         user_id: str,
@@ -2502,6 +2777,7 @@ class AsyncUserManagement:
         | MagicAuthCodeSessionAuthenticateRequest
         | EmailVerificationCodeSessionAuthenticateRequest
         | MFATotpSessionAuthenticateRequest
+        | EmailCompletionSessionAuthenticateRequest
         | OrganizationSelectionSessionAuthenticateRequest
         | RadarEmailChallengeCodeSessionAuthenticateRequest
         | RadarSmsChallengeCodeSessionAuthenticateRequest
@@ -2514,7 +2790,7 @@ class AsyncUserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, EmailCompletionSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, RadarEmailChallengeCodeSessionAuthenticateRequest, RadarSmsChallengeCodeSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3692,7 +3968,6 @@ class AsyncUserManagement:
 
         Raises:
             NotFoundError: If the resource is not found (404).
-            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -4534,6 +4809,277 @@ class AsyncUserManagement:
                 "authorized_applications",
                 str(application_id),
             ),
+            request_options=request_options,
+        )
+
+    async def delete_waitlist_entry(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete a waitlist entry
+
+        Remove the entry from the waitlist. Its email address can join again unless a user with that email now exists in the environment. Deleting the entry does not revoke an invitation created by approving it — [revoke that invitation](https://workos.com/docs/reference/authkit/invitation/revoke) separately to withdraw access.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("user_management", "waitlist_entries", str(id)),
+            request_options=request_options,
+        )
+
+    async def create_waitlist_entry_approve(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Approve a waitlist entry
+
+        Approve a waitlist entry, create an invitation for its email address, and send the invitation email. Approving a denied entry reverses the denial. The approval is saved even when the invitation steps fail, so instead of retrying the approval, recover based on the outcome:
+
+        - `200` — the entry is approved. If invitation creation failed, no invitation exists yet; [send](https://workos.com/docs/reference/authkit/invitation/send) one.
+        - `422` with code `invitation_email_not_sent` — the entry is approved and an invitation exists, but its email was not sent; [resend](https://workos.com/docs/reference/authkit/invitation/resend) it.
+        - `422` with code `invalid_state` — the entry was already approved.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("user_management", "waitlist_entries", str(id), "approve"),
+            model=WaitlistEntry,
+            request_options=request_options,
+        )
+
+    async def create_waitlist_entry_deny(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Deny a waitlist entry
+
+        Deny a pending waitlist entry. Denying an entry that is not pending fails with the code `invalid_state`. A denial can be reversed by approving the entry.
+
+        Args:
+            id: The unique ID of the waitlist entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("user_management", "waitlist_entries", str(id), "deny"),
+            model=WaitlistEntry,
+            request_options=request_options,
+        )
+
+    async def list_waitlists(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[Waitlist]:
+        """List waitlists
+
+        Get a list of the waitlists in the environment. All waitlists are returned in a single response — this endpoint is not paginated, so the `list_metadata` cursors are always `null`.
+
+        Args:
+            limit: The limit.
+            before: The before.
+            after: The after.
+            order: The order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[Waitlist]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": order,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("user_management", "waitlists"),
+            model=Waitlist,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def get_waitlist(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> Waitlist:
+        """Get a waitlist
+
+        Get the details of an existing waitlist.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Waitlist
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("user_management", "waitlists", str(id)),
+            model=Waitlist,
+            request_options=request_options,
+        )
+
+    async def list_waitlist_entries(
+        self,
+        id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        state: UserManagementWaitlistsState | str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[WaitlistEntry]:
+        """List waitlist entries
+
+        Get a list of entries on a waitlist matching the criteria specified.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            state: Filter waitlist entries by their state.
+            email: Filter waitlist entries by their exact email address.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[WaitlistEntry]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "state": enum_value(state) if state is not None else None,
+                "email": email,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("user_management", "waitlists", str(id), "entries"),
+            model=WaitlistEntry,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_waitlist_entry(
+        self,
+        id: str,
+        *,
+        email: str,
+        additional_fields: dict[str, str] | None = None,
+        send_confirmation_email: bool | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> WaitlistEntry:
+        """Create a waitlist entry
+
+        Add an email address to the waitlist. Email addresses are normalized and unique per environment: a request for an email address already on the waitlist returns the existing entry unchanged (still with status `201`) and does not send another confirmation email. If a user with the email address already exists in the environment, the request fails with the code `user_already_exists`.
+
+        Args:
+            id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. Use `default` when adding the first entry — the default waitlist is created automatically.
+            email: The email address of the user joining the waitlist.
+            additional_fields: Object containing additional key/value pairs collected with the waitlist entry. Supports up to 50 string pairs, with keys up to 40 characters and values up to 600 characters. Values are user-provided — treat them as untrusted input when rendering or exporting.
+            send_confirmation_email: Whether to send the waitlist confirmation email to the user. Defaults to `false`. No email is sent when the waitlist confirmation email is disabled in the environment, even if `send_confirmation_email` is `true`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WaitlistEntry
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "email": email,
+                "additional_fields": additional_fields,
+                "send_confirmation_email": send_confirmation_email,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("user_management", "waitlists", str(id), "entries"),
+            body=body,
+            model=WaitlistEntry,
             request_options=request_options,
         )
 

@@ -5,10 +5,58 @@ from .connection_domain import ConnectionDomain as ConnectionDomain
 from .connections_connection_type import (
     ConnectionsConnectionType as ConnectionsConnectionType,
 )
+from .create_connection import CreateConnection as CreateConnection
+from .create_connection_attribute_maps import (
+    CreateConnectionAttributeMaps as CreateConnectionAttributeMaps,
+)
+from .create_connection_key_pair import (
+    CreateConnectionKeyPair as CreateConnectionKeyPair,
+)
+from .create_connection_oidc_options import (
+    CreateConnectionOIDCOptions as CreateConnectionOIDCOptions,
+)
+from .create_connection_saml_options import (
+    CreateConnectionSAMLOptions as CreateConnectionSAMLOptions,
+)
+from .create_connection_standard_attributes import (
+    CreateConnectionStandardAttributes as CreateConnectionStandardAttributes,
+)
+from .create_saml_idp_signing_certificate import (
+    CreateSAMLIdpSigningCertificate as CreateSAMLIdpSigningCertificate,
+)
+from .patch_connection import PatchConnection as PatchConnection
+from .patch_connection_attribute_maps import (
+    PatchConnectionAttributeMaps as PatchConnectionAttributeMaps,
+)
+from .patch_connection_oidc_options import (
+    PatchConnectionOIDCOptions as PatchConnectionOIDCOptions,
+)
+from .patch_connection_saml_options import (
+    PatchConnectionSAMLOptions as PatchConnectionSAMLOptions,
+)
+from .patch_connection_standard_attributes import (
+    PatchConnectionStandardAttributes as PatchConnectionStandardAttributes,
+)
 from .profile import Profile as Profile
+from .saml_idp_signing_certificate import (
+    SAMLIdpSigningCertificate as SAMLIdpSigningCertificate,
+)
+from .saml_idp_signing_certificate_list import (
+    SAMLIdpSigningCertificateList as SAMLIdpSigningCertificateList,
+)
+from .saml_sp_encryption_certificate import (
+    SAMLSpEncryptionCertificate as SAMLSpEncryptionCertificate,
+)
+from .saml_sp_encryption_certificate_list import (
+    SAMLSpEncryptionCertificateList as SAMLSpEncryptionCertificateList,
+)
+from .saml_sp_signing_certificate import (
+    SAMLSpSigningCertificate as SAMLSpSigningCertificate,
+)
 from .sso_authorize_url_response import (
     SSOAuthorizeUrlResponse as SSOAuthorizeUrlResponse,
 )
+from .sso_grant_type import SSOGrantType as SSOGrantType
 from .sso_logout_authorize_request import (
     SSOLogoutAuthorizeRequest as SSOLogoutAuthorizeRequest,
 )

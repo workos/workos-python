@@ -10,12 +10,25 @@ if TYPE_CHECKING:
 from workos.common.models.agent_admin_validate_credential_request_type import (
     AgentAdminValidateCredentialRequestType,
 )
+from workos.common.models.agent_blueprints_token_mint_token_request_type import (
+    AgentBlueprintsTokenMintTokenRequestType,
+)
+from workos.common.models.pagination_order import PaginationOrder
 
-from .._types import RequestOptions, enum_value
+from .._pagination import AsyncPage, SyncPage
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
+    AgentBlueprint,
+    AgentBlueprintsCreateRequestInvocableBy,
+    AgentBlueprintsCreateRequestSessionSetting,
+    AgentBlueprintsUpdateRequestInvocableBy,
+    AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
+    AgentInstance,
+    AgentInstanceSession,
     AgentRegistration,
+    AgentToken,
     ClaimViewResponse,
 )
 
@@ -25,6 +38,279 @@ class Agents:
 
     def __init__(self, client: WorkOSClient) -> None:
         self._client = client
+
+    def list_blueprints(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[AgentBlueprint]:
+        """List agent blueprints
+
+        Lists the agent blueprints in the current environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AgentBlueprint]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("agents", "blueprints"),
+            model=AgentBlueprint,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_blueprint(
+        self,
+        *,
+        name: str,
+        session_settings: AgentBlueprintsCreateRequestSessionSetting,
+        description: str | None = None,
+        permissions: list[str] | None = None,
+        invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Create an agent blueprint
+
+        Creates an agent blueprint: the template describing what an agent may do (its permission ceiling), who may invoke it, and the lifetimes of its sessions.
+
+        Args:
+            name: Human-readable name of the agent blueprint.
+            description: Human-readable description of the agent blueprint.
+            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            invocable_by: Who may mint sessions from this blueprint.
+            session_settings: Token and session lifetimes for sessions minted from this blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "description": description,
+                "permissions": permissions,
+                "invocable_by": invocable_by.to_dict()
+                if invocable_by is not None
+                else None,
+                "session_settings": session_settings.to_dict(),
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("agents", "blueprints"),
+            body=body,
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    def get_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Get an agent blueprint
+
+        Retrieves an agent blueprint by ID.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    def update_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        permissions: list[str] | None = None,
+        invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
+        session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Update an agent blueprint
+
+        Updates an agent blueprint. Omitted fields are left unchanged; provided lists replace the existing configuration.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            name: Human-readable name of the agent blueprint.
+            description: Human-readable description of the agent blueprint. Pass `null` to clear it.
+            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
+            session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "permissions": permissions,
+                "invocable_by": invocable_by.to_dict()
+                if invocable_by is not None
+                else None,
+                "session_settings": session_settings.to_dict()
+                if session_settings is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        return self._client.request(
+            method="patch",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            body=body,
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    def delete_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an agent blueprint
+
+        Deletes an agent blueprint along with its configuration, instances, and sessions.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            request_options=request_options,
+        )
+
+    def create_blueprint_token(
+        self,
+        agent_blueprint_id: str,
+        *,
+        type: AgentBlueprintsTokenMintTokenRequestType | str,
+        user_access_token: str | None = None,
+        intent: str | None = None,
+        organization_id: str | None = None,
+        agent_access_token: str | None = None,
+        refresh_token: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentToken:
+        """Mint an agent token
+
+        Mint an agent access token (and backing session) from an agent blueprint. The session can be user-delegated (exchanging a user access token), autonomous (the agent acting as itself in an organization), agent-delegated (the agent exchanging its own access token for a new session on the same instance), or a refresh of a previously issued refresh token.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            type: How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`.
+            user_access_token: The access token of the user delegating to the agent. The token identifies the user and organization; effective permissions are resolved server-side.
+            intent: Optional caller-supplied context, echoed as an object with a `text` field in the `intent` claim of the minted access token.
+            organization_id: The organization the agent acts within when operating as itself.
+            agent_access_token: The agent's own access token to exchange for a new session on the same instance. The token must have been minted from this blueprint; permissions are re-derived from current authority.
+            refresh_token: The refresh token issued with a previous agent access token. Refresh tokens are single-use: each refresh rotates it.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentToken
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "type": enum_value(type),
+                "user_access_token": user_access_token,
+                "intent": intent,
+                "organization_id": organization_id,
+                "agent_access_token": agent_access_token,
+                "refresh_token": refresh_token,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("agents", "blueprints", str(agent_blueprint_id), "tokens"),
+            body=body,
+            model=AgentToken,
+            request_options=request_options,
+        )
 
     def update_attempts(
         self,
@@ -149,12 +435,506 @@ class Agents:
             request_options=request_options,
         )
 
+    def list_instances(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        agent_blueprint_id: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[AgentInstance]:
+        """List agent instances
+
+        Lists the agent instances in the current environment. Instances are created implicitly when tokens are minted.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            organization_id: Only return instances acting within this organization.
+            agent_blueprint_id: Only return instances minted from this blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AgentInstance]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
+                "agent_blueprint_id": agent_blueprint_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("agents", "instances"),
+            model=AgentInstance,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_instance(
+        self,
+        agent_instance_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstance:
+        """Get an agent instance
+
+        Retrieves an agent instance by ID.
+
+        Args:
+            agent_instance_id: The unique ID of the agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstance
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("agents", "instances", str(agent_instance_id)),
+            model=AgentInstance,
+            request_options=request_options,
+        )
+
+    def delete_instance(
+        self,
+        agent_instance_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an agent instance
+
+        Deletes an agent instance along with its sessions, invalidating their refresh tokens.
+
+        Args:
+            agent_instance_id: The unique ID of the agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("agents", "instances", str(agent_instance_id)),
+            request_options=request_options,
+        )
+
+    def list_sessions(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        agent_blueprint_id: str | None = None,
+        agent_instance_id: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[AgentInstanceSession]:
+        """List agent instance sessions
+
+        Lists the agent instance sessions in the current environment. Sessions are created when tokens are minted.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            agent_blueprint_id: Only return sessions of instances minted from this blueprint.
+            agent_instance_id: Only return sessions belonging to this agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AgentInstanceSession]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "agent_blueprint_id": agent_blueprint_id,
+                "agent_instance_id": agent_instance_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("agents", "sessions"),
+            model=AgentInstanceSession,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_session(
+        self,
+        agent_instance_session_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstanceSession:
+        """Get an agent instance session
+
+        Retrieves an agent instance session by ID.
+
+        Args:
+            agent_instance_session_id: The unique ID of the agent instance session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstanceSession
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("agents", "sessions", str(agent_instance_session_id)),
+            model=AgentInstanceSession,
+            request_options=request_options,
+        )
+
+    def revoke_session(
+        self,
+        agent_instance_session_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstanceSession:
+        """Revoke an agent instance session
+
+        Revokes an agent instance session, invalidating its refresh token and every access token minted under it. Revocation is idempotent: revoking an already-revoked session keeps the original `revoked_at`, and revoking an already-expired session returns the session with `status: expired` and a null `revoked_at`.
+
+        Args:
+            agent_instance_session_id: The unique ID of the agent instance session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstanceSession
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("agents", "sessions", str(agent_instance_session_id), "revoke"),
+            model=AgentInstanceSession,
+            request_options=request_options,
+        )
+
 
 class AsyncAgents:
     """Agents API resources (async)."""
 
     def __init__(self, client: AsyncWorkOSClient) -> None:
         self._client = client
+
+    async def list_blueprints(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[AgentBlueprint]:
+        """List agent blueprints
+
+        Lists the agent blueprints in the current environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AgentBlueprint]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("agents", "blueprints"),
+            model=AgentBlueprint,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_blueprint(
+        self,
+        *,
+        name: str,
+        session_settings: AgentBlueprintsCreateRequestSessionSetting,
+        description: str | None = None,
+        permissions: list[str] | None = None,
+        invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Create an agent blueprint
+
+        Creates an agent blueprint: the template describing what an agent may do (its permission ceiling), who may invoke it, and the lifetimes of its sessions.
+
+        Args:
+            name: Human-readable name of the agent blueprint.
+            description: Human-readable description of the agent blueprint.
+            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            invocable_by: Who may mint sessions from this blueprint.
+            session_settings: Token and session lifetimes for sessions minted from this blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "description": description,
+                "permissions": permissions,
+                "invocable_by": invocable_by.to_dict()
+                if invocable_by is not None
+                else None,
+                "session_settings": session_settings.to_dict(),
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("agents", "blueprints"),
+            body=body,
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    async def get_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Get an agent blueprint
+
+        Retrieves an agent blueprint by ID.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    async def update_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        name: str | None = None,
+        description: str | None | NotGiven = NOT_GIVEN,
+        permissions: list[str] | None = None,
+        invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
+        session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentBlueprint:
+        """Update an agent blueprint
+
+        Updates an agent blueprint. Omitted fields are left unchanged; provided lists replace the existing configuration.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            name: Human-readable name of the agent blueprint.
+            description: Human-readable description of the agent blueprint. Pass `null` to clear it.
+            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
+            session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentBlueprint
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "permissions": permissions,
+                "invocable_by": invocable_by.to_dict()
+                if invocable_by is not None
+                else None,
+                "session_settings": session_settings.to_dict()
+                if session_settings is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        return await self._client.request(
+            method="patch",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            body=body,
+            model=AgentBlueprint,
+            request_options=request_options,
+        )
+
+    async def delete_blueprint(
+        self,
+        agent_blueprint_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an agent blueprint
+
+        Deletes an agent blueprint along with its configuration, instances, and sessions.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("agents", "blueprints", str(agent_blueprint_id)),
+            request_options=request_options,
+        )
+
+    async def create_blueprint_token(
+        self,
+        agent_blueprint_id: str,
+        *,
+        type: AgentBlueprintsTokenMintTokenRequestType | str,
+        user_access_token: str | None = None,
+        intent: str | None = None,
+        organization_id: str | None = None,
+        agent_access_token: str | None = None,
+        refresh_token: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AgentToken:
+        """Mint an agent token
+
+        Mint an agent access token (and backing session) from an agent blueprint. The session can be user-delegated (exchanging a user access token), autonomous (the agent acting as itself in an organization), agent-delegated (the agent exchanging its own access token for a new session on the same instance), or a refresh of a previously issued refresh token.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            type: How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`.
+            user_access_token: The access token of the user delegating to the agent. The token identifies the user and organization; effective permissions are resolved server-side.
+            intent: Optional caller-supplied context, echoed as an object with a `text` field in the `intent` claim of the minted access token.
+            organization_id: The organization the agent acts within when operating as itself.
+            agent_access_token: The agent's own access token to exchange for a new session on the same instance. The token must have been minted from this blueprint; permissions are re-derived from current authority.
+            refresh_token: The refresh token issued with a previous agent access token. Refresh tokens are single-use: each refresh rotates it.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentToken
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "type": enum_value(type),
+                "user_access_token": user_access_token,
+                "intent": intent,
+                "organization_id": organization_id,
+                "agent_access_token": agent_access_token,
+                "refresh_token": refresh_token,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("agents", "blueprints", str(agent_blueprint_id), "tokens"),
+            body=body,
+            model=AgentToken,
+            request_options=request_options,
+        )
 
     async def update_attempts(
         self,
@@ -276,5 +1056,226 @@ class AsyncAgents:
             method="get",
             path=("agents", "registrations", str(id)),
             model=AgentRegistration,
+            request_options=request_options,
+        )
+
+    async def list_instances(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
+        agent_blueprint_id: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[AgentInstance]:
+        """List agent instances
+
+        Lists the agent instances in the current environment. Instances are created implicitly when tokens are minted.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            organization_id: Only return instances acting within this organization.
+            agent_blueprint_id: Only return instances minted from this blueprint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AgentInstance]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
+                "agent_blueprint_id": agent_blueprint_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("agents", "instances"),
+            model=AgentInstance,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def get_instance(
+        self,
+        agent_instance_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstance:
+        """Get an agent instance
+
+        Retrieves an agent instance by ID.
+
+        Args:
+            agent_instance_id: The unique ID of the agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstance
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("agents", "instances", str(agent_instance_id)),
+            model=AgentInstance,
+            request_options=request_options,
+        )
+
+    async def delete_instance(
+        self,
+        agent_instance_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an agent instance
+
+        Deletes an agent instance along with its sessions, invalidating their refresh tokens.
+
+        Args:
+            agent_instance_id: The unique ID of the agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("agents", "instances", str(agent_instance_id)),
+            request_options=request_options,
+        )
+
+    async def list_sessions(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        agent_blueprint_id: str | None = None,
+        agent_instance_id: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[AgentInstanceSession]:
+        """List agent instance sessions
+
+        Lists the agent instance sessions in the current environment. Sessions are created when tokens are minted.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            agent_blueprint_id: Only return sessions of instances minted from this blueprint.
+            agent_instance_id: Only return sessions belonging to this agent instance.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AgentInstanceSession]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "agent_blueprint_id": agent_blueprint_id,
+                "agent_instance_id": agent_instance_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("agents", "sessions"),
+            model=AgentInstanceSession,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def get_session(
+        self,
+        agent_instance_session_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstanceSession:
+        """Get an agent instance session
+
+        Retrieves an agent instance session by ID.
+
+        Args:
+            agent_instance_session_id: The unique ID of the agent instance session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstanceSession
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("agents", "sessions", str(agent_instance_session_id)),
+            model=AgentInstanceSession,
+            request_options=request_options,
+        )
+
+    async def revoke_session(
+        self,
+        agent_instance_session_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentInstanceSession:
+        """Revoke an agent instance session
+
+        Revokes an agent instance session, invalidating its refresh token and every access token minted under it. Revocation is idempotent: revoking an already-revoked session keeps the original `revoked_at`, and revoking an already-expired session returns the session with `status: expired` and a null `revoked_at`.
+
+        Args:
+            agent_instance_session_id: The unique ID of the agent instance session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentInstanceSession
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("agents", "sessions", str(agent_instance_session_id), "revoke"),
+            model=AgentInstanceSession,
             request_options=request_options,
         )

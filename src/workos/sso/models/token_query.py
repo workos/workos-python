@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.token_query_grant_type import TokenQueryGrantType
 
 
 @dataclass(slots=True)
@@ -16,10 +18,18 @@ class TokenQuery:
     """The client ID of the WorkOS environment."""
     client_secret: str
     """The client secret of the WorkOS environment."""
-    code: str
-    """The authorization code received from the authorization callback."""
-    grant_type: Literal["authorization_code"]
+    grant_type: TokenQueryGrantType
     """The grant type for the token request."""
+    code: str | None = None
+    """The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`."""
+    subject_token: str | None = None
+    """The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body."""
+    subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"] | None = (
+        None
+    )
+    """The type of the subject token. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body."""
+    organization_id: str | None = None
+    """The ID of the organization whose connection the subject token is validated against. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> TokenQuery:
@@ -28,8 +38,11 @@ class TokenQuery:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                code=data["code"],
-                grant_type=data.get("grant_type", "authorization_code"),
+                grant_type=TokenQueryGrantType(data["grant_type"]),
+                code=data.get("code"),
+                subject_token=data.get("subject_token"),
+                subject_token_type=data.get("subject_token_type"),
+                organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("TokenQuery", e)
@@ -39,6 +52,17 @@ class TokenQuery:
         result: dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["client_secret"] = self.client_secret
-        result["code"] = self.code
-        result["grant_type"] = self.grant_type
+        result["grant_type"] = (
+            self.grant_type.value
+            if isinstance(self.grant_type, Enum)
+            else self.grant_type
+        )
+        if self.code is not None:
+            result["code"] = self.code
+        if self.subject_token is not None:
+            result["subject_token"] = self.subject_token
+        if self.subject_token_type is not None:
+            result["subject_token_type"] = self.subject_token_type
+        if self.organization_id is not None:
+            result["organization_id"] = self.organization_id
         return result

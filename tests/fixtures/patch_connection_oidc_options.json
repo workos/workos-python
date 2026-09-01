@@ -1,0 +1,10 @@
+{
+  "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+  "client_id": "client_123",
+  "client_secret": "secret_xyz",
+  "redirect_uri": "https://auth.workos.com/sso/oidc/conn_externalkey/callback",
+  "pkce": true,
+  "token_authentication_method": "client_secret_basic",
+  "id_token_signature_algorithm": "RS256",
+  "fetch_user_info": false
+}

@@ -22,7 +22,6 @@ class ConnectionsConnectionType(str, Enum):
     CLASS_LINK_SAML = "ClassLinkSAML"
     CLEVER_OIDC = "CleverOIDC"
     CYBER_ARK_SAML = "CyberArkSAML"
-    DISCORD_OAUTH = "DiscordOAuth"
     DUO_SAML = "DuoSAML"
     ENTRA_ID_OIDC = "EntraIdOIDC"
     GENERIC_OIDC = "GenericOIDC"
@@ -32,8 +31,6 @@ class ConnectionsConnectionType(str, Enum):
     GOOGLE_OAUTH = "GoogleOAuth"
     GOOGLE_OIDC = "GoogleOIDC"
     GOOGLE_SAML = "GoogleSAML"
-    GROK_OAUTH = "GrokOAuth"
-    XO_AUTH = "XOAuth"
     INTUIT_OAUTH = "IntuitOAuth"
     JUMP_CLOUD_SAML = "JumpCloudSAML"
     KEYCLOAK_SAML = "KeycloakSAML"
@@ -84,7 +81,6 @@ ConnectionsConnectionTypeLiteral: TypeAlias = Literal[
     "ClassLinkSAML",
     "CleverOIDC",
     "CyberArkSAML",
-    "DiscordOAuth",
     "DuoSAML",
     "EntraIdOIDC",
     "GenericOIDC",
@@ -94,8 +90,6 @@ ConnectionsConnectionTypeLiteral: TypeAlias = Literal[
     "GoogleOAuth",
     "GoogleOIDC",
     "GoogleSAML",
-    "GrokOAuth",
-    "XOAuth",
     "IntuitOAuth",
     "JumpCloudSAML",
     "KeycloakSAML",

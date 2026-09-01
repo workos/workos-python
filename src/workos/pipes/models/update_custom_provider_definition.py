@@ -19,11 +19,11 @@ class UpdateCustomProviderDefinition:
     name: str | None = None
     """A descriptive name for the custom provider."""
     authorization_url: str | None = None
-    """The provider's OAuth authorization endpoint."""
+    """The provider's OAuth authorization endpoint. Must be a static URL: `${config.…}` placeholders are resolved against a provider's declared config fields, which custom providers cannot declare."""
     token_url: str | None = None
-    """The provider's OAuth token endpoint."""
+    """The provider's OAuth token endpoint. Must be a static URL: `${config.…}` placeholders are resolved against a provider's declared config fields, which custom providers cannot declare."""
     refresh_token_url: str | None = None
-    """The endpoint used to refresh tokens, if different from the token endpoint."""
+    """The endpoint used to refresh tokens, if different from the token endpoint. Must be a static URL, like the other endpoints."""
     pkce_enabled: bool | None = None
     """Whether PKCE is used during the authorization code flow."""
     request_scope_separator: str | None = None

@@ -7,18 +7,59 @@ from typing import TYPE_CHECKING, Any, Literal
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from dataclasses import dataclass
+
 from workos.common.models.pagination_order import PaginationOrder
 
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions, enum_value
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     Connection,
     ConnectionsConnectionType,
+    CreateConnectionAttributeMaps,
+    CreateConnectionOIDCOptions,
+    CreateConnectionSAMLOptions,
+    PatchConnectionAttributeMaps,
+    PatchConnectionOIDCOptions,
+    PatchConnectionSAMLOptions,
     Profile,
+    SAMLIdpSigningCertificate,
+    SAMLIdpSigningCertificateList,
+    SAMLSpEncryptionCertificate,
+    SAMLSpEncryptionCertificateList,
+    SAMLSpSigningCertificate,
     SSOLogoutAuthorizeResponse,
     SSOProvider,
     SSOTokenResponse,
 )
+
+
+@dataclass
+class CreateProtocolOptionsSAML:
+    """Identify protocol options saml."""
+
+    saml_options: CreateConnectionSAMLOptions
+
+
+@dataclass
+class CreateProtocolOptionsOIDC:
+    """Identify protocol options oidc."""
+
+    oidc_options: CreateConnectionOIDCOptions
+
+
+@dataclass
+class PatchProtocolOptionsSAML:
+    """Identify protocol options saml."""
+
+    saml_options: PatchConnectionSAMLOptions
+
+
+@dataclass
+class PatchProtocolOptionsOIDC:
+    """Identify protocol options oidc."""
+
+    oidc_options: PatchConnectionOIDCOptions
 
 
 class SSO:
@@ -89,6 +130,372 @@ class SSO:
             request_options=request_options,
         )
 
+    def create_connection(
+        self,
+        *,
+        organization_id: str,
+        name: str | None = None,
+        external_id: str | None = None,
+        connection_type: str | None = None,
+        attribute_maps: CreateConnectionAttributeMaps | None = None,
+        protocol_options: CreateProtocolOptionsSAML | CreateProtocolOptionsOIDC,
+        request_options: RequestOptions | None = None,
+    ) -> Connection:
+        """Create a Connection
+
+        Creates a new connection for an organization. Provide `saml_options` or `oidc_options` to configure the identity provider. When `external_id` matches an existing connection in the organization, that connection is returned instead of creating a duplicate.
+
+        Args:
+            organization_id: Unique identifier for the Organization in which the Connection resides.
+            name: A human-readable name for the Connection. This will most commonly be the organization's name.
+            external_id: The customer-owned identifier for the Connection.
+            connection_type: The type of the Connection. Only SAML and OIDC connection types may be created. When omitted, the type is inferred from the provided options.
+            attribute_maps: How IdP attributes or claims map onto WorkOS profile fields. Provided fields override the defaults for the connection type.
+            protocol_options: Identifies the protocol options. One of: CreateProtocolOptionsSAML, CreateProtocolOptionsOIDC.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Connection
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+                "name": name,
+                "external_id": external_id,
+                "connection_type": connection_type,
+                "attribute_maps": attribute_maps.to_dict()
+                if attribute_maps is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if isinstance(protocol_options, CreateProtocolOptionsSAML):
+            body["saml_options"] = protocol_options.saml_options.to_dict()
+        elif isinstance(protocol_options, CreateProtocolOptionsOIDC):
+            body["oidc_options"] = protocol_options.oidc_options.to_dict()
+        return self._client.request(
+            method="post",
+            path=("connections",),
+            body=body,
+            model=Connection,
+            request_options=request_options,
+        )
+
+    def list_connection_saml_idp_signing_certs(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLIdpSigningCertificateList:
+        """List IdP signing certificates
+
+        Lists every Identity Provider signing certificate on the connection, including expired ones, oldest first.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLIdpSigningCertificateList
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_idp_signing_certs"),
+            model=SAMLIdpSigningCertificateList,
+            request_options=request_options,
+        )
+
+    def create_connection_saml_idp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        value: str,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLIdpSigningCertificate:
+        """Create an IdP signing certificate
+
+        Adds an Identity Provider signing certificate to the connection, so SAML responses signed with its key can be verified. Use this to import a new certificate ahead of an Identity Provider rotation — the existing certificates keep working until they are deleted or expire.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            value: The PEM-encoded X.509 certificate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLIdpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "value": value,
+        }
+        return self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_idp_signing_certs"),
+            body=body,
+            model=SAMLIdpSigningCertificate,
+            request_options=request_options,
+        )
+
+    def delete_connection_saml_idp_signing_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an IdP signing certificate
+
+        Removes an Identity Provider signing certificate from the connection. The last remaining certificate cannot be deleted. A certificate still published in the Identity Provider metadata may be restored by a metadata refresh.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Identity Provider signing certificate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_idp_signing_certs",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
+    def list_connection_saml_sp_encryption_certs(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpEncryptionCertificateList:
+        """List SP encryption certificates
+
+        Lists the public certificates the Identity Provider can use to encrypt SAML responses sent to WorkOS, including expired ones, oldest first.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpEncryptionCertificateList
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_sp_encryption_certs"),
+            model=SAMLSpEncryptionCertificateList,
+            request_options=request_options,
+        )
+
+    def create_connection_saml_sp_encryption_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpEncryptionCertificate:
+        """Create an SP encryption certificate
+
+        Generates a new encryption key pair for the connection and returns its public certificate. WorkOS holds the private key, so the request takes no body — to bring your own key pairs, provide `saml_options.sp_encryption_key_pairs` when creating the connection instead. Creating a certificate appends rather than replaces: every active private key is tried when decrypting, which lets a rotation overlap the old and new certificates.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpEncryptionCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_sp_encryption_certs"),
+            model=SAMLSpEncryptionCertificate,
+            request_options=request_options,
+        )
+
+    def delete_connection_saml_sp_encryption_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an SP encryption certificate
+
+        Removes an encryption key pair from the connection. SAML responses encrypted with its certificate can no longer be decrypted, so remove the certificate from the Identity Provider first when rotating.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Service Provider encryption key pair. WorkOS holds the corresponding private key, which is never exposed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_sp_encryption_certs",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
+    def list_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpSigningCertificate:
+        """Get the SP signing certificate
+
+        Returns the public certificate the Identity Provider can use to verify the signature of SAML requests sent by WorkOS. Responds with `404` when the connection has no request signing key pair.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_sp_signing_cert"),
+            model=SAMLSpSigningCertificate,
+            request_options=request_options,
+        )
+
+    def create_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpSigningCertificate:
+        """Create an SP signing certificate
+
+        Generates a new request signing key pair for the connection and returns its public certificate. WorkOS holds the private key, so the request takes no body — to bring your own key pair, provide `saml_options.sp_signing_key_pair` when creating the connection instead. A connection signs with one key pair at a time: delete the existing certificate before creating its replacement.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_sp_signing_cert"),
+            model=SAMLSpSigningCertificate,
+            request_options=request_options,
+        )
+
+    def delete_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete the SP signing certificate
+
+        Removes the request signing key pair from the connection, after which SAML requests are sent unsigned. Delete the certificate before creating its replacement when rotating.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Service Provider signing key pair. WorkOS holds the corresponding private key, which is never exposed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_sp_signing_cert",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
     def get_connection(
         self,
         id: str,
@@ -116,6 +523,71 @@ class SSO:
         return self._client.request(
             method="get",
             path=("connections", str(id)),
+            model=Connection,
+            request_options=request_options,
+        )
+
+    def update_connection(
+        self,
+        id: str,
+        *,
+        name: str | None = None,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        connection_type: str | None = None,
+        attribute_maps: PatchConnectionAttributeMaps | None = None,
+        protocol_options: PatchProtocolOptionsSAML
+        | PatchProtocolOptionsOIDC
+        | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> Connection:
+        """Update a Connection
+
+        Updates an existing connection. Only the provided fields are changed; fields that accept `null` are reset to their default behavior.
+
+        Args:
+            id: Unique identifier for the Connection.
+            name: A human-readable name for the Connection.
+            external_id: The customer-owned identifier for the Connection. Set to `null` to stop tracking one.
+            connection_type: The type of the Connection. Immutable after creation — it may be sent, but only with the Connection current type.
+            attribute_maps: How IdP attributes or claims map onto WorkOS profile fields. Only the provided fields are updated.
+            protocol_options: Identifies the protocol options. One of: PatchProtocolOptionsSAML, PatchProtocolOptionsOIDC.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Connection
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "connection_type": connection_type,
+                "attribute_maps": attribute_maps.to_dict()
+                if attribute_maps is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if protocol_options is not None:
+            if isinstance(protocol_options, PatchProtocolOptionsSAML):
+                body["saml_options"] = protocol_options.saml_options.to_dict()
+            elif isinstance(protocol_options, PatchProtocolOptionsOIDC):
+                body["oidc_options"] = protocol_options.oidc_options.to_dict()
+        return self._client.request(
+            method="patch",
+            path=("connections", str(id)),
+            body=body,
             model=Connection,
             request_options=request_options,
         )
@@ -331,7 +803,11 @@ class SSO:
     def get_profile_and_token(
         self,
         *,
-        code: str,
+        code: str | None = None,
+        subject_token: str | None = None,
+        subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"]
+        | None = None,
+        organization_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SSOTokenResponse:
         """Get a Profile and Token
@@ -339,7 +815,10 @@ class SSO:
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
         Args:
-            code: The authorization code received from the authorization callback.
+            code: The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`.
+            subject_token: The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
+            subject_token_type: The type of the subject token. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
+            organization_id: The ID of the organization whose connection the subject token is validated against. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -354,7 +833,14 @@ class SSO:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "code": code,
+            k: v
+            for k, v in {
+                "code": code,
+                "subject_token": subject_token,
+                "subject_token_type": subject_token_type,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
         }
         body["grant_type"] = "authorization_code"
         if self._client.client_id is not None:
@@ -512,6 +998,372 @@ class AsyncSSO:
             request_options=request_options,
         )
 
+    async def create_connection(
+        self,
+        *,
+        organization_id: str,
+        name: str | None = None,
+        external_id: str | None = None,
+        connection_type: str | None = None,
+        attribute_maps: CreateConnectionAttributeMaps | None = None,
+        protocol_options: CreateProtocolOptionsSAML | CreateProtocolOptionsOIDC,
+        request_options: RequestOptions | None = None,
+    ) -> Connection:
+        """Create a Connection
+
+        Creates a new connection for an organization. Provide `saml_options` or `oidc_options` to configure the identity provider. When `external_id` matches an existing connection in the organization, that connection is returned instead of creating a duplicate.
+
+        Args:
+            organization_id: Unique identifier for the Organization in which the Connection resides.
+            name: A human-readable name for the Connection. This will most commonly be the organization's name.
+            external_id: The customer-owned identifier for the Connection.
+            connection_type: The type of the Connection. Only SAML and OIDC connection types may be created. When omitted, the type is inferred from the provided options.
+            attribute_maps: How IdP attributes or claims map onto WorkOS profile fields. Provided fields override the defaults for the connection type.
+            protocol_options: Identifies the protocol options. One of: CreateProtocolOptionsSAML, CreateProtocolOptionsOIDC.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Connection
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+                "name": name,
+                "external_id": external_id,
+                "connection_type": connection_type,
+                "attribute_maps": attribute_maps.to_dict()
+                if attribute_maps is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if isinstance(protocol_options, CreateProtocolOptionsSAML):
+            body["saml_options"] = protocol_options.saml_options.to_dict()
+        elif isinstance(protocol_options, CreateProtocolOptionsOIDC):
+            body["oidc_options"] = protocol_options.oidc_options.to_dict()
+        return await self._client.request(
+            method="post",
+            path=("connections",),
+            body=body,
+            model=Connection,
+            request_options=request_options,
+        )
+
+    async def list_connection_saml_idp_signing_certs(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLIdpSigningCertificateList:
+        """List IdP signing certificates
+
+        Lists every Identity Provider signing certificate on the connection, including expired ones, oldest first.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLIdpSigningCertificateList
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_idp_signing_certs"),
+            model=SAMLIdpSigningCertificateList,
+            request_options=request_options,
+        )
+
+    async def create_connection_saml_idp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        value: str,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLIdpSigningCertificate:
+        """Create an IdP signing certificate
+
+        Adds an Identity Provider signing certificate to the connection, so SAML responses signed with its key can be verified. Use this to import a new certificate ahead of an Identity Provider rotation — the existing certificates keep working until they are deleted or expire.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            value: The PEM-encoded X.509 certificate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLIdpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "value": value,
+        }
+        return await self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_idp_signing_certs"),
+            body=body,
+            model=SAMLIdpSigningCertificate,
+            request_options=request_options,
+        )
+
+    async def delete_connection_saml_idp_signing_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an IdP signing certificate
+
+        Removes an Identity Provider signing certificate from the connection. The last remaining certificate cannot be deleted. A certificate still published in the Identity Provider metadata may be restored by a metadata refresh.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Identity Provider signing certificate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_idp_signing_certs",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
+    async def list_connection_saml_sp_encryption_certs(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpEncryptionCertificateList:
+        """List SP encryption certificates
+
+        Lists the public certificates the Identity Provider can use to encrypt SAML responses sent to WorkOS, including expired ones, oldest first.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpEncryptionCertificateList
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_sp_encryption_certs"),
+            model=SAMLSpEncryptionCertificateList,
+            request_options=request_options,
+        )
+
+    async def create_connection_saml_sp_encryption_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpEncryptionCertificate:
+        """Create an SP encryption certificate
+
+        Generates a new encryption key pair for the connection and returns its public certificate. WorkOS holds the private key, so the request takes no body — to bring your own key pairs, provide `saml_options.sp_encryption_key_pairs` when creating the connection instead. Creating a certificate appends rather than replaces: every active private key is tried when decrypting, which lets a rotation overlap the old and new certificates.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpEncryptionCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_sp_encryption_certs"),
+            model=SAMLSpEncryptionCertificate,
+            request_options=request_options,
+        )
+
+    async def delete_connection_saml_sp_encryption_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an SP encryption certificate
+
+        Removes an encryption key pair from the connection. SAML responses encrypted with its certificate can no longer be decrypted, so remove the certificate from the Identity Provider first when rotating.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Service Provider encryption key pair. WorkOS holds the corresponding private key, which is never exposed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_sp_encryption_certs",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
+    async def list_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpSigningCertificate:
+        """Get the SP signing certificate
+
+        Returns the public certificate the Identity Provider can use to verify the signature of SAML requests sent by WorkOS. Responds with `404` when the connection has no request signing key pair.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("connections", str(connection_id), "saml_sp_signing_cert"),
+            model=SAMLSpSigningCertificate,
+            request_options=request_options,
+        )
+
+    async def create_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> SAMLSpSigningCertificate:
+        """Create an SP signing certificate
+
+        Generates a new request signing key pair for the connection and returns its public certificate. WorkOS holds the private key, so the request takes no body — to bring your own key pair, provide `saml_options.sp_signing_key_pair` when creating the connection instead. A connection signs with one key pair at a time: delete the existing certificate before creating its replacement.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SAMLSpSigningCertificate
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("connections", str(connection_id), "saml_sp_signing_cert"),
+            model=SAMLSpSigningCertificate,
+            request_options=request_options,
+        )
+
+    async def delete_connection_saml_sp_signing_cert(
+        self,
+        connection_id: str,
+        certificate_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete the SP signing certificate
+
+        Removes the request signing key pair from the connection, after which SAML requests are sent unsigned. Delete the certificate before creating its replacement when rotating.
+
+        Args:
+            connection_id: Unique identifier for the Connection.
+            certificate_id: Unique identifier for the Service Provider signing key pair. WorkOS holds the corresponding private key, which is never exposed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=(
+                "connections",
+                str(connection_id),
+                "saml_sp_signing_cert",
+                str(certificate_id),
+            ),
+            request_options=request_options,
+        )
+
     async def get_connection(
         self,
         id: str,
@@ -539,6 +1391,71 @@ class AsyncSSO:
         return await self._client.request(
             method="get",
             path=("connections", str(id)),
+            model=Connection,
+            request_options=request_options,
+        )
+
+    async def update_connection(
+        self,
+        id: str,
+        *,
+        name: str | None = None,
+        external_id: str | None | NotGiven = NOT_GIVEN,
+        connection_type: str | None = None,
+        attribute_maps: PatchConnectionAttributeMaps | None = None,
+        protocol_options: PatchProtocolOptionsSAML
+        | PatchProtocolOptionsOIDC
+        | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> Connection:
+        """Update a Connection
+
+        Updates an existing connection. Only the provided fields are changed; fields that accept `null` are reset to their default behavior.
+
+        Args:
+            id: Unique identifier for the Connection.
+            name: A human-readable name for the Connection.
+            external_id: The customer-owned identifier for the Connection. Set to `null` to stop tracking one.
+            connection_type: The type of the Connection. Immutable after creation — it may be sent, but only with the Connection current type.
+            attribute_maps: How IdP attributes or claims map onto WorkOS profile fields. Only the provided fields are updated.
+            protocol_options: Identifies the protocol options. One of: PatchProtocolOptionsSAML, PatchProtocolOptionsOIDC.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            Connection
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "connection_type": connection_type,
+                "attribute_maps": attribute_maps.to_dict()
+                if attribute_maps is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(external_id, NotGiven):
+            body["external_id"] = external_id
+        if protocol_options is not None:
+            if isinstance(protocol_options, PatchProtocolOptionsSAML):
+                body["saml_options"] = protocol_options.saml_options.to_dict()
+            elif isinstance(protocol_options, PatchProtocolOptionsOIDC):
+                body["oidc_options"] = protocol_options.oidc_options.to_dict()
+        return await self._client.request(
+            method="patch",
+            path=("connections", str(id)),
+            body=body,
             model=Connection,
             request_options=request_options,
         )
@@ -754,7 +1671,11 @@ class AsyncSSO:
     async def get_profile_and_token(
         self,
         *,
-        code: str,
+        code: str | None = None,
+        subject_token: str | None = None,
+        subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"]
+        | None = None,
+        organization_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SSOTokenResponse:
         """Get a Profile and Token
@@ -762,7 +1683,10 @@ class AsyncSSO:
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
         Args:
-            code: The authorization code received from the authorization callback.
+            code: The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`.
+            subject_token: The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
+            subject_token_type: The type of the subject token. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
+            organization_id: The ID of the organization whose connection the subject token is validated against. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -777,7 +1701,14 @@ class AsyncSSO:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "code": code,
+            k: v
+            for k, v in {
+                "code": code,
+                "subject_token": subject_token,
+                "subject_token_type": subject_token_type,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
         }
         body["grant_type"] = "authorization_code"
         if self._client.client_id is not None:

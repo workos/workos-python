@@ -37,6 +37,7 @@ from .create_user_api_key import CreateUserApiKey as CreateUserApiKey
 from .create_user_invite_options import (
     CreateUserInviteOptions as CreateUserInviteOptions,
 )
+from .create_waitlist_entry import CreateWaitlistEntry as CreateWaitlistEntry
 from .device_authorization_response import (
     DeviceAuthorizationResponse as DeviceAuthorizationResponse,
 )
@@ -49,6 +50,9 @@ from .email_change_confirmation import (
 )
 from .email_change_confirmation_user import (
     EmailChangeConfirmationUser as EmailChangeConfirmationUser,
+)
+from .email_completion_session_authenticate_request import (
+    EmailCompletionSessionAuthenticateRequest as EmailCompletionSessionAuthenticateRequest,
 )
 from .email_verification import EmailVerification as EmailVerification
 from .email_verification_code_session_authenticate_request import (
@@ -119,5 +123,10 @@ from .user_management_authentication_provider import (
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
 )
+from .user_management_waitlists_state import (
+    UserManagementWaitlistsState as UserManagementWaitlistsState,
+)
 from .verify_email_address import VerifyEmailAddress as VerifyEmailAddress
 from .verify_email_response import VerifyEmailResponse as VerifyEmailResponse
+from .waitlist import Waitlist as Waitlist
+from .waitlist_entry import WaitlistEntry as WaitlistEntry

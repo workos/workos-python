@@ -21,6 +21,7 @@
     "src/workos/agents/models/agent_blueprints_create_request_invocable_by.py",
     "src/workos/agents/models/agent_blueprints_create_request_session_setting.py",
     "src/workos/agents/models/agent_blueprints_token_mint_token_request.py",
+    "src/workos/agents/models/agent_blueprints_token_validate_token_request.py",
     "src/workos/agents/models/agent_blueprints_update_request.py",
     "src/workos/agents/models/agent_blueprints_update_request_invocable_by.py",
     "src/workos/agents/models/agent_blueprints_update_request_session_setting.py",
@@ -32,6 +33,7 @@
     "src/workos/agents/models/agent_registration_claim.py",
     "src/workos/agents/models/agent_registration_claim_claim_completion.py",
     "src/workos/agents/models/agent_token.py",
+    "src/workos/agents/models/agent_token_validation.py",
     "src/workos/agents/models/claim_view_response.py",
     "src/workos/agents/models/claim_view_response_organization.py",
     "src/workos/api_keys/__init__.py",
@@ -892,6 +894,7 @@
     "tests/fixtures/agent_blueprints_create_request_invocable_by.json",
     "tests/fixtures/agent_blueprints_create_request_session_setting.json",
     "tests/fixtures/agent_blueprints_token_mint_token_request.json",
+    "tests/fixtures/agent_blueprints_token_validate_token_request.json",
     "tests/fixtures/agent_blueprints_update_request.json",
     "tests/fixtures/agent_blueprints_update_request_invocable_by.json",
     "tests/fixtures/agent_blueprints_update_request_session_setting.json",
@@ -932,6 +935,7 @@
     "tests/fixtures/agent_registration_revoked.json",
     "tests/fixtures/agent_registration_revoked_data.json",
     "tests/fixtures/agent_token.json",
+    "tests/fixtures/agent_token_validation.json",
     "tests/fixtures/api_key.json",
     "tests/fixtures/api_key_created.json",
     "tests/fixtures/api_key_created_data.json",
@@ -2542,6 +2546,10 @@
     "POST /user_management/waitlists/{id}/entries": {
       "sdkMethod": "create_waitlist_entry",
       "service": "user_management"
+    },
+    "POST /agents/blueprints/{agent_blueprint_id}/tokens/validate": {
+      "sdkMethod": "validate_blueprint_token",
+      "service": "agents"
     }
   }
 }

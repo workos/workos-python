@@ -16,10 +16,21 @@ from workos._errors import (
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import PaginationOrder
+from workos.sso._resource import (
+    CreateProtocolOptionsSAML,
+    PatchProtocolOptionsSAML,
+)
 from workos.sso.models import (
     Connection,
     ConnectionsConnectionType,
+    CreateConnectionSAMLOptions,
+    PatchConnectionSAMLOptions,
     Profile,
+    SAMLIdpSigningCertificate,
+    SAMLIdpSigningCertificateList,
+    SAMLSpEncryptionCertificate,
+    SAMLSpEncryptionCertificateList,
+    SAMLSpSigningCertificate,
     SSOLogoutAuthorizeResponse,
     SSOTokenResponse,
 )
@@ -63,6 +74,153 @@ class TestSSO:
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["search"] == "value search/test"
 
+    def test_create_connection(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connection.json"),
+        )
+        result = workos.sso.create_connection(
+            organization_id="test_organization_id",
+            protocol_options=CreateProtocolOptionsSAML(
+                saml_options=CreateConnectionSAMLOptions.from_dict(
+                    load_fixture("create_connection_saml_options.json")
+                )
+            ),
+        )
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/connections")
+        body = json.loads(request.content)
+        assert body["organization_id"] == "test_organization_id"
+
+    def test_list_connection_saml_idp_signing_certs(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_idp_signing_certificate_list.json"),
+        )
+        result = workos.sso.list_connection_saml_idp_signing_certs("test_connectionId")
+        assert isinstance(result, SAMLIdpSigningCertificateList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs"
+        )
+
+    def test_create_connection_saml_idp_signing_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_idp_signing_certificate.json"),
+        )
+        result = workos.sso.create_connection_saml_idp_signing_cert(
+            "test_connectionId", value="test_value"
+        )
+        assert isinstance(result, SAMLIdpSigningCertificate)
+        assert result.object == "saml_idp_signing_certificate"
+        assert result.id == "saml_x509_cert_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs"
+        )
+        body = json.loads(request.content)
+        assert body["value"] == "test_value"
+
+    def test_delete_connection_saml_idp_signing_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.sso.delete_connection_saml_idp_signing_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs/test_certificateId"
+        )
+
+    def test_list_connection_saml_sp_encryption_certs(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_encryption_certificate_list.json"),
+        )
+        result = workos.sso.list_connection_saml_sp_encryption_certs(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpEncryptionCertificateList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs"
+        )
+
+    def test_create_connection_saml_sp_encryption_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_encryption_certificate.json"),
+        )
+        result = workos.sso.create_connection_saml_sp_encryption_cert(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpEncryptionCertificate)
+        assert result.object == "saml_sp_encryption_certificate"
+        assert result.id == "saml_enc_key_pair_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs"
+        )
+
+    def test_delete_connection_saml_sp_encryption_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.sso.delete_connection_saml_sp_encryption_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs/test_certificateId"
+        )
+
+    def test_list_connection_saml_sp_signing_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_signing_certificate.json"),
+        )
+        result = workos.sso.list_connection_saml_sp_signing_cert("test_connectionId")
+        assert isinstance(result, SAMLSpSigningCertificate)
+        assert result.object == "saml_sp_signing_certificate"
+        assert result.id == "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert"
+        )
+
+    def test_create_connection_saml_sp_signing_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_signing_certificate.json"),
+        )
+        result = workos.sso.create_connection_saml_sp_signing_cert("test_connectionId")
+        assert isinstance(result, SAMLSpSigningCertificate)
+        assert result.object == "saml_sp_signing_certificate"
+        assert result.id == "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert"
+        )
+
+    def test_delete_connection_saml_sp_signing_cert(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.sso.delete_connection_saml_sp_signing_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert/test_certificateId"
+        )
+
     def test_get_connection(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("connection.json"),
@@ -73,6 +231,25 @@ class TestSSO:
         assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
         request = httpx_mock.get_request()
         assert request.method == "GET"
+        assert request.url.path.endswith("/connections/test_id")
+
+    def test_update_connection(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connection.json"),
+        )
+        result = workos.sso.update_connection(
+            "test_id",
+            protocol_options=PatchProtocolOptionsSAML(
+                saml_options=PatchConnectionSAMLOptions.from_dict(
+                    load_fixture("patch_connection_saml_options.json")
+                )
+            ),
+        )
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
         assert request.url.path.endswith("/connections/test_id")
 
     def test_delete_connection(self, workos, httpx_mock):
@@ -129,15 +306,13 @@ class TestSSO:
         httpx_mock.add_response(
             json=load_fixture("sso_token_response.json"),
         )
-        result = workos.sso.get_profile_and_token(code="test_code")
+        result = workos.sso.get_profile_and_token()
         assert isinstance(result, SSOTokenResponse)
         assert result.token_type == "Bearer"
         assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby..."
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/sso/token")
-        body = json.loads(request.content)
-        assert body["code"] == "test_code"
 
     def test_list_connections_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -257,6 +432,173 @@ class TestAsyncSSO:
         assert request.url.params["search"] == "value search/test"
 
     @pytest.mark.asyncio
+    async def test_create_connection(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connection.json"))
+        result = await async_workos.sso.create_connection(
+            organization_id="test_organization_id",
+            protocol_options=CreateProtocolOptionsSAML(
+                saml_options=CreateConnectionSAMLOptions.from_dict(
+                    load_fixture("create_connection_saml_options.json")
+                )
+            ),
+        )
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/connections")
+
+    @pytest.mark.asyncio
+    async def test_list_connection_saml_idp_signing_certs(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("saml_idp_signing_certificate_list.json")
+        )
+        result = await async_workos.sso.list_connection_saml_idp_signing_certs(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLIdpSigningCertificateList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_connection_saml_idp_signing_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("saml_idp_signing_certificate.json"))
+        result = await async_workos.sso.create_connection_saml_idp_signing_cert(
+            "test_connectionId", value="test_value"
+        )
+        assert isinstance(result, SAMLIdpSigningCertificate)
+        assert result.object == "saml_idp_signing_certificate"
+        assert result.id == "saml_x509_cert_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_connection_saml_idp_signing_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.sso.delete_connection_saml_idp_signing_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_idp_signing_certs/test_certificateId"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_connection_saml_sp_encryption_certs(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_encryption_certificate_list.json")
+        )
+        result = await async_workos.sso.list_connection_saml_sp_encryption_certs(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpEncryptionCertificateList)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_connection_saml_sp_encryption_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("saml_sp_encryption_certificate.json")
+        )
+        result = await async_workos.sso.create_connection_saml_sp_encryption_cert(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpEncryptionCertificate)
+        assert result.object == "saml_sp_encryption_certificate"
+        assert result.id == "saml_enc_key_pair_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_connection_saml_sp_encryption_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.sso.delete_connection_saml_sp_encryption_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_encryption_certs/test_certificateId"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_connection_saml_sp_signing_cert(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("saml_sp_signing_certificate.json"))
+        result = await async_workos.sso.list_connection_saml_sp_signing_cert(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpSigningCertificate)
+        assert result.object == "saml_sp_signing_certificate"
+        assert result.id == "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_connection_saml_sp_signing_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("saml_sp_signing_certificate.json"))
+        result = await async_workos.sso.create_connection_saml_sp_signing_cert(
+            "test_connectionId"
+        )
+        assert isinstance(result, SAMLSpSigningCertificate)
+        assert result.object == "saml_sp_signing_certificate"
+        assert result.id == "saml_party_trust_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_connection_saml_sp_signing_cert(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.sso.delete_connection_saml_sp_signing_cert(
+            "test_connectionId", "test_certificateId"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/connections/test_connectionId/saml_sp_signing_cert/test_certificateId"
+        )
+
+    @pytest.mark.asyncio
     async def test_get_connection(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connection.json"))
         result = await async_workos.sso.get_connection("test_id")
@@ -265,6 +607,24 @@ class TestAsyncSSO:
         assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
         request = httpx_mock.get_request()
         assert request.method == "GET"
+        assert request.url.path.endswith("/connections/test_id")
+
+    @pytest.mark.asyncio
+    async def test_update_connection(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connection.json"))
+        result = await async_workos.sso.update_connection(
+            "test_id",
+            protocol_options=PatchProtocolOptionsSAML(
+                saml_options=PatchConnectionSAMLOptions.from_dict(
+                    load_fixture("patch_connection_saml_options.json")
+                )
+            ),
+        )
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
         assert request.url.path.endswith("/connections/test_id")
 
     @pytest.mark.asyncio
@@ -319,7 +679,7 @@ class TestAsyncSSO:
     @pytest.mark.asyncio
     async def test_get_profile_and_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = await async_workos.sso.get_profile_and_token(code="test_code")
+        result = await async_workos.sso.get_profile_and_token()
         assert isinstance(result, SSOTokenResponse)
         assert result.token_type == "Bearer"
         assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby..."

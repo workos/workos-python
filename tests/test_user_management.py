@@ -45,7 +45,10 @@ from workos.user_management.models import (
     UserCreateResponse,
     UserIdentitiesGetItem,
     UserInvite,
+    UserManagementWaitlistsState,
     VerifyEmailResponse,
+    Waitlist,
+    WaitlistEntry,
 )
 
 
@@ -280,7 +283,7 @@ class TestUserManagement:
             json=load_fixture("user_create_response.json"),
         )
         result = workos.user_management.create_user(
-            email="test_email", password=PasswordPlaintext(password="test_value")
+            email="test_email", password=PasswordPlaintext(password="test_password")
         )
         assert isinstance(result, UserCreateResponse)
         assert result.object == "user"
@@ -322,7 +325,7 @@ class TestUserManagement:
             json=load_fixture("user.json"),
         )
         result = workos.user_management.update_user(
-            "test_id", password=PasswordPlaintext(password="test_value")
+            "test_id", password=PasswordPlaintext(password="test_password")
         )
         assert isinstance(result, User)
         assert result.object == "user"
@@ -694,6 +697,119 @@ class TestUserManagement:
         assert request.url.path.endswith(
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
+
+    def test_delete_waitlist_entry(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.user_management.delete_waitlist_entry("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/waitlist_entries/test_id")
+
+    def test_create_waitlist_entry_approve(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("waitlist_entry.json"),
+        )
+        result = workos.user_management.create_waitlist_entry_approve("test_id")
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/waitlist_entries/test_id/approve"
+        )
+
+    def test_create_waitlist_entry_deny(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("waitlist_entry.json"),
+        )
+        result = workos.user_management.create_waitlist_entry_deny("test_id")
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/waitlist_entries/test_id/deny"
+        )
+
+    def test_list_waitlists(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_waitlist.json"),
+        )
+        page = workos.user_management.list_waitlists()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Waitlist)
+
+    def test_list_waitlists_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_waitlists()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_get_waitlist(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("waitlist.json"),
+        )
+        result = workos.user_management.get_waitlist("test_id")
+        assert isinstance(result, Waitlist)
+        assert result.object == "waitlist"
+        assert result.id == "waitlist_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/waitlists/test_id")
+
+    def test_list_waitlist_entries(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_waitlist_entry.json"),
+        )
+        page = workos.user_management.list_waitlist_entries("test_id")
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], WaitlistEntry)
+
+    def test_list_waitlist_entries_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_waitlist_entries("test_id")
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_waitlist_entries_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.user_management.list_waitlist_entries(
+            "test_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            state=UserManagementWaitlistsState("pending"),
+            email="value email/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["state"] == "pending"
+        assert request.url.params["email"] == "value email/test"
+
+    def test_create_waitlist_entry(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("waitlist_entry.json"),
+        )
+        result = workos.user_management.create_waitlist_entry(
+            "test_id", email="test_email"
+        )
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/waitlists/test_id/entries")
+        body = json.loads(request.content)
+        assert body["email"] == "test_email"
 
     def test_list_user_api_keys(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -1162,7 +1278,7 @@ class TestAsyncUserManagement:
     async def test_create_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_create_response.json"))
         result = await async_workos.user_management.create_user(
-            email="test_email", password=PasswordPlaintext(password="test_value")
+            email="test_email", password=PasswordPlaintext(password="test_password")
         )
         assert isinstance(result, UserCreateResponse)
         assert result.object == "user"
@@ -1201,7 +1317,7 @@ class TestAsyncUserManagement:
     async def test_update_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
         result = await async_workos.user_management.update_user(
-            "test_id", password=PasswordPlaintext(password="test_value")
+            "test_id", password=PasswordPlaintext(password="test_password")
         )
         assert isinstance(result, User)
         assert result.object == "user"
@@ -1576,6 +1692,121 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith(
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
+
+    @pytest.mark.asyncio
+    async def test_delete_waitlist_entry(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.user_management.delete_waitlist_entry("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/waitlist_entries/test_id")
+
+    @pytest.mark.asyncio
+    async def test_create_waitlist_entry_approve(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("waitlist_entry.json"))
+        result = await async_workos.user_management.create_waitlist_entry_approve(
+            "test_id"
+        )
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/waitlist_entries/test_id/approve"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_waitlist_entry_deny(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("waitlist_entry.json"))
+        result = await async_workos.user_management.create_waitlist_entry_deny(
+            "test_id"
+        )
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/user_management/waitlist_entries/test_id/deny"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_waitlists(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_waitlist.json"))
+        page = await async_workos.user_management.list_waitlists()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Waitlist)
+
+    @pytest.mark.asyncio
+    async def test_list_waitlists_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_waitlists()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_get_waitlist(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("waitlist.json"))
+        result = await async_workos.user_management.get_waitlist("test_id")
+        assert isinstance(result, Waitlist)
+        assert result.object == "waitlist"
+        assert result.id == "waitlist_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/waitlists/test_id")
+
+    @pytest.mark.asyncio
+    async def test_list_waitlist_entries(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_waitlist_entry.json"))
+        page = await async_workos.user_management.list_waitlist_entries("test_id")
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], WaitlistEntry)
+
+    @pytest.mark.asyncio
+    async def test_list_waitlist_entries_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_waitlist_entries("test_id")
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_waitlist_entries_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.user_management.list_waitlist_entries(
+            "test_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            state=UserManagementWaitlistsState("pending"),
+            email="value email/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["state"] == "pending"
+        assert request.url.params["email"] == "value email/test"
+
+    @pytest.mark.asyncio
+    async def test_create_waitlist_entry(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("waitlist_entry.json"))
+        result = await async_workos.user_management.create_waitlist_entry(
+            "test_id", email="test_email"
+        )
+        assert isinstance(result, WaitlistEntry)
+        assert result.id == "wl_user_01E4ZCR3C56J083X43JQXF3JK5"
+        assert result.email == "marcelina.davis@example.com"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/waitlists/test_id/entries")
 
     @pytest.mark.asyncio
     async def test_list_user_api_keys(self, async_workos, httpx_mock):

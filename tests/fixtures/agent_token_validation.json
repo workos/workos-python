@@ -1,0 +1,12 @@
+{
+  "valid": true,
+  "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "agent_instance_session_id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "permissions": [
+    "crm:read"
+  ],
+  "intent": "renew-contract-123",
+  "acting_user_id": "userland_user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "session_expires_at": "2024-01-01T00:00:00.000Z"
+}

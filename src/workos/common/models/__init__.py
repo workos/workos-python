@@ -51,10 +51,12 @@ from .agent_instance_created import AgentInstanceCreated as AgentInstanceCreated
 from .agent_instance_created_data import (
     AgentInstanceCreatedData as AgentInstanceCreatedData,
 )
+from .agent_instance_created_data_type import *
 from .agent_instance_deleted import AgentInstanceDeleted as AgentInstanceDeleted
 from .agent_instance_deleted_data import (
     AgentInstanceDeletedData as AgentInstanceDeletedData,
 )
+from .agent_instance_deleted_data_type import *
 from .agent_instance_session_created import (
     AgentInstanceSessionCreated as AgentInstanceSessionCreated,
 )
@@ -822,20 +824,24 @@ from .resource_export_completed import (
 from .resource_export_completed_data import (
     ResourceExportCompletedData as ResourceExportCompletedData,
 )
+from .resource_export_completed_data_resource_type import *
 from .resource_export_created import ResourceExportCreated as ResourceExportCreated
 from .resource_export_created_data import (
     ResourceExportCreatedData as ResourceExportCreatedData,
 )
+from .resource_export_created_data_resource_type import *
 from .resource_export_downloaded import (
     ResourceExportDownloaded as ResourceExportDownloaded,
 )
 from .resource_export_downloaded_data import (
     ResourceExportDownloadedData as ResourceExportDownloadedData,
 )
+from .resource_export_downloaded_data_resource_type import *
 from .resource_export_failed import ResourceExportFailed as ResourceExportFailed
 from .resource_export_failed_data import (
     ResourceExportFailedData as ResourceExportFailedData,
 )
+from .resource_export_failed_data_resource_type import *
 from .role_created import RoleCreated as RoleCreated
 from .role_created_data import RoleCreatedData as RoleCreatedData
 from .role_deleted import RoleDeleted as RoleDeleted

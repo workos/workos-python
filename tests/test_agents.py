@@ -18,12 +18,12 @@ from workos._pagination import AsyncPage, SyncPage
 from workos.agents.models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
     AgentBlueprint,
-    AgentBlueprintsCreateRequestSessionSetting,
     AgentCredentialValidation,
     AgentInstance,
     AgentInstanceSession,
     AgentRegistration,
     AgentToken,
+    AgentTokenValidation,
     ClaimViewResponse,
 )
 from workos.common.models import (
@@ -67,12 +67,7 @@ class TestAgents:
         httpx_mock.add_response(
             json=load_fixture("agent_blueprint.json"),
         )
-        result = workos.agents.create_blueprint(
-            name="test_name",
-            session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
-                load_fixture("agent_blueprints_create_request_session_setting.json")
-            ),
-        )
+        result = workos.agents.create_blueprint(name="test_name")
         assert isinstance(result, AgentBlueprint)
         assert result.object == "agent_blueprint"
         assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -81,7 +76,6 @@ class TestAgents:
         assert request.url.path.endswith("/agents/blueprints")
         body = json.loads(request.content)
         assert body["name"] == "test_name"
-        assert "session_settings" in body
 
     def test_get_blueprint(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -135,6 +129,24 @@ class TestAgents:
         assert body["type"] == AgentBlueprintsTokenMintTokenRequestType(
             "user_delegated"
         )
+
+    def test_validate_blueprint_token(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_token_validation.json"),
+        )
+        result = workos.agents.validate_blueprint_token(
+            "test_agent_blueprint_id", agent_access_token="test_agent_access_token"
+        )
+        assert isinstance(result, AgentTokenValidation)
+        assert result.valid is True
+        assert result.agent_instance_id == "agent_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/blueprints/test_agent_blueprint_id/tokens/validate"
+        )
+        body = json.loads(request.content)
+        assert body["agent_access_token"] == "test_agent_access_token"
 
     def test_update_attempts(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -418,12 +430,7 @@ class TestAsyncAgents:
     @pytest.mark.asyncio
     async def test_create_blueprint(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("agent_blueprint.json"))
-        result = await async_workos.agents.create_blueprint(
-            name="test_name",
-            session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
-                load_fixture("agent_blueprints_create_request_session_setting.json")
-            ),
-        )
+        result = await async_workos.agents.create_blueprint(name="test_name")
         assert isinstance(result, AgentBlueprint)
         assert result.object == "agent_blueprint"
         assert result.id == "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -476,6 +483,21 @@ class TestAsyncAgents:
         assert request.method == "POST"
         assert request.url.path.endswith(
             "/agents/blueprints/test_agent_blueprint_id/tokens"
+        )
+
+    @pytest.mark.asyncio
+    async def test_validate_blueprint_token(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_token_validation.json"))
+        result = await async_workos.agents.validate_blueprint_token(
+            "test_agent_blueprint_id", agent_access_token="test_agent_access_token"
+        )
+        assert isinstance(result, AgentTokenValidation)
+        assert result.valid is True
+        assert result.agent_instance_id == "agent_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/agents/blueprints/test_agent_blueprint_id/tokens/validate"
         )
 
     @pytest.mark.asyncio

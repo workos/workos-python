@@ -29,6 +29,7 @@ from .models import (
     AgentInstanceSession,
     AgentRegistration,
     AgentToken,
+    AgentTokenValidation,
     ClaimViewResponse,
 )
 
@@ -89,10 +90,10 @@ class Agents:
         self,
         *,
         name: str,
-        session_settings: AgentBlueprintsCreateRequestSessionSetting,
         description: str | None = None,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
         """Create an agent blueprint
@@ -127,7 +128,9 @@ class Agents:
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
                 else None,
-                "session_settings": session_settings.to_dict(),
+                "session_settings": session_settings.to_dict()
+                if session_settings is not None
+                else None,
             }.items()
             if v is not None
         }
@@ -309,6 +312,49 @@ class Agents:
             path=("agents", "blueprints", str(agent_blueprint_id), "tokens"),
             body=body,
             model=AgentToken,
+            request_options=request_options,
+        )
+
+    def validate_blueprint_token(
+        self,
+        agent_blueprint_id: str,
+        *,
+        agent_access_token: str,
+        request_options: RequestOptions | None = None,
+    ) -> AgentTokenValidation:
+        """Validate an agent token
+
+        Validates an agent access token: verifies its signature against the environment, that it was minted under this blueprint, and that the backing session is live (not revoked or expired, and — for delegated sessions — that the delegating user session has not ended). Returns the token claims and session metadata when valid; invalid tokens are reported as errors with stable codes.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            agent_access_token: The agent access token (a JWT) to validate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentTokenValidation
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "agent_access_token": agent_access_token,
+        }
+        return self._client.request(
+            method="post",
+            path=(
+                "agents",
+                "blueprints",
+                str(agent_blueprint_id),
+                "tokens",
+                "validate",
+            ),
+            body=body,
+            model=AgentTokenValidation,
             request_options=request_options,
         )
 
@@ -713,10 +759,10 @@ class AsyncAgents:
         self,
         *,
         name: str,
-        session_settings: AgentBlueprintsCreateRequestSessionSetting,
         description: str | None = None,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
         """Create an agent blueprint
@@ -751,7 +797,9 @@ class AsyncAgents:
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
                 else None,
-                "session_settings": session_settings.to_dict(),
+                "session_settings": session_settings.to_dict()
+                if session_settings is not None
+                else None,
             }.items()
             if v is not None
         }
@@ -933,6 +981,49 @@ class AsyncAgents:
             path=("agents", "blueprints", str(agent_blueprint_id), "tokens"),
             body=body,
             model=AgentToken,
+            request_options=request_options,
+        )
+
+    async def validate_blueprint_token(
+        self,
+        agent_blueprint_id: str,
+        *,
+        agent_access_token: str,
+        request_options: RequestOptions | None = None,
+    ) -> AgentTokenValidation:
+        """Validate an agent token
+
+        Validates an agent access token: verifies its signature against the environment, that it was minted under this blueprint, and that the backing session is live (not revoked or expired, and — for delegated sessions — that the delegating user session has not ended). Returns the token claims and session metadata when valid; invalid tokens are reported as errors with stable codes.
+
+        Args:
+            agent_blueprint_id: The unique ID of the agent blueprint.
+            agent_access_token: The agent access token (a JWT) to validate.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentTokenValidation
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "agent_access_token": agent_access_token,
+        }
+        return await self._client.request(
+            method="post",
+            path=(
+                "agents",
+                "blueprints",
+                str(agent_blueprint_id),
+                "tokens",
+                "validate",
+            ),
+            body=body,
+            model=AgentTokenValidation,
             request_options=request_options,
         )
 

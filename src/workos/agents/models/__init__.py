@@ -30,6 +30,9 @@ from .agent_blueprints_create_request_session_setting import (
 from .agent_blueprints_token_mint_token_request import (
     AgentBlueprintsTokenMintTokenRequest as AgentBlueprintsTokenMintTokenRequest,
 )
+from .agent_blueprints_token_validate_token_request import (
+    AgentBlueprintsTokenValidateTokenRequest as AgentBlueprintsTokenValidateTokenRequest,
+)
 from .agent_blueprints_update_request import (
     AgentBlueprintsUpdateRequest as AgentBlueprintsUpdateRequest,
 )
@@ -53,6 +56,7 @@ from .agent_registration_claim_claim_completion import (
     AgentRegistrationClaimClaimCompletion as AgentRegistrationClaimClaimCompletion,
 )
 from .agent_token import AgentToken as AgentToken
+from .agent_token_validation import AgentTokenValidation as AgentTokenValidation
 from .claim_view_response import ClaimViewResponse as ClaimViewResponse
 from .claim_view_response_organization import (
     ClaimViewResponseOrganization as ClaimViewResponseOrganization,

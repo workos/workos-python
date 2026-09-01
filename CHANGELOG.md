@@ -1,5 +1,26 @@
 # Changelog
 
+## [10.3.0](https://github.com/workos/workos-python/compare/v10.2.0...v10.3.0) (2026-09-01)
+
+
+### Features
+
+* **agents:** Add blueprint, instance, and session endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **api_keys:** Alias ValidateApiKey to deduplicated model ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **audit_logs:** Replace retention_period_in_days param with retention union supporting retention periods ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **generated:** Agents (batch 13ebc8c1) ([#722](https://github.com/workos/workos-python/issues/722)) ([9d30466](https://github.com/workos/workos-python/commit/9d30466444f03492295b01237622e52024663bc9))
+* **organizations:** Add IT contacts endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **platform_teams:** Add Platform Teams service ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **sso:** Add connection management and SAML certificate endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **sso:** Make code optional on get_profile_and_token and add PKCE variant ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **user_management:** Add email-completion grant and waitlist endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+* **webhooks:** Add agent instance and blueprint webhook event types ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+
+
+### Bug Fixes
+
+* **sso:** Remove DiscordOAuth, GrokOAuth, and XOAuth from connection type enums ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+
 ## [10.2.0](https://github.com/workos/workos-python/compare/v10.1.1...v10.2.0) (2026-08-11)
 
 * [#710](https://github.com/workos/workos-python/pull/710) feat(generated)!: regenerate from spec (3 changes)

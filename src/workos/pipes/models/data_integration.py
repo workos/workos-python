@@ -39,11 +39,11 @@ class DataIntegration:
     scopes: list[str] | None
     """The OAuth scopes configured for the Data Integration. `null` when the provider's configured scopes are used."""
     redirect_uri: str
-    """The OAuth redirect URI to register with the provider when configuring the custom application."""
+    """The OAuth redirect URI to register with the provider when configuring the custom application. Empty for `api_key` and `client_credentials` integrations, which run no authorization redirect."""
     auth_methods: list[DataIntegrationAuthMethods]
     """How accounts authenticate with the provider for this Data Integration."""
     credentials: DataIntegrationCredential | None
-    """The integration-level OAuth app credentials. `null` for `api_key` integrations, which hold no OAuth credentials (keys are installed per-tenant)."""
+    """The integration-level OAuth app credentials. `null` for `api_key` and `client_credentials` integrations, which hold no integration-level credentials (secrets are installed per-tenant)."""
     installation: DataIntegrationInstallation | None
     """The tenant installation created when an API key was supplied at creation time; `null` otherwise. Not populated on list/get responses."""
     config: dict[str, str]

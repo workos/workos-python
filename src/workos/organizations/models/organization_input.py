@@ -19,7 +19,9 @@ class OrganizationInput:
     allow_profiles_outside_organization: bool | None = None
     """Whether the organization allows profiles from outside the organization to sign in."""
     domains: list[str] | None = None
-    """The domains associated with the organization. Deprecated in favor of `domain_data`."""
+    """The domains associated with the organization. Deprecated in favor of `domain_data`.
+
+    .. deprecated:: This field is deprecated."""
     domain_data: list[OrganizationDomainData] | None = None
     """The domains associated with the organization, including verification state."""
     metadata: dict[str, str] | None = None

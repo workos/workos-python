@@ -14,11 +14,24 @@
     "src/workos/agents/models/agent_admin_link_claim_attempt_to_external_user_request.py",
     "src/workos/agents/models/agent_admin_link_claim_attempt_to_external_user_request_user.py",
     "src/workos/agents/models/agent_admin_validate_credential_request.py",
+    "src/workos/agents/models/agent_blueprint.py",
+    "src/workos/agents/models/agent_blueprint_invocable_by.py",
+    "src/workos/agents/models/agent_blueprint_session_setting.py",
+    "src/workos/agents/models/agent_blueprints_create_request.py",
+    "src/workos/agents/models/agent_blueprints_create_request_invocable_by.py",
+    "src/workos/agents/models/agent_blueprints_create_request_session_setting.py",
+    "src/workos/agents/models/agent_blueprints_token_mint_token_request.py",
+    "src/workos/agents/models/agent_blueprints_update_request.py",
+    "src/workos/agents/models/agent_blueprints_update_request_invocable_by.py",
+    "src/workos/agents/models/agent_blueprints_update_request_session_setting.py",
     "src/workos/agents/models/agent_credential_validation.py",
+    "src/workos/agents/models/agent_instance.py",
+    "src/workos/agents/models/agent_instance_session.py",
     "src/workos/agents/models/agent_registration.py",
     "src/workos/agents/models/agent_registration_agent_identity.py",
     "src/workos/agents/models/agent_registration_claim.py",
     "src/workos/agents/models/agent_registration_claim_claim_completion.py",
+    "src/workos/agents/models/agent_token.py",
     "src/workos/agents/models/claim_view_response.py",
     "src/workos/agents/models/claim_view_response_organization.py",
     "src/workos/api_keys/__init__.py",
@@ -98,6 +111,29 @@
     "src/workos/common/models/actor.py",
     "src/workos/common/models/add_role_permission.py",
     "src/workos/common/models/agent_admin_validate_credential_request_type.py",
+    "src/workos/common/models/agent_blueprint_created.py",
+    "src/workos/common/models/agent_blueprint_created_data.py",
+    "src/workos/common/models/agent_blueprint_created_data_invocable_by.py",
+    "src/workos/common/models/agent_blueprint_created_data_session_setting.py",
+    "src/workos/common/models/agent_blueprint_deleted.py",
+    "src/workos/common/models/agent_blueprint_deleted_data.py",
+    "src/workos/common/models/agent_blueprint_updated.py",
+    "src/workos/common/models/agent_blueprint_updated_data.py",
+    "src/workos/common/models/agent_blueprint_updated_data_invocable_by.py",
+    "src/workos/common/models/agent_blueprint_updated_data_session_setting.py",
+    "src/workos/common/models/agent_blueprints_token_mint_token_request_type.py",
+    "src/workos/common/models/agent_instance_created.py",
+    "src/workos/common/models/agent_instance_created_data.py",
+    "src/workos/common/models/agent_instance_created_data_type.py",
+    "src/workos/common/models/agent_instance_deleted.py",
+    "src/workos/common/models/agent_instance_deleted_data.py",
+    "src/workos/common/models/agent_instance_deleted_data_type.py",
+    "src/workos/common/models/agent_instance_session_created.py",
+    "src/workos/common/models/agent_instance_session_created_data.py",
+    "src/workos/common/models/agent_instance_session_revoked.py",
+    "src/workos/common/models/agent_instance_session_revoked_data.py",
+    "src/workos/common/models/agent_instance_session_status.py",
+    "src/workos/common/models/agent_instance_type.py",
     "src/workos/common/models/agent_registration_claim_attempt_created.py",
     "src/workos/common/models/agent_registration_claim_attempt_created_data.py",
     "src/workos/common/models/agent_registration_claim_completed.py",
@@ -239,6 +275,8 @@
     "src/workos/common/models/connection_state.py",
     "src/workos/common/models/connection_status.py",
     "src/workos/common/models/connection_type.py",
+    "src/workos/common/models/create_connection_oidc_options_id_token_signature_algorithm.py",
+    "src/workos/common/models/create_connection_oidc_options_token_authentication_method.py",
     "src/workos/common/models/create_data_integration_auth_methods.py",
     "src/workos/common/models/create_user_invite_options_locale.py",
     "src/workos/common/models/create_user_password_hash_type.py",
@@ -361,6 +399,7 @@
     "src/workos/common/models/invitation_revoked_data.py",
     "src/workos/common/models/invitation_revoked_data_state.py",
     "src/workos/common/models/invitation_state.py",
+    "src/workos/common/models/invite_it_contact_intents.py",
     "src/workos/common/models/list_metadata.py",
     "src/workos/common/models/magic_auth_created.py",
     "src/workos/common/models/magic_auth_created_data.py",
@@ -426,6 +465,8 @@
     "src/workos/common/models/password_reset_created_data.py",
     "src/workos/common/models/password_reset_succeeded.py",
     "src/workos/common/models/password_reset_succeeded_data.py",
+    "src/workos/common/models/patch_connection_oidc_options_id_token_signature_algorithm.py",
+    "src/workos/common/models/patch_connection_oidc_options_token_authentication_method.py",
     "src/workos/common/models/permission_created.py",
     "src/workos/common/models/permission_created_data.py",
     "src/workos/common/models/permission_deleted.py",
@@ -448,6 +489,18 @@
     "src/workos/common/models/radar_standalone_response_control.py",
     "src/workos/common/models/radar_standalone_response_verdict.py",
     "src/workos/common/models/resend_user_invite_options_locale.py",
+    "src/workos/common/models/resource_export_completed.py",
+    "src/workos/common/models/resource_export_completed_data.py",
+    "src/workos/common/models/resource_export_completed_data_resource_type.py",
+    "src/workos/common/models/resource_export_created.py",
+    "src/workos/common/models/resource_export_created_data.py",
+    "src/workos/common/models/resource_export_created_data_resource_type.py",
+    "src/workos/common/models/resource_export_downloaded.py",
+    "src/workos/common/models/resource_export_downloaded_data.py",
+    "src/workos/common/models/resource_export_downloaded_data_resource_type.py",
+    "src/workos/common/models/resource_export_failed.py",
+    "src/workos/common/models/resource_export_failed_data.py",
+    "src/workos/common/models/resource_export_failed_data_resource_type.py",
     "src/workos/common/models/role_created.py",
     "src/workos/common/models/role_created_data.py",
     "src/workos/common/models/role_deleted.py",
@@ -466,6 +519,9 @@
     "src/workos/common/models/session_revoked_data_impersonator.py",
     "src/workos/common/models/session_revoked_data_status.py",
     "src/workos/common/models/slim_role.py",
+    "src/workos/common/models/team_production_state.py",
+    "src/workos/common/models/token_query_grant_type.py",
+    "src/workos/common/models/update_audit_logs_retention_retention_period.py",
     "src/workos/common/models/update_custom_provider_definition_authenticate_via.py",
     "src/workos/common/models/update_user_password_hash_type.py",
     "src/workos/common/models/update_user_password_salt_position.py",
@@ -523,6 +579,7 @@
     "src/workos/common/models/vault_names_listed.py",
     "src/workos/common/models/vault_names_listed_data.py",
     "src/workos/common/models/vault_names_listed_data_actor_source.py",
+    "src/workos/common/models/waitlist_entry_state.py",
     "src/workos/common/models/waitlist_user.py",
     "src/workos/common/models/waitlist_user_approved.py",
     "src/workos/common/models/waitlist_user_created.py",
@@ -595,6 +652,11 @@
     "src/workos/organizations/models/audit_log_configuration.py",
     "src/workos/organizations/models/audit_log_configuration_log_stream.py",
     "src/workos/organizations/models/audit_logs_retention.py",
+    "src/workos/organizations/models/create_it_contact.py",
+    "src/workos/organizations/models/invite_it_contact.py",
+    "src/workos/organizations/models/it_contact.py",
+    "src/workos/organizations/models/it_contact_list.py",
+    "src/workos/organizations/models/it_contact_list_list_metadata.py",
     "src/workos/organizations/models/organization.py",
     "src/workos/organizations/models/organization_authorized_connect_application_list_data.py",
     "src/workos/organizations/models/organization_domain_data.py",
@@ -635,6 +697,11 @@
     "src/workos/pipes_provider/models/data_integration_configuration_list_response.py",
     "src/workos/pipes_provider/models/data_integration_configuration_response.py",
     "src/workos/pipes_provider/models/data_integration_credentials.py",
+    "src/workos/platform_teams/__init__.py",
+    "src/workos/platform_teams/_resource.py",
+    "src/workos/platform_teams/models/__init__.py",
+    "src/workos/platform_teams/models/create_team.py",
+    "src/workos/platform_teams/models/team.py",
     "src/workos/radar/__init__.py",
     "src/workos/radar/_resource.py",
     "src/workos/radar/models/__init__.py",
@@ -652,8 +719,26 @@
     "src/workos/sso/models/connection.py",
     "src/workos/sso/models/connection_domain.py",
     "src/workos/sso/models/connections_connection_type.py",
+    "src/workos/sso/models/create_connection.py",
+    "src/workos/sso/models/create_connection_attribute_maps.py",
+    "src/workos/sso/models/create_connection_key_pair.py",
+    "src/workos/sso/models/create_connection_oidc_options.py",
+    "src/workos/sso/models/create_connection_saml_options.py",
+    "src/workos/sso/models/create_connection_standard_attributes.py",
+    "src/workos/sso/models/create_saml_idp_signing_certificate.py",
+    "src/workos/sso/models/patch_connection.py",
+    "src/workos/sso/models/patch_connection_attribute_maps.py",
+    "src/workos/sso/models/patch_connection_oidc_options.py",
+    "src/workos/sso/models/patch_connection_saml_options.py",
+    "src/workos/sso/models/patch_connection_standard_attributes.py",
     "src/workos/sso/models/profile.py",
+    "src/workos/sso/models/saml_idp_signing_certificate.py",
+    "src/workos/sso/models/saml_idp_signing_certificate_list.py",
+    "src/workos/sso/models/saml_sp_encryption_certificate.py",
+    "src/workos/sso/models/saml_sp_encryption_certificate_list.py",
+    "src/workos/sso/models/saml_sp_signing_certificate.py",
     "src/workos/sso/models/sso_authorize_url_response.py",
+    "src/workos/sso/models/sso_grant_type.py",
     "src/workos/sso/models/sso_logout_authorize_request.py",
     "src/workos/sso/models/sso_logout_authorize_response.py",
     "src/workos/sso/models/sso_provider.py",
@@ -678,6 +763,7 @@
     "src/workos/types/organizations/__init__.py",
     "src/workos/types/pipes/__init__.py",
     "src/workos/types/pipes_provider/__init__.py",
+    "src/workos/types/platform_teams/__init__.py",
     "src/workos/types/radar/__init__.py",
     "src/workos/types/sso/__init__.py",
     "src/workos/types/user_management/__init__.py",
@@ -701,11 +787,13 @@
     "src/workos/user_management/models/create_user.py",
     "src/workos/user_management/models/create_user_api_key.py",
     "src/workos/user_management/models/create_user_invite_options.py",
+    "src/workos/user_management/models/create_waitlist_entry.py",
     "src/workos/user_management/models/device_authorization_response.py",
     "src/workos/user_management/models/device_code_session_authenticate_request.py",
     "src/workos/user_management/models/email_change.py",
     "src/workos/user_management/models/email_change_confirmation.py",
     "src/workos/user_management/models/email_change_confirmation_user.py",
+    "src/workos/user_management/models/email_completion_session_authenticate_request.py",
     "src/workos/user_management/models/email_verification.py",
     "src/workos/user_management/models/email_verification_code_session_authenticate_request.py",
     "src/workos/user_management/models/invitation.py",
@@ -743,8 +831,11 @@
     "src/workos/user_management/models/user_invite.py",
     "src/workos/user_management/models/user_management_authentication_provider.py",
     "src/workos/user_management/models/user_management_authentication_screen_hint.py",
+    "src/workos/user_management/models/user_management_waitlists_state.py",
     "src/workos/user_management/models/verify_email_address.py",
     "src/workos/user_management/models/verify_email_response.py",
+    "src/workos/user_management/models/waitlist.py",
+    "src/workos/user_management/models/waitlist_entry.py",
     "src/workos/vault/__init__.py",
     "src/workos/vault/_resource.py",
     "src/workos/vault/models/__init__.py",
@@ -784,7 +875,37 @@
     "tests/fixtures/agent_admin_link_claim_attempt_to_external_user_request.json",
     "tests/fixtures/agent_admin_link_claim_attempt_to_external_user_request_user.json",
     "tests/fixtures/agent_admin_validate_credential_request.json",
+    "tests/fixtures/agent_blueprint.json",
+    "tests/fixtures/agent_blueprint_created.json",
+    "tests/fixtures/agent_blueprint_created_data.json",
+    "tests/fixtures/agent_blueprint_created_data_invocable_by.json",
+    "tests/fixtures/agent_blueprint_created_data_session_setting.json",
+    "tests/fixtures/agent_blueprint_deleted.json",
+    "tests/fixtures/agent_blueprint_deleted_data.json",
+    "tests/fixtures/agent_blueprint_invocable_by.json",
+    "tests/fixtures/agent_blueprint_session_setting.json",
+    "tests/fixtures/agent_blueprint_updated.json",
+    "tests/fixtures/agent_blueprint_updated_data.json",
+    "tests/fixtures/agent_blueprint_updated_data_invocable_by.json",
+    "tests/fixtures/agent_blueprint_updated_data_session_setting.json",
+    "tests/fixtures/agent_blueprints_create_request.json",
+    "tests/fixtures/agent_blueprints_create_request_invocable_by.json",
+    "tests/fixtures/agent_blueprints_create_request_session_setting.json",
+    "tests/fixtures/agent_blueprints_token_mint_token_request.json",
+    "tests/fixtures/agent_blueprints_update_request.json",
+    "tests/fixtures/agent_blueprints_update_request_invocable_by.json",
+    "tests/fixtures/agent_blueprints_update_request_session_setting.json",
     "tests/fixtures/agent_credential_validation.json",
+    "tests/fixtures/agent_instance.json",
+    "tests/fixtures/agent_instance_created.json",
+    "tests/fixtures/agent_instance_created_data.json",
+    "tests/fixtures/agent_instance_deleted.json",
+    "tests/fixtures/agent_instance_deleted_data.json",
+    "tests/fixtures/agent_instance_session.json",
+    "tests/fixtures/agent_instance_session_created.json",
+    "tests/fixtures/agent_instance_session_created_data.json",
+    "tests/fixtures/agent_instance_session_revoked.json",
+    "tests/fixtures/agent_instance_session_revoked_data.json",
     "tests/fixtures/agent_registration.json",
     "tests/fixtures/agent_registration_agent_identity.json",
     "tests/fixtures/agent_registration_claim.json",
@@ -810,6 +931,7 @@
     "tests/fixtures/agent_registration_refreshed_data.json",
     "tests/fixtures/agent_registration_revoked.json",
     "tests/fixtures/agent_registration_revoked_data.json",
+    "tests/fixtures/agent_token.json",
     "tests/fixtures/api_key.json",
     "tests/fixtures/api_key_created.json",
     "tests/fixtures/api_key_created_data.json",
@@ -946,6 +1068,12 @@
     "tests/fixtures/cors_origin_response.json",
     "tests/fixtures/create_authorization_permission.json",
     "tests/fixtures/create_authorization_resource.json",
+    "tests/fixtures/create_connection.json",
+    "tests/fixtures/create_connection_attribute_maps.json",
+    "tests/fixtures/create_connection_key_pair.json",
+    "tests/fixtures/create_connection_oidc_options.json",
+    "tests/fixtures/create_connection_saml_options.json",
+    "tests/fixtures/create_connection_standard_attributes.json",
     "tests/fixtures/create_cors_origin.json",
     "tests/fixtures/create_data_integration.json",
     "tests/fixtures/create_data_key_request.json",
@@ -953,6 +1081,7 @@
     "tests/fixtures/create_group.json",
     "tests/fixtures/create_group_membership.json",
     "tests/fixtures/create_group_role_assignment.json",
+    "tests/fixtures/create_it_contact.json",
     "tests/fixtures/create_m2m_application.json",
     "tests/fixtures/create_magic_code_and_return.json",
     "tests/fixtures/create_oauth_application.json",
@@ -964,10 +1093,13 @@
     "tests/fixtures/create_password_reset_token.json",
     "tests/fixtures/create_redirect_uri.json",
     "tests/fixtures/create_role.json",
+    "tests/fixtures/create_saml_idp_signing_certificate.json",
+    "tests/fixtures/create_team.json",
     "tests/fixtures/create_user.json",
     "tests/fixtures/create_user_api_key.json",
     "tests/fixtures/create_user_invite_options.json",
     "tests/fixtures/create_user_organization_membership.json",
+    "tests/fixtures/create_waitlist_entry.json",
     "tests/fixtures/create_webhook_endpoint.json",
     "tests/fixtures/custom_provider_definition.json",
     "tests/fixtures/data_integration.json",
@@ -1030,6 +1162,7 @@
     "tests/fixtures/email_change.json",
     "tests/fixtures/email_change_confirmation.json",
     "tests/fixtures/email_change_confirmation_user.json",
+    "tests/fixtures/email_completion_session_authenticate_request.json",
     "tests/fixtures/email_verification.json",
     "tests/fixtures/email_verification_code_session_authenticate_request.json",
     "tests/fixtures/email_verification_created.json",
@@ -1099,9 +1232,16 @@
     "tests/fixtures/invitation_resent_data.json",
     "tests/fixtures/invitation_revoked.json",
     "tests/fixtures/invitation_revoked_data.json",
+    "tests/fixtures/invite_it_contact.json",
+    "tests/fixtures/it_contact.json",
+    "tests/fixtures/it_contact_list.json",
+    "tests/fixtures/it_contact_list_list_metadata.json",
     "tests/fixtures/jwks_response.json",
     "tests/fixtures/jwks_response_keys.json",
     "tests/fixtures/jwt_template_response.json",
+    "tests/fixtures/list_agent_blueprint.json",
+    "tests/fixtures/list_agent_instance.json",
+    "tests/fixtures/list_agent_instance_session.json",
     "tests/fixtures/list_audit_log_action.json",
     "tests/fixtures/list_audit_log_schema.json",
     "tests/fixtures/list_authentication_factor.json",
@@ -1132,6 +1272,8 @@
     "tests/fixtures/list_user_organization_membership_base_list_data.json",
     "tests/fixtures/list_user_role_assignment.json",
     "tests/fixtures/list_user_sessions_list_item.json",
+    "tests/fixtures/list_waitlist.json",
+    "tests/fixtures/list_waitlist_entry.json",
     "tests/fixtures/list_webhook_endpoint.json",
     "tests/fixtures/magic_auth.json",
     "tests/fixtures/magic_auth_code_session_authenticate_request.json",
@@ -1193,6 +1335,11 @@
     "tests/fixtures/password_reset_succeeded.json",
     "tests/fixtures/password_reset_succeeded_data.json",
     "tests/fixtures/password_session_authenticate_request.json",
+    "tests/fixtures/patch_connection.json",
+    "tests/fixtures/patch_connection_attribute_maps.json",
+    "tests/fixtures/patch_connection_oidc_options.json",
+    "tests/fixtures/patch_connection_saml_options.json",
+    "tests/fixtures/patch_connection_standard_attributes.json",
     "tests/fixtures/permission.json",
     "tests/fixtures/permission_created.json",
     "tests/fixtures/permission_created_data.json",
@@ -1228,6 +1375,14 @@
     "tests/fixtures/replace_group_role_assignments.json",
     "tests/fixtures/resend_user_invite_options.json",
     "tests/fixtures/reset_password_response.json",
+    "tests/fixtures/resource_export_completed.json",
+    "tests/fixtures/resource_export_completed_data.json",
+    "tests/fixtures/resource_export_created.json",
+    "tests/fixtures/resource_export_created_data.json",
+    "tests/fixtures/resource_export_downloaded.json",
+    "tests/fixtures/resource_export_downloaded_data.json",
+    "tests/fixtures/resource_export_failed.json",
+    "tests/fixtures/resource_export_failed_data.json",
     "tests/fixtures/revoke_session.json",
     "tests/fixtures/role.json",
     "tests/fixtures/role_created.json",
@@ -1237,6 +1392,11 @@
     "tests/fixtures/role_list.json",
     "tests/fixtures/role_updated.json",
     "tests/fixtures/role_updated_data.json",
+    "tests/fixtures/saml_idp_signing_certificate.json",
+    "tests/fixtures/saml_idp_signing_certificate_list.json",
+    "tests/fixtures/saml_sp_encryption_certificate.json",
+    "tests/fixtures/saml_sp_encryption_certificate_list.json",
+    "tests/fixtures/saml_sp_signing_certificate.json",
     "tests/fixtures/send_email_change.json",
     "tests/fixtures/send_radar_sms_challenge.json",
     "tests/fixtures/send_radar_sms_challenge_response.json",
@@ -1255,6 +1415,7 @@
     "tests/fixtures/sso_logout_authorize_response.json",
     "tests/fixtures/sso_token_response.json",
     "tests/fixtures/sso_token_response_oauth_token.json",
+    "tests/fixtures/team.json",
     "tests/fixtures/token_query.json",
     "tests/fixtures/update_audit_logs_retention.json",
     "tests/fixtures/update_authorization_permission.json",
@@ -1326,6 +1487,8 @@
     "tests/fixtures/verify_email_address.json",
     "tests/fixtures/verify_email_response.json",
     "tests/fixtures/version_list_response.json",
+    "tests/fixtures/waitlist.json",
+    "tests/fixtures/waitlist_entry.json",
     "tests/fixtures/waitlist_user.json",
     "tests/fixtures/waitlist_user_approved.json",
     "tests/fixtures/waitlist_user_created.json",
@@ -1368,6 +1531,8 @@
     "tests/test_pipes_models_round_trip.py",
     "tests/test_pipes_provider.py",
     "tests/test_pipes_provider_models_round_trip.py",
+    "tests/test_platform_teams.py",
+    "tests/test_platform_teams_models_round_trip.py",
     "tests/test_radar.py",
     "tests/test_radar_models_round_trip.py",
     "tests/test_sso.py",
@@ -2229,6 +2394,154 @@
     "PUT /data-integrations/{slug}/client-credentials": {
       "sdkMethod": "update_data_integration_client_credentials",
       "service": "pipes"
+    },
+    "GET /agents/blueprints": {
+      "sdkMethod": "list_blueprints",
+      "service": "agents"
+    },
+    "POST /agents/blueprints": {
+      "sdkMethod": "create_blueprint",
+      "service": "agents"
+    },
+    "GET /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "get_blueprint",
+      "service": "agents"
+    },
+    "PATCH /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "update_blueprint",
+      "service": "agents"
+    },
+    "DELETE /agents/blueprints/{agent_blueprint_id}": {
+      "sdkMethod": "delete_blueprint",
+      "service": "agents"
+    },
+    "POST /agents/blueprints/{agent_blueprint_id}/tokens": {
+      "sdkMethod": "create_blueprint_token",
+      "service": "agents"
+    },
+    "GET /agents/instances": {
+      "sdkMethod": "list_instances",
+      "service": "agents"
+    },
+    "GET /agents/instances/{agent_instance_id}": {
+      "sdkMethod": "get_instance",
+      "service": "agents"
+    },
+    "DELETE /agents/instances/{agent_instance_id}": {
+      "sdkMethod": "delete_instance",
+      "service": "agents"
+    },
+    "GET /agents/sessions": {
+      "sdkMethod": "list_sessions",
+      "service": "agents"
+    },
+    "GET /agents/sessions/{agent_instance_session_id}": {
+      "sdkMethod": "get_session",
+      "service": "agents"
+    },
+    "POST /agents/sessions/{agent_instance_session_id}/revoke": {
+      "sdkMethod": "revoke_session",
+      "service": "agents"
+    },
+    "POST /connections": {
+      "sdkMethod": "create_connection",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_idp_signing_certs": {
+      "sdkMethod": "list_connection_saml_idp_signing_certs",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_idp_signing_certs": {
+      "sdkMethod": "create_connection_saml_idp_signing_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_idp_signing_certs/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_idp_signing_cert",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_sp_encryption_certs": {
+      "sdkMethod": "list_connection_saml_sp_encryption_certs",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_sp_encryption_certs": {
+      "sdkMethod": "create_connection_saml_sp_encryption_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_sp_encryption_certs/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_sp_encryption_cert",
+      "service": "sso"
+    },
+    "GET /connections/{connectionId}/saml_sp_signing_cert": {
+      "sdkMethod": "list_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "POST /connections/{connectionId}/saml_sp_signing_cert": {
+      "sdkMethod": "create_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "DELETE /connections/{connectionId}/saml_sp_signing_cert/{certificateId}": {
+      "sdkMethod": "delete_connection_saml_sp_signing_cert",
+      "service": "sso"
+    },
+    "PATCH /connections/{id}": {
+      "sdkMethod": "update_connection",
+      "service": "sso"
+    },
+    "GET /organizations/{organization_id}/it_contacts": {
+      "sdkMethod": "list_it_contacts",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts": {
+      "sdkMethod": "create_it_contact",
+      "service": "organizations"
+    },
+    "DELETE /organizations/{organization_id}/it_contacts/{contact_id}": {
+      "sdkMethod": "delete_it_contact",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts/{contact_id}/invite": {
+      "sdkMethod": "invite_it_contact",
+      "service": "organizations"
+    },
+    "POST /organizations/{organization_id}/it_contacts/{contact_id}/revoke": {
+      "sdkMethod": "revoke_it_contact",
+      "service": "organizations"
+    },
+    "POST /platform/teams": {
+      "sdkMethod": "create_team",
+      "service": "platform_teams"
+    },
+    "GET /platform/teams/{team_id}": {
+      "sdkMethod": "get_team",
+      "service": "platform_teams"
+    },
+    "DELETE /user_management/waitlist_entries/{id}": {
+      "sdkMethod": "delete_waitlist_entry",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlist_entries/{id}/approve": {
+      "sdkMethod": "create_waitlist_entry_approve",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlist_entries/{id}/deny": {
+      "sdkMethod": "create_waitlist_entry_deny",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists": {
+      "sdkMethod": "list_waitlists",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists/{id}": {
+      "sdkMethod": "get_waitlist",
+      "service": "user_management"
+    },
+    "GET /user_management/waitlists/{id}/entries": {
+      "sdkMethod": "list_waitlist_entries",
+      "service": "user_management"
+    },
+    "POST /user_management/waitlists/{id}/entries": {
+      "sdkMethod": "create_waitlist_entry",
+      "service": "user_management"
     }
   }
 }

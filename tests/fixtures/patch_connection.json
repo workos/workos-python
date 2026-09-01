@@ -1,0 +1,35 @@
+{
+  "name": "Foo Corp",
+  "external_id": "acme-legacy-conn-42",
+  "connection_type": "OktaSAML",
+  "attribute_maps": {
+    "standard_attributes": {
+      "idp_id": "sub",
+      "email": "email",
+      "first_name": "given_name",
+      "last_name": "family_name",
+      "groups": "memberOf",
+      "name": "displayName"
+    },
+    "custom_attributes": {
+      "company": "company_claim"
+    }
+  },
+  "saml_options": {
+    "idp_metadata_url": "https://idp.example.com/metadata.xml",
+    "acs_url": "https://example.auth0.com/login/callback?connection=123",
+    "sp_entity_id": "https://example.auth0.com/login/callback?connection=123",
+    "idp_entity_id": "https://idp.example.com/entity",
+    "idp_sso_url": "https://idp.example.com/sso"
+  },
+  "oidc_options": {
+    "discovery_endpoint": "https://idp.example.com/.well-known/openid-configuration",
+    "client_id": "client_123",
+    "client_secret": "secret_xyz",
+    "redirect_uri": "https://auth.workos.com/sso/oidc/conn_externalkey/callback",
+    "pkce": true,
+    "token_authentication_method": "client_secret_basic",
+    "id_token_signature_algorithm": "RS256",
+    "fetch_user_info": false
+  }
+}

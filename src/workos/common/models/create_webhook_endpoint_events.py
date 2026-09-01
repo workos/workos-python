@@ -11,6 +11,13 @@ from typing import Literal, TypeAlias
 class CreateWebhookEndpointEvents(str, Enum):
     """Known values for CreateWebhookEndpointEvents."""
 
+    AGENT_BLUEPRINT_CREATED = "agent.blueprint.created"
+    AGENT_BLUEPRINT_DELETED = "agent.blueprint.deleted"
+    AGENT_BLUEPRINT_UPDATED = "agent.blueprint.updated"
+    AGENT_INSTANCE_CREATED = "agent.instance.created"
+    AGENT_INSTANCE_DELETED = "agent.instance.deleted"
+    AGENT_INSTANCE_SESSION_CREATED = "agent.instance.session.created"
+    AGENT_INSTANCE_SESSION_REVOKED = "agent.instance.session.revoked"
     AGENT_REGISTRATION_CREATED = "agent.registration.created"
     AGENT_REGISTRATION_CLAIM_ATTEMPT_CREATED = (
         "agent.registration.claim.attempt.created"
@@ -130,6 +137,13 @@ class CreateWebhookEndpointEvents(str, Enum):
 
 
 CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
+    "agent.blueprint.created",
+    "agent.blueprint.deleted",
+    "agent.blueprint.updated",
+    "agent.instance.created",
+    "agent.instance.deleted",
+    "agent.instance.session.created",
+    "agent.instance.session.revoked",
     "agent.registration.created",
     "agent.registration.claim.attempt.created",
     "agent.registration.claim.completed",

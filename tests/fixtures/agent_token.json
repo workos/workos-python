@@ -1,0 +1,12 @@
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+  "token_type": "Bearer",
+  "expires_in": 300,
+  "refresh_token": "njGkA8Wyht0GBEGGA0Zh1Q3wZzL2...",
+  "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "new_instance": false,
+  "agent_instance_session_id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "permissions": [
+    "crm:read"
+  ]
+}

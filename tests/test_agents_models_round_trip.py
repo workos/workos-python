@@ -5,11 +5,21 @@
 from tests.generated_helpers import load_fixture
 from workos.agents.models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
+    AgentBlueprint,
+    AgentBlueprintInvocableBy,
+    AgentBlueprintsCreateRequestInvocableBy,
+    AgentBlueprintsCreateRequestSessionSetting,
+    AgentBlueprintSessionSetting,
+    AgentBlueprintsUpdateRequestInvocableBy,
+    AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
+    AgentInstance,
+    AgentInstanceSession,
     AgentRegistration,
     AgentRegistrationAgentIdentity,
     AgentRegistrationClaim,
     AgentRegistrationClaimClaimCompletion,
+    AgentToken,
     ClaimViewResponse,
     ClaimViewResponseOrganization,
 )
@@ -161,6 +171,263 @@ class TestModelRoundTrip:
         instance = ClaimViewResponse.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_agent_blueprint_round_trip(self):
+        data = load_fixture("agent_blueprint.json")
+        instance = AgentBlueprint.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprint.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_minimal_payload(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprint.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["session_settings"] == data["session_settings"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_blueprint_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprint.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_agent_instance_round_trip(self):
+        data = load_fixture("agent_instance.json")
+        instance = AgentInstance.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstance.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_minimal_payload(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstance.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_blueprint_id"] == data["agent_blueprint_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert (
+            serialized["organization_membership_id"]
+            == data["organization_membership_id"]
+        )
+        assert serialized["type"] == data["type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_instance_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": None,
+            "type": "delegated",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstance.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_membership_id"] is None
+
+    def test_agent_instance_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "agent_instance",
+            "id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_blueprint_id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_agent_instance_type",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstance.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_agent_token_round_trip(self):
+        data = load_fixture("agent_token.json")
+        instance = AgentToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentToken.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_token_minimal_payload(self):
+        data = {
+            "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+            "token_type": "Bearer",
+            "expires_in": 300,
+            "refresh_token": "njGkA8Wyht0GBEGGA0Zh1Q3wZzL2...",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "new_instance": False,
+            "agent_instance_session_id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "permissions": ["crm:read"],
+        }
+        instance = AgentToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["access_token"] == data["access_token"]
+        assert serialized["token_type"] == data["token_type"]
+        assert serialized["expires_in"] == data["expires_in"]
+        assert serialized["refresh_token"] == data["refresh_token"]
+        assert serialized["agent_instance_id"] == data["agent_instance_id"]
+        assert serialized["new_instance"] == data["new_instance"]
+        assert (
+            serialized["agent_instance_session_id"] == data["agent_instance_session_id"]
+        )
+        assert serialized["permissions"] == data["permissions"]
+
+    def test_agent_instance_session_round_trip(self):
+        data = load_fixture("agent_instance_session.json")
+        instance = AgentInstanceSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_session_minimal_payload(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["agent_instance_id"] == data["agent_instance_id"]
+        assert serialized["status"] == data["status"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_instance_session_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["revoked_at"] is None
+
+    def test_agent_instance_session_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "agent_instance_session",
+            "id": "agent_session_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_instance_id": "agent_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "unexpected_agent_instance_session_status",
+            "expires_at": "2026-01-15T13:00:00.000Z",
+            "revoked_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentInstanceSession.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_agent_blueprint_invocable_by_round_trip(self):
+        data = load_fixture("agent_blueprint_invocable_by.json")
+        instance = AgentBlueprintInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintInvocableBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_invocable_by_minimal_payload(self):
+        data = {
+            "role_slugs": ["manager"],
+            "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+        }
+        instance = AgentBlueprintInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slugs"] == data["role_slugs"]
+        assert serialized["organization_ids"] == data["organization_ids"]
+
+    def test_agent_blueprint_session_setting_round_trip(self):
+        data = load_fixture("agent_blueprint_session_setting.json")
+        instance = AgentBlueprintSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintSessionSetting.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_session_setting_minimal_payload(self):
+        data = {
+            "max_age_seconds": 3600,
+            "access_token_ttl_seconds": 300,
+            "refresh_token_ttl_seconds": 3600,
+        }
+        instance = AgentBlueprintSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["max_age_seconds"] == data["max_age_seconds"]
+        assert (
+            serialized["access_token_ttl_seconds"] == data["access_token_ttl_seconds"]
+        )
+        assert (
+            serialized["refresh_token_ttl_seconds"] == data["refresh_token_ttl_seconds"]
+        )
+
     def test_claim_view_response_organization_round_trip(self):
         data = load_fixture("claim_view_response_organization.json")
         instance = ClaimViewResponseOrganization.from_dict(data)
@@ -244,6 +511,97 @@ class TestModelRoundTrip:
         instance = AgentRegistrationClaim.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["claim_completion"] is None
+
+    def test_agent_blueprints_create_request_invocable_by_round_trip(self):
+        data = load_fixture("agent_blueprints_create_request_invocable_by.json")
+        instance = AgentBlueprintsCreateRequestInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateRequestInvocableBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_request_invocable_by_minimal_payload(self):
+        data = {}
+        instance = AgentBlueprintsCreateRequestInvocableBy.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_agent_blueprints_create_request_invocable_by_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AgentBlueprintsCreateRequestInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert "role_slugs" not in serialized
+        assert "organization_ids" not in serialized
+
+    def test_agent_blueprints_create_request_session_setting_round_trip(self):
+        data = load_fixture("agent_blueprints_create_request_session_setting.json")
+        instance = AgentBlueprintsCreateRequestSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateRequestSessionSetting.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_request_session_setting_minimal_payload(self):
+        data = {
+            "max_age_seconds": 3600,
+            "access_token_ttl_seconds": 300,
+            "refresh_token_ttl_seconds": 3600,
+        }
+        instance = AgentBlueprintsCreateRequestSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["max_age_seconds"] == data["max_age_seconds"]
+        assert (
+            serialized["access_token_ttl_seconds"] == data["access_token_ttl_seconds"]
+        )
+        assert (
+            serialized["refresh_token_ttl_seconds"] == data["refresh_token_ttl_seconds"]
+        )
+
+    def test_agent_blueprints_update_request_invocable_by_round_trip(self):
+        data = load_fixture("agent_blueprints_update_request_invocable_by.json")
+        instance = AgentBlueprintsUpdateRequestInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateRequestInvocableBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_request_invocable_by_minimal_payload(self):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestInvocableBy.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_agent_blueprints_update_request_invocable_by_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestInvocableBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert "role_slugs" not in serialized
+        assert "organization_ids" not in serialized
+
+    def test_agent_blueprints_update_request_session_setting_round_trip(self):
+        data = load_fixture("agent_blueprints_update_request_session_setting.json")
+        instance = AgentBlueprintsUpdateRequestSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateRequestSessionSetting.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_request_session_setting_minimal_payload(self):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestSessionSetting.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_agent_blueprints_update_request_session_setting_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestSessionSetting.from_dict(data)
+        serialized = instance.to_dict()
+        assert "max_age_seconds" not in serialized
+        assert "access_token_ttl_seconds" not in serialized
+        assert "refresh_token_ttl_seconds" not in serialized
 
     def test_agent_admin_link_claim_attempt_to_external_user_request_user_round_trip(
         self,

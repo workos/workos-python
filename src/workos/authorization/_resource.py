@@ -479,7 +479,7 @@ class Authorization:
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
 
-        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources.
+        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources. Results are not filtered by the resource type: a permission is returned whenever a check for it on this resource would be authorized, and each permission is labeled with the resource type it is declared on.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -540,7 +540,7 @@ class Authorization:
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
 
-        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources.
+        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources. Results are not filtered by the resource type: a permission is returned whenever a check for it on this resource would be authorized, and each permission is labeled with the resource type it is declared on.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -1226,11 +1226,11 @@ class Authorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return self._client.request(
             method="patch",
@@ -1549,11 +1549,11 @@ class Authorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return self._client.request(
             method="post",
@@ -1641,11 +1641,11 @@ class Authorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return self._client.request(
             method="patch",
@@ -2650,7 +2650,7 @@ class AsyncAuthorization:
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
 
-        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources.
+        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources. Results are not filtered by the resource type: a permission is returned whenever a check for it on this resource would be authorized, and each permission is labeled with the resource type it is declared on.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -2711,7 +2711,7 @@ class AsyncAuthorization:
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
 
-        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources.
+        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources. Results are not filtered by the resource type: a permission is returned whenever a check for it on this resource would be authorized, and each permission is labeled with the resource type it is declared on.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -3397,11 +3397,11 @@ class AsyncAuthorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return await self._client.request(
             method="patch",
@@ -3720,11 +3720,11 @@ class AsyncAuthorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return await self._client.request(
             method="post",
@@ -3812,11 +3812,11 @@ class AsyncAuthorization:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
                 body["parent_resource_type_slug"] = (
                     parent_resource.parent_resource_type_slug
+                )
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
                 )
         return await self._client.request(
             method="patch",

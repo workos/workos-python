@@ -5,6 +5,13 @@ from .audit_log_configuration_log_stream import (
     AuditLogConfigurationLogStream as AuditLogConfigurationLogStream,
 )
 from .audit_logs_retention import AuditLogsRetention as AuditLogsRetention
+from .create_it_contact import CreateItContact as CreateItContact
+from .invite_it_contact import InviteItContact as InviteItContact
+from .it_contact import ItContact as ItContact
+from .it_contact_list import ItContactList as ItContactList
+from .it_contact_list_list_metadata import (
+    ItContactListListMetadata as ItContactListListMetadata,
+)
 from .organization import Organization as Organization
 from .organization_authorized_connect_application_list_data import (
     OrganizationAuthorizedConnectApplicationListData as OrganizationAuthorizedConnectApplicationListData,

@@ -22,6 +22,8 @@ class AuthenticationOAuthSucceededData:
     """The ID of the user."""
     email: str
     """The email address of the user."""
+    provider: str | None = None
+    """The OAuth provider used for authentication."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuthenticationOAuthSucceededData:
@@ -34,6 +36,7 @@ class AuthenticationOAuthSucceededData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
+                provider=data.get("provider"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationOAuthSucceededData", e)
@@ -56,4 +59,6 @@ class AuthenticationOAuthSucceededData:
         else:
             result["user_id"] = None
         result["email"] = self.email
+        if self.provider is not None:
+            result["provider"] = self.provider
         return result

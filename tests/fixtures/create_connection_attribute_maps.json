@@ -1,0 +1,13 @@
+{
+  "standard_attributes": {
+    "idp_id": "sub",
+    "email": "email",
+    "first_name": "given_name",
+    "last_name": "family_name",
+    "groups": "memberOf",
+    "name": "displayName"
+  },
+  "custom_attributes": {
+    "company": "company_claim"
+  }
+}

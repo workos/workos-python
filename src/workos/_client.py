@@ -5,41 +5,44 @@ from __future__ import annotations
 import functools
 
 from ._base_client import (
-    WorkOSClient as _SyncBase,
     AsyncWorkOSClient as _AsyncBase,
 )
-from .agents._resource import Agents, AsyncAgents
-from .multi_factor_auth._resource import MultiFactorAuth, AsyncMultiFactorAuth
-from .connect._resource import Connect, AsyncConnect
-from .authorization._resource import Authorization, AsyncAuthorization
-from .client_api._resource import ClientApi, AsyncClientApi
-from .sso._resource import SSO, AsyncSSO
-from .pipes._resource import Pipes, AsyncPipes
-from .directory_sync._resource import DirectorySync, AsyncDirectorySync
-from .events._resource import Events, AsyncEvents
-from .feature_flags._resource import FeatureFlags, AsyncFeatureFlags
-from .organization_domains._resource import (
-    OrganizationDomains,
-    AsyncOrganizationDomains,
+from ._base_client import (
+    WorkOSClient as _SyncBase,
 )
-from .organizations._resource import Organizations, AsyncOrganizations
-from .api_keys._resource import ApiKeys, AsyncApiKeys
-from .pipes_provider._resource import PipesProvider, AsyncPipesProvider
-from .groups._resource import Groups, AsyncGroups
-from .admin_portal._resource import AdminPortal, AsyncAdminPortal
-from .radar._resource import Radar, AsyncRadar
-from .user_management._resource import UserManagement, AsyncUserManagement
-from .organization_membership._resource import (
-    OrganizationMembershipService,
-    AsyncOrganizationMembershipService,
-)
-from .vault._resource import Vault, AsyncVault
-from .webhooks._resource import Webhooks, AsyncWebhooks
-from .widgets._resource import Widgets, AsyncWidgets
-from .audit_logs._resource import AuditLogs, AsyncAuditLogs
-from .passwordless import AsyncPasswordless, Passwordless
 from .actions import Actions, AsyncActions
+from .admin_portal._resource import AdminPortal, AsyncAdminPortal
+from .agents._resource import Agents, AsyncAgents
+from .api_keys._resource import ApiKeys, AsyncApiKeys
+from .audit_logs._resource import AsyncAuditLogs, AuditLogs
+from .authorization._resource import AsyncAuthorization, Authorization
+from .client_api._resource import AsyncClientApi, ClientApi
+from .connect._resource import AsyncConnect, Connect
+from .directory_sync._resource import AsyncDirectorySync, DirectorySync
+from .events._resource import AsyncEvents, Events
+from .feature_flags._resource import AsyncFeatureFlags, FeatureFlags
+from .groups._resource import AsyncGroups, Groups
+from .multi_factor_auth._resource import AsyncMultiFactorAuth, MultiFactorAuth
+from .organization_domains._resource import (
+    AsyncOrganizationDomains,
+    OrganizationDomains,
+)
+from .organization_membership._resource import (
+    AsyncOrganizationMembershipService,
+    OrganizationMembershipService,
+)
+from .organizations._resource import AsyncOrganizations, Organizations
+from .passwordless import AsyncPasswordless, Passwordless
+from .pipes._resource import AsyncPipes, Pipes
+from .pipes_provider._resource import AsyncPipesProvider, PipesProvider
 from .pkce import PKCE
+from .platform_teams._resource import AsyncPlatformTeams, PlatformTeams
+from .radar._resource import AsyncRadar, Radar
+from .sso._resource import SSO, AsyncSSO
+from .user_management._resource import AsyncUserManagement, UserManagement
+from .vault._resource import AsyncVault, Vault
+from .webhooks._resource import AsyncWebhooks, Webhooks
+from .widgets._resource import AsyncWidgets, Widgets
 
 
 class WorkOSClient(_SyncBase):
@@ -119,6 +122,11 @@ class WorkOSClient(_SyncBase):
     def groups(self) -> Groups:
         """Groups API resources."""
         return Groups(self)
+
+    @functools.cached_property
+    def platform_teams(self) -> PlatformTeams:
+        """Platform Teams API resources."""
+        return PlatformTeams(self)
 
     @functools.cached_property
     def admin_portal(self) -> AdminPortal:
@@ -262,6 +270,11 @@ class AsyncWorkOSClient(_AsyncBase):
     def groups(self) -> AsyncGroups:
         """Groups API resources."""
         return AsyncGroups(self)
+
+    @functools.cached_property
+    def platform_teams(self) -> AsyncPlatformTeams:
+        """Platform Teams API resources."""
+        return AsyncPlatformTeams(self)
 
     @functools.cached_property
     def admin_portal(self) -> AsyncAdminPortal:

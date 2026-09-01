@@ -1,0 +1,7 @@
+{
+  "email": "marcelina.davis@example.com",
+  "additional_fields": {
+    "company": "Example Corp"
+  },
+  "send_confirmation_email": false
+}

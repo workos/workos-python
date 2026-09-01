@@ -1,0 +1,8 @@
+{
+  "type": "user_delegated",
+  "user_access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+  "intent": "renew-contract-123",
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "agent_access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+  "refresh_token": "njGkA8Wyht0GBEGGA0Zh1Q3wZzL2..."
+}

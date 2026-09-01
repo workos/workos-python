@@ -17,13 +17,10 @@ class AuthenticateResponseAuthenticationMethod(str, Enum):
     APPLE_OAUTH = "AppleOAuth"
     BITBUCKET_OAUTH = "BitbucketOAuth"
     CROSS_APP_AUTH = "CrossAppAuth"
-    DISCORD_OAUTH = "DiscordOAuth"
     EXTERNAL_AUTH = "ExternalAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
     GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
-    GROK_OAUTH = "GrokOAuth"
-    XO_AUTH = "XOAuth"
     INTUIT_OAUTH = "IntuitOAuth"
     LINKED_IN_OAUTH = "LinkedInOAuth"
     MICROSOFT_OAUTH = "MicrosoftOAuth"
@@ -55,13 +52,10 @@ AuthenticateResponseAuthenticationMethodLiteral: TypeAlias = Literal[
     "AppleOAuth",
     "BitbucketOAuth",
     "CrossAppAuth",
-    "DiscordOAuth",
     "ExternalAuth",
     "GitHubOAuth",
     "GitLabOAuth",
     "GoogleOAuth",
-    "GrokOAuth",
-    "XOAuth",
     "IntuitOAuth",
     "LinkedInOAuth",
     "MicrosoftOAuth",

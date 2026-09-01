@@ -2,24 +2,157 @@
 
 ## [10.3.0](https://github.com/workos/workos-python/compare/v10.2.0...v10.3.0) (2026-09-01)
 
+* [#719](https://github.com/workos/workos-python/pull/719) feat(generated)!: regenerate from spec (6 changes)
 
-### Features
+  **⚠️ Breaking**
+  * **[agents](https://workos.com/docs/reference/agents)**:
+    * Removed service `Agents`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Removed model `TokenBody`
+    * Removed enum `TokenBodyGrantType`
+    * Removed model `TokenQuery`
+    * Changed parameter `SSO.token.grant_type`
 
-* **agents:** Add blueprint, instance, and session endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **api_keys:** Alias ValidateApiKey to deduplicated model ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **audit_logs:** Replace retention_period_in_days param with retention union supporting retention periods ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **generated:** Agents (batch 13ebc8c1) ([#722](https://github.com/workos/workos-python/issues/722)) ([9d30466](https://github.com/workos/workos-python/commit/9d30466444f03492295b01237622e52024663bc9))
-* **organizations:** Add IT contacts endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **platform_teams:** Add Platform Teams service ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **sso:** Add connection management and SAML certificate endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **sso:** Make code optional on get_profile_and_token and add PKCE variant ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **user_management:** Add email-completion grant and waitlist endpoints ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
-* **webhooks:** Add agent instance and blueprint webhook event types ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+  **Features**
+  * **[agents](https://workos.com/docs/reference/agents)**:
+    * Added model `AgentBlueprint`
+    * Added model `AgentInstance`
+    * Added model `AgentToken`
+    * Added model `AgentInstanceSession`
+    * Added model `AgentBlueprintInvocableBy`
+    * Added model `AgentBlueprintSessionSetting`
+    * Added model `AgentBlueprintsCreateRequest`
+    * Added model `AgentBlueprintsCreateRequestInvocableBy`
+    * Added model `AgentBlueprintsCreateRequestSessionSetting`
+    * Added model `AgentBlueprintsUpdateRequest`
+    * Added model `AgentBlueprintsUpdateRequestInvocableBy`
+    * Added model `AgentBlueprintsUpdateRequestSessionSetting`
+    * Added model `AgentBlueprintsTokenMintTokenRequest`
+    * Added enum `AgentInstanceType`
+    * Added enum `AgentInstanceSessionStatus`
+    * Added enum `AgentBlueprintsTokenMintTokenRequestType`
+  * **agents_blueprints**:
+    * Added service `AgentsBlueprints`
+  * **agents_blueprints_tokens**:
+    * Added service `AgentsBlueprintsTokens`
+  * **agents_instances**:
+    * Added service `AgentsInstances`
+  * **agents_registrations**:
+    * Added service `AgentsRegistrations`
+  * **agents_sessions**:
+    * Added service `AgentsSessions`
+  * **[organizations](https://workos.com/docs/reference/organization)**:
+    * Added `retention_period` to `UpdateAuditLogsRetention`
+    * Made `UpdateAuditLogsRetention.retention_period_in_days` optional
+    * Added enum `UpdateAuditLogsRetentionRetentionPeriod`
+    * Added model `CreateItContact`
+    * Added model `InviteItContact`
+    * Added model `ItContact`
+    * Added model `ItContactList`
+    * Added model `ItContactListListMetadata`
+    * Added enum `InviteItContactIntents`
+    * Added service `OrganizationsItContacts`
+  * **platform_teams**:
+    * Added model `CreateTeam`
+    * Added model `Team`
+    * Added enum `TeamProductionState`
+    * Added service `PlatformTeams`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Added model `TokenQuery`
+    * Added enum `TokenQueryGrantType`
+    * Added model `CreateConnectionKeyPair`
+    * Added model `CreateConnectionSAMLOptions`
+    * Added model `CreateConnectionOidcOptions`
+    * Added model `CreateConnectionStandardAttributes`
+    * Added model `CreateConnectionAttributeMaps`
+    * Added model `CreateConnection`
+    * Added model `PatchConnectionSAMLOptions`
+    * Added model `PatchConnectionOidcOptions`
+    * Added model `PatchConnectionStandardAttributes`
+    * Added model `PatchConnectionAttributeMaps`
+    * Added model `PatchConnection`
+    * Added model `CreateSAMLIdpSigningCertificate`
+    * Added model `SAMLIdpSigningCertificate`
+    * Added model `SAMLIdpSigningCertificateList`
+    * Added model `SAMLSpEncryptionCertificate`
+    * Added model `SAMLSpEncryptionCertificateList`
+    * Added model `SAMLSpSigningCertificate`
+    * Added enum `CreateConnectionOidcOptionsIdTokenSignatureAlgorithm`
+    * Added enum `PatchConnectionOidcOptionsIdTokenSignatureAlgorithm`
+    * Added endpoint `POST /connections`
+    * Added endpoint `GET /connections/{connectionId}/saml_idp_signing_certs`
+    * Added endpoint `POST /connections/{connectionId}/saml_idp_signing_certs`
+    * Added endpoint `DELETE /connections/{connectionId}/saml_idp_signing_certs/{certificateId}`
+    * Added endpoint `GET /connections/{connectionId}/saml_sp_encryption_certs`
+    * Added endpoint `POST /connections/{connectionId}/saml_sp_encryption_certs`
+    * Added endpoint `DELETE /connections/{connectionId}/saml_sp_encryption_certs/{certificateId}`
+    * Added endpoint `GET /connections/{connectionId}/saml_sp_signing_cert`
+    * Added endpoint `POST /connections/{connectionId}/saml_sp_signing_cert`
+    * Added endpoint `DELETE /connections/{connectionId}/saml_sp_signing_cert/{certificateId}`
+    * Added endpoint `PATCH /connections/{id}`
+    * Added model `TokenBody`
+    * Added enum `TokenBodyGrantType`
+    * Added enum `SSOGrantType`
+    * Changed required status for parameter `SSO.token.code`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added enum `CreateConnectionOidcOptionsTokenAuthenticationMethod`
+    * Added enum `PatchConnectionOidcOptionsTokenAuthenticationMethod`
+    * Added model `EmailCompletionSessionAuthenticateRequest`
+    * Added model `CreateWaitlistEntry`
+    * Added model `Waitlist`
+    * Added model `WaitlistEntry`
+    * Added enum `WaitlistEntryState`
+    * Added enum `UserManagementWaitlistsState`
+    * Added service `UserManagementWaitlists`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `agent.instance.created` to `CreateWebhookEndpointEvents`
+    * Added `agent.instance.deleted` to `CreateWebhookEndpointEvents`
+    * Added `agent.instance.session.created` to `CreateWebhookEndpointEvents`
+    * Added `agent.instance.session.revoked` to `CreateWebhookEndpointEvents`
+    * Added `agent.instance.created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.instance.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `agent.instance.session.created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.instance.session.revoked` to `UpdateWebhookEndpointEvents`
+    * Added `agent.blueprint.created` to `CreateWebhookEndpointEvents`
+    * Added `agent.blueprint.deleted` to `CreateWebhookEndpointEvents`
+    * Added `agent.blueprint.updated` to `CreateWebhookEndpointEvents`
+    * Added `agent.blueprint.created` to `UpdateWebhookEndpointEvents`
+    * Added `agent.blueprint.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `agent.blueprint.updated` to `UpdateWebhookEndpointEvents`
 
+  **Fixes**
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Changed request body of `SSO.token` from `TokenBody` to `TokenQuery`
+    * Removed `DiscordOAuth` from `ConnectionType`
+    * Removed `GrokOAuth` from `ConnectionType`
+    * Removed `XOAuth` from `ConnectionType`
+    * Removed `DiscordOAuth` from `ProfileConnectionType`
+    * Removed `GrokOAuth` from `ProfileConnectionType`
+    * Removed `XOAuth` from `ProfileConnectionType`
+    * Removed `DiscordOAuth` from `ConnectionsConnectionType`
+    * Removed `GrokOAuth` from `ConnectionsConnectionType`
+    * Removed `XOAuth` from `ConnectionsConnectionType`
+    * Changed request body of `SSO.token` from `TokenQuery` to `TokenBody`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed request body for `UserManagementAuthentication.authenticate`
+    * Changed errors for endpoint `POST /user_management/authenticate`
+    * Removed `DiscordOAuth` from `AuthenticateResponseAuthenticationMethod`
+    * Removed `GrokOAuth` from `AuthenticateResponseAuthenticationMethod`
+    * Removed `XOAuth` from `AuthenticateResponseAuthenticationMethod`
+    * Removed `DiscordOAuth` from `UserIdentitiesGetItemProvider`
+    * Removed `GrokOAuth` from `UserIdentitiesGetItemProvider`
+    * Removed `XOAuth` from `UserIdentitiesGetItemProvider`
+    * Changed errors for endpoint `DELETE /user_management/users/{id}`
 
-### Bug Fixes
+* [#722](https://github.com/workos/workos-python/pull/722) fix(generated): regenerate from spec
 
-* **sso:** Remove DiscordOAuth, GrokOAuth, and XOAuth from connection type enums ([#719](https://github.com/workos/workos-python/issues/719)) ([5f32740](https://github.com/workos/workos-python/commit/5f327401bd69434bf677ce7472f75be3e5d3d730))
+  **Features**
+  * **[agents](https://workos.com/docs/reference/agents)**:
+    * Made `AgentBlueprintsCreateRequest.session_settings` optional
+    * Added model `AgentTokenValidation`
+    * Added model `AgentBlueprintsTokenValidateTokenRequest`
+  * **agents_blueprints_tokens**:
+    * Added endpoint `POST /agents/blueprints/{agent_blueprint_id}/tokens/validate`
 
 ## [10.2.0](https://github.com/workos/workos-python/compare/v10.1.1...v10.2.0) (2026-08-11)
 

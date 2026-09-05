@@ -6,7 +6,7 @@ import pytest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-from workos import WorkOSClient
+from workos import AsyncWorkOSClient, WorkOSClient
 from workos._errors import (
     AuthenticationError,
     AuthenticationMethodNotAllowedError,
@@ -209,6 +209,99 @@ class TestSession:
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
         assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+
+    def _authenticate_with_client(self, client, claims=None):
+        token = _make_jwt(self.private_key, claims=claims)
+        sealed = self._make_sealed_session(access_token=token)
+        session = Session(
+            client=client, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+        return session.authenticate()
+
+    def test_session_authenticate_ignores_issuer_when_not_configured(self):
+        result = self._authenticate_with_client(
+            self.workos, claims={"iss": "https://other.example.com"}
+        )
+        assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
+
+    def test_session_authenticate_accepts_configured_issuer(self):
+        client = WorkOSClient(
+            api_key="sk_test_123",
+            client_id="client_test_123",
+            jwt_issuer="https://api.workos.com/user_management/client_test_123",
+            max_retries=0,
+        )
+        try:
+            result = self._authenticate_with_client(
+                client,
+                claims={
+                    "iss": "https://api.workos.com/user_management/client_test_123"
+                },
+            )
+        finally:
+            client.close()
+        assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
+
+    def test_session_authenticate_rejects_mismatched_issuer(self):
+        client = WorkOSClient(
+            api_key="sk_test_123",
+            client_id="client_test_123",
+            jwt_issuer="https://api.workos.com",
+            max_retries=0,
+        )
+        try:
+            result = self._authenticate_with_client(
+                client, claims={"iss": "https://other.example.com"}
+            )
+        finally:
+            client.close()
+        assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+
+    def test_session_authenticate_accepts_any_listed_issuer(self):
+        client = WorkOSClient(
+            api_key="sk_test_123",
+            client_id="client_test_123",
+            jwt_issuer=["https://api.workos.com", "https://auth.example.com"],
+            max_retries=0,
+        )
+        try:
+            result = self._authenticate_with_client(
+                client, claims={"iss": "https://auth.example.com"}
+            )
+        finally:
+            client.close()
+        assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
+
+    def test_session_authenticate_reads_issuer_list_from_env(self, monkeypatch):
+        monkeypatch.setenv(
+            "WORKOS_ISSUER", "https://api.workos.com, https://auth.example.com,"
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test_123", max_retries=0
+        )
+        try:
+            assert client._jwt_issuer == [
+                "https://api.workos.com",
+                "https://auth.example.com",
+            ]
+            result = self._authenticate_with_client(
+                client, claims={"iss": "https://auth.example.com"}
+            )
+        finally:
+            client.close()
+        assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
+
+    def test_session_single_env_issuer_stays_string(self, monkeypatch):
+        monkeypatch.setenv("WORKOS_ISSUER", "https://api.workos.com")
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test_123", max_retries=0
+        )
+        try:
+            assert client._jwt_issuer == "https://api.workos.com"
+        finally:
+            client.close()
 
     def test_session_refresh_invalid_session(self):
         session = Session(
@@ -580,6 +673,29 @@ class TestAsyncSession:
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
         assert result.session_id == "session_01"
+
+    async def test_async_session_authenticate_rejects_mismatched_issuer(self):
+        private_key, public_key = _generate_rsa_key_pair()
+        token = _make_jwt(private_key, claims={"iss": "https://other.example.com"})
+        sealed = seal_data(
+            {"access_token": token, "refresh_token": "rt", "user": {"id": "u1"}},
+            COOKIE_PASSWORD,
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123",
+            client_id="client_test_123",
+            jwt_issuer=["https://api.workos.com", "https://auth.example.com"],
+        )
+        try:
+            session = AsyncSession(
+                client=client, session_data=sealed, cookie_password=COOKIE_PASSWORD
+            )
+            session.jwks = self._mock_jwks(public_key)
+            result = session.authenticate()
+        finally:
+            await client.close()
+        assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
     async def test_async_session_refresh_success(self, async_workos):
         from unittest.mock import AsyncMock

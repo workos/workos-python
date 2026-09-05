@@ -209,10 +209,17 @@ class TestPipes:
     def test_get_user_connected_account_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connected_account.json"))
         workos.pipes.get_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     def test_create_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -257,10 +264,17 @@ class TestPipes:
     ):
         httpx_mock.add_response(json=load_fixture("connected_account.json"))
         workos.pipes.update_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     def test_delete_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
@@ -277,10 +291,17 @@ class TestPipes:
     ):
         httpx_mock.add_response(status_code=204)
         workos.pipes.delete_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     def test_list_user_data_providers(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -559,10 +580,17 @@ class TestAsyncPipes:
     ):
         httpx_mock.add_response(json=load_fixture("connected_account.json"))
         await async_workos.pipes.get_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     @pytest.mark.asyncio
     async def test_create_user_connected_account(self, async_workos, httpx_mock):
@@ -611,10 +639,17 @@ class TestAsyncPipes:
     ):
         httpx_mock.add_response(json=load_fixture("connected_account.json"))
         await async_workos.pipes.update_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     @pytest.mark.asyncio
     async def test_delete_user_connected_account(self, async_workos, httpx_mock):
@@ -635,10 +670,17 @@ class TestAsyncPipes:
     ):
         httpx_mock.add_response(status_code=204)
         await async_workos.pipes.delete_user_connected_account(
-            "test_user_id", "test_slug", organization_id="value organization_id/test"
+            "test_user_id",
+            "test_slug",
+            organization_id="value organization_id/test",
+            connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
 
     @pytest.mark.asyncio
     async def test_list_user_data_providers(self, async_workos, httpx_mock):

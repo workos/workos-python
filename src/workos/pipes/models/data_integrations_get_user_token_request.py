@@ -16,6 +16,8 @@ class DataIntegrationsGetUserTokenRequest:
     """A [User](https://workos.com/docs/reference/authkit/user) identifier."""
     organization_id: str | None = None
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization."""
+    connected_account_id: str | None = None
+    """A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsGetUserTokenRequest:
@@ -24,6 +26,7 @@ class DataIntegrationsGetUserTokenRequest:
             return cls(
                 user_id=data["user_id"],
                 organization_id=data.get("organization_id"),
+                connected_account_id=data.get("connected_account_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsGetUserTokenRequest", e)
@@ -36,4 +39,6 @@ class DataIntegrationsGetUserTokenRequest:
             result["organization_id"] = self.organization_id
         else:
             result["organization_id"] = None
+        if self.connected_account_id is not None:
+            result["connected_account_id"] = self.connected_account_id
         return result

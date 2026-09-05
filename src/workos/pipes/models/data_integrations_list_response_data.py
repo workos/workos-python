@@ -47,6 +47,8 @@ class DataIntegrationsListResponseData:
     """The timestamp when the provider was last updated."""
     connected_account: DataIntegrationsListResponseDataConnectedAccount | None
     """The user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` if the user has not connected."""
+    connected_accounts: list[DataIntegrationsListResponseDataConnectedAccount]
+    """The user's connected accounts for this provider in the requested ownership context."""
     auth_methods: list[DataIntegrationsListResponseDataAuthMethods] | None = None
     """The authentication methods supported by this provider (`oauth`, `api_key`, `client_credentials`, or a combination). Defaults to `["oauth"]` if absent."""
 
@@ -71,6 +73,12 @@ class DataIntegrationsListResponseData:
                 )
                 if (_v_connected_account := data["connected_account"]) is not None
                 else None,
+                connected_accounts=[
+                    DataIntegrationsListResponseDataConnectedAccount.from_dict(
+                        cast(dict[str, Any], item)
+                    )
+                    for item in cast(list[Any], data["connected_accounts"])
+                ],
                 auth_methods=[
                     DataIntegrationsListResponseDataAuthMethods(item)
                     for item in cast(list[Any], _v_auth_methods)
@@ -107,6 +115,9 @@ class DataIntegrationsListResponseData:
             result["connected_account"] = self.connected_account.to_dict()
         else:
             result["connected_account"] = None
+        result["connected_accounts"] = [
+            item.to_dict() for item in self.connected_accounts
+        ]
         if self.auth_methods is not None:
             result["auth_methods"] = [
                 item.value if isinstance(item, Enum) else item

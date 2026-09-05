@@ -17,7 +17,7 @@ class DataIntegrationsListResponse:
     object: Literal["list"]
     """Indicates this is a list response."""
     data: list[DataIntegrationsListResponseData]
-    """A list of [providers](https://workos.com/docs/reference/pipes/provider), each including a [`connected_account`](https://workos.com/docs/reference/pipes/connected-account) field with the user's connection status."""
+    """A list of [providers](https://workos.com/docs/reference/pipes/provider), each including the legacy `connected_account` field and the additive `connected_accounts` collection."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsListResponse:

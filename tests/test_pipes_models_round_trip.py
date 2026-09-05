@@ -556,6 +556,26 @@ class TestModelRoundTrip:
                         "updated_at": "2024-01-16T14:20:00.000Z",
                         "userlandUserId": "test_userlandUserId",
                     },
+                    "connected_accounts": [
+                        {
+                            "object": "connected_account",
+                            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                            "organization_id": None,
+                            "scopes": ["repo", "user:email"],
+                            "auth_method": "oauth",
+                            "api_key_last_4": None,
+                            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                            "client_secret_last_4": "cdef",
+                            "config": {
+                                "instance_url": "https://example.my.salesforce.com"
+                            },
+                            "state": "connected",
+                            "created_at": "2024-01-16T14:20:00.000Z",
+                            "updated_at": "2024-01-16T14:20:00.000Z",
+                            "userlandUserId": "test_userlandUserId",
+                        }
+                    ],
                 }
             ],
         }
@@ -586,6 +606,24 @@ class TestModelRoundTrip:
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
             "connected_account": None,
+            "connected_accounts": [
+                {
+                    "object": "connected_account",
+                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "organization_id": None,
+                    "scopes": ["repo", "user:email"],
+                    "auth_method": "oauth",
+                    "api_key_last_4": None,
+                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                    "client_secret_last_4": "cdef",
+                    "config": {"instance_url": "https://example.my.salesforce.com"},
+                    "state": "connected",
+                    "created_at": "2024-01-16T14:20:00.000Z",
+                    "updated_at": "2024-01-16T14:20:00.000Z",
+                    "userlandUserId": "test_userlandUserId",
+                }
+            ],
         }
         instance = DataIntegrationsListResponseData.from_dict(data)
         serialized = instance.to_dict()
@@ -601,6 +639,7 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["connected_account"] == data["connected_account"]
+        assert serialized["connected_accounts"] == data["connected_accounts"]
 
     def test_data_integrations_list_response_data_omits_absent_optional_non_nullable_fields(
         self,
@@ -633,6 +672,24 @@ class TestModelRoundTrip:
                 "updated_at": "2024-01-16T14:20:00.000Z",
                 "userlandUserId": "test_userlandUserId",
             },
+            "connected_accounts": [
+                {
+                    "object": "connected_account",
+                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "organization_id": None,
+                    "scopes": ["repo", "user:email"],
+                    "auth_method": "oauth",
+                    "api_key_last_4": None,
+                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                    "client_secret_last_4": "cdef",
+                    "config": {"instance_url": "https://example.my.salesforce.com"},
+                    "state": "connected",
+                    "created_at": "2024-01-16T14:20:00.000Z",
+                    "updated_at": "2024-01-16T14:20:00.000Z",
+                    "userlandUserId": "test_userlandUserId",
+                }
+            ],
         }
         instance = DataIntegrationsListResponseData.from_dict(data)
         serialized = instance.to_dict()
@@ -653,6 +710,24 @@ class TestModelRoundTrip:
             "created_at": "2024-01-15T10:30:00.000Z",
             "updated_at": "2024-01-15T10:30:00.000Z",
             "connected_account": None,
+            "connected_accounts": [
+                {
+                    "object": "connected_account",
+                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "organization_id": None,
+                    "scopes": ["repo", "user:email"],
+                    "auth_method": "oauth",
+                    "api_key_last_4": None,
+                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                    "client_secret_last_4": "cdef",
+                    "config": {"instance_url": "https://example.my.salesforce.com"},
+                    "state": "connected",
+                    "created_at": "2024-01-16T14:20:00.000Z",
+                    "updated_at": "2024-01-16T14:20:00.000Z",
+                    "userlandUserId": "test_userlandUserId",
+                }
+            ],
         }
         instance = DataIntegrationsListResponseData.from_dict(data)
         serialized = instance.to_dict()
@@ -690,6 +765,24 @@ class TestModelRoundTrip:
                 "updated_at": "2024-01-16T14:20:00.000Z",
                 "userlandUserId": "test_userlandUserId",
             },
+            "connected_accounts": [
+                {
+                    "object": "connected_account",
+                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                    "organization_id": None,
+                    "scopes": ["repo", "user:email"],
+                    "auth_method": "oauth",
+                    "api_key_last_4": None,
+                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
+                    "client_secret_last_4": "cdef",
+                    "config": {"instance_url": "https://example.my.salesforce.com"},
+                    "state": "connected",
+                    "created_at": "2024-01-16T14:20:00.000Z",
+                    "updated_at": "2024-01-16T14:20:00.000Z",
+                    "userlandUserId": "test_userlandUserId",
+                }
+            ],
         }
         instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data

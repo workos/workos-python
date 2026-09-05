@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.4.0](https://github.com/workos/workos-python/compare/v10.3.0...v10.4.0) (2026-09-05)
+
+
+### Features
+
+* **generated:** Pipes (batch 8ad8e447) ([#723](https://github.com/workos/workos-python/issues/723)) ([50c29a3](https://github.com/workos/workos-python/commit/50c29a337021972d8768ae976ed28ad1d800b2ac))
+
 ## [10.3.0](https://github.com/workos/workos-python/compare/v10.2.0...v10.3.0) (2026-09-01)
 
 * [#719](https://github.com/workos/workos-python/pull/719) feat(generated)!: regenerate from spec (6 changes)

@@ -97,7 +97,7 @@ class _BaseWorkOSClient:
                 _parse_issuer_env(env_issuer) if env_issuer else None
             )
         else:
-            self._jwt_issuer = jwt_issuer or None
+            self._jwt_issuer = jwt_issuer
 
     @property
     def base_url(self) -> str:

@@ -9,7 +9,7 @@ import uuid
 import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from typing import Any, Dict, Optional, Sequence, Type, cast, overload
+from typing import Any, Dict, List, Optional, Sequence, Type, Union, cast, overload
 from urllib.parse import quote
 
 import httpx
@@ -42,6 +42,14 @@ MAX_RETRY_DELAY = 30
 RETRY_MULTIPLIER = 2
 
 
+def _parse_issuer_env(value: str) -> Optional[Union[str, List[str]]]:
+    issuers = [issuer.strip() for issuer in value.split(",")]
+    issuers = [issuer for issuer in issuers if issuer]
+    if not issuers:
+        return None
+    return issuers[0] if len(issuers) == 1 else issuers
+
+
 class _BaseWorkOSClient:
     """Shared WorkOS client implementation."""
 
@@ -53,6 +61,7 @@ class _BaseWorkOSClient:
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
+        jwt_issuer: Optional[Union[str, Sequence[str]]] = None,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
     ) -> None:
@@ -82,6 +91,13 @@ class _BaseWorkOSClient:
         )
         self._max_retries = max_retries
         self._jwt_leeway = jwt_leeway
+        if jwt_issuer is None:
+            env_issuer = os.environ.get("WORKOS_ISSUER")
+            self._jwt_issuer: Optional[Union[str, Sequence[str]]] = (
+                _parse_issuer_env(env_issuer) if env_issuer else None
+            )
+        else:
+            self._jwt_issuer = jwt_issuer
 
     @property
     def base_url(self) -> str:
@@ -362,6 +378,7 @@ class WorkOSClient(_BaseWorkOSClient):
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
+        jwt_issuer: Optional[Union[str, Sequence[str]]] = None,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
     ) -> None:
@@ -373,6 +390,9 @@ class WorkOSClient(_BaseWorkOSClient):
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
             request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
+            jwt_issuer: Expected ``iss`` claim of session access tokens, or a list of
+                accepted issuers. Falls back to the WORKOS_ISSUER environment variable
+                (comma-separated for a list). When unset, the issuer is not validated.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
             is_public: When True, mark this client as public (PKCE / browser
                 / mobile / CLI). The API key is forced to None and the
@@ -388,6 +408,7 @@ class WorkOSClient(_BaseWorkOSClient):
             base_url=base_url,
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
+            jwt_issuer=jwt_issuer,
             max_retries=max_retries,
             is_public=is_public,
         )
@@ -593,6 +614,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
+        jwt_issuer: Optional[Union[str, Sequence[str]]] = None,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
     ) -> None:
@@ -604,6 +626,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
             request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
+            jwt_issuer: Expected ``iss`` claim of session access tokens, or a list of
+                accepted issuers. Falls back to the WORKOS_ISSUER environment variable
+                (comma-separated for a list). When unset, the issuer is not validated.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
         Raises:
@@ -615,6 +640,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             base_url=base_url,
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
+            jwt_issuer=jwt_issuer,
             max_retries=max_retries,
             is_public=is_public,
         )

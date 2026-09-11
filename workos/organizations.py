@@ -2,6 +2,7 @@ from warnings import warn
 import workos
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
+    encode_path_segment,
     RequestHelper,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
@@ -162,7 +163,9 @@ class Organizations(WorkOSListResource):
             dict: Organization response from WorkOS
         """
         response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
+            "organizations/{organization}".format(
+                organization=encode_path_segment(organization)
+            ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -177,7 +180,9 @@ class Organizations(WorkOSListResource):
             dict: Organization response from WorkOS
         """
         response = self.request_helper.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/by_lookup_key/{lookup_key}".format(
+                lookup_key=encode_path_segment(lookup_key)
+            ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -282,7 +287,9 @@ class Organizations(WorkOSListResource):
             params["lookup_key"] = lookup_key
 
         response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
+            "organizations/{organization}".format(
+                organization=encode_path_segment(organization)
+            ),
             method=REQUEST_METHOD_PUT,
             params=params,
             token=workos.api_key,
@@ -297,7 +304,9 @@ class Organizations(WorkOSListResource):
             organization (str): Organization unique identifier
         """
         return self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
+            "organizations/{organization}".format(
+                organization=encode_path_segment(organization)
+            ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

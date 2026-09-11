@@ -172,6 +172,18 @@ class TestMfa(object):
             self.mfa.delete_factor(authentication_factor_id=None)
         assert "Incomplete arguments. Need to specify a factor ID." in str(err.value)
 
+    @pytest.mark.parametrize("segment", ["", ".", ".."])
+    def test_delete_factor_rejects_invalid_path_segment_before_request(
+        self, segment, capture_and_mock_request
+    ):
+        request_args, request_kwargs = capture_and_mock_request("delete", None, 204)
+
+        with pytest.raises(ValueError):
+            self.mfa.delete_factor(segment)
+
+        assert request_args == []
+        assert request_kwargs == {}
+
     def test_delete_factor_success(self, mock_request_method):
         mock_request_method("delete", None, 200)
         response = self.mfa.delete_factor("auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F")

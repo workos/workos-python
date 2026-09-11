@@ -10,6 +10,7 @@ from workos.resources.sso import (
 from workos.utils.connection_types import ConnectionType
 from workos.utils.sso_provider_types import SsoProviderType
 from workos.utils.request import (
+    encode_path_segment,
     RequestHelper,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_DELETE,
@@ -207,7 +208,9 @@ class SSO(WorkOSListResource):
             dict: Connection response from WorkOS.
         """
         response = self.request_helper.request(
-            "connections/{connection}".format(connection=connection),
+            "connections/{connection}".format(
+                connection=encode_path_segment(connection)
+            ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -391,7 +394,9 @@ class SSO(WorkOSListResource):
             connection (str): Connection unique identifier
         """
         return self.request_helper.request(
-            "connections/{connection}".format(connection=connection),
+            "connections/{connection}".format(
+                connection=encode_path_segment(connection)
+            ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

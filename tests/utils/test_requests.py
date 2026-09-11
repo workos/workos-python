@@ -6,7 +6,7 @@ from workos.exceptions import (
     BadRequestException,
     ServerException,
 )
-from workos.utils.request import RequestHelper, BASE_HEADERS
+from workos.utils.request import RequestHelper, BASE_HEADERS, encode_path_segment
 
 STATUS_CODE_TO_EXCEPTION_MAPPING = {
     400: BadRequestException,
@@ -14,6 +14,30 @@ STATUS_CODE_TO_EXCEPTION_MAPPING = {
     403: AuthorizationException,
     500: ServerException,
 }
+
+
+@pytest.mark.parametrize("segment", ["", ".", ".."])
+def test_encode_path_segment_rejects_invalid_segments(segment):
+    with pytest.raises(ValueError) as err:
+        encode_path_segment(segment)
+
+    assert str(err.value) == "Path segments must not be empty, '.' or '..'."
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("user_123", "user_123"),
+        (123, "123"),
+        ("a/b", "a%2Fb"),
+        ("a/../b", "a%2F..%2Fb"),
+        ("x?y", "x%3Fy"),
+        ("x#y", "x%23y"),
+        ("%2e%2e", "%252e%252e"),
+    ],
+)
+def test_encode_path_segment(value, expected):
+    assert encode_path_segment(value) == expected
 
 
 class TestRequestHelper(object):
@@ -149,6 +173,17 @@ class TestRequestHelper(object):
         )
 
         assert RequestHelper().request("ok_place") == {"foo": "bar"}
+
+    @pytest.mark.parametrize("segment", ["", ".", ".."])
+    def test_build_url_rejects_invalid_path_segment(self, segment):
+        with pytest.raises(ValueError):
+            RequestHelper().build_parameterized_url("users/{user}/x", user=segment)
+
+    def test_build_url_encodes_path_segment(self):
+        assert (
+            RequestHelper().build_parameterized_url("users/{user}", user="a/../b")
+            == "users/a%2F..%2Fb"
+        )
 
     def test_build_url(self):
         assert RequestHelper().build_parameterized_url("a/b/c") == "a/b/c"

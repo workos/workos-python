@@ -253,6 +253,32 @@ class TestUserManagement(object):
         }
         return dict_response
 
+    def test_get_user_encodes_path_segment(self, mock_user, capture_and_mock_request):
+        url, _ = capture_and_mock_request("get", mock_user, 200)
+
+        self.user_management.get_user("a/b")
+
+        assert url[0] == workos.base_api_url + "user_management/users/a%2Fb"
+
+    @pytest.mark.parametrize("segment", ["", ".", ".."])
+    @pytest.mark.parametrize(
+        "method, http_method",
+        [
+            ("delete_user", "delete"),
+            ("deactivate_organization_membership", "put"),
+        ],
+    )
+    def test_rejects_invalid_path_segment_before_request(
+        self, segment, method, http_method, capture_and_mock_request
+    ):
+        request_args, request_kwargs = capture_and_mock_request(http_method, None, 204)
+
+        with pytest.raises(ValueError):
+            getattr(self.user_management, method)(segment)
+
+        assert request_args == []
+        assert request_kwargs == {}
+
     def test_get_user(self, mock_user, capture_and_mock_request):
         url, request_kwargs = capture_and_mock_request("get", mock_user, 200)
 

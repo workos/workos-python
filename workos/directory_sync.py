@@ -2,6 +2,7 @@ from warnings import warn
 import workos
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
+    encode_path_segment,
     RequestHelper,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
@@ -322,7 +323,7 @@ class DirectorySync(WorkOSListResource):
             dict: Directory User response from WorkOS.
         """
         response = self.request_helper.request(
-            "directory_users/{user}".format(user=user),
+            "directory_users/{user}".format(user=encode_path_segment(user)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -339,7 +340,7 @@ class DirectorySync(WorkOSListResource):
             dict: Directory Group response from WorkOS.
         """
         response = self.request_helper.request(
-            "directory_groups/{group}".format(group=group),
+            "directory_groups/{group}".format(group=encode_path_segment(group)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -358,7 +359,7 @@ class DirectorySync(WorkOSListResource):
         """
 
         response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=encode_path_segment(directory)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -517,7 +518,7 @@ class DirectorySync(WorkOSListResource):
         """
 
         response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=encode_path_segment(directory)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -534,7 +535,7 @@ class DirectorySync(WorkOSListResource):
             dict: Directories response from WorkOS.
         """
         return self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=encode_path_segment(directory)),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

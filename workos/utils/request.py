@@ -27,6 +27,18 @@ REQUEST_METHOD_POST = "post"
 REQUEST_METHOD_PUT = "put"
 
 
+def encode_path_segment(value):
+    """Encode a raw (not pre-encoded) value for use as one URL path segment.
+
+    Empty and dot segments raise ValueError to prevent request retargeting.
+    Pre-encoded values will be double-encoded.
+    """
+    segment = str(value)
+    if segment in ("", ".", ".."):
+        raise ValueError("Path segments must not be empty, '.' or '..'.")
+    return urllib.parse.quote(segment, safe="")
+
+
 class RequestHelper(object):
     def __init__(self):
         self.set_base_api_url(workos.base_api_url)
@@ -47,7 +59,7 @@ class RequestHelper(object):
         return self.base_api_url.format(path)
 
     def build_parameterized_url(self, url, **params):
-        escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}
+        escaped_params = {k: encode_path_segment(v) for k, v in params.items()}
         return url.format(**escaped_params)
 
     def request(

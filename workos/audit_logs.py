@@ -1,7 +1,12 @@
 from warnings import warn
 import workos
 from workos.resources.audit_logs_export import WorkOSAuditLogExport
-from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
+from workos.utils.request import (
+    encode_path_segment,
+    RequestHelper,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
+)
 from workos.utils.validation import AUDIT_LOGS_MODULE, validate_settings
 
 EVENTS_PATH = "audit_logs/events"
@@ -126,7 +131,7 @@ class AuditLogs(object):
         """
 
         response = self.request_helper.request(
-            "{0}/{1}".format(EXPORTS_PATH, export_id),
+            "{0}/{1}".format(EXPORTS_PATH, encode_path_segment(export_id)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )

@@ -17,6 +17,7 @@ from workos.resources.user_management import (
 from workos.utils.pagination_order import Order
 from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import (
+    encode_path_segment,
     RequestHelper,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_POST,
@@ -81,7 +82,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            USER_DETAIL_PATH.format(user_id),
+            USER_DETAIL_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -200,7 +201,7 @@ class UserManagement(WorkOSListResource):
             dict: Updated User response from WorkOS.
         """
         response = self.request_helper.request(
-            USER_DETAIL_PATH.format(user_id),
+            USER_DETAIL_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_PUT,
             params=payload,
             token=workos.api_key,
@@ -215,7 +216,7 @@ class UserManagement(WorkOSListResource):
             user_id (str) -  User unique identifier
         """
         self.request_helper.request(
-            USER_DETAIL_PATH.format(user_id),
+            USER_DETAIL_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
@@ -270,7 +271,9 @@ class UserManagement(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(
+                encode_path_segment(organization_membership_id)
+            ),
             method=REQUEST_METHOD_PUT,
             params=params,
             headers=headers,
@@ -290,7 +293,9 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(
+                encode_path_segment(organization_membership_id)
+            ),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -377,7 +382,9 @@ class UserManagement(WorkOSListResource):
             organization_membership_id (str) -  The unique ID of the Organization Membership.
         """
         self.request_helper.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(
+                encode_path_segment(organization_membership_id)
+            ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
@@ -391,7 +398,9 @@ class UserManagement(WorkOSListResource):
             dict: OrganizationMembership response from WorkOS.
         """
         response = self.request_helper.request(
-            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
+            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(
+                encode_path_segment(organization_membership_id)
+            ),
             method=REQUEST_METHOD_PUT,
             token=workos.api_key,
         )
@@ -407,7 +416,9 @@ class UserManagement(WorkOSListResource):
             dict: OrganizationMembership response from WorkOS.
         """
         response = self.request_helper.request(
-            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
+            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(
+                encode_path_segment(organization_membership_id)
+            ),
             method=REQUEST_METHOD_PUT,
             token=workos.api_key,
         )
@@ -863,7 +874,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
+            PASSWORD_RESET_DETAIL_PATH.format(encode_path_segment(password_reset_id)),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -977,7 +988,9 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
+            EMAIL_VERIFICATION_DETAIL_PATH.format(
+                encode_path_segment(email_verification_id)
+            ),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -1001,7 +1014,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
+            USER_SEND_VERIFICATION_EMAIL_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_POST,
             headers=headers,
             token=workos.api_key,
@@ -1032,7 +1045,7 @@ class UserManagement(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
+            USER_VERIFY_EMAIL_CODE_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -1053,7 +1066,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id),
+            MAGIC_AUTH_DETAIL_PATH.format(encode_path_segment(magic_auth_id)),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -1156,7 +1169,7 @@ class UserManagement(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
+            USER_AUTH_FACTORS_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -1191,7 +1204,7 @@ class UserManagement(WorkOSListResource):
             dict: List of Authentication Factors for a User from WorkOS.
         """
         response = self.request_helper.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
+            USER_AUTH_FACTORS_PATH.format(encode_path_segment(user_id)),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -1217,7 +1230,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            INVITATION_DETAIL_PATH.format(invitation_id),
+            INVITATION_DETAIL_PATH.format(encode_path_segment(invitation_id)),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -1237,7 +1250,9 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
+            INVITATION_DETAIL_BY_TOKEN_PATH.format(
+                encode_path_segment(invitation_token)
+            ),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -1363,7 +1378,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            INVITATION_REVOKE_PATH.format(invitation_id),
+            INVITATION_REVOKE_PATH.format(encode_path_segment(invitation_id)),
             method=REQUEST_METHOD_POST,
             headers=headers,
             token=workos.api_key,

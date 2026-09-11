@@ -1,5 +1,9 @@
 import workos
-from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
+from workos.utils.request import (
+    encode_path_segment,
+    RequestHelper,
+    REQUEST_METHOD_POST,
+)
 from workos.utils.validation import PASSWORDLESS_MODULE, validate_settings
 from workos.resources.passwordless import WorkOSPasswordlessSession
 
@@ -60,7 +64,9 @@ class Passwordless(object):
             boolean: Returns True
         """
         self.request_helper.request(
-            "passwordless/sessions/{session_id}/send".format(session_id=session_id),
+            "passwordless/sessions/{session_id}/send".format(
+                session_id=encode_path_segment(session_id)
+            ),
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
         )

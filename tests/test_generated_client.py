@@ -742,3 +742,72 @@ class TestAsyncWorkOSClient:
         with pytest.raises(generated_client_module.WorkOSConnectionError):
             await client.request("GET", ("test",))
         await client.close()
+
+
+class TestEncodePath:
+    """Path segments are encoded so caller-supplied ids cannot retarget a request."""
+
+    @pytest.mark.parametrize("segment", ["", ".", ".."])
+    def test_rejects_empty_and_dot_segments(self, segment):
+        with pytest.raises(ValueError, match="invalid URL path segment"):
+            WorkOSClient._encode_path(
+                ("user_management", "users", "user_01", "connected_accounts", segment)
+            )
+
+    @pytest.mark.parametrize("segment", ["", ".", ".."])
+    def test_async_client_rejects_empty_and_dot_segments(self, segment):
+        with pytest.raises(ValueError, match="invalid URL path segment"):
+            AsyncWorkOSClient._encode_path(("organizations", segment))
+
+    def test_rejects_bare_string_path(self):
+        with pytest.raises(TypeError):
+            WorkOSClient._encode_path("organizations/org_01")  # type: ignore[arg-type]
+
+    @pytest.mark.parametrize(
+        ("segment", "expected"),
+        [
+            ("org_01", "org_01"),
+            ("a/b", "a%2Fb"),
+            ("a?b", "a%3Fb"),
+            ("a#b", "a%23b"),
+            ("a%b", "a%25b"),
+            ("%2e%2e", "%252e%252e"),
+            ("evil/../..", "evil%2F..%2F.."),
+            ("...", "..."),
+            (".hidden", ".hidden"),
+        ],
+    )
+    def test_structural_characters_stay_inside_their_segment(self, segment, expected):
+        assert (
+            WorkOSClient._encode_path(("organizations", segment))
+            == f"organizations/{expected}"
+        )
+
+    def test_dot_segment_is_rejected_before_any_request(self, httpx_mock):
+        client = WorkOSClient(api_key="sk_test_123", client_id="client_test")
+        try:
+            with pytest.raises(ValueError, match="invalid URL path segment"):
+                client.pipes.delete_user_connected_account("user_01ABC", "..")
+        finally:
+            client.close()
+        assert httpx_mock.get_requests() == []
+
+    def test_build_url_rejects_dot_segments(self):
+        client = WorkOSClient(api_key="sk_test_123", client_id="client_test")
+        try:
+            with pytest.raises(ValueError, match="invalid URL path segment"):
+                client.build_url(("sso", ".."), {"client_id": "client_test"})
+        finally:
+            client.close()
+
+
+@pytest.mark.asyncio
+class TestEncodePathAsync:
+    async def test_dot_segment_is_rejected_before_any_request(self, httpx_mock):
+        client = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test")
+        try:
+            with pytest.raises(ValueError, match="invalid URL path segment"):
+                await client.pipes.delete_user_connected_account("user_01ABC", "..")
+        finally:
+            await client.close()
+        assert httpx_mock.get_requests() == []

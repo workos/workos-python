@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integrations_vend_credentials_request_connection_owner import (
+    DataIntegrationsVendCredentialsRequestConnectionOwner,
+)
 
 
 @dataclass(slots=True)
@@ -13,11 +17,17 @@ class DataIntegrationsVendCredentialsRequest:
     """Data Integrations Vend Credentials Request model."""
 
     user_id: str
-    """A [User](https://workos.com/docs/reference/authkit/user) identifier."""
+    """A [User](https://workos.com/docs/reference/authkit/user) identifier. When `connection_owner` is `organization`, this is the user the credentials are vended on behalf of; they must be an active member of the organization."""
     organization_id: str | None = None
-    """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization."""
+    """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
     connected_account_id: str | None = None
     """A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider."""
+    connection_owner: DataIntegrationsVendCredentialsRequestConnectionOwner | None = (
+        None
+    )
+    """Which connection to vend from. `user` (the default) vends the user's own connection and requires `user_id`. `organization` vends the organization's shared connection and requires `organization_id`."""
+    supports_multiple_connections: bool | None = None
+    """Set to `true` to use the plural connection contract. If no `connected_account_id` is supplied and several connections match, the request returns `account_selection_required`. When omitted or `false`, only the compatibility connection is considered."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsVendCredentialsRequest:
@@ -27,6 +37,12 @@ class DataIntegrationsVendCredentialsRequest:
                 user_id=data["user_id"],
                 organization_id=data.get("organization_id"),
                 connected_account_id=data.get("connected_account_id"),
+                connection_owner=DataIntegrationsVendCredentialsRequestConnectionOwner(
+                    _v_connection_owner
+                )
+                if (_v_connection_owner := data.get("connection_owner")) is not None
+                else None,
+                supports_multiple_connections=data.get("supports_multiple_connections"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsVendCredentialsRequest", e)
@@ -39,4 +55,12 @@ class DataIntegrationsVendCredentialsRequest:
             result["organization_id"] = self.organization_id
         if self.connected_account_id is not None:
             result["connected_account_id"] = self.connected_account_id
+        if self.connection_owner is not None:
+            result["connection_owner"] = (
+                self.connection_owner.value
+                if isinstance(self.connection_owner, Enum)
+                else self.connection_owner
+            )
+        if self.supports_multiple_connections is not None:
+            result["supports_multiple_connections"] = self.supports_multiple_connections
         return result

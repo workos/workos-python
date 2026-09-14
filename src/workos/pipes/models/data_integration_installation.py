@@ -14,10 +14,10 @@ class DataIntegrationInstallation:
 
     id: str
     """Unique identifier of the installation."""
-    user_id: str
-    """The User the API key was installed for."""
+    user_id: str | None
+    """The User the API key was installed for. Null on an `organization`-owned integration, whose installations belong to the organization."""
     organization_id: str | None
-    """The Organization the installation is scoped to, or null when unscoped."""
+    """The Organization the installation is scoped to (or owned by, on an `organization`-owned integration), or null when unscoped."""
     api_key_last_4: str | None
     """The last four characters of the stored API key. The full key is never returned."""
 
@@ -38,7 +38,10 @@ class DataIntegrationInstallation:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["id"] = self.id
-        result["user_id"] = self.user_id
+        if self.user_id is not None:
+            result["user_id"] = self.user_id
+        else:
+            result["user_id"] = None
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         else:

@@ -15,6 +15,7 @@ from .authenticate_response import AuthenticateResponse as AuthenticateResponse
 from .authenticate_response_oauth_token import (
     AuthenticateResponseOAuthToken as AuthenticateResponseOAuthToken,
 )
+from .authkit_oauth_resource import AuthkitOAuthResource as AuthkitOAuthResource
 from .authorization_code_session_authenticate_request import (
     AuthorizationCodeSessionAuthenticateRequest as AuthorizationCodeSessionAuthenticateRequest,
 )
@@ -23,6 +24,9 @@ from .authorized_connect_application_list_data import (
 )
 from .confirm_email_change import ConfirmEmailChange as ConfirmEmailChange
 from .cors_origin_response import CORSOriginResponse as CORSOriginResponse
+from .create_authkit_oauth_resource import (
+    CreateAuthkitOAuthResource as CreateAuthkitOAuthResource,
+)
 from .create_cors_origin import CreateCORSOrigin as CreateCORSOrigin
 from .create_magic_code_and_return import (
     CreateMagicCodeAndReturn as CreateMagicCodeAndReturn,

@@ -35,6 +35,7 @@ from ..session import (
 )
 from .models import (
     AuthenticateResponse,
+    AuthkitOAuthResource,
     AuthorizationCodeSessionAuthenticateRequest,
     AuthorizedConnectApplicationListData,
     CORSOriginResponse,
@@ -813,6 +814,119 @@ class UserManagement:
             method="post",
             path=("user_management", "sessions", "revoke"),
             body=body,
+            request_options=request_options,
+        )
+
+    def list_authkit_oauth_resources(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[AuthkitOAuthResource]:
+        """List MCP resource indicators
+
+        Lists the MCP resource indicators configured for an environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AuthkitOAuthResource]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("user_management", "authkit_oauth_resources"),
+            model=AuthkitOAuthResource,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_authkit_oauth_resource(
+        self,
+        *,
+        uri: str,
+        default: bool | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AuthkitOAuthResource:
+        """Create an MCP resource indicator
+
+        Adds an MCP resource indicator (RFC 8707) to an environment, leaving any others in place.
+
+        Args:
+            uri: The resource URI. May be a wildcard pattern with a single `*` in the leftmost hostname label, where enabled for the environment.
+            default: Whether the resource being created becomes the environment default, clearing any previous default. Applies at creation only — this API has no update endpoint yet, so changing the default on an existing resource is done from the dashboard. A wildcard pattern cannot be the default.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AuthkitOAuthResource
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "uri": uri,
+                "default": default,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("user_management", "authkit_oauth_resources"),
+            body=body,
+            model=AuthkitOAuthResource,
+            request_options=request_options,
+        )
+
+    def delete_authkit_oauth_resource(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an MCP resource indicator
+
+        Removes an MCP resource indicator from an environment. Any application consents granted against it are removed too.
+
+        Args:
+            id: The ID of the MCP resource indicator to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("user_management", "authkit_oauth_resources", str(id)),
             request_options=request_options,
         )
 
@@ -3452,6 +3566,119 @@ class AsyncUserManagement:
             method="post",
             path=("user_management", "sessions", "revoke"),
             body=body,
+            request_options=request_options,
+        )
+
+    async def list_authkit_oauth_resources(
+        self,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[AuthkitOAuthResource]:
+        """List MCP resource indicators
+
+        Lists the MCP resource indicators configured for an environment.
+
+        Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AuthkitOAuthResource]
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("user_management", "authkit_oauth_resources"),
+            model=AuthkitOAuthResource,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_authkit_oauth_resource(
+        self,
+        *,
+        uri: str,
+        default: bool | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AuthkitOAuthResource:
+        """Create an MCP resource indicator
+
+        Adds an MCP resource indicator (RFC 8707) to an environment, leaving any others in place.
+
+        Args:
+            uri: The resource URI. May be a wildcard pattern with a single `*` in the leftmost hostname label, where enabled for the environment.
+            default: Whether the resource being created becomes the environment default, clearing any previous default. Applies at creation only — this API has no update endpoint yet, so changing the default on an existing resource is done from the dashboard. A wildcard pattern cannot be the default.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AuthkitOAuthResource
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "uri": uri,
+                "default": default,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("user_management", "authkit_oauth_resources"),
+            body=body,
+            model=AuthkitOAuthResource,
+            request_options=request_options,
+        )
+
+    async def delete_authkit_oauth_resource(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an MCP resource indicator
+
+        Removes an MCP resource indicator from an environment. Any application consents granted against it are removed too.
+
+        Args:
+            id: The ID of the MCP resource indicator to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("user_management", "authkit_oauth_resources", str(id)),
             request_options=request_options,
         )
 

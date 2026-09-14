@@ -229,6 +229,7 @@ class TestModelRoundTrip:
             "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
             "slug": "github",
             "integration_type": "github",
+            "ownership": "user",
             "description": None,
             "enabled": True,
             "state": "valid",
@@ -248,6 +249,7 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["slug"] == data["slug"]
         assert serialized["integration_type"] == data["integration_type"]
+        assert serialized["ownership"] == data["ownership"]
         assert serialized["description"] == data["description"]
         assert serialized["enabled"] == data["enabled"]
         assert serialized["state"] == data["state"]
@@ -267,6 +269,7 @@ class TestModelRoundTrip:
             "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
             "slug": "github",
             "integration_type": "github",
+            "ownership": "user",
             "description": None,
             "enabled": True,
             "state": "valid",
@@ -294,9 +297,10 @@ class TestModelRoundTrip:
             "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
             "slug": "github",
             "integration_type": "github",
+            "ownership": "unexpected_data_integration_ownership",
             "description": "Production GitHub app",
             "enabled": True,
-            "state": "unexpected_data_integration_state",
+            "state": "valid",
             "scopes": ["repo", "read:org"],
             "redirect_uri": "https://api.workos.com/data-integrations/github/dik_01EHZNVPK3SFK441A1RGBFSHRT/callback",
             "auth_methods": ["oauth"],
@@ -909,7 +913,7 @@ class TestModelRoundTrip:
     def test_data_integration_installation_minimal_payload(self):
         data = {
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": None,
             "organization_id": None,
             "api_key_last_4": None,
         }
@@ -923,12 +927,13 @@ class TestModelRoundTrip:
     def test_data_integration_installation_preserves_nullable_fields(self):
         data = {
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "user_id": None,
             "organization_id": None,
             "api_key_last_4": None,
         }
         instance = DataIntegrationInstallation.from_dict(data)
         serialized = instance.to_dict()
+        assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
 

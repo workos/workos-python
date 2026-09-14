@@ -10,6 +10,9 @@ from workos._types import _raise_deserialize_error
 from workos.common.models.create_data_integration_auth_methods import (
     CreateDataIntegrationAuthMethods,
 )
+from workos.common.models.create_data_integration_ownership import (
+    CreateDataIntegrationOwnership,
+)
 
 from .api_key_installation import ApiKeyInstallation
 from .custom_provider_definition import CustomProviderDefinition
@@ -22,6 +25,8 @@ class CreateDataIntegration:
 
     provider: str
     """The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug."""
+    ownership: CreateDataIntegrationOwnership | None = None
+    """Who owns the Data Integration. `user` (the default) creates the integration users connect their own accounts to; `organization` creates the root organizations connect to. Ownership is fixed at creation, and one integration of each ownership may exist per provider. Independent of `credentials.type`."""
     description: str | None = None
     """An optional description of the Data Integration."""
     enabled: bool | None = None
@@ -45,6 +50,9 @@ class CreateDataIntegration:
         try:
             return cls(
                 provider=data["provider"],
+                ownership=CreateDataIntegrationOwnership(_v_ownership)
+                if (_v_ownership := data.get("ownership")) is not None
+                else None,
                 description=data.get("description"),
                 enabled=data.get("enabled"),
                 scopes=data.get("scopes"),
@@ -76,6 +84,12 @@ class CreateDataIntegration:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["provider"] = self.provider
+        if self.ownership is not None:
+            result["ownership"] = (
+                self.ownership.value
+                if isinstance(self.ownership, Enum)
+                else self.ownership
+            )
         if self.description is not None:
             result["description"] = self.description
         else:

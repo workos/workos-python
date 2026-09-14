@@ -11,6 +11,7 @@ from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_
 from workos.common.models.data_integration_auth_methods import (
     DataIntegrationAuthMethods,
 )
+from workos.common.models.data_integration_ownership import DataIntegrationOwnership
 from workos.common.models.data_integration_state import DataIntegrationState
 
 from .data_integration_credential import DataIntegrationCredential
@@ -30,6 +31,8 @@ class DataIntegration:
     """The provider slug for this Data Integration."""
     integration_type: str
     """The integration type derived from the provider."""
+    ownership: DataIntegrationOwnership
+    """Who owns the Data Integration: `user` when users connect their own accounts, `organization` when organizations connect. Fixed at creation."""
     description: str | None
     """An optional description of the Data Integration."""
     enabled: bool
@@ -64,6 +67,7 @@ class DataIntegration:
                 id=data["id"],
                 slug=data["slug"],
                 integration_type=data["integration_type"],
+                ownership=DataIntegrationOwnership(data["ownership"]),
                 description=data["description"],
                 enabled=data["enabled"],
                 state=DataIntegrationState(data["state"]),
@@ -102,6 +106,9 @@ class DataIntegration:
         result["id"] = self.id
         result["slug"] = self.slug
         result["integration_type"] = self.integration_type
+        result["ownership"] = (
+            self.ownership.value if isinstance(self.ownership, Enum) else self.ownership
+        )
         if self.description is not None:
             result["description"] = self.description
         else:

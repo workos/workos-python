@@ -7,6 +7,7 @@ from workos.user_management.models import (
     AuthenticateResponse,
     AuthenticateResponseImpersonator,
     AuthenticateResponseOAuthToken,
+    AuthkitOAuthResource,
     AuthorizedConnectApplicationListData,
     CORSOriginResponse,
     DeviceAuthorizationResponse,
@@ -199,6 +200,32 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["verification_id"] == data["verification_id"]
         assert serialized["phone_number"] == data["phone_number"]
+
+    def test_authkit_oauth_resource_round_trip(self):
+        data = load_fixture("authkit_oauth_resource.json")
+        instance = AuthkitOAuthResource.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResource.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resource_minimal_payload(self):
+        data = {
+            "object": "authkit_oauth_resource",
+            "id": "authkit_oauth_resource_01EHZNVPK3SFK441A1RGBFSHRT",
+            "uri": "https://api.example.com",
+            "default": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuthkitOAuthResource.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["uri"] == data["uri"]
+        assert serialized["default"] == data["default"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
 
     def test_redirect_uri_round_trip(self):
         data = load_fixture("redirect_uri.json")

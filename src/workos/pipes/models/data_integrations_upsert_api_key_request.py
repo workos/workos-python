@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
+    DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
 
 
 @dataclass(slots=True)
@@ -17,7 +21,11 @@ class DataIntegrationsUpsertApiKeyRequest:
     secret: str
     """The API key secret to store for this integration."""
     organization_id: str | None = None
-    """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization."""
+    """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
+    connected_account_id: str | None = None
+    """A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection."""
+    connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner | None = None
+    """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsUpsertApiKeyRequest:
@@ -27,6 +35,12 @@ class DataIntegrationsUpsertApiKeyRequest:
                 user_id=data["user_id"],
                 secret=data["secret"],
                 organization_id=data.get("organization_id"),
+                connected_account_id=data.get("connected_account_id"),
+                connection_owner=DataIntegrationsUpsertApiKeyRequestConnectionOwner(
+                    _v_connection_owner
+                )
+                if (_v_connection_owner := data.get("connection_owner")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsUpsertApiKeyRequest", e)
@@ -38,4 +52,12 @@ class DataIntegrationsUpsertApiKeyRequest:
         result["secret"] = self.secret
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
+        if self.connected_account_id is not None:
+            result["connected_account_id"] = self.connected_account_id
+        if self.connection_owner is not None:
+            result["connection_owner"] = (
+                self.connection_owner.value
+                if isinstance(self.connection_owner, Enum)
+                else self.connection_owner
+            )
         return result

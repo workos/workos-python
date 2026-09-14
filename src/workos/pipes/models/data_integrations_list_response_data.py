@@ -46,9 +46,9 @@ class DataIntegrationsListResponseData:
     updated_at: str
     """The timestamp when the provider was last updated."""
     connected_account: DataIntegrationsListResponseDataConnectedAccount | None
-    """The user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` if the user has not connected."""
+    """The user's compatibility [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` when the compatibility slot is empty. This legacy field never selects a standard connection."""
     connected_accounts: list[DataIntegrationsListResponseDataConnectedAccount]
-    """The user's connected accounts for this provider in the requested ownership context."""
+    """The user's connected accounts for this provider in the requested ownership context. This contains only the compatibility connection unless `supports_multiple_connections` is `true`."""
     auth_methods: list[DataIntegrationsListResponseDataAuthMethods] | None = None
     """The authentication methods supported by this provider (`oauth`, `api_key`, `client_credentials`, or a combination). Defaults to `["oauth"]` if absent."""
 

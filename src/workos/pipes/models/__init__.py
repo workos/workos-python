@@ -60,6 +60,7 @@ from .data_integrations_upsert_client_credentials_request import (
 from .data_integrations_vend_credentials_request import (
     DataIntegrationsVendCredentialsRequest as DataIntegrationsVendCredentialsRequest,
 )
+from .pipes_ownership import PipesOwnership as PipesOwnership
 from .update_custom_provider_definition import (
     UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
 )

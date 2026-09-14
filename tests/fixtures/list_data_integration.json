@@ -5,6 +5,7 @@
       "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
       "slug": "github",
       "integration_type": "github",
+      "ownership": "user",
       "description": "Production GitHub app",
       "enabled": true,
       "state": "valid",

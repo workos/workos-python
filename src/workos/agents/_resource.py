@@ -596,6 +596,7 @@ class Agents:
         before: str | None = None,
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
         agent_blueprint_id: str | None = None,
         agent_instance_id: str | None = None,
         request_options: RequestOptions | None = None,
@@ -609,6 +610,7 @@ class Agents:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            organization_id: Only return sessions of instances acting within this organization.
             agent_blueprint_id: Only return sessions of instances minted from this blueprint.
             agent_instance_id: Only return sessions belonging to this agent instance.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -629,6 +631,7 @@ class Agents:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
                 "agent_blueprint_id": agent_blueprint_id,
                 "agent_instance_id": agent_instance_id,
             }.items()
@@ -1265,6 +1268,7 @@ class AsyncAgents:
         before: str | None = None,
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
+        organization_id: str | None = None,
         agent_blueprint_id: str | None = None,
         agent_instance_id: str | None = None,
         request_options: RequestOptions | None = None,
@@ -1278,6 +1282,7 @@ class AsyncAgents:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            organization_id: Only return sessions of instances acting within this organization.
             agent_blueprint_id: Only return sessions of instances minted from this blueprint.
             agent_instance_id: Only return sessions belonging to this agent instance.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1298,6 +1303,7 @@ class AsyncAgents:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
                 "agent_blueprint_id": agent_blueprint_id,
                 "agent_instance_id": agent_instance_id,
             }.items()

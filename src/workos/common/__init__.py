@@ -4,6 +4,7 @@ from .models import *
 from .models import (
     AccessTokenAgentRegistrationCredentialIssuedDataDetail as AccessTokenAgentRegistrationCredentialIssuedDataDetail,
 )
+from .models import AccountSelectionRequiredError as AccountSelectionRequiredError
 from .models import ActionAuthenticationDenied as ActionAuthenticationDenied
 from .models import ActionAuthenticationDeniedData as ActionAuthenticationDeniedData
 from .models import ActionUserRegistrationDenied as ActionUserRegistrationDenied
@@ -262,6 +263,7 @@ from .models import (
     CreateConnectionOIDCOptionsTokenAuthenticationMethod as CreateConnectionOIDCOptionsTokenAuthenticationMethod,
 )
 from .models import CreateDataIntegrationAuthMethods as CreateDataIntegrationAuthMethods
+from .models import CreateDataIntegrationOwnership as CreateDataIntegrationOwnership
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateUserPasswordSaltPosition as CreateUserPasswordSaltPosition
@@ -286,6 +288,10 @@ from .models import DataIntegrationCredentialType as DataIntegrationCredentialTy
 from .models import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
+from .models import DataIntegrationOwnership as DataIntegrationOwnership
+from .models import (
+    DataIntegrationsGetUserTokenRequestConnectionOwner as DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
 from .models import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
 )
@@ -299,6 +305,15 @@ from .models import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
 from .models import DataIntegrationState as DataIntegrationState
+from .models import (
+    DataIntegrationsUpsertApiKeyRequestConnectionOwner as DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsUpsertClientCredentialsRequestConnectionOwner as DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsVendCredentialsRequestConnectionOwner as DataIntegrationsVendCredentialsRequestConnectionOwner,
+)
 from .models import DirectoryGroup as DirectoryGroup
 from .models import DirectoryState as DirectoryState
 from .models import DirectoryType as DirectoryType

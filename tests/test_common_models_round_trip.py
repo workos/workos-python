@@ -5,6 +5,7 @@
 from tests.generated_helpers import load_fixture
 from workos.common.models import (
     AccessTokenAgentRegistrationCredentialIssuedDataDetail,
+    AccountSelectionRequiredError,
     ActionAuthenticationDenied,
     ActionAuthenticationDeniedData,
     ActionUserRegistrationDenied,
@@ -14941,6 +14942,24 @@ class TestModelRoundTrip:
         instance = WaitlistUserDenied.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
+
+    def test_account_selection_required_error_round_trip(self):
+        data = load_fixture("account_selection_required_error.json")
+        instance = AccountSelectionRequiredError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AccountSelectionRequiredError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_account_selection_required_error_minimal_payload(self):
+        data = {
+            "code": "account_selection_required",
+            "message": "Several connected accounts match this user for this provider. Name one with a connected account id.",
+        }
+        instance = AccountSelectionRequiredError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
 
     def test_auth_method_mismatch_error_round_trip(self):
         data = load_fixture("auth_method_mismatch_error.json")

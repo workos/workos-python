@@ -13,7 +13,7 @@ class AuditLogsRetention:
     """Audit Logs Retention model."""
 
     retention_period_in_days: int | None
-    """The number of days Audit Log events will be retained before being permanently deleted. Valid values are 30 and 365."""
+    """The number of days Audit Log events will be retained before being permanently deleted. Valid values are 30 through 330 in 30-day increments and 365 through 3650 in 365-day increments."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuditLogsRetention:

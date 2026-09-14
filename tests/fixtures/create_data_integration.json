@@ -1,5 +1,6 @@
 {
   "provider": "github",
+  "ownership": "user",
   "description": "Production GitHub app",
   "enabled": true,
   "scopes": [

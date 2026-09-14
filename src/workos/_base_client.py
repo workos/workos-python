@@ -42,6 +42,10 @@ MAX_RETRY_DELAY = 30
 RETRY_MULTIPLIER = 2
 
 
+# Segments that URL normalization treats structurally; never valid identifiers.
+_INVALID_PATH_SEGMENTS = frozenset({"", ".", ".."})
+
+
 class _BaseWorkOSClient:
     """Shared WorkOS client implementation."""
 
@@ -145,7 +149,16 @@ class _BaseWorkOSClient:
         Callers pass each path component as a separate element (e.g.
         ``("organizations", organization_id)``). Each element is URL-encoded
         with ``safe=""`` so a caller-supplied id containing ``/``, ``?``,
-        ``#``, ``%``, or ``..`` cannot escape its intended segment — this is
+        ``#``, or ``%`` cannot escape its intended segment.
+
+        Percent-encoding alone does not cover dot segments: ``.`` is an
+        unreserved character that :func:`urllib.parse.quote` leaves as-is, and
+        httpx applies RFC 3986 dot-segment removal when it builds the request
+        URL, so a bare ``.`` or ``..`` segment would collapse the path onto the
+        parent resource (for example, turning a DELETE of one connected account
+        into a DELETE of the whole user). Empty, ``.`` and ``..`` segments are
+        never valid WorkOS identifiers, so they are rejected with
+        ``ValueError`` before any request is made. Together these checks are
         the structural protection against forged cross-resource API requests
         under the application's API key.
 
@@ -157,7 +170,14 @@ class _BaseWorkOSClient:
             raise TypeError(
                 "path must be a sequence of segments (e.g. a tuple), not a str"
             )
-        return "/".join(quote(str(seg), safe="") for seg in path)
+        segments = [str(seg) for seg in path]
+        for seg in segments:
+            if seg in _INVALID_PATH_SEGMENTS:
+                raise ValueError(
+                    f"invalid URL path segment {seg!r}: path segments must be "
+                    "non-empty and cannot be '.' or '..'"
+                )
+        return "/".join(quote(seg, safe="") for seg in segments)
 
     def _resolve_timeout(self, request_options: Optional[RequestOptions]) -> float:
         timeout = self._request_timeout

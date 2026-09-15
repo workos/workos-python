@@ -1,5 +1,21 @@
 # Changelog
 
+## [10.4.0](https://github.com/workos/workos-python/compare/v10.3.0...v10.4.0) (2026-09-15)
+
+
+### Features
+
+* **agents:** Add parameter `AgentsSessions.list.organization_id` ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* **generated:** Pipes (batch 8ad8e447) ([#723](https://github.com/workos/workos-python/issues/723)) ([50c29a3](https://github.com/workos/workos-python/commit/50c29a337021972d8768ae976ed28ad1d800b2ac))
+* **pipes:** Update Pipes API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* **user_management:** Add user management API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+
+
+### Bug Fixes
+
+* **pipes:** Update Pipes API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* reject empty and dot path segments before building request URLs ([#728](https://github.com/workos/workos-python/issues/728)) ([21735d2](https://github.com/workos/workos-python/commit/21735d2185dfd37e5873b079d92ad8f16a54719f))
+
 ## [10.3.0](https://github.com/workos/workos-python/compare/v10.2.0...v10.3.0) (2026-09-01)
 
 * [#719](https://github.com/workos/workos-python/pull/719) feat(generated)!: regenerate from spec (6 changes)

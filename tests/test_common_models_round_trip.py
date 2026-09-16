@@ -248,6 +248,13 @@ from workos.common.models import (
     PermissionUpdated,
     PermissionUpdatedData,
     PipeConnectedAccount,
+    PipesAccountConnectionAddFailed,
+    PipesAccountConnectionAddFailedData,
+    PipesAccountConnectionConnected,
+    PipesAccountConnectionConnectionFailed,
+    PipesAccountConnectionConnectionFailedData,
+    PipesAccountConnectionDisconnected,
+    PipesAccountConnectionReauthorizationNeeded,
     PipesConnectedAccountConnected,
     PipesConnectedAccountConnectionFailed,
     PipesConnectedAccountConnectionFailedData,
@@ -702,34 +709,68 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_pipe_connected_account_preserves_nullable_fields(self):
+    def test_pipe_connected_account_omits_absent_optional_non_nullable_fields(self):
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "account_identifier": "workspace_123",
+            "account_display_name": "Acme production",
             "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
             "provider_slug": "github",
-            "user_id": None,
-            "organization_id": None,
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "scopes": ["repo", "user:email"],
+            "api_key_last_4": None,
             "state": "connected",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = PipeConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
+        assert "connection_role" not in serialized
+        assert "auth_method" not in serialized
+
+    def test_pipe_connected_account_preserves_nullable_fields(self):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": None,
+            "account_display_name": None,
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "scopes": ["repo", "user:email"],
+            "auth_method": "oauth",
+            "api_key_last_4": None,
+            "state": "connected",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipeConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["account_identifier"] is None
+        assert serialized["account_display_name"] is None
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
+        assert serialized["api_key_last_4"] is None
 
     def test_pipe_connected_account_round_trips_unknown_enum_values(self):
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "unexpected_pipe_connected_account_connection_role",
+            "account_identifier": "workspace_123",
+            "account_display_name": "Acme production",
             "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
             "provider_slug": "github",
             "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "scopes": ["repo", "user:email"],
-            "state": "unexpected_pipe_connected_account_state",
+            "auth_method": "oauth",
+            "api_key_last_4": None,
+            "state": "connected",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -12333,6 +12374,462 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
+    def test_pipes_account_connection_add_failed_round_trip(self):
+        data = load_fixture("pipes_account_connection_add_failed.json")
+        instance = PipesAccountConnectionAddFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionAddFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_add_failed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.add_failed",
+            "data": {
+                "object": "connection_failed",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
+                "error_code": "authorization_code_exchange_error",
+                "error_reason": "The authorization code has expired.",
+                "provider_error": "access_denied",
+                "provider_error_description": "The user denied the authorization request.",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionAddFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_add_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.add_failed",
+            "data": {
+                "object": "connection_failed",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
+                "error_code": "authorization_code_exchange_error",
+                "error_reason": "The authorization code has expired.",
+                "provider_error": "access_denied",
+                "provider_error_description": "The user denied the authorization request.",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionAddFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_account_connection_add_failed_data_round_trip(self):
+        data = load_fixture("pipes_account_connection_add_failed_data.json")
+        instance = PipesAccountConnectionAddFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionAddFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_add_failed_data_minimal_payload(self):
+        data = {
+            "object": "connection_failed",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "error_code": "authorization_code_exchange_error",
+            "error_reason": None,
+            "provider_error": None,
+            "provider_error_description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionAddFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data_integration_id"] == data["data_integration_id"]
+        assert serialized["provider_slug"] == data["provider_slug"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["error_code"] == data["error_code"]
+        assert serialized["error_reason"] == data["error_reason"]
+        assert serialized["provider_error"] == data["provider_error"]
+        assert (
+            serialized["provider_error_description"]
+            == data["provider_error_description"]
+        )
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_add_failed_data_preserves_nullable_fields(self):
+        data = {
+            "object": "connection_failed",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "account_identifier": None,
+            "error_code": "authorization_code_exchange_error",
+            "error_reason": None,
+            "provider_error": None,
+            "provider_error_description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionAddFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["user_id"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["account_identifier"] is None
+        assert serialized["error_reason"] is None
+        assert serialized["provider_error"] is None
+        assert serialized["provider_error_description"] is None
+
+    def test_pipes_account_connection_connected_round_trip(self):
+        data = load_fixture("pipes_account_connection_connected.json")
+        instance = PipesAccountConnectionConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionConnected.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_connected_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.connected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_connected_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.connected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_account_connection_connection_failed_round_trip(self):
+        data = load_fixture("pipes_account_connection_connection_failed.json")
+        instance = PipesAccountConnectionConnectionFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionConnectionFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_connection_failed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.connection_failed",
+            "data": {
+                "object": "connection_failed",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
+                "error_code": "authorization_code_exchange_error",
+                "error_reason": "The authorization code has expired.",
+                "provider_error": "access_denied",
+                "provider_error_description": "The user denied the authorization request.",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnectionFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_connection_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.connection_failed",
+            "data": {
+                "object": "connection_failed",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
+                "error_code": "authorization_code_exchange_error",
+                "error_reason": "The authorization code has expired.",
+                "provider_error": "access_denied",
+                "provider_error_description": "The user denied the authorization request.",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnectionFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_account_connection_connection_failed_data_round_trip(self):
+        data = load_fixture("pipes_account_connection_connection_failed_data.json")
+        instance = PipesAccountConnectionConnectionFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionConnectionFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_connection_failed_data_minimal_payload(self):
+        data = {
+            "object": "connection_failed",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "error_code": "authorization_code_exchange_error",
+            "error_reason": None,
+            "provider_error": None,
+            "provider_error_description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnectionFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data_integration_id"] == data["data_integration_id"]
+        assert serialized["provider_slug"] == data["provider_slug"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["error_code"] == data["error_code"]
+        assert serialized["error_reason"] == data["error_reason"]
+        assert serialized["provider_error"] == data["provider_error"]
+        assert (
+            serialized["provider_error_description"]
+            == data["provider_error_description"]
+        )
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_connection_failed_data_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "connection_failed",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "account_identifier": None,
+            "error_code": "authorization_code_exchange_error",
+            "error_reason": None,
+            "provider_error": None,
+            "provider_error_description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionConnectionFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["user_id"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["account_identifier"] is None
+        assert serialized["error_reason"] is None
+        assert serialized["provider_error"] is None
+        assert serialized["provider_error_description"] is None
+
+    def test_pipes_account_connection_disconnected_round_trip(self):
+        data = load_fixture("pipes_account_connection_disconnected.json")
+        instance = PipesAccountConnectionDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionDisconnected.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_disconnected_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.disconnected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_disconnected_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.disconnected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_account_connection_reauthorization_needed_round_trip(self):
+        data = load_fixture("pipes_account_connection_reauthorization_needed.json")
+        instance = PipesAccountConnectionReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesAccountConnectionReauthorizationNeeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_account_connection_reauthorization_needed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.reauthorization_needed",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_pipes_account_connection_reauthorization_needed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.account_connection.reauthorization_needed",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipesAccountConnectionReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
     def test_pipes_connected_account_connected_round_trip(self):
         data = load_fixture("pipes_connected_account_connected.json")
         instance = PipesConnectedAccountConnected.from_dict(data)
@@ -12349,11 +12846,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -12378,11 +12880,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -12412,6 +12919,7 @@ class TestModelRoundTrip:
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
                 "error_code": "authorization_code_exchange_error",
                 "error_reason": "The authorization code has expired.",
                 "provider_error": "access_denied",
@@ -12441,6 +12949,7 @@ class TestModelRoundTrip:
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "account_identifier": None,
                 "error_code": "authorization_code_exchange_error",
                 "error_reason": "The authorization code has expired.",
                 "provider_error": "access_denied",
@@ -12499,6 +13008,7 @@ class TestModelRoundTrip:
             "provider_slug": "github",
             "user_id": None,
             "organization_id": None,
+            "account_identifier": None,
             "error_code": "authorization_code_exchange_error",
             "error_reason": None,
             "provider_error": None,
@@ -12509,6 +13019,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
+        assert serialized["account_identifier"] is None
         assert serialized["error_reason"] is None
         assert serialized["provider_error"] is None
         assert serialized["provider_error_description"] is None
@@ -12529,11 +13040,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -12558,11 +13074,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -12589,11 +13110,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -12618,11 +13144,16 @@ class TestModelRoundTrip:
             "data": {
                 "object": "connected_account",
                 "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "connection_role": "compatibility",
+                "account_identifier": "workspace_123",
+                "account_display_name": "Acme production",
                 "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
                 "provider_slug": "github",
                 "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "scopes": ["repo", "user:email"],
+                "auth_method": "oauth",
+                "api_key_last_4": None,
                 "state": "connected",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",

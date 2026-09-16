@@ -366,6 +366,10 @@ from .connected_account import ConnectedAccount as ConnectedAccount
 from .connected_account_auth_method import (
     ConnectedAccountAuthMethod as ConnectedAccountAuthMethod,
 )
+from .connected_account_connection_role import (
+    ConnectedAccountConnectionRole as ConnectedAccountConnectionRole,
+)
+from .connected_account_input import ConnectedAccountInput as ConnectedAccountInput
 from .connected_account_input_state import (
     ConnectedAccountInputState as ConnectedAccountInputState,
 )
@@ -471,21 +475,42 @@ from .data_integration_credentials_response_error import (
 from .data_integration_custom_provider_authenticate_via import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
+from .data_integration_installation_connection_role import (
+    DataIntegrationInstallationConnectionRole as DataIntegrationInstallationConnectionRole,
+)
 from .data_integration_ownership import (
     DataIntegrationOwnership as DataIntegrationOwnership,
 )
 from .data_integration_state import DataIntegrationState as DataIntegrationState
+from .data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
 from .data_integrations_get_user_token_request_connection_owner import (
     DataIntegrationsGetUserTokenRequestConnectionOwner as DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
+from .data_integrations_list_response import (
+    DataIntegrationsListResponse as DataIntegrationsListResponse,
+)
+from .data_integrations_list_response_data import (
+    DataIntegrationsListResponseData as DataIntegrationsListResponseData,
 )
 from .data_integrations_list_response_data_auth_methods import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
 )
+from .data_integrations_list_response_data_connected_account import (
+    DataIntegrationsListResponseDataConnectedAccount as DataIntegrationsListResponseDataConnectedAccount,
+)
 from .data_integrations_list_response_data_connected_account_auth_method import (
     DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
+from .data_integrations_list_response_data_connected_account_connection_role import (
+    DataIntegrationsListResponseDataConnectedAccountConnectionRole as DataIntegrationsListResponseDataConnectedAccountConnectionRole,
+)
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
+)
+from .data_integrations_list_response_data_connection_owner import (
+    DataIntegrationsListResponseDataConnectionOwner as DataIntegrationsListResponseDataConnectionOwner,
 )
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
@@ -801,6 +826,27 @@ from .permission_updated import PermissionUpdated as PermissionUpdated
 from .permission_updated_data import PermissionUpdatedData as PermissionUpdatedData
 from .pipe_connected_account import PipeConnectedAccount as PipeConnectedAccount
 from .pipe_connected_account_state import *
+from .pipes_account_connection_add_failed import (
+    PipesAccountConnectionAddFailed as PipesAccountConnectionAddFailed,
+)
+from .pipes_account_connection_add_failed_data import (
+    PipesAccountConnectionAddFailedData as PipesAccountConnectionAddFailedData,
+)
+from .pipes_account_connection_connected import (
+    PipesAccountConnectionConnected as PipesAccountConnectionConnected,
+)
+from .pipes_account_connection_connection_failed import (
+    PipesAccountConnectionConnectionFailed as PipesAccountConnectionConnectionFailed,
+)
+from .pipes_account_connection_connection_failed_data import (
+    PipesAccountConnectionConnectionFailedData as PipesAccountConnectionConnectionFailedData,
+)
+from .pipes_account_connection_disconnected import (
+    PipesAccountConnectionDisconnected as PipesAccountConnectionDisconnected,
+)
+from .pipes_account_connection_reauthorization_needed import (
+    PipesAccountConnectionReauthorizationNeeded as PipesAccountConnectionReauthorizationNeeded,
+)
 from .pipes_connected_account_connected import (
     PipesConnectedAccountConnected as PipesConnectedAccountConnected,
 )

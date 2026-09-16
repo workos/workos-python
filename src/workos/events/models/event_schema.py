@@ -144,6 +144,21 @@ from workos.common.models.password_reset_succeeded import PasswordResetSucceeded
 from workos.common.models.permission_created import PermissionCreated
 from workos.common.models.permission_deleted import PermissionDeleted
 from workos.common.models.permission_updated import PermissionUpdated
+from workos.common.models.pipes_account_connection_add_failed import (
+    PipesAccountConnectionAddFailed,
+)
+from workos.common.models.pipes_account_connection_connected import (
+    PipesAccountConnectionConnected,
+)
+from workos.common.models.pipes_account_connection_connection_failed import (
+    PipesAccountConnectionConnectionFailed,
+)
+from workos.common.models.pipes_account_connection_disconnected import (
+    PipesAccountConnectionDisconnected,
+)
+from workos.common.models.pipes_account_connection_reauthorization_needed import (
+    PipesAccountConnectionReauthorizationNeeded,
+)
 from workos.common.models.pipes_connected_account_connected import (
     PipesConnectedAccountConnected,
 )
@@ -296,6 +311,11 @@ EventSchemaVariant = Union[
     PermissionCreated,
     PermissionDeleted,
     PermissionUpdated,
+    PipesAccountConnectionAddFailed,
+    PipesAccountConnectionConnected,
+    PipesAccountConnectionConnectionFailed,
+    PipesAccountConnectionDisconnected,
+    PipesAccountConnectionReauthorizationNeeded,
     PipesConnectedAccountConnected,
     PipesConnectedAccountConnectionFailed,
     PipesConnectedAccountDisconnected,
@@ -426,6 +446,11 @@ class EventSchema:
         "permission.created": PermissionCreated,
         "permission.deleted": PermissionDeleted,
         "permission.updated": PermissionUpdated,
+        "pipes.account_connection.add_failed": PipesAccountConnectionAddFailed,
+        "pipes.account_connection.connected": PipesAccountConnectionConnected,
+        "pipes.account_connection.connection_failed": PipesAccountConnectionConnectionFailed,
+        "pipes.account_connection.disconnected": PipesAccountConnectionDisconnected,
+        "pipes.account_connection.reauthorization_needed": PipesAccountConnectionReauthorizationNeeded,
         "pipes.connected_account.connected": PipesConnectedAccountConnected,
         "pipes.connected_account.connection_failed": PipesConnectedAccountConnectionFailed,
         "pipes.connected_account.disconnected": PipesConnectedAccountDisconnected,

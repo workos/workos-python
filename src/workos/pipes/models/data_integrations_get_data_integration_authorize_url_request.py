@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
 
 
 @dataclass(slots=True)
@@ -13,9 +17,13 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
     """Data Integrations Get Data Integration Authorize Url Request model."""
 
     user_id: str
-    """The ID of the user to authorize."""
+    """The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account."""
     organization_id: str | None = None
-    """An organization ID to scope the authorization to a specific organization."""
+    """An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`."""
+    connection_owner: (
+        DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner | None
+    ) = None
+    """Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`."""
     return_to: str | None = None
     """The URL to redirect the user to after authorization."""
     config: dict[str, str] | None = None
@@ -30,6 +38,11 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
             return cls(
                 user_id=data["user_id"],
                 organization_id=data.get("organization_id"),
+                connection_owner=DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner(
+                    _v_connection_owner
+                )
+                if (_v_connection_owner := data.get("connection_owner")) is not None
+                else None,
                 return_to=data.get("return_to"),
                 config=data.get("config"),
             )
@@ -44,6 +57,12 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
         result["user_id"] = self.user_id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
+        if self.connection_owner is not None:
+            result["connection_owner"] = (
+                self.connection_owner.value
+                if isinstance(self.connection_owner, Enum)
+                else self.connection_owner
+            )
         if self.return_to is not None:
             result["return_to"] = self.return_to
         if self.config is not None:

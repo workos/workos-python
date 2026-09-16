@@ -8,6 +8,7 @@
     "provider_slug": "github",
     "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
     "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "account_identifier": null,
     "error_code": "authorization_code_exchange_error",
     "error_reason": "The authorization code has expired.",
     "provider_error": "access_denied",

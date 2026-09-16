@@ -17,6 +17,7 @@ from workos._errors import (
 from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import (
     ConnectedAccount,
+    DataIntegrationsListResponse,
     PaginationOrder,
 )
 from workos.pipes.models import (
@@ -24,7 +25,6 @@ from workos.pipes.models import (
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsResponse,
-    DataIntegrationsListResponse,
     PipesOwnership,
 )
 

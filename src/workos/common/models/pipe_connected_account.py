@@ -9,6 +9,8 @@ from typing import Any, Literal
 
 from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_error
 
+from .pipe_connected_account_auth_method import PipeConnectedAccountAuthMethod
+from .pipe_connected_account_connection_role import PipeConnectedAccountConnectionRole
 from .pipe_connected_account_state import PipeConnectedAccountState
 
 
@@ -36,6 +38,16 @@ class PipeConnectedAccount:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    connection_role: PipeConnectedAccountConnectionRole | None = None
+    """Whether this is the compatibility connection visible to undeclared clients or a standard connection for plural-aware clients. Historical events may omit this field."""
+    account_identifier: str | None = None
+    """A best-effort identifier for the provider account this connection points at. It is not the connection identifier or a selector. Historical events may omit this field."""
+    account_display_name: str | None = None
+    """A mutable, non-unique display name for the provider account connection. Historical events may omit this field."""
+    auth_method: PipeConnectedAccountAuthMethod | None = None
+    """How the connection authenticates. Historical events may omit this field."""
+    api_key_last_4: str | None = None
+    """The last four characters of the API key, or null for other authentication methods. Historical events may omit this field."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> PipeConnectedAccount:
@@ -52,6 +64,15 @@ class PipeConnectedAccount:
                 state=PipeConnectedAccountState(data["state"]),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                connection_role=PipeConnectedAccountConnectionRole(_v_connection_role)
+                if (_v_connection_role := data.get("connection_role")) is not None
+                else None,
+                account_identifier=data.get("account_identifier"),
+                account_display_name=data.get("account_display_name"),
+                auth_method=PipeConnectedAccountAuthMethod(_v_auth_method)
+                if (_v_auth_method := data.get("auth_method")) is not None
+                else None,
+                api_key_last_4=data.get("api_key_last_4"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("PipeConnectedAccount", e)
@@ -77,4 +98,28 @@ class PipeConnectedAccount:
         )
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        if self.connection_role is not None:
+            result["connection_role"] = (
+                self.connection_role.value
+                if isinstance(self.connection_role, Enum)
+                else self.connection_role
+            )
+        if self.account_identifier is not None:
+            result["account_identifier"] = self.account_identifier
+        else:
+            result["account_identifier"] = None
+        if self.account_display_name is not None:
+            result["account_display_name"] = self.account_display_name
+        else:
+            result["account_display_name"] = None
+        if self.auth_method is not None:
+            result["auth_method"] = (
+                self.auth_method.value
+                if isinstance(self.auth_method, Enum)
+                else self.auth_method
+            )
+        if self.api_key_last_4 is not None:
+            result["api_key_last_4"] = self.api_key_last_4
+        else:
+            result["api_key_last_4"] = None
         return result

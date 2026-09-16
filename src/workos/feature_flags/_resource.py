@@ -172,7 +172,7 @@ class FeatureFlags:
         Enables a feature flag for a specific target in the current environment. Currently, supported targets include users and organizations.
 
         Args:
-            resource_id: The resource ID in format "user_<id>" or "org_<id>".
+            resource_id: The resource ID in format \"user_<id>\" or \"org_<id>\".
             slug: The unique slug identifier of the feature flag.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -202,7 +202,7 @@ class FeatureFlags:
         Removes a target from the feature flag's target list in the current environment. Currently, supported targets include users and organizations.
 
         Args:
-            resource_id: The resource ID in format "user_<id>" or "org_<id>".
+            resource_id: The resource ID in format \"user_<id>\" or \"org_<id>\".
             slug: The unique slug identifier of the feature flag.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -476,7 +476,7 @@ class AsyncFeatureFlags:
         Enables a feature flag for a specific target in the current environment. Currently, supported targets include users and organizations.
 
         Args:
-            resource_id: The resource ID in format "user_<id>" or "org_<id>".
+            resource_id: The resource ID in format \"user_<id>\" or \"org_<id>\".
             slug: The unique slug identifier of the feature flag.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -506,7 +506,7 @@ class AsyncFeatureFlags:
         Removes a target from the feature flag's target list in the current environment. Currently, supported targets include users and organizations.
 
         Args:
-            resource_id: The resource ID in format "user_<id>" or "org_<id>".
+            resource_id: The resource ID in format \"user_<id>\" or \"org_<id>\".
             slug: The unique slug identifier of the feature flag.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 

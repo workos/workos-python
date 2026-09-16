@@ -1,6 +1,9 @@
 {
   "object": "connected_account",
   "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+  "connection_role": "compatibility",
+  "account_identifier": "workspace_123",
+  "account_display_name": "Acme production",
   "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
   "organization_id": null,
   "scopes": [

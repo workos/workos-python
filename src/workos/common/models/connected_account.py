@@ -9,6 +9,7 @@ from typing import Any, Literal
 from workos._types import _raise_deserialize_error
 
 from .connected_account_auth_method import ConnectedAccountAuthMethod
+from .connected_account_connection_role import ConnectedAccountConnectionRole
 from .connected_account_state import ConnectedAccountState
 
 
@@ -20,6 +21,12 @@ class ConnectedAccount:
     """Distinguishes the connected account object."""
     id: str
     """The unique identifier of the connected account."""
+    connection_role: ConnectedAccountConnectionRole
+    """Whether this row is the compatibility connection visible to undeclared clients or a standard peer for plural-aware clients. The role does not indicate preference or creation order."""
+    account_identifier: str | None
+    """A best-effort identifier for the provider account this connection points at. It is correlation metadata, not the connection identifier or a selector."""
+    account_display_name: str | None
+    """A mutable, non-unique display name for the provider account connection."""
     user_id: str | None
     """The [User](https://workos.com/docs/reference/authkit/user) identifier associated with this connection."""
     organization_id: str | None
@@ -53,6 +60,9 @@ class ConnectedAccount:
             return cls(
                 object=data.get("object", "connected_account"),
                 id=data["id"],
+                connection_role=ConnectedAccountConnectionRole(data["connection_role"]),
+                account_identifier=data["account_identifier"],
+                account_display_name=data["account_display_name"],
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 scopes=data["scopes"],
@@ -75,6 +85,19 @@ class ConnectedAccount:
         result: dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
+        result["connection_role"] = (
+            self.connection_role.value
+            if isinstance(self.connection_role, Enum)
+            else self.connection_role
+        )
+        if self.account_identifier is not None:
+            result["account_identifier"] = self.account_identifier
+        else:
+            result["account_identifier"] = None
+        if self.account_display_name is not None:
+            result["account_display_name"] = self.account_display_name
+        else:
+            result["account_display_name"] = None
         if self.user_id is not None:
             result["user_id"] = self.user_id
         else:

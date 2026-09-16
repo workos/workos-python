@@ -13,7 +13,7 @@ class CreateAuthkitOAuthResource:
     """Create Authkit O Auth Resource model."""
 
     uri: str
-    """The resource URI. May be a wildcard pattern with a single `*` in the leftmost hostname label, where enabled for the environment."""
+    """The resource URI. May be a wildcard pattern with a single `*`, either in the leftmost hostname label or as the final path segment, where enabled for the environment."""
     default: bool | None = None
     """Whether the resource being created becomes the environment default, clearing any previous default. Applies at creation only — this API has no update endpoint yet, so changing the default on an existing resource is done from the dashboard. A wildcard pattern cannot be the default."""
 

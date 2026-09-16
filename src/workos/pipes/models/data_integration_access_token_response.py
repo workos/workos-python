@@ -25,8 +25,8 @@ class DataIntegrationAccessTokenResponse:
     access_token: DataIntegrationAccessTokenResponseAccessToken | None = None
     """The [access token](https://workos.com/docs/reference/pipes/access-token) object, present when `active` is `true`."""
     error: DataIntegrationAccessTokenResponseError | None = None
-    """- `"not_installed"`: The user does not have the integration installed.
-- `"needs_reauthorization"`: The user needs to reauthorize the integration."""
+    """- `\"not_installed\"`: The user does not have the integration installed.
+- `\"needs_reauthorization\"`: The user needs to reauthorize the integration."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationAccessTokenResponse:

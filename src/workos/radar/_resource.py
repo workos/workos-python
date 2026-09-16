@@ -96,8 +96,8 @@ class Radar:
 
         Args:
             id: The unique identifier of the Radar attempt to update.
-            challenge_status: Set to `"success"` to mark the challenge as completed.
-            attempt_status: Set to `"success"` to mark the authentication attempt as successful.
+            challenge_status: Set to `\"success\"` to mark the challenge as completed.
+            attempt_status: Set to `\"success\"` to mark the authentication attempt as successful.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:
@@ -269,8 +269,8 @@ class AsyncRadar:
 
         Args:
             id: The unique identifier of the Radar attempt to update.
-            challenge_status: Set to `"success"` to mark the challenge as completed.
-            attempt_status: Set to `"success"` to mark the authentication attempt as successful.
+            challenge_status: Set to `\"success\"` to mark the challenge as completed.
+            attempt_status: Set to `\"success\"` to mark the authentication attempt as successful.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:

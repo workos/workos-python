@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Iterator, List, Optional, Union
 
 import httpx2
 import pytest
@@ -41,8 +41,9 @@ class HTTPXMock:
     its API implemented here, so the shim is hand-maintained instead of changing
     the emitter. Requests are intercepted the same way ``pytest-httpx`` does, by
     patching the transport classes, so clients constructed directly in a test are
-    covered too. Responses are consumed first-in first-out. Unlike ``pytest-httpx``
-    the shim does not assert at teardown that every queued response was used.
+    covered too. Responses are consumed first-in first-out. Like ``pytest-httpx``,
+    the fixture fails the test at teardown if any queued response was never
+    requested; call ``reset()`` to discard the queue deliberately.
     """
 
     def __init__(self) -> None:
@@ -78,6 +79,9 @@ class HTTPXMock:
         self._queue.clear()
         self._requests.clear()
 
+    def unused_responses(self) -> int:
+        return len(self._queue)
+
     def _next(self, request: httpx2.Request) -> httpx2.Response:
         self._requests.append(request)
         if not self._queue:
@@ -99,7 +103,7 @@ class HTTPXMock:
 
 
 @pytest.fixture
-def httpx_mock(monkeypatch: pytest.MonkeyPatch) -> HTTPXMock:
+def httpx_mock(monkeypatch: pytest.MonkeyPatch) -> Iterator[HTTPXMock]:
     mock = HTTPXMock()
 
     def _sync(
@@ -114,4 +118,9 @@ def httpx_mock(monkeypatch: pytest.MonkeyPatch) -> HTTPXMock:
 
     monkeypatch.setattr(httpx2.HTTPTransport, "handle_request", _sync)
     monkeypatch.setattr(httpx2.AsyncHTTPTransport, "handle_async_request", _async)
-    return mock
+    yield mock
+    unused = mock.unused_responses()
+    if unused:
+        pytest.fail(
+            f"{unused} httpx_mock response(s) were registered but never requested"
+        )

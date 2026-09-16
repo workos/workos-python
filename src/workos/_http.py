@@ -14,7 +14,6 @@ import inspect
 import json
 from dataclasses import dataclass
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Mapping,
@@ -24,11 +23,17 @@ from typing import (
     Union,
     cast,
 )
+from urllib.parse import urlsplit
 
 import httpx2
 
-if TYPE_CHECKING:
+try:
     import httpx
+except ModuleNotFoundError as exc:
+    if exc.name != "httpx":
+        raise
+    # Keep runtime annotations resolvable without the optional legacy package.
+    import httpx2 as httpx
 
 
 class TransportError(Exception):
@@ -113,9 +118,8 @@ class AsyncHTTPBackend(Protocol):
     async def close(self) -> None: ...
 
 
-if TYPE_CHECKING:
-    SyncHTTPClient = Union[httpx2.Client, httpx.Client, HTTPBackend]
-    AsyncHTTPClient = Union[httpx2.AsyncClient, httpx.AsyncClient, AsyncHTTPBackend]
+SyncHTTPClient = Union[httpx2.Client, httpx.Client, HTTPBackend]
+AsyncHTTPClient = Union[httpx2.AsyncClient, httpx.AsyncClient, AsyncHTTPBackend]
 
 
 # --- httpx family -------------------------------------------------------------
@@ -178,7 +182,13 @@ class HttpxBackend:
     ) -> HTTPResponse:
         try:
             response = self._client.request(
-                method, url, headers=headers, content=content, timeout=timeout
+                method,
+                url,
+                # Explicit params merge defaults instead of replacing the URL query.
+                params=urlsplit(url).query or None,
+                headers=headers,
+                content=content,
+                timeout=timeout,
             )
         except self._family.timeout_error as exc:
             raise TransportTimeout(str(exc)) from exc
@@ -210,7 +220,13 @@ class AsyncHttpxBackend:
     ) -> HTTPResponse:
         try:
             response = await self._client.request(
-                method, url, headers=headers, content=content, timeout=timeout
+                method,
+                url,
+                # Explicit params merge defaults instead of replacing the URL query.
+                params=urlsplit(url).query or None,
+                headers=headers,
+                content=content,
+                timeout=timeout,
             )
         except self._family.timeout_error as exc:
             raise TransportTimeout(str(exc)) from exc

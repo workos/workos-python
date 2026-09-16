@@ -5,6 +5,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from typing import Any, Dict, List, Optional, Union
 
 import httpx
@@ -25,6 +27,7 @@ from workos import _base_client as base_client_module
 from workos._base_client import _BaseWorkOSClient
 from workos._errors import WorkOSConnectionError, WorkOSTimeoutError
 from workos._http import AsyncHttpxBackend, HttpxBackend
+from tests.generated_helpers import load_fixture
 
 API_KEY = "sk_test_123"
 BASE = "https://api.workos.com"
@@ -347,6 +350,56 @@ class TestHttpxAdapter:
         await http_client.aclose()
 
     @pytest.mark.asyncio
+    @pytest.mark.parametrize("asynchronous", [False, True], ids=["sync", "async"])
+    async def test_client_query_defaults_preserve_filters_and_pagination(
+        self, mod: Any, asynchronous: bool
+    ) -> None:
+        requests: List[Any] = []
+        first_page = load_fixture("list_user.json")
+        first_page["list_metadata"]["after"] = "cursor/after"
+
+        def handler(request: Any) -> Any:
+            requests.append(request)
+            body = (
+                first_page if len(requests) == 1 else {"data": [], "list_metadata": {}}
+            )
+            return mod.Response(200, json=body)
+
+        defaults = {"limit": 100, "order": "asc", "organization_id": "org_default"}
+        http_cls = mod.AsyncClient if asynchronous else mod.Client
+        http_client = http_cls(params=defaults, transport=mod.MockTransport(handler))
+        try:
+            if asynchronous:
+                client = AsyncWorkOSClient(api_key=API_KEY, http_client=http_client)
+                page = await client.user_management.list_users(
+                    email="alice@example.com", limit=7
+                )
+                users = [user async for user in page]
+            else:
+                sync_client = WorkOSClient(api_key=API_KEY, http_client=http_client)
+                sync_page = sync_client.user_management.list_users(
+                    email="alice@example.com", limit=7
+                )
+                users = list(sync_page)
+        finally:
+            if asynchronous:
+                await http_client.aclose()
+            else:
+                http_client.close()
+
+        expected = {
+            "limit": "7",
+            "order": "desc",
+            "organization_id": "org_default",
+            "email": "alice@example.com",
+        }
+        assert len(users) == 1
+        assert len(requests) == 2
+        assert dict(requests[0].url.params) == expected
+        assert dict(requests[1].url.params) == {**expected, "after": "cursor/after"}
+        assert http_client.params == mod.QueryParams(defaults)
+
+    @pytest.mark.asyncio
     async def test_async_adapter_maps_timeout(self, mod: Any) -> None:
         def handler(request: Any) -> Any:
             raise mod.TimeoutException("slow")
@@ -362,6 +415,47 @@ class TestHttpxAdapter:
 
 
 class TestResolution:
+    @pytest.mark.parametrize(
+        "httpx_installed", [False, True], ids=["without-httpx", "with-httpx"]
+    )
+    def test_public_client_annotations_resolve_at_runtime(
+        self, httpx_installed: bool
+    ) -> None:
+        script = """
+import sys
+from typing import get_args, get_type_hints
+
+if sys.argv[1] == "False":
+    sys.modules["httpx"] = None
+
+import httpx2
+from workos import (
+    AsyncHTTPBackend, AsyncWorkOSClient, HTTPBackend, WorkOSClient, create_public_client,
+)
+
+for factory, client_type, protocol in (
+    (WorkOSClient.__init__, httpx2.Client, HTTPBackend),
+    (AsyncWorkOSClient.__init__, httpx2.AsyncClient, AsyncHTTPBackend),
+    (create_public_client, httpx2.Client, HTTPBackend),
+):
+    client_types = get_args(get_type_hints(factory)["http_client"])
+    assert client_type in client_types
+    assert protocol in client_types
+    assert type(None) in client_types
+    if sys.argv[1] == "True":
+        import httpx
+        assert getattr(httpx, client_type.__name__) in client_types
+
+assert get_type_hints(create_public_client)["return"] is WorkOSClient
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script, str(httpx_installed)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+
     def test_default_backend_settings(self) -> None:
         client = WorkOSClient(api_key=API_KEY, request_timeout=9)
         backend = client._backend
@@ -424,6 +518,13 @@ class TestEncodingParity:
 
         assert ours.params == theirs.params
         assert str(ours) == str(theirs)
+        with httpx2.Client(
+            transport=httpx2.MockTransport(lambda _: httpx2.Response(200))
+        ) as client:
+            response = HttpxBackend(client).request(
+                "GET", str(ours), headers={}, content=None, timeout=1.0
+            )
+        assert response.request_url == str(theirs)
 
     def test_query_string_shape(self) -> None:
         params = {"a": True, "b": None, "c": ["x", "y"], "d": 5}

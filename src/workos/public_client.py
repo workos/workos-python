@@ -4,11 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
-if TYPE_CHECKING:
-    from ._client import WorkOSClient
-    from ._http import SyncHTTPClient
+from ._client import WorkOSClient
+from ._http import SyncHTTPClient
 
 
 def create_public_client(
@@ -33,8 +32,6 @@ def create_public_client(
     Returns:
         A WorkOSClient instance with only ``client_id`` configured.
     """
-    from ._client import WorkOSClient
-
     return WorkOSClient(
         api_key=None,
         client_id=client_id,

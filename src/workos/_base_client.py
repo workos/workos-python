@@ -10,7 +10,7 @@ import uuid
 import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Type, cast, overload
+from typing import Any, Dict, Optional, Sequence, Type, cast, overload
 from urllib.parse import quote, urlencode
 
 from ._errors import (
@@ -25,7 +25,9 @@ from ._errors import (
     _AUTH_CODE_TO_ERROR,
 )
 from ._http import (
+    AsyncHTTPClient,
     HTTPResponse,
+    SyncHTTPClient,
     TransportConnectError,
     TransportError,
     TransportTimeout,
@@ -34,9 +36,6 @@ from ._http import (
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import D, Deserializable, RequestOptions
-
-if TYPE_CHECKING:
-    from ._http import AsyncHTTPClient, SyncHTTPClient
 
 try:
     from importlib.metadata import version as _pkg_version

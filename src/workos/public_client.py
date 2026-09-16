@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ._client import WorkOSClient
+    from ._http import SyncHTTPClient
 
 
 def create_public_client(
@@ -15,6 +16,7 @@ def create_public_client(
     client_id: str,
     base_url: Optional[str] = None,
     request_timeout: Optional[int] = None,
+    http_client: Optional["SyncHTTPClient"] = None,
 ) -> "WorkOSClient":
     """Create a WorkOS client configured for public/PKCE-only usage.
 
@@ -26,6 +28,7 @@ def create_public_client(
         client_id: The WorkOS client ID.
         base_url: Override the base URL. Defaults to ``https://api.workos.com``.
         request_timeout: HTTP request timeout in seconds.
+        http_client: HTTP client to send requests with; see :class:`workos.WorkOSClient`.
 
     Returns:
         A WorkOSClient instance with only ``client_id`` configured.
@@ -38,4 +41,5 @@ def create_public_client(
         base_url=base_url,
         request_timeout=request_timeout,
         is_public=True,
+        http_client=http_client,
     )

@@ -17,9 +17,6 @@ from workos.pipes.models import (
     DataIntegrationCredentialsResponseCredential,
     DataIntegrationCustomProvider,
     DataIntegrationInstallation,
-    DataIntegrationsListResponse,
-    DataIntegrationsListResponseData,
-    DataIntegrationsListResponseDataConnectedAccount,
     UpdateCustomProviderDefinition,
 )
 
@@ -439,6 +436,9 @@ class TestModelRoundTrip:
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": None,
+            "account_display_name": None,
             "user_id": None,
             "organization_id": None,
             "scopes": ["repo", "user:email"],
@@ -450,6 +450,9 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
+        assert serialized["connection_role"] == data["connection_role"]
+        assert serialized["account_identifier"] == data["account_identifier"]
+        assert serialized["account_display_name"] == data["account_display_name"]
         assert serialized["user_id"] == data["user_id"]
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["scopes"] == data["scopes"]
@@ -461,6 +464,9 @@ class TestModelRoundTrip:
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": "workspace_123",
+            "account_display_name": "Acme production",
             "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
             "organization_id": None,
             "scopes": ["repo", "user:email"],
@@ -480,6 +486,9 @@ class TestModelRoundTrip:
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": None,
+            "account_display_name": None,
             "user_id": None,
             "organization_id": None,
             "scopes": ["repo", "user:email"],
@@ -494,6 +503,8 @@ class TestModelRoundTrip:
         }
         instance = ConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
+        assert serialized["account_identifier"] is None
+        assert serialized["account_display_name"] is None
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
@@ -504,10 +515,13 @@ class TestModelRoundTrip:
         data = {
             "object": "connected_account",
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "unexpected_connected_account_connection_role",
+            "account_identifier": "workspace_123",
+            "account_display_name": "Acme production",
             "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
             "organization_id": None,
             "scopes": ["repo", "user:email"],
-            "auth_method": "unexpected_connected_account_auth_method",
+            "auth_method": "oauth",
             "api_key_last_4": None,
             "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
             "client_secret_last_4": "cdef",
@@ -517,278 +531,6 @@ class TestModelRoundTrip:
             "updated_at": "2024-01-16T14:20:00.000Z",
         }
         instance = ConnectedAccount.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_data_integrations_list_response_round_trip(self):
-        data = load_fixture("data_integrations_list_response.json")
-        instance = DataIntegrationsListResponse.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DataIntegrationsListResponse.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_data_integrations_list_response_minimal_payload(self):
-        data = {
-            "object": "list",
-            "data": [
-                {
-                    "object": "data_provider",
-                    "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "name": "GitHub",
-                    "description": "Connect your GitHub account to access repositories.",
-                    "slug": "github",
-                    "integration_type": "github",
-                    "credentials_type": "oauth2",
-                    "scopes": ["repo", "user:email"],
-                    "auth_methods": ["oauth"],
-                    "ownership": "userland_user",
-                    "created_at": "2024-01-15T10:30:00.000Z",
-                    "updated_at": "2024-01-15T10:30:00.000Z",
-                    "connected_account": {
-                        "object": "connected_account",
-                        "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                        "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                        "organization_id": None,
-                        "scopes": ["repo", "user:email"],
-                        "auth_method": "oauth",
-                        "api_key_last_4": None,
-                        "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                        "client_secret_last_4": "cdef",
-                        "config": {"instance_url": "https://example.my.salesforce.com"},
-                        "state": "connected",
-                        "created_at": "2024-01-16T14:20:00.000Z",
-                        "updated_at": "2024-01-16T14:20:00.000Z",
-                        "userlandUserId": "test_userlandUserId",
-                    },
-                    "connected_accounts": [
-                        {
-                            "object": "connected_account",
-                            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                            "organization_id": None,
-                            "scopes": ["repo", "user:email"],
-                            "auth_method": "oauth",
-                            "api_key_last_4": None,
-                            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                            "client_secret_last_4": "cdef",
-                            "config": {
-                                "instance_url": "https://example.my.salesforce.com"
-                            },
-                            "state": "connected",
-                            "created_at": "2024-01-16T14:20:00.000Z",
-                            "updated_at": "2024-01-16T14:20:00.000Z",
-                            "userlandUserId": "test_userlandUserId",
-                        }
-                    ],
-                }
-            ],
-        }
-        instance = DataIntegrationsListResponse.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["data"] == data["data"]
-
-    def test_data_integrations_list_response_data_round_trip(self):
-        data = load_fixture("data_integrations_list_response_data.json")
-        instance = DataIntegrationsListResponseData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DataIntegrationsListResponseData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_data_integrations_list_response_data_minimal_payload(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": None,
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": None,
-            "ownership": "userland_user",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": None,
-            "connected_accounts": [
-                {
-                    "object": "connected_account",
-                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "organization_id": None,
-                    "scopes": ["repo", "user:email"],
-                    "auth_method": "oauth",
-                    "api_key_last_4": None,
-                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                    "client_secret_last_4": "cdef",
-                    "config": {"instance_url": "https://example.my.salesforce.com"},
-                    "state": "connected",
-                    "created_at": "2024-01-16T14:20:00.000Z",
-                    "updated_at": "2024-01-16T14:20:00.000Z",
-                    "userlandUserId": "test_userlandUserId",
-                }
-            ],
-        }
-        instance = DataIntegrationsListResponseData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["description"] == data["description"]
-        assert serialized["slug"] == data["slug"]
-        assert serialized["integration_type"] == data["integration_type"]
-        assert serialized["credentials_type"] == data["credentials_type"]
-        assert serialized["scopes"] == data["scopes"]
-        assert serialized["ownership"] == data["ownership"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-        assert serialized["connected_account"] == data["connected_account"]
-        assert serialized["connected_accounts"] == data["connected_accounts"]
-
-    def test_data_integrations_list_response_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": "Connect your GitHub account to access repositories.",
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": ["repo", "user:email"],
-            "ownership": "userland_user",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": {
-                "object": "connected_account",
-                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                "organization_id": None,
-                "scopes": ["repo", "user:email"],
-                "auth_method": "oauth",
-                "api_key_last_4": None,
-                "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                "client_secret_last_4": "cdef",
-                "config": {"instance_url": "https://example.my.salesforce.com"},
-                "state": "connected",
-                "created_at": "2024-01-16T14:20:00.000Z",
-                "updated_at": "2024-01-16T14:20:00.000Z",
-                "userlandUserId": "test_userlandUserId",
-            },
-            "connected_accounts": [
-                {
-                    "object": "connected_account",
-                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "organization_id": None,
-                    "scopes": ["repo", "user:email"],
-                    "auth_method": "oauth",
-                    "api_key_last_4": None,
-                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                    "client_secret_last_4": "cdef",
-                    "config": {"instance_url": "https://example.my.salesforce.com"},
-                    "state": "connected",
-                    "created_at": "2024-01-16T14:20:00.000Z",
-                    "updated_at": "2024-01-16T14:20:00.000Z",
-                    "userlandUserId": "test_userlandUserId",
-                }
-            ],
-        }
-        instance = DataIntegrationsListResponseData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "auth_methods" not in serialized
-
-    def test_data_integrations_list_response_data_preserves_nullable_fields(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": None,
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": None,
-            "auth_methods": ["oauth"],
-            "ownership": "userland_user",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": None,
-            "connected_accounts": [
-                {
-                    "object": "connected_account",
-                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "organization_id": None,
-                    "scopes": ["repo", "user:email"],
-                    "auth_method": "oauth",
-                    "api_key_last_4": None,
-                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                    "client_secret_last_4": "cdef",
-                    "config": {"instance_url": "https://example.my.salesforce.com"},
-                    "state": "connected",
-                    "created_at": "2024-01-16T14:20:00.000Z",
-                    "updated_at": "2024-01-16T14:20:00.000Z",
-                    "userlandUserId": "test_userlandUserId",
-                }
-            ],
-        }
-        instance = DataIntegrationsListResponseData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["description"] is None
-        assert serialized["scopes"] is None
-        assert serialized["connected_account"] is None
-
-    def test_data_integrations_list_response_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": "Connect your GitHub account to access repositories.",
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": ["repo", "user:email"],
-            "auth_methods": ["oauth"],
-            "ownership": "unexpected_data_integrations_list_response_data_ownership",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": {
-                "object": "connected_account",
-                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                "organization_id": None,
-                "scopes": ["repo", "user:email"],
-                "auth_method": "oauth",
-                "api_key_last_4": None,
-                "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                "client_secret_last_4": "cdef",
-                "config": {"instance_url": "https://example.my.salesforce.com"},
-                "state": "connected",
-                "created_at": "2024-01-16T14:20:00.000Z",
-                "updated_at": "2024-01-16T14:20:00.000Z",
-                "userlandUserId": "test_userlandUserId",
-            },
-            "connected_accounts": [
-                {
-                    "object": "connected_account",
-                    "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "organization_id": None,
-                    "scopes": ["repo", "user:email"],
-                    "auth_method": "oauth",
-                    "api_key_last_4": None,
-                    "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-                    "client_secret_last_4": "cdef",
-                    "config": {"instance_url": "https://example.my.salesforce.com"},
-                    "state": "connected",
-                    "created_at": "2024-01-16T14:20:00.000Z",
-                    "updated_at": "2024-01-16T14:20:00.000Z",
-                    "userlandUserId": "test_userlandUserId",
-                }
-            ],
-        }
-        instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data
 
     def test_data_integration_credentials_response_credential_round_trip(self):
@@ -913,6 +655,9 @@ class TestModelRoundTrip:
     def test_data_integration_installation_minimal_payload(self):
         data = {
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": None,
+            "account_display_name": None,
             "user_id": None,
             "organization_id": None,
             "api_key_last_4": None,
@@ -920,6 +665,9 @@ class TestModelRoundTrip:
         instance = DataIntegrationInstallation.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
+        assert serialized["connection_role"] == data["connection_role"]
+        assert serialized["account_identifier"] == data["account_identifier"]
+        assert serialized["account_display_name"] == data["account_display_name"]
         assert serialized["user_id"] == data["user_id"]
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["api_key_last_4"] == data["api_key_last_4"]
@@ -927,15 +675,33 @@ class TestModelRoundTrip:
     def test_data_integration_installation_preserves_nullable_fields(self):
         data = {
             "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "compatibility",
+            "account_identifier": None,
+            "account_display_name": None,
             "user_id": None,
             "organization_id": None,
             "api_key_last_4": None,
         }
         instance = DataIntegrationInstallation.from_dict(data)
         serialized = instance.to_dict()
+        assert serialized["account_identifier"] is None
+        assert serialized["account_display_name"] is None
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
+
+    def test_data_integration_installation_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "connection_role": "unexpected_data_integration_installation_connection_role",
+            "account_identifier": "workspace_123",
+            "account_display_name": "Acme production",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": None,
+            "api_key_last_4": "cdef",
+        }
+        instance = DataIntegrationInstallation.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_data_integration_custom_provider_round_trip(self):
         data = load_fixture("data_integration_custom_provider.json")
@@ -1011,114 +777,4 @@ class TestModelRoundTrip:
             "authenticate_via": "unexpected_data_integration_custom_provider_authenticate_via",
         }
         instance = DataIntegrationCustomProvider.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_data_integrations_list_response_data_connected_account_round_trip(self):
-        data = load_fixture(
-            "data_integrations_list_response_data_connected_account.json"
-        )
-        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DataIntegrationsListResponseDataConnectedAccount.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_data_integrations_list_response_data_connected_account_minimal_payload(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": None,
-        }
-        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["user_id"] == data["user_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["scopes"] == data["scopes"]
-        assert serialized["state"] == data["state"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-        assert serialized["userlandUserId"] == data["userlandUserId"]
-
-    def test_data_integrations_list_response_data_connected_account_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "api_key_last_4": None,
-            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-            "client_secret_last_4": "cdef",
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": "test_userlandUserId",
-        }
-        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
-        serialized = instance.to_dict()
-        assert "auth_method" not in serialized
-        assert "config" not in serialized
-
-    def test_data_integrations_list_response_data_connected_account_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "auth_method": "oauth",
-            "api_key_last_4": None,
-            "client_id": None,
-            "client_secret_last_4": None,
-            "config": {"instance_url": "https://example.my.salesforce.com"},
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": None,
-        }
-        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["user_id"] is None
-        assert serialized["organization_id"] is None
-        assert serialized["api_key_last_4"] is None
-        assert serialized["client_id"] is None
-        assert serialized["client_secret_last_4"] is None
-        assert serialized["userlandUserId"] is None
-
-    def test_data_integrations_list_response_data_connected_account_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "auth_method": "unexpected_data_integrations_list_response_data_connected_account_auth_method",
-            "api_key_last_4": None,
-            "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
-            "client_secret_last_4": "cdef",
-            "config": {"instance_url": "https://example.my.salesforce.com"},
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": "test_userlandUserId",
-        }
-        instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         assert instance.to_dict() == data

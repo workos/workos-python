@@ -26,8 +26,8 @@ class DataIntegrationCredentialsResponse:
     """The credential object containing the vended secret."""
     error: DataIntegrationCredentialsResponseError | None = None
     """The reason credentials are unavailable. Additional values may be added in the future; handle unknown values gracefully.
-- `"not_installed"`: The user does not have the integration installed.
-- `"needs_reauthorization"`: The user needs to reauthorize the integration."""
+- `\"not_installed\"`: The user does not have the integration installed.
+- `\"needs_reauthorization\"`: The user needs to reauthorize the integration."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationCredentialsResponse:

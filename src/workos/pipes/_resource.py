@@ -17,8 +17,14 @@ from workos.common.models.create_data_integration_auth_methods import (
 from workos.common.models.create_data_integration_ownership import (
     CreateDataIntegrationOwnership,
 )
+from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
 from workos.common.models.data_integrations_get_user_token_request_connection_owner import (
     DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_list_response import (
+    DataIntegrationsListResponse,
 )
 from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
     DataIntegrationsUpsertApiKeyRequestConnectionOwner,
@@ -41,7 +47,6 @@ from .models import (
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsInput,
     DataIntegrationCredentialsResponse,
-    DataIntegrationsListResponse,
     PipesOwnership,
     UpdateCustomProviderDefinition,
 )
@@ -69,9 +74,9 @@ class Pipes:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             ownership: Only return Data Integrations with this ownership: `user` for the integrations users connect their own accounts to, or `organization` for the roots organizations connect to. Omit to return both.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -121,7 +126,7 @@ class Pipes:
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `["client_credentials"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `[\"api_key\"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `[\"client_credentials\"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
@@ -129,9 +134,9 @@ class Pipes:
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `["client_credentials"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
+            auth_methods: How accounts authenticate with the provider. Defaults to `[\"oauth\"]`. Use `[\"api_key\"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `[\"client_credentials\"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
             config: Provider-specific config values (e.g. a Snowflake `account`), keyed by the config field. Only fields the built-in provider declares are accepted.
-            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `[\"api_key\"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -366,6 +371,9 @@ class Pipes:
         *,
         user_id: str,
         organization_id: str | None = None,
+        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+        | str
+        | None = None,
         return_to: str | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
@@ -376,8 +384,9 @@ class Pipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize.
-            organization_id: An organization ID to scope the authorization to a specific organization.
+            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
+            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
             return_to: The URL to redirect the user to after authorization.
             config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -398,6 +407,9 @@ class Pipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "return_to": return_to,
                 "config": config,
             }.items()
@@ -1044,9 +1056,9 @@ class AsyncPipes:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             ownership: Only return Data Integrations with this ownership: `user` for the integrations users connect their own accounts to, or `organization` for the roots organizations connect to. Omit to return both.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1096,7 +1108,7 @@ class AsyncPipes:
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `["client_credentials"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `[\"api_key\"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `[\"client_credentials\"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
@@ -1104,9 +1116,9 @@ class AsyncPipes:
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `["client_credentials"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
+            auth_methods: How accounts authenticate with the provider. Defaults to `[\"oauth\"]`. Use `[\"api_key\"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `[\"client_credentials\"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
             config: Provider-specific config values (e.g. a Snowflake `account`), keyed by the config field. Only fields the built-in provider declares are accepted.
-            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `[\"api_key\"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1341,6 +1353,9 @@ class AsyncPipes:
         *,
         user_id: str,
         organization_id: str | None = None,
+        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+        | str
+        | None = None,
         return_to: str | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
@@ -1351,8 +1366,9 @@ class AsyncPipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize.
-            organization_id: An organization ID to scope the authorization to a specific organization.
+            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
+            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
             return_to: The URL to redirect the user to after authorization.
             config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1373,6 +1389,9 @@ class AsyncPipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "return_to": return_to,
                 "config": config,
             }.items()

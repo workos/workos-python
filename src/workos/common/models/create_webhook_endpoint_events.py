@@ -112,6 +112,15 @@ class CreateWebhookEndpointEvents(str, Enum):
     PERMISSION_CREATED = "permission.created"
     PERMISSION_DELETED = "permission.deleted"
     PERMISSION_UPDATED = "permission.updated"
+    PIPES_ACCOUNT_CONNECTION_ADD_FAILED = "pipes.account_connection.add_failed"
+    PIPES_ACCOUNT_CONNECTION_CONNECTED = "pipes.account_connection.connected"
+    PIPES_ACCOUNT_CONNECTION_CONNECTION_FAILED = (
+        "pipes.account_connection.connection_failed"
+    )
+    PIPES_ACCOUNT_CONNECTION_DISCONNECTED = "pipes.account_connection.disconnected"
+    PIPES_ACCOUNT_CONNECTION_REAUTHORIZATION_NEEDED = (
+        "pipes.account_connection.reauthorization_needed"
+    )
     PIPES_CONNECTED_ACCOUNT_CONNECTED = "pipes.connected_account.connected"
     PIPES_CONNECTED_ACCOUNT_CONNECTION_FAILED = (
         "pipes.connected_account.connection_failed"
@@ -228,6 +237,11 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "permission.created",
     "permission.deleted",
     "permission.updated",
+    "pipes.account_connection.add_failed",
+    "pipes.account_connection.connected",
+    "pipes.account_connection.connection_failed",
+    "pipes.account_connection.disconnected",
+    "pipes.account_connection.reauthorization_needed",
     "pipes.connected_account.connected",
     "pipes.connected_account.connection_failed",
     "pipes.connected_account.disconnected",

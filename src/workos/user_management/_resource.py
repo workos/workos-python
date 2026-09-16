@@ -581,7 +581,7 @@ class UserManagement:
         Generates an OAuth 2.0 authorization URL to authenticate a user with AuthKit or SSO.
 
         Args:
-            code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
+            code_challenge_method: The only valid PKCE code challenge method is `\"S256\"`. Required when specifying a `code_challenge`.
             code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
             domain_hint: A domain hint for SSO connection lookup.
             connection_id: The ID of an SSO connection to use for authentication.
@@ -832,9 +832,9 @@ class UserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -875,7 +875,7 @@ class UserManagement:
         Adds an MCP resource indicator (RFC 8707) to an environment, leaving any others in place.
 
         Args:
-            uri: The resource URI. May be a wildcard pattern with a single `*` in the leftmost hostname label, where enabled for the environment.
+            uri: The resource URI. May be a wildcard pattern with a single `*`, either in the leftmost hostname label or as the final path segment, where enabled for the environment.
             default: Whether the resource being created becomes the environment default, clearing any previous default. Applies at creation only — this API has no update endpoint yet, so changing the default on an existing resource is done from the dashboard. A wildcard pattern cannot be the default.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -945,9 +945,9 @@ class UserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1165,9 +1165,9 @@ class UserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -1648,9 +1648,9 @@ class UserManagement:
         Args:
             id: The ID of the user.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1698,9 +1698,9 @@ class UserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2110,9 +2110,9 @@ class UserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2220,9 +2220,9 @@ class UserManagement:
         Args:
             user_id: The ID of the user.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2474,9 +2474,9 @@ class UserManagement:
         Args:
             id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             state: Filter waitlist entries by their state.
             email: Filter waitlist entries by their exact email address.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -3333,7 +3333,7 @@ class AsyncUserManagement:
         Generates an OAuth 2.0 authorization URL to authenticate a user with AuthKit or SSO.
 
         Args:
-            code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
+            code_challenge_method: The only valid PKCE code challenge method is `\"S256\"`. Required when specifying a `code_challenge`.
             code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
             domain_hint: A domain hint for SSO connection lookup.
             connection_id: The ID of an SSO connection to use for authentication.
@@ -3584,9 +3584,9 @@ class AsyncUserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3627,7 +3627,7 @@ class AsyncUserManagement:
         Adds an MCP resource indicator (RFC 8707) to an environment, leaving any others in place.
 
         Args:
-            uri: The resource URI. May be a wildcard pattern with a single `*` in the leftmost hostname label, where enabled for the environment.
+            uri: The resource URI. May be a wildcard pattern with a single `*`, either in the leftmost hostname label or as the final path segment, where enabled for the environment.
             default: Whether the resource being created becomes the environment default, clearing any previous default. Applies at creation only — this API has no update endpoint yet, so changing the default on an existing resource is done from the dashboard. A wildcard pattern cannot be the default.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -3697,9 +3697,9 @@ class AsyncUserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3917,9 +3917,9 @@ class AsyncUserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -4400,9 +4400,9 @@ class AsyncUserManagement:
         Args:
             id: The ID of the user.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4450,9 +4450,9 @@ class AsyncUserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -4862,9 +4862,9 @@ class AsyncUserManagement:
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4972,9 +4972,9 @@ class AsyncUserManagement:
         Args:
             user_id: The ID of the user.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -5226,9 +5226,9 @@ class AsyncUserManagement:
         Args:
             id: The unique ID of the waitlist, or the literal `default` for the environment's default waitlist. The default waitlist is created when its first entry is added, so read requests for `default` return a `404` until then.
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             state: Filter waitlist entries by their state.
             email: Filter waitlist entries by their exact email address.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.

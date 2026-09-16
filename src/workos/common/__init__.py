@@ -221,6 +221,8 @@ from .models import ConnectApplicationUnknown as ConnectApplicationUnknown
 from .models import ConnectApplicationVariant as ConnectApplicationVariant
 from .models import ConnectedAccount as ConnectedAccount
 from .models import ConnectedAccountAuthMethod as ConnectedAccountAuthMethod
+from .models import ConnectedAccountConnectionRole as ConnectedAccountConnectionRole
+from .models import ConnectedAccountInput as ConnectedAccountInput
 from .models import ConnectedAccountInputState as ConnectedAccountInputState
 from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionActivated as ConnectionActivated
@@ -288,18 +290,35 @@ from .models import DataIntegrationCredentialType as DataIntegrationCredentialTy
 from .models import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
+from .models import (
+    DataIntegrationInstallationConnectionRole as DataIntegrationInstallationConnectionRole,
+)
 from .models import DataIntegrationOwnership as DataIntegrationOwnership
+from .models import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
 from .models import (
     DataIntegrationsGetUserTokenRequestConnectionOwner as DataIntegrationsGetUserTokenRequestConnectionOwner,
 )
+from .models import DataIntegrationsListResponse as DataIntegrationsListResponse
+from .models import DataIntegrationsListResponseData as DataIntegrationsListResponseData
 from .models import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
+)
+from .models import (
+    DataIntegrationsListResponseDataConnectedAccount as DataIntegrationsListResponseDataConnectedAccount,
 )
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
 from .models import (
+    DataIntegrationsListResponseDataConnectedAccountConnectionRole as DataIntegrationsListResponseDataConnectedAccountConnectionRole,
+)
+from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
+)
+from .models import (
+    DataIntegrationsListResponseDataConnectionOwner as DataIntegrationsListResponseDataConnectionOwner,
 )
 from .models import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
@@ -498,6 +517,23 @@ from .models import PermissionDeletedData as PermissionDeletedData
 from .models import PermissionUpdated as PermissionUpdated
 from .models import PermissionUpdatedData as PermissionUpdatedData
 from .models import PipeConnectedAccount as PipeConnectedAccount
+from .models import PipesAccountConnectionAddFailed as PipesAccountConnectionAddFailed
+from .models import (
+    PipesAccountConnectionAddFailedData as PipesAccountConnectionAddFailedData,
+)
+from .models import PipesAccountConnectionConnected as PipesAccountConnectionConnected
+from .models import (
+    PipesAccountConnectionConnectionFailed as PipesAccountConnectionConnectionFailed,
+)
+from .models import (
+    PipesAccountConnectionConnectionFailedData as PipesAccountConnectionConnectionFailedData,
+)
+from .models import (
+    PipesAccountConnectionDisconnected as PipesAccountConnectionDisconnected,
+)
+from .models import (
+    PipesAccountConnectionReauthorizationNeeded as PipesAccountConnectionReauthorizationNeeded,
+)
 from .models import PipesConnectedAccountConnected as PipesConnectedAccountConnected
 from .models import (
     PipesConnectedAccountConnectionFailed as PipesConnectedAccountConnectionFailed,

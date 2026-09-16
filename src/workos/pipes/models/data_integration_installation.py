@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integration_installation_connection_role import (
+    DataIntegrationInstallationConnectionRole,
+)
 
 
 @dataclass(slots=True)
@@ -14,6 +18,12 @@ class DataIntegrationInstallation:
 
     id: str
     """Unique identifier of the installation."""
+    connection_role: DataIntegrationInstallationConnectionRole
+    """Whether this is the compatibility connection visible to undeclared clients or a standard connection for plural-aware clients."""
+    account_identifier: str | None
+    """A best-effort provider account identifier used for correlation, not connection selection."""
+    account_display_name: str | None
+    """A mutable, non-unique display name for this connection."""
     user_id: str | None
     """The User the API key was installed for. Null on an `organization`-owned integration, whose installations belong to the organization."""
     organization_id: str | None
@@ -27,6 +37,11 @@ class DataIntegrationInstallation:
         try:
             return cls(
                 id=data["id"],
+                connection_role=DataIntegrationInstallationConnectionRole(
+                    data["connection_role"]
+                ),
+                account_identifier=data["account_identifier"],
+                account_display_name=data["account_display_name"],
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 api_key_last_4=data["api_key_last_4"],
@@ -38,6 +53,19 @@ class DataIntegrationInstallation:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["id"] = self.id
+        result["connection_role"] = (
+            self.connection_role.value
+            if isinstance(self.connection_role, Enum)
+            else self.connection_role
+        )
+        if self.account_identifier is not None:
+            result["account_identifier"] = self.account_identifier
+        else:
+            result["account_identifier"] = None
+        if self.account_display_name is not None:
+            result["account_display_name"] = self.account_display_name
+        else:
+            result["account_display_name"] = None
         if self.user_id is not None:
             result["user_id"] = self.user_id
         else:

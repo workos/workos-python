@@ -13,7 +13,7 @@ class ChallengeAuthenticationFactor:
     """Challenge Authentication Factor model."""
 
     sms_template: str | None = None
-    """A custom template for the SMS message. Use the {{code}} placeholder to include the verification code."""
+    """A custom template for the SMS message. Use the {{code}} placeholder to include the verification code. Must not contain URLs or domain names."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ChallengeAuthenticationFactor:

@@ -138,6 +138,81 @@ except RateLimitExceededError as e:
 
 The client automatically retries requests up to 3 times (configurable via the `max_retries` request option) on 429 and 5xx responses, timeouts, and connection errors, using exponential backoff with jitter and honoring `Retry-After`. The SDK attaches an auto-generated `Idempotency-Key` (UUID v4) to every `POST` request and reuses the same key across its internal retries.
 
+## HTTP Backends
+
+The SDK sends requests through [`httpx2`](https://pypi.org/project/httpx2/) by default. Pass your own configured client as `http_client` to control proxies, TLS, connection limits, or transports:
+
+```python
+import httpx2
+from workos import AsyncWorkOSClient, WorkOSClient
+
+client = WorkOSClient(
+    api_key="sk_...",
+    http_client=httpx2.Client(proxy="http://proxy.internal:3128", verify="/etc/ssl/corp.pem"),
+)
+
+async_client = AsyncWorkOSClient(
+    api_key="sk_...",
+    http_client=httpx2.AsyncClient(limits=httpx2.Limits(max_connections=20)),
+)
+```
+
+`httpx` 0.28 clients are accepted as well; the two libraries share an API. The SDK closes only clients it created. A client you pass in stays open after `client.close()`, so close it yourself when you are done with it.
+
+### Custom backends
+
+Any object implementing `workos.HTTPBackend` (or `workos.AsyncHTTPBackend` for the async client) can be passed as `http_client`. The SDK hands the backend a fully built URL, the final headers, an optional `bytes` body, and a timeout in seconds, and expects a `workos.HTTPResponse` back. Raise `workos.TransportTimeout`, `workos.TransportConnectError`, or `workos.TransportError` for network failures so the SDK's retry logic can handle them. The `headers` mapping on the response must be case-insensitive.
+
+The following `aiohttp` adapter is an example, not a supported part of the SDK:
+
+```python
+import asyncio
+
+import aiohttp
+import yarl
+
+from workos import (
+    AsyncWorkOSClient,
+    HTTPResponse,
+    TransportConnectError,
+    TransportError,
+    TransportTimeout,
+)
+
+
+class AiohttpBackend:
+    def __init__(self, session: aiohttp.ClientSession) -> None:
+        self._session = session
+
+    async def request(self, method, url, *, headers, content, timeout) -> HTTPResponse:
+        try:
+            async with self._session.request(
+                method,
+                yarl.URL(url, encoded=True),  # keep the SDK's percent-encoding intact
+                headers=headers,
+                data=content,
+                timeout=aiohttp.ClientTimeout(total=timeout),
+                allow_redirects=True,
+            ) as resp:
+                body = await resp.read()
+                return HTTPResponse(resp.status, resp.headers, body, method, str(resp.url))
+        except (asyncio.TimeoutError, aiohttp.ServerTimeoutError) as exc:  # before connection errors
+            raise TransportTimeout(str(exc)) from exc
+        except aiohttp.ClientConnectionError as exc:
+            raise TransportConnectError(str(exc)) from exc
+        except aiohttp.ClientError as exc:
+            raise TransportError(str(exc)) from exc
+
+    async def close(self) -> None:
+        await self._session.close()
+
+
+async def main() -> None:
+    async with aiohttp.ClientSession() as session:
+        client = AsyncWorkOSClient(api_key="sk_...", http_client=AiohttpBackend(session))
+        page = await client.organizations.list_organizations()
+```
+
 ## Per-Request Options
 
 Every API method accepts `request_options` for per-call overrides (local helpers such as webhook/Actions signature verification and PKCE utilities do not make HTTP calls and don't take `request_options`):

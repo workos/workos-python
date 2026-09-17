@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import platform
 import time
@@ -10,9 +11,7 @@ import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any, Dict, Optional, Sequence, Type, cast, overload
-from urllib.parse import quote
-
-import httpx
+from urllib.parse import quote, urlencode
 
 from ._errors import (
     APIError,
@@ -24,6 +23,16 @@ from ._errors import (
     WorkOSTimeoutError,
     STATUS_CODE_TO_ERROR,
     _AUTH_CODE_TO_ERROR,
+)
+from ._http import (
+    AsyncHTTPClient,
+    HTTPResponse,
+    SyncHTTPClient,
+    TransportConnectError,
+    TransportError,
+    TransportTimeout,
+    resolve_async_backend,
+    resolve_sync_backend,
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import D, Deserializable, RequestOptions
@@ -96,8 +105,6 @@ class _BaseWorkOSClient:
         self, path: Sequence[str], params: Optional[Dict[str, Any]] = None
     ) -> str:
         """Build a full URL with query parameters for redirect/authorization endpoints."""
-        from urllib.parse import urlencode
-
         base = self._base_url.rstrip("/")
         url = f"{base}/{self._encode_path(path)}"
         if params:
@@ -153,8 +160,8 @@ class _BaseWorkOSClient:
 
         Percent-encoding alone does not cover dot segments: ``.`` is an
         unreserved character that :func:`urllib.parse.quote` leaves as-is, and
-        httpx applies RFC 3986 dot-segment removal when it builds the request
-        URL, so a bare ``.`` or ``..`` segment would collapse the path onto the
+        HTTP clients such as httpx2 apply RFC 3986 dot-segment removal when they
+        build the request URL, so a bare ``.`` or ``..`` segment would collapse the path onto the
         parent resource (for example, turning a DELETE of one connected account
         into a DELETE of the whole user). Empty, ``.`` and ``..`` segments are
         never valid WorkOS identifiers, so they are rejected with
@@ -193,6 +200,57 @@ class _BaseWorkOSClient:
             if isinstance(retries, int):
                 return retries
         return self._max_retries
+
+    @staticmethod
+    def _query_value(value: Any) -> str:
+        """Stringify one query value the way httpx does."""
+        if value is True:
+            return "true"
+        if value is False:
+            return "false"
+        if value is None:
+            return ""
+        return str(value)
+
+    @staticmethod
+    def _encode_query(params: Optional[Dict[str, Any]]) -> str:
+        """Encode query parameters into a query string.
+
+        Mirrors httpx 0.28 so behaviour is identical for every HTTP backend:
+        booleans become ``true`` / ``false``, ``None`` becomes an empty value,
+        lists and tuples repeat the key, everything else is ``str()``-ed.
+        Generated resources rely on this for raw ``bool``, ``int`` and ``list``
+        values.
+        """
+        if not params:
+            return ""
+        pairs: list[tuple[str, str]] = []
+        for key, value in params.items():
+            if isinstance(value, (list, tuple)):
+                for item in cast(Sequence[Any], value):
+                    pairs.append((key, _BaseWorkOSClient._query_value(item)))
+            else:
+                pairs.append((key, _BaseWorkOSClient._query_value(value)))
+        return urlencode(pairs)
+
+    @staticmethod
+    def _encode_body(body: Optional[Dict[str, Any]]) -> Optional[bytes]:
+        """Serialize a JSON body in httpx's compact form, or ``None`` for no body."""
+        if body is None:
+            return None
+        return json.dumps(
+            body, ensure_ascii=False, separators=(",", ":"), allow_nan=False
+        ).encode("utf-8")
+
+    def _build_request_url(
+        self,
+        path: Sequence[str],
+        params: Optional[Dict[str, Any]],
+        request_options: Optional[RequestOptions],
+    ) -> str:
+        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
+        query = self._encode_query(params)
+        return f"{url}?{query}" if query else url
 
     def _require_api_key(self) -> str:
         if not self._api_key:
@@ -238,7 +296,7 @@ class _BaseWorkOSClient:
         return headers
 
     def _deserialize_response(
-        self, response: httpx.Response, model: Optional[Type[Deserializable]]
+        self, response: HTTPResponse, model: Optional[Type[Deserializable]]
     ) -> Any:
         if response.status_code == 204 or not response.content:
             return None
@@ -251,13 +309,12 @@ class _BaseWorkOSClient:
         return data
 
     @staticmethod
-    def _raise_error(response: httpx.Response) -> None:
+    def _raise_error(response: HTTPResponse) -> None:
         """Raise an appropriate error based on the response status code."""
         request_id = response.headers.get("x-request-id", "")
         raw_body = response.text
-        request = response.request
-        request_url = str(request.url) if request is not None else None
-        request_method = request.method if request is not None else None
+        request_url = response.request_url
+        request_method = response.request_method
         response_json: Optional[Dict[str, Any]] = None
         try:
             response_json = cast(Dict[str, Any], response.json())
@@ -384,6 +441,7 @@ class WorkOSClient(_BaseWorkOSClient):
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
+        http_client: Optional[SyncHTTPClient] = None,
     ) -> None:
         """Initialize the WorkOS client.
 
@@ -398,9 +456,15 @@ class WorkOSClient(_BaseWorkOSClient):
                 / mobile / CLI). The API key is forced to None and the
                 ``WORKOS_API_KEY`` environment variable is ignored. Use
                 ``create_public_client`` instead of setting this directly.
+            http_client: HTTP client to send requests with. Accepts an
+                ``httpx2.Client``, an ``httpx.Client``, or any object implementing
+                :class:`workos.HTTPBackend`. Defaults to a new ``httpx2.Client``
+                that this instance owns and closes. A client you pass in is
+                never closed by the SDK.
 
         Raises:
             ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
+            TypeError: If ``http_client`` is not a supported client type.
         """
         super().__init__(
             api_key=api_key,
@@ -411,13 +475,17 @@ class WorkOSClient(_BaseWorkOSClient):
             max_retries=max_retries,
             is_public=is_public,
         )
-        self._client = httpx.Client(
-            timeout=self._request_timeout, follow_redirects=True
+        self._backend, self._owns_http_client = resolve_sync_backend(
+            http_client, self._request_timeout
         )
 
     def close(self) -> None:
-        """Close the underlying HTTP client and release resources."""
-        self._client.close()
+        """Release the HTTP client if the SDK created it.
+
+        A client passed in via ``http_client`` stays open; close it yourself.
+        """
+        if self._owns_http_client:
+            self._backend.close()
 
     def __enter__(self) -> "WorkOSClient":
         return self
@@ -463,19 +531,19 @@ class WorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
+        url = self._build_request_url(path, params, request_options)
         headers = self._build_headers(method, idempotency_key, request_options)
+        content = self._encode_body(body)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
         for attempt in range(max_retries + 1):
             try:
-                response = self._client.request(
-                    method=method.upper(),
-                    url=url,
-                    params=params,
-                    json=body if body is not None else None,
+                response = self._backend.request(
+                    method.upper(),
+                    url,
                     headers=headers,
+                    content=content,
                     timeout=timeout,
                 )
                 if response.status_code in RETRY_STATUS_CODES and attempt < max_retries:
@@ -487,19 +555,19 @@ class WorkOSClient(_BaseWorkOSClient):
                 if response.status_code >= 400:
                     self._raise_error(response)
                 return self._deserialize_response(response, model)
-            except httpx.TimeoutException as e:
+            except TransportTimeout as e:
                 last_error = e
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
                     continue
                 raise WorkOSTimeoutError(f"Request timed out: {e}") from e
-            except httpx.ConnectError as e:
+            except TransportConnectError as e:
                 last_error = e
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
                     continue
                 raise WorkOSConnectionError(f"Connection failed: {e}") from e
-            except httpx.HTTPError as e:
+            except TransportError as e:
                 last_error = e
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
@@ -615,6 +683,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
+        http_client: Optional[AsyncHTTPClient] = None,
     ) -> None:
         """Initialize the async WorkOS client.
 
@@ -625,9 +694,15 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
+            http_client: HTTP client to send requests with. Accepts an
+                ``httpx2.AsyncClient``, an ``httpx.AsyncClient``, or any object
+                implementing :class:`workos.AsyncHTTPBackend`. Defaults to a new
+                ``httpx2.AsyncClient`` that this instance owns and closes. A
+                client you pass in is never closed by the SDK.
 
         Raises:
             ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
+            TypeError: If ``http_client`` is not a supported client type.
         """
         super().__init__(
             api_key=api_key,
@@ -638,13 +713,17 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             max_retries=max_retries,
             is_public=is_public,
         )
-        self._client = httpx.AsyncClient(
-            timeout=self._request_timeout, follow_redirects=True
+        self._backend, self._owns_http_client = resolve_async_backend(
+            http_client, self._request_timeout
         )
 
     async def close(self) -> None:
-        """Close the underlying HTTP client and release resources."""
-        await self._client.aclose()
+        """Release the HTTP client if the SDK created it.
+
+        A client passed in via ``http_client`` stays open; close it yourself.
+        """
+        if self._owns_http_client:
+            await self._backend.close()
 
     async def __aenter__(self) -> "AsyncWorkOSClient":
         return self
@@ -690,19 +769,19 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an async HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
+        url = self._build_request_url(path, params, request_options)
         headers = self._build_headers(method, idempotency_key, request_options)
+        content = self._encode_body(body)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
         for attempt in range(max_retries + 1):
             try:
-                response = await self._client.request(
-                    method=method.upper(),
-                    url=url,
-                    params=params,
-                    json=body if body is not None else None,
+                response = await self._backend.request(
+                    method.upper(),
+                    url,
                     headers=headers,
+                    content=content,
                     timeout=timeout,
                 )
                 if response.status_code in RETRY_STATUS_CODES and attempt < max_retries:
@@ -714,19 +793,19 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
                 if response.status_code >= 400:
                     self._raise_error(response)
                 return self._deserialize_response(response, model)
-            except httpx.TimeoutException as e:
+            except TransportTimeout as e:
                 last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))
                     continue
                 raise WorkOSTimeoutError(f"Request timed out: {e}") from e
-            except httpx.ConnectError as e:
+            except TransportConnectError as e:
                 last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))
                     continue
                 raise WorkOSConnectionError(f"Connection failed: {e}") from e
-            except httpx.HTTPError as e:
+            except TransportError as e:
                 last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))

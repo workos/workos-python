@@ -23,6 +23,7 @@ from workos.common.models import (
 from workos.user_management._resource import PasswordPlaintext
 from workos.user_management.models import (
     AuthenticateResponse,
+    AuthkitOAuthResource,
     AuthorizedConnectApplicationListData,
     CORSOriginResponse,
     DeviceAuthorizationResponse,
@@ -146,6 +147,61 @@ class TestUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
+
+    def test_list_authkit_oauth_resources(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_authkit_oauth_resource.json"),
+        )
+        page = workos.user_management.list_authkit_oauth_resources()
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthkitOAuthResource)
+
+    def test_list_authkit_oauth_resources_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_authkit_oauth_resources()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_authkit_oauth_resources_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.user_management.list_authkit_oauth_resources(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    def test_create_authkit_oauth_resource(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("authkit_oauth_resource.json"),
+        )
+        result = workos.user_management.create_authkit_oauth_resource(uri="test_uri")
+        assert isinstance(result, AuthkitOAuthResource)
+        assert result.object == "authkit_oauth_resource"
+        assert result.id == "authkit_oauth_resource_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/authkit_oauth_resources")
+        body = json.loads(request.content)
+        assert body["uri"] == "test_uri"
+
+    def test_delete_authkit_oauth_resource(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.user_management.delete_authkit_oauth_resource("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/user_management/authkit_oauth_resources/test_id"
+        )
 
     def test_list_cors_origins(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -1148,6 +1204,66 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
+
+    @pytest.mark.asyncio
+    async def test_list_authkit_oauth_resources(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_authkit_oauth_resource.json"))
+        page = await async_workos.user_management.list_authkit_oauth_resources()
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthkitOAuthResource)
+
+    @pytest.mark.asyncio
+    async def test_list_authkit_oauth_resources_empty_page(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_authkit_oauth_resources()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_authkit_oauth_resources_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.user_management.list_authkit_oauth_resources(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+
+    @pytest.mark.asyncio
+    async def test_create_authkit_oauth_resource(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authkit_oauth_resource.json"))
+        result = await async_workos.user_management.create_authkit_oauth_resource(
+            uri="test_uri"
+        )
+        assert isinstance(result, AuthkitOAuthResource)
+        assert result.object == "authkit_oauth_resource"
+        assert result.id == "authkit_oauth_resource_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/authkit_oauth_resources")
+
+    @pytest.mark.asyncio
+    async def test_delete_authkit_oauth_resource(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.user_management.delete_authkit_oauth_resource(
+            "test_id"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/user_management/authkit_oauth_resources/test_id"
+        )
 
     @pytest.mark.asyncio
     async def test_list_cors_origins(self, async_workos, httpx_mock):

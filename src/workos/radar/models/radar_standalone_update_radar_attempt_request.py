@@ -13,9 +13,9 @@ class RadarStandaloneUpdateRadarAttemptRequest:
     """Radar Standalone Update Radar Attempt Request model."""
 
     challenge_status: Literal["success"] | None = None
-    """Set to `"success"` to mark the challenge as completed."""
+    """Set to `\"success\"` to mark the challenge as completed."""
     attempt_status: Literal["success"] | None = None
-    """Set to `"success"` to mark the authentication attempt as successful."""
+    """Set to `\"success\"` to mark the authentication attempt as successful."""
 
     @classmethod
     def from_dict(

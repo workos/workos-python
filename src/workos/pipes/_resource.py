@@ -14,6 +14,27 @@ from workos.common.models.connected_account_input_state import (
 from workos.common.models.create_data_integration_auth_methods import (
     CreateDataIntegrationAuthMethods,
 )
+from workos.common.models.create_data_integration_ownership import (
+    CreateDataIntegrationOwnership,
+)
+from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_get_user_token_request_connection_owner import (
+    DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_list_response import (
+    DataIntegrationsListResponse,
+)
+from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
+    DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_upsert_client_credentials_request_connection_owner import (
+    DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_vend_credentials_request_connection_owner import (
+    DataIntegrationsVendCredentialsRequestConnectionOwner,
+)
 from workos.common.models.pagination_order import PaginationOrder
 
 from .._pagination import AsyncPage, SyncPage
@@ -26,7 +47,7 @@ from .models import (
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsInput,
     DataIntegrationCredentialsResponse,
-    DataIntegrationsListResponse,
+    PipesOwnership,
     UpdateCustomProviderDefinition,
 )
 
@@ -44,17 +65,19 @@ class Pipes:
         before: str | None = None,
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
+        ownership: PipesOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SyncPage[DataIntegration]:
         """List data integrations
 
-        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations.
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations. Both user-owned and organization-owned roots are returned, each as its own row with an `ownership`; filter with `ownership` to return only one kind.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            ownership: Only return Data Integrations with this ownership: `user` for the integrations users connect their own accounts to, or `organization` for the roots organizations connect to. Omit to return both.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -62,6 +85,8 @@ class Pipes:
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -72,6 +97,7 @@ class Pipes:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "ownership": enum_value(ownership) if ownership is not None else None,
             }.items()
             if v is not None
         }
@@ -87,6 +113,7 @@ class Pipes:
         self,
         *,
         provider: str,
+        ownership: CreateDataIntegrationOwnership | str | None = None,
         description: str | None | NotGiven = NOT_GIVEN,
         enabled: bool | None = None,
         scopes: list[str] | None | NotGiven = NOT_GIVEN,
@@ -99,16 +126,17 @@ class Pipes:
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `["client_credentials"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `[\"api_key\"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `[\"client_credentials\"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
+            ownership: Who owns the Data Integration. `user` (the default) creates the integration users connect their own accounts to; `organization` creates the root organizations connect to. Ownership is fixed at creation, and one integration of each ownership may exist per provider. Independent of `credentials.type`.
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `["client_credentials"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
+            auth_methods: How accounts authenticate with the provider. Defaults to `[\"oauth\"]`. Use `[\"api_key\"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `[\"client_credentials\"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
             config: Provider-specific config values (e.g. a Snowflake `account`), keyed by the config field. Only fields the built-in provider declares are accepted.
-            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `[\"api_key\"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -130,6 +158,7 @@ class Pipes:
             k: v
             for k, v in {
                 "provider": provider,
+                "ownership": enum_value(ownership) if ownership is not None else None,
                 "enabled": enabled,
                 "auth_methods": auth_methods,
                 "config": config,
@@ -163,7 +192,7 @@ class Pipes:
     ) -> DataIntegration:
         """Get a data integration
 
-        Retrieves a data integration by its slug.
+        Retrieves the user-owned data integration by its slug.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -199,7 +228,7 @@ class Pipes:
     ) -> DataIntegration:
         """Update a data integration
 
-        Updates the description, enabled state, or custom credentials of a data integration. For custom providers, `custom_provider` updates the OAuth definition.
+        Updates the description, enabled state, or custom credentials of the user-owned data integration. For custom providers, `custom_provider` updates the OAuth definition.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -258,7 +287,7 @@ class Pipes:
     ) -> None:
         """Delete a data integration
 
-        Deletes a data integration and all of its connected installations. For a custom provider, also deletes the custom provider definition.
+        Deletes the user-owned data integration and all of its connected installations. For a custom provider, the provider definition is deleted once no organization-owned root references it either.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -283,16 +312,22 @@ class Pipes:
         user_id: str,
         secret: str,
         organization_id: str | None = None,
+        connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner
+        | str
+        | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert an API key for a connected account
 
-        Creates or updates an API-key-based installation for the specified integration and user. If an installation already exists, the stored API key is rotated to the new value.
+        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value.
 
         Args:
             slug: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             secret: The API key secret to store for this integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -314,6 +349,10 @@ class Pipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "secret": secret,
             }.items()
             if v is not None
@@ -332,6 +371,9 @@ class Pipes:
         *,
         user_id: str,
         organization_id: str | None = None,
+        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+        | str
+        | None = None,
         return_to: str | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
@@ -342,8 +384,9 @@ class Pipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize.
-            organization_id: An organization ID to scope the authorization to a specific organization.
+            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
+            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
             return_to: The URL to redirect the user to after authorization.
             config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -364,6 +407,9 @@ class Pipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "return_to": return_to,
                 "config": config,
             }.items()
@@ -385,17 +431,23 @@ class Pipes:
         client_id: str,
         client_secret: str,
         organization_id: str | None = None,
+        connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsUpsertClientCredentialsRequestConnectionOwner
+        | str
+        | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert client credentials for a connected account
 
-        Creates or updates a client-credentials-based installation for the specified integration and user. If an installation already exists, the stored client credentials are rotated to the new values.
+        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values.
 
         Args:
             slug: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             client_id: The OAuth client ID to store for this integration.
             client_secret: The OAuth client secret to store for this integration.
             config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
@@ -419,6 +471,10 @@ class Pipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "client_id": client_id,
                 "client_secret": client_secret,
                 "config": config,
@@ -440,6 +496,10 @@ class Pipes:
         user_id: str,
         organization_id: str | None = None,
         connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsVendCredentialsRequestConnectionOwner
+        | str
+        | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
@@ -448,9 +508,11 @@ class Pipes:
 
         Args:
             slug: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier. When `connection_owner` is `organization`, this is the user the credentials are vended on behalf of; they must be an active member of the organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
+            connection_owner: Which connection to vend from. `user` (the default) vends the user's own connection and requires `user_id`. `organization` vends the organization's shared connection and requires `organization_id`.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. If no `connected_account_id` is supplied and several connections match, the request returns `account_selection_required`. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -459,6 +521,7 @@ class Pipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -471,6 +534,10 @@ class Pipes:
                 "user_id": user_id,
                 "organization_id": organization_id,
                 "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }
@@ -482,6 +549,127 @@ class Pipes:
             request_options=request_options,
         )
 
+    def list_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DataIntegration:
+        """Get an organization-owned data integration
+
+        Retrieves the organization-owned data integration for a provider by its slug. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("data-integrations", str(slug), "organization"),
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    def update_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: UpdateCustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> DataIntegration:
+        """Update an organization-owned data integration
+
+        Updates the description, enabled state, or custom credentials of the organization-owned data integration for a provider. For custom providers, `custom_provider` updates the OAuth definition, which is shared with the user-owned root. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled.
+            scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
+            credentials: New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`.
+            api_key: An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`).
+            custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "enabled": enabled,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
+        return self._client.request(
+            method="put",
+            path=("data-integrations", str(slug), "organization"),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    def delete_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an organization-owned data integration
+
+        Deletes the organization-owned data integration for a provider and all of its connected installations. For a custom provider, the provider definition is deleted once no user-owned root references it either. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("data-integrations", str(slug), "organization"),
+            request_options=request_options,
+        )
+
     def get_access_token(
         self,
         provider: str,
@@ -489,6 +677,10 @@ class Pipes:
         user_id: str,
         organization_id: str | None | NotGiven = NOT_GIVEN,
         connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsGetUserTokenRequestConnectionOwner
+        | str
+        | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -497,9 +689,11 @@ class Pipes:
 
         Args:
             provider: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier. When `connection_owner` is `organization`, this is the user the credentials are vended on behalf of; they must be an active member of the organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
+            connection_owner: Which connection to vend from. `user` (the default) vends the user's own connection and requires `user_id`. `organization` vends the organization's shared connection and requires `organization_id`.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. If no `connected_account_id` is supplied and several connections match, the request returns `account_selection_required`. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -508,6 +702,7 @@ class Pipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -519,6 +714,10 @@ class Pipes:
             for k, v in {
                 "user_id": user_id,
                 "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }
@@ -538,6 +737,7 @@ class Pipes:
         slug: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
@@ -549,6 +749,7 @@ class Pipes:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -567,6 +768,7 @@ class Pipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -668,6 +870,7 @@ class Pipes:
         scopes: list[str] | None = None,
         state: ConnectedAccountInputState | str | None = None,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
@@ -684,6 +887,7 @@ class Pipes:
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -695,6 +899,7 @@ class Pipes:
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -713,6 +918,7 @@ class Pipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -738,17 +944,19 @@ class Pipes:
         slug: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a connected account
 
-        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. This does not revoke access on the provider side.
+        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. Access is not revoked on the provider side, except for the WorkOS OAuth provider, whose underlying AuthKit grant is revoked.
 
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to delete.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -764,6 +972,7 @@ class Pipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -786,6 +995,7 @@ class Pipes:
         user_id: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationsListResponse:
         """List providers for a user
@@ -795,6 +1005,7 @@ class Pipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier to list providers and connected accounts for.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to filter connections for a specific organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -810,6 +1021,7 @@ class Pipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }
@@ -835,17 +1047,19 @@ class AsyncPipes:
         before: str | None = None,
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
+        ownership: PipesOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> AsyncPage[DataIntegration]:
         """List data integrations
 
-        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations.
+        Lists the environment's data integrations configured with `custom` or `organization` credentials, including custom providers and API key integrations. Both user-owned and organization-owned roots are returned, each as its own row with an `ownership`; filter with `ownership` to return only one kind.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            ownership: Only return Data Integrations with this ownership: `user` for the integrations users connect their own accounts to, or `organization` for the roots organizations connect to. Omit to return both.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -853,6 +1067,8 @@ class AsyncPipes:
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -863,6 +1079,7 @@ class AsyncPipes:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "ownership": enum_value(ownership) if ownership is not None else None,
             }.items()
             if v is not None
         }
@@ -878,6 +1095,7 @@ class AsyncPipes:
         self,
         *,
         provider: str,
+        ownership: CreateDataIntegrationOwnership | str | None = None,
         description: str | None | NotGiven = NOT_GIVEN,
         enabled: bool | None = None,
         scopes: list[str] | None | NotGiven = NOT_GIVEN,
@@ -890,16 +1108,17 @@ class AsyncPipes:
     ) -> DataIntegration:
         """Create a data integration
 
-        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `["api_key"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `["client_credentials"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition.
+        Creates a data integration for a provider. Set `credentials.type` to `custom` to use your own OAuth app credentials or `organization` to have each organization supply its own. Set `auth_methods` to `[\"api_key\"]` to create an API key integration; you may optionally supply an `api_key` block to install a first tenant in the same call. Set `auth_methods` to `[\"client_credentials\"]` to create a client-credentials integration; client credentials are installed per-tenant afterwards. Set `ownership` to `organization` to create the integration organizations connect to instead of the default user-owned one; a provider may have one of each. For a built-in provider, pass its slug as `provider`. For a custom provider, pass a new slug plus a `custom_provider` definition, or the slug of an existing custom provider (without `custom_provider`) to add the other ownership.
 
         Args:
             provider: The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug.
+            ownership: Who owns the Data Integration. `user` (the default) creates the integration users connect their own accounts to; `organization` creates the root organizations connect to. Ownership is fixed at creation, and one integration of each ownership may exist per provider. Independent of `credentials.type`.
             description: An optional description of the Data Integration.
             enabled: Whether the Data Integration is enabled. Defaults to `false`.
             scopes: The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted.
-            auth_methods: How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `["client_credentials"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
+            auth_methods: How accounts authenticate with the provider. Defaults to `[\"oauth\"]`. Use `[\"api_key\"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `[\"client_credentials\"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant.
             config: Provider-specific config values (e.g. a Snowflake `account`), keyed by the config field. Only fields the built-in provider declares are accepted.
-            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`.
+            credentials: The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `[\"api_key\"]`.
             api_key: An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path.
             custom_provider: The OAuth definition for a custom provider. Supply this to define a custom provider; omit it to create an integration for a built-in provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -921,6 +1140,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "provider": provider,
+                "ownership": enum_value(ownership) if ownership is not None else None,
                 "enabled": enabled,
                 "auth_methods": auth_methods,
                 "config": config,
@@ -954,7 +1174,7 @@ class AsyncPipes:
     ) -> DataIntegration:
         """Get a data integration
 
-        Retrieves a data integration by its slug.
+        Retrieves the user-owned data integration by its slug.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -990,7 +1210,7 @@ class AsyncPipes:
     ) -> DataIntegration:
         """Update a data integration
 
-        Updates the description, enabled state, or custom credentials of a data integration. For custom providers, `custom_provider` updates the OAuth definition.
+        Updates the description, enabled state, or custom credentials of the user-owned data integration. For custom providers, `custom_provider` updates the OAuth definition.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -1049,7 +1269,7 @@ class AsyncPipes:
     ) -> None:
         """Delete a data integration
 
-        Deletes a data integration and all of its connected installations. For a custom provider, also deletes the custom provider definition.
+        Deletes the user-owned data integration and all of its connected installations. For a custom provider, the provider definition is deleted once no organization-owned root references it either.
 
         Args:
             slug: The slug identifier of the data integration.
@@ -1074,16 +1294,22 @@ class AsyncPipes:
         user_id: str,
         secret: str,
         organization_id: str | None = None,
+        connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner
+        | str
+        | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert an API key for a connected account
 
-        Creates or updates an API-key-based installation for the specified integration and user. If an installation already exists, the stored API key is rotated to the new value.
+        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value.
 
         Args:
             slug: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             secret: The API key secret to store for this integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1105,6 +1331,10 @@ class AsyncPipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "secret": secret,
             }.items()
             if v is not None
@@ -1123,6 +1353,9 @@ class AsyncPipes:
         *,
         user_id: str,
         organization_id: str | None = None,
+        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+        | str
+        | None = None,
         return_to: str | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
@@ -1133,8 +1366,9 @@ class AsyncPipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize.
-            organization_id: An organization ID to scope the authorization to a specific organization.
+            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
+            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
             return_to: The URL to redirect the user to after authorization.
             config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1155,6 +1389,9 @@ class AsyncPipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "return_to": return_to,
                 "config": config,
             }.items()
@@ -1176,17 +1413,23 @@ class AsyncPipes:
         client_id: str,
         client_secret: str,
         organization_id: str | None = None,
+        connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsUpsertClientCredentialsRequestConnectionOwner
+        | str
+        | None = None,
         config: dict[str, str] | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
         """Upsert client credentials for a connected account
 
-        Creates or updates a client-credentials-based installation for the specified integration and user. If an installation already exists, the stored client credentials are rotated to the new values.
+        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values.
 
         Args:
             slug: The identifier of the integration.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             client_id: The OAuth client ID to store for this integration.
             client_secret: The OAuth client secret to store for this integration.
             config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
@@ -1210,6 +1453,10 @@ class AsyncPipes:
             for k, v in {
                 "user_id": user_id,
                 "organization_id": organization_id,
+                "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
                 "client_id": client_id,
                 "client_secret": client_secret,
                 "config": config,
@@ -1231,6 +1478,10 @@ class AsyncPipes:
         user_id: str,
         organization_id: str | None = None,
         connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsVendCredentialsRequestConnectionOwner
+        | str
+        | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
@@ -1239,9 +1490,11 @@ class AsyncPipes:
 
         Args:
             slug: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier. When `connection_owner` is `organization`, this is the user the credentials are vended on behalf of; they must be an active member of the organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
+            connection_owner: Which connection to vend from. `user` (the default) vends the user's own connection and requires `user_id`. `organization` vends the organization's shared connection and requires `organization_id`.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. If no `connected_account_id` is supplied and several connections match, the request returns `account_selection_required`. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1250,6 +1503,7 @@ class AsyncPipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -1262,6 +1516,10 @@ class AsyncPipes:
                 "user_id": user_id,
                 "organization_id": organization_id,
                 "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }
@@ -1273,6 +1531,127 @@ class AsyncPipes:
             request_options=request_options,
         )
 
+    async def list_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DataIntegration:
+        """Get an organization-owned data integration
+
+        Retrieves the organization-owned data integration for a provider by its slug. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("data-integrations", str(slug), "organization"),
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    async def update_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        description: str | None | NotGiven = NOT_GIVEN,
+        enabled: bool | None = None,
+        scopes: list[str] | None | NotGiven = NOT_GIVEN,
+        credentials: DataIntegrationCredentialsInput | None = None,
+        api_key: ApiKeyInstallation | None = None,
+        custom_provider: UpdateCustomProviderDefinition | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> DataIntegration:
+        """Update an organization-owned data integration
+
+        Updates the description, enabled state, or custom credentials of the organization-owned data integration for a provider. For custom providers, `custom_provider` updates the OAuth definition, which is shared with the user-owned root. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            description: An optional description of the Data Integration.
+            enabled: Whether the Data Integration is enabled.
+            scopes: The OAuth scopes to request for the Data Integration. Pass `null` to reset to the provider's configured scopes.
+            credentials: New OAuth credentials for the Data Integration. When provided, rotates the stored client secret. Mutually exclusive with `api_key`.
+            api_key: An API key to install or rotate for a tenant on an `api_key` integration. Upserts the tenant installation identified by `user_id` (and optional `organization_id`).
+            custom_provider: Updates to a custom provider's OAuth definition. Only valid for custom-provider integrations.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DataIntegration
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "enabled": enabled,
+                "credentials": credentials.to_dict()
+                if credentials is not None
+                else None,
+                "api_key": api_key.to_dict() if api_key is not None else None,
+                "custom_provider": custom_provider.to_dict()
+                if custom_provider is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(description, NotGiven):
+            body["description"] = description
+        if not isinstance(scopes, NotGiven):
+            body["scopes"] = scopes
+        return await self._client.request(
+            method="put",
+            path=("data-integrations", str(slug), "organization"),
+            body=body,
+            model=DataIntegration,
+            request_options=request_options,
+        )
+
+    async def delete_data_integration_organization(
+        self,
+        slug: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete an organization-owned data integration
+
+        Deletes the organization-owned data integration for a provider and all of its connected installations. For a custom provider, the provider definition is deleted once no user-owned root references it either. The `/organization` suffix selects the environment-level organization-owned root for the provider; it does not name a particular organization.
+
+        Args:
+            slug: The slug identifier of the data integration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("data-integrations", str(slug), "organization"),
+            request_options=request_options,
+        )
+
     async def get_access_token(
         self,
         provider: str,
@@ -1280,6 +1659,10 @@ class AsyncPipes:
         user_id: str,
         organization_id: str | None | NotGiven = NOT_GIVEN,
         connected_account_id: str | None = None,
+        connection_owner: DataIntegrationsGetUserTokenRequestConnectionOwner
+        | str
+        | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationAccessTokenResponse:
         """Get an access token for a connected account
@@ -1288,9 +1671,11 @@ class AsyncPipes:
 
         Args:
             provider: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier. When `connection_owner` is `organization`, this is the user the credentials are vended on behalf of; they must be an active member of the organization.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
+            connection_owner: Which connection to vend from. `user` (the default) vends the user's own connection and requires `user_id`. `organization` vends the organization's shared connection and requires `organization_id`.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. If no `connected_account_id` is supplied and several connections match, the request returns `account_selection_required`. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1299,6 +1684,7 @@ class AsyncPipes:
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -1310,6 +1696,10 @@ class AsyncPipes:
             for k, v in {
                 "user_id": user_id,
                 "connected_account_id": connected_account_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }
@@ -1329,6 +1719,7 @@ class AsyncPipes:
         slug: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
@@ -1340,6 +1731,7 @@ class AsyncPipes:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select a specific connection when the user has several for this provider.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1358,6 +1750,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -1459,6 +1852,7 @@ class AsyncPipes:
         scopes: list[str] | None = None,
         state: ConnectedAccountInputState | str | None = None,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> ConnectedAccount:
@@ -1475,6 +1869,7 @@ class AsyncPipes:
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1486,6 +1881,7 @@ class AsyncPipes:
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -1504,6 +1900,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -1529,17 +1926,19 @@ class AsyncPipes:
         slug: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> None:
         """Delete a connected account
 
-        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. This does not revoke access on the provider side.
+        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. Access is not revoked on the provider side, except for the WorkOS OAuth provider, whose underlying AuthKit grant is revoked.
 
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to delete.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1555,6 +1954,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
             }.items()
             if v is not None
@@ -1577,6 +1977,7 @@ class AsyncPipes:
         user_id: str,
         *,
         organization_id: str | None = None,
+        supports_multiple_connections: bool | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationsListResponse:
         """List providers for a user
@@ -1586,6 +1987,7 @@ class AsyncPipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier to list providers and connected accounts for.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to filter connections for a specific organization.
+            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1601,6 +2003,7 @@ class AsyncPipes:
             k: v
             for k, v in {
                 "organization_id": organization_id,
+                "supports_multiple_connections": supports_multiple_connections,
             }.items()
             if v is not None
         }

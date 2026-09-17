@@ -49,7 +49,8 @@ class AgentRegistrationCredentialIssuedData:
             _detail_cls = _detail_disc_map.get(_detail_disc)
             if _detail_cls is None:
                 raise ValueError(
-                    f"Unknown discriminator 'kind' for AgentRegistrationCredentialIssuedData.detail: {_detail_disc!r}. "
+                    "Unknown discriminator 'kind' for AgentRegistrationCredentialIssuedData.detail: "
+                    f"{_detail_disc!r}. "
                     f"Expected one of {sorted(_detail_disc_map)}."
                 )
             return cls(

@@ -51,7 +51,8 @@ class ApiKeyCreatedData:
             _owner_cls = _owner_disc_map.get(_owner_disc)
             if _owner_cls is None:
                 raise ValueError(
-                    f"Unknown discriminator 'type' for ApiKeyCreatedData.owner: {_owner_disc!r}. "
+                    "Unknown discriminator 'type' for ApiKeyCreatedData.owner: "
+                    f"{_owner_disc!r}. "
                     f"Expected one of {sorted(_owner_disc_map)}."
                 )
             return cls(

@@ -3,7 +3,7 @@
 from workos.common.models.connected_account import ConnectedAccount as ConnectedAccount
 
 from .api_key_installation import ApiKeyInstallation as ApiKeyInstallation
-from .connected_account_input import ConnectedAccountInput as ConnectedAccountInput
+from .connected_account_input import *
 from .create_data_integration import CreateDataIntegration as CreateDataIntegration
 from .custom_provider_definition import (
     CustomProviderDefinition as CustomProviderDefinition,
@@ -42,15 +42,9 @@ from .data_integrations_get_data_integration_authorize_url_request import (
 from .data_integrations_get_user_token_request import (
     DataIntegrationsGetUserTokenRequest as DataIntegrationsGetUserTokenRequest,
 )
-from .data_integrations_list_response import (
-    DataIntegrationsListResponse as DataIntegrationsListResponse,
-)
-from .data_integrations_list_response_data import (
-    DataIntegrationsListResponseData as DataIntegrationsListResponseData,
-)
-from .data_integrations_list_response_data_connected_account import (
-    DataIntegrationsListResponseDataConnectedAccount as DataIntegrationsListResponseDataConnectedAccount,
-)
+from .data_integrations_list_response import *
+from .data_integrations_list_response_data import *
+from .data_integrations_list_response_data_connected_account import *
 from .data_integrations_upsert_api_key_request import (
     DataIntegrationsUpsertApiKeyRequest as DataIntegrationsUpsertApiKeyRequest,
 )
@@ -60,6 +54,7 @@ from .data_integrations_upsert_client_credentials_request import (
 from .data_integrations_vend_credentials_request import (
     DataIntegrationsVendCredentialsRequest as DataIntegrationsVendCredentialsRequest,
 )
+from .pipes_ownership import PipesOwnership as PipesOwnership
 from .update_custom_provider_definition import (
     UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
 )

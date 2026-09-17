@@ -188,7 +188,7 @@ class MultiFactorAuth:
 
         Args:
             id: The unique ID of the Authentication Factor to be challenged.
-            sms_template: A custom template for the SMS message. Use the {{code}} placeholder to include the verification code.
+            sms_template: A custom template for the SMS message. Use the {{code}} placeholder to include the verification code. Must not contain URLs or domain names.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -197,8 +197,8 @@ class MultiFactorAuth:
         Raises:
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
@@ -478,7 +478,7 @@ class AsyncMultiFactorAuth:
 
         Args:
             id: The unique ID of the Authentication Factor to be challenged.
-            sms_template: A custom template for the SMS message. Use the {{code}} placeholder to include the verification code.
+            sms_template: A custom template for the SMS message. Use the {{code}} placeholder to include the verification code. Must not contain URLs or domain names.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -487,8 +487,8 @@ class AsyncMultiFactorAuth:
         Raises:
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {

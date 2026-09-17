@@ -17,6 +17,7 @@ from workos._errors import (
 from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import (
     ConnectedAccount,
+    DataIntegrationsListResponse,
     PaginationOrder,
 )
 from workos.pipes.models import (
@@ -24,7 +25,7 @@ from workos.pipes.models import (
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsResponse,
-    DataIntegrationsListResponse,
+    PipesOwnership,
 )
 
 
@@ -51,12 +52,14 @@ class TestPipes:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            ownership=PipesOwnership("user"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["ownership"] == "user"
 
     def test_create_data_integration(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -178,6 +181,38 @@ class TestPipes:
         body = json.loads(request.content)
         assert body["user_id"] == "test_user_id"
 
+    def test_list_data_integration_organization(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration.json"),
+        )
+        result = workos.pipes.list_data_integration_organization("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
+    def test_update_data_integration_organization(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration.json"),
+        )
+        result = workos.pipes.update_data_integration_organization("test_slug")
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
+    def test_delete_data_integration_organization(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.pipes.delete_data_integration_organization("test_slug")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
     def test_get_access_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_access_token_response.json"),
@@ -212,10 +247,12 @@ class TestPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -267,10 +304,12 @@ class TestPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -294,10 +333,12 @@ class TestPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -321,10 +362,13 @@ class TestPipes:
             json=load_fixture("data_integrations_list_response.json")
         )
         workos.pipes.list_user_data_providers(
-            "test_user_id", organization_id="value organization_id/test"
+            "test_user_id",
+            organization_id="value organization_id/test",
+            supports_multiple_connections=True,
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
 
     def test_list_data_integrations_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -428,12 +472,14 @@ class TestAsyncPipes:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            ownership=PipesOwnership("user"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["ownership"] == "user"
 
     @pytest.mark.asyncio
     async def test_create_data_integration(self, async_workos, httpx_mock):
@@ -545,6 +591,43 @@ class TestAsyncPipes:
         assert request.url.path.endswith("/data-integrations/test_slug/credentials")
 
     @pytest.mark.asyncio
+    async def test_list_data_integration_organization(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("data_integration.json"))
+        result = await async_workos.pipes.list_data_integration_organization(
+            "test_slug"
+        )
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
+    @pytest.mark.asyncio
+    async def test_update_data_integration_organization(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("data_integration.json"))
+        result = await async_workos.pipes.update_data_integration_organization(
+            "test_slug"
+        )
+        assert isinstance(result, DataIntegration)
+        assert result.object == "data_integration"
+        assert result.id == "data_integration_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
+    @pytest.mark.asyncio
+    async def test_delete_data_integration_organization(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.pipes.delete_data_integration_organization(
+            "test_slug"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/data-integrations/test_slug/organization")
+
+    @pytest.mark.asyncio
     async def test_get_access_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_access_token_response.json")
@@ -583,10 +666,12 @@ class TestAsyncPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -642,10 +727,12 @@ class TestAsyncPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -673,10 +760,12 @@ class TestAsyncPipes:
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
+            supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
         assert (
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
@@ -704,10 +793,13 @@ class TestAsyncPipes:
             json=load_fixture("data_integrations_list_response.json")
         )
         await async_workos.pipes.list_user_data_providers(
-            "test_user_id", organization_id="value organization_id/test"
+            "test_user_id",
+            organization_id="value organization_id/test",
+            supports_multiple_connections=True,
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["supports_multiple_connections"] == "true"
 
     @pytest.mark.asyncio
     async def test_list_data_integrations_with_request_options(

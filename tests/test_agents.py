@@ -279,6 +279,7 @@ class TestAgents:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
             agent_blueprint_id="value agent_blueprint_id/test",
             agent_instance_id="value agent_instance_id/test",
         )
@@ -287,6 +288,7 @@ class TestAgents:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
         assert (
             request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
         )
@@ -623,6 +625,7 @@ class TestAsyncAgents:
             before="cursor before",
             after="cursor/after",
             order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
             agent_blueprint_id="value agent_blueprint_id/test",
             agent_instance_id="value agent_instance_id/test",
         )
@@ -631,6 +634,7 @@ class TestAsyncAgents:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
         assert (
             request.url.params["agent_blueprint_id"] == "value agent_blueprint_id/test"
         )

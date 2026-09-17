@@ -10,6 +10,9 @@ from workos._types import _raise_deserialize_error
 from workos.common.models.create_data_integration_auth_methods import (
     CreateDataIntegrationAuthMethods,
 )
+from workos.common.models.create_data_integration_ownership import (
+    CreateDataIntegrationOwnership,
+)
 
 from .api_key_installation import ApiKeyInstallation
 from .custom_provider_definition import CustomProviderDefinition
@@ -22,6 +25,8 @@ class CreateDataIntegration:
 
     provider: str
     """The provider to create a Data Integration for. For a built-in provider use its slug (e.g. `github`, `slack`). For a custom provider, this is the new provider slug and `custom_provider` must be supplied. A custom provider slug cannot shadow an existing global provider slug."""
+    ownership: CreateDataIntegrationOwnership | None = None
+    """Who owns the Data Integration. `user` (the default) creates the integration users connect their own accounts to; `organization` creates the root organizations connect to. Ownership is fixed at creation, and one integration of each ownership may exist per provider. Independent of `credentials.type`."""
     description: str | None = None
     """An optional description of the Data Integration."""
     enabled: bool | None = None
@@ -29,11 +34,11 @@ class CreateDataIntegration:
     scopes: list[str] | None = None
     """The OAuth scopes to request for the Data Integration. Defaults to the provider's configured scopes when omitted."""
     auth_methods: list[CreateDataIntegrationAuthMethods] | None = None
-    """How accounts authenticate with the provider. Defaults to `["oauth"]`. Use `["api_key"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `["client_credentials"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant."""
+    """How accounts authenticate with the provider. Defaults to `[\"oauth\"]`. Use `[\"api_key\"]` to declare an API key integration; `credentials` is then not required and keys are supplied per-tenant (optionally via `api_key` on this request). Use `[\"client_credentials\"]` to declare a client-credentials integration; `credentials` is likewise not required and client credentials are supplied per-tenant."""
     config: dict[str, str] | None = None
     """Provider-specific config values (e.g. a Snowflake `account`), keyed by the config field. Only fields the built-in provider declares are accepted."""
     credentials: DataIntegrationCredentialsInput | None = None
-    """The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `["api_key"]`."""
+    """The OAuth credentials to configure for the Data Integration. Required for OAuth integrations; omit when `auth_methods` is `[\"api_key\"]`."""
     api_key: ApiKeyInstallation | None = None
     """An optional API key to install for the first tenant on an `api_key` integration. Omit to declare a keyless integration; tenants can be added later via the per-installation API key path."""
     custom_provider: CustomProviderDefinition | None = None
@@ -45,6 +50,9 @@ class CreateDataIntegration:
         try:
             return cls(
                 provider=data["provider"],
+                ownership=CreateDataIntegrationOwnership(_v_ownership)
+                if (_v_ownership := data.get("ownership")) is not None
+                else None,
                 description=data.get("description"),
                 enabled=data.get("enabled"),
                 scopes=data.get("scopes"),
@@ -76,6 +84,12 @@ class CreateDataIntegration:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["provider"] = self.provider
+        if self.ownership is not None:
+            result["ownership"] = (
+                self.ownership.value
+                if isinstance(self.ownership, Enum)
+                else self.ownership
+            )
         if self.description is not None:
             result["description"] = self.description
         else:

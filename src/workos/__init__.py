@@ -14,6 +14,14 @@ from ._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from ._http import (
+    AsyncHTTPBackend,
+    HTTPBackend,
+    HTTPResponse,
+    TransportConnectError,
+    TransportError,
+    TransportTimeout,
+)
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from .public_client import create_public_client
 from ._types import NOT_GIVEN, NotGiven, RequestOptions
@@ -37,4 +45,10 @@ __all__ = [
     "NOT_GIVEN",
     "NotGiven",
     "create_public_client",
+    "HTTPBackend",
+    "AsyncHTTPBackend",
+    "HTTPResponse",
+    "TransportError",
+    "TransportTimeout",
+    "TransportConnectError",
 ]

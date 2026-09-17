@@ -201,10 +201,10 @@ def test_pagination_importable() -> None:
 def test_dependencies_available() -> None:
     """Verify core runtime dependencies are installed and importable."""
     import cryptography
-    import httpx
+    import httpx2
     import jwt
 
-    print("✓ Core dependencies available (httpx, cryptography, pyjwt)")
+    print("✓ Core dependencies available (httpx2, cryptography, pyjwt)")
 
 
 def main() -> int:

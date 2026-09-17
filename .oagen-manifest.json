@@ -106,6 +106,7 @@
     "src/workos/common/__init__.py",
     "src/workos/common/models/__init__.py",
     "src/workos/common/models/access_token_agent_registration_credential_issued_data_detail.py",
+    "src/workos/common/models/account_selection_required_error.py",
     "src/workos/common/models/action_authentication_denied.py",
     "src/workos/common/models/action_authentication_denied_data.py",
     "src/workos/common/models/action_user_registration_denied.py",
@@ -246,6 +247,8 @@
     "src/workos/common/models/connect_application_oauth_redirect_uris.py",
     "src/workos/common/models/connected_account.py",
     "src/workos/common/models/connected_account_auth_method.py",
+    "src/workos/common/models/connected_account_connection_role.py",
+    "src/workos/common/models/connected_account_input.py",
     "src/workos/common/models/connected_account_input_state.py",
     "src/workos/common/models/connected_account_state.py",
     "src/workos/common/models/connection_activated.py",
@@ -280,6 +283,7 @@
     "src/workos/common/models/create_connection_oidc_options_id_token_signature_algorithm.py",
     "src/workos/common/models/create_connection_oidc_options_token_authentication_method.py",
     "src/workos/common/models/create_data_integration_auth_methods.py",
+    "src/workos/common/models/create_data_integration_ownership.py",
     "src/workos/common/models/create_user_invite_options_locale.py",
     "src/workos/common/models/create_user_password_hash_type.py",
     "src/workos/common/models/create_user_password_salt_position.py",
@@ -292,11 +296,23 @@
     "src/workos/common/models/data_integration_credentials_input_type.py",
     "src/workos/common/models/data_integration_credentials_response_error.py",
     "src/workos/common/models/data_integration_custom_provider_authenticate_via.py",
+    "src/workos/common/models/data_integration_installation_connection_role.py",
+    "src/workos/common/models/data_integration_ownership.py",
     "src/workos/common/models/data_integration_state.py",
+    "src/workos/common/models/data_integrations_get_data_integration_authorize_url_request_connection_owner.py",
+    "src/workos/common/models/data_integrations_get_user_token_request_connection_owner.py",
+    "src/workos/common/models/data_integrations_list_response.py",
+    "src/workos/common/models/data_integrations_list_response_data.py",
     "src/workos/common/models/data_integrations_list_response_data_auth_methods.py",
+    "src/workos/common/models/data_integrations_list_response_data_connected_account.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_auth_method.py",
+    "src/workos/common/models/data_integrations_list_response_data_connected_account_connection_role.py",
     "src/workos/common/models/data_integrations_list_response_data_connected_account_state.py",
+    "src/workos/common/models/data_integrations_list_response_data_connection_owner.py",
     "src/workos/common/models/data_integrations_list_response_data_ownership.py",
+    "src/workos/common/models/data_integrations_upsert_api_key_request_connection_owner.py",
+    "src/workos/common/models/data_integrations_upsert_client_credentials_request_connection_owner.py",
+    "src/workos/common/models/data_integrations_vend_credentials_request_connection_owner.py",
     "src/workos/common/models/directory_group.py",
     "src/workos/common/models/directory_state.py",
     "src/workos/common/models/directory_type.py",
@@ -476,7 +492,16 @@
     "src/workos/common/models/permission_updated.py",
     "src/workos/common/models/permission_updated_data.py",
     "src/workos/common/models/pipe_connected_account.py",
+    "src/workos/common/models/pipe_connected_account_auth_method.py",
+    "src/workos/common/models/pipe_connected_account_connection_role.py",
     "src/workos/common/models/pipe_connected_account_state.py",
+    "src/workos/common/models/pipes_account_connection_add_failed.py",
+    "src/workos/common/models/pipes_account_connection_add_failed_data.py",
+    "src/workos/common/models/pipes_account_connection_connected.py",
+    "src/workos/common/models/pipes_account_connection_connection_failed.py",
+    "src/workos/common/models/pipes_account_connection_connection_failed_data.py",
+    "src/workos/common/models/pipes_account_connection_disconnected.py",
+    "src/workos/common/models/pipes_account_connection_reauthorization_needed.py",
     "src/workos/common/models/pipes_connected_account_connected.py",
     "src/workos/common/models/pipes_connected_account_connection_failed.py",
     "src/workos/common/models/pipes_connected_account_connection_failed_data.py",
@@ -665,6 +690,9 @@
     "src/workos/organizations/models/organization_input.py",
     "src/workos/organizations/models/update_audit_logs_retention.py",
     "src/workos/organizations/models/update_organization.py",
+    "src/workos/organizations_data_providers/__init__.py",
+    "src/workos/organizations_data_providers/_resource.py",
+    "src/workos/organizations_data_providers/models/__init__.py",
     "src/workos/pipes/__init__.py",
     "src/workos/pipes/_resource.py",
     "src/workos/pipes/models/__init__.py",
@@ -690,6 +718,7 @@
     "src/workos/pipes/models/data_integrations_upsert_api_key_request.py",
     "src/workos/pipes/models/data_integrations_upsert_client_credentials_request.py",
     "src/workos/pipes/models/data_integrations_vend_credentials_request.py",
+    "src/workos/pipes/models/pipes_ownership.py",
     "src/workos/pipes/models/update_custom_provider_definition.py",
     "src/workos/pipes/models/update_data_integration.py",
     "src/workos/pipes_provider/__init__.py",
@@ -763,6 +792,7 @@
     "src/workos/types/organization_domains/__init__.py",
     "src/workos/types/organization_membership/__init__.py",
     "src/workos/types/organizations/__init__.py",
+    "src/workos/types/organizations_data_providers/__init__.py",
     "src/workos/types/pipes/__init__.py",
     "src/workos/types/pipes_provider/__init__.py",
     "src/workos/types/platform_teams/__init__.py",
@@ -777,10 +807,12 @@
     "src/workos/user_management/models/__init__.py",
     "src/workos/user_management/models/authenticate_response.py",
     "src/workos/user_management/models/authenticate_response_oauth_token.py",
+    "src/workos/user_management/models/authkit_oauth_resource.py",
     "src/workos/user_management/models/authorization_code_session_authenticate_request.py",
     "src/workos/user_management/models/authorized_connect_application_list_data.py",
     "src/workos/user_management/models/confirm_email_change.py",
     "src/workos/user_management/models/cors_origin_response.py",
+    "src/workos/user_management/models/create_authkit_oauth_resource.py",
     "src/workos/user_management/models/create_cors_origin.py",
     "src/workos/user_management/models/create_magic_code_and_return.py",
     "src/workos/user_management/models/create_password_reset.py",
@@ -868,6 +900,7 @@
     "src/workos/widgets/models/widget_session_token.py",
     "src/workos/widgets/models/widget_session_token_response.py",
     "tests/fixtures/access_token_agent_registration_credential_issued_data_detail.json",
+    "tests/fixtures/account_selection_required_error.json",
     "tests/fixtures/action_authentication_denied.json",
     "tests/fixtures/action_authentication_denied_data.json",
     "tests/fixtures/action_user_registration_denied.json",
@@ -1032,6 +1065,7 @@
     "tests/fixtures/authentication_sso_timed_out_data.json",
     "tests/fixtures/authentication_sso_timed_out_data_error.json",
     "tests/fixtures/authentication_sso_timed_out_data_sso.json",
+    "tests/fixtures/authkit_oauth_resource.json",
     "tests/fixtures/authorization_check.json",
     "tests/fixtures/authorization_code_session_authenticate_request.json",
     "tests/fixtures/authorization_permission.json",
@@ -1070,6 +1104,7 @@
     "tests/fixtures/connection_saml_certificate_renewed_data_certificate.json",
     "tests/fixtures/connection_saml_certificate_renewed_data_connection.json",
     "tests/fixtures/cors_origin_response.json",
+    "tests/fixtures/create_authkit_oauth_resource.json",
     "tests/fixtures/create_authorization_permission.json",
     "tests/fixtures/create_authorization_resource.json",
     "tests/fixtures/create_connection.json",
@@ -1249,6 +1284,7 @@
     "tests/fixtures/list_audit_log_action.json",
     "tests/fixtures/list_audit_log_schema.json",
     "tests/fixtures/list_authentication_factor.json",
+    "tests/fixtures/list_authkit_oauth_resource.json",
     "tests/fixtures/list_authorization_permission.json",
     "tests/fixtures/list_authorization_resource.json",
     "tests/fixtures/list_authorized_connect_application_list_data.json",
@@ -1352,6 +1388,13 @@
     "tests/fixtures/permission_updated.json",
     "tests/fixtures/permission_updated_data.json",
     "tests/fixtures/pipe_connected_account.json",
+    "tests/fixtures/pipes_account_connection_add_failed.json",
+    "tests/fixtures/pipes_account_connection_add_failed_data.json",
+    "tests/fixtures/pipes_account_connection_connected.json",
+    "tests/fixtures/pipes_account_connection_connection_failed.json",
+    "tests/fixtures/pipes_account_connection_connection_failed_data.json",
+    "tests/fixtures/pipes_account_connection_disconnected.json",
+    "tests/fixtures/pipes_account_connection_reauthorization_needed.json",
     "tests/fixtures/pipes_connected_account_connected.json",
     "tests/fixtures/pipes_connected_account_connection_failed.json",
     "tests/fixtures/pipes_connected_account_connection_failed_data.json",
@@ -1530,6 +1573,8 @@
     "tests/test_organization_membership.py",
     "tests/test_organization_membership_models_round_trip.py",
     "tests/test_organizations.py",
+    "tests/test_organizations_data_providers.py",
+    "tests/test_organizations_data_providers_models_round_trip.py",
     "tests/test_organizations_models_round_trip.py",
     "tests/test_pipes.py",
     "tests/test_pipes_models_round_trip.py",
@@ -2550,6 +2595,50 @@
     "POST /agents/blueprints/{agent_blueprint_id}/tokens/validate": {
       "sdkMethod": "validate_blueprint_token",
       "service": "agents"
+    },
+    "GET /data-integrations/{slug}/organization": {
+      "sdkMethod": "list_data_integration_organization",
+      "service": "pipes"
+    },
+    "PUT /data-integrations/{slug}/organization": {
+      "sdkMethod": "update_data_integration_organization",
+      "service": "pipes"
+    },
+    "DELETE /data-integrations/{slug}/organization": {
+      "sdkMethod": "delete_data_integration_organization",
+      "service": "pipes"
+    },
+    "GET /user_management/authkit_oauth_resources": {
+      "sdkMethod": "list_authkit_oauth_resources",
+      "service": "user_management"
+    },
+    "POST /user_management/authkit_oauth_resources": {
+      "sdkMethod": "create_authkit_oauth_resource",
+      "service": "user_management"
+    },
+    "DELETE /user_management/authkit_oauth_resources/{id}": {
+      "sdkMethod": "delete_authkit_oauth_resource",
+      "service": "user_management"
+    },
+    "GET /organizations/{organization_id}/connected_accounts/{slug}": {
+      "sdkMethod": "get_organization_connected_account",
+      "service": "organizations_data_providers"
+    },
+    "POST /organizations/{organization_id}/connected_accounts/{slug}": {
+      "sdkMethod": "create_organization_connected_account",
+      "service": "organizations_data_providers"
+    },
+    "PUT /organizations/{organization_id}/connected_accounts/{slug}": {
+      "sdkMethod": "update_organization_connected_account",
+      "service": "organizations_data_providers"
+    },
+    "DELETE /organizations/{organization_id}/connected_accounts/{slug}": {
+      "sdkMethod": "delete_organization_connected_account",
+      "service": "organizations_data_providers"
+    },
+    "GET /organizations/{organization_id}/data_providers": {
+      "sdkMethod": "list_organization_data_providers",
+      "service": "organizations_data_providers"
     }
   }
 }

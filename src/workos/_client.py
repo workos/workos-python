@@ -32,10 +32,6 @@ from .organization_membership._resource import (
     OrganizationMembershipService,
 )
 from .organizations._resource import AsyncOrganizations, Organizations
-from .organizations_data_providers._resource import (
-    AsyncOrganizationsDataProviders,
-    OrganizationsDataProviders,
-)
 from .passwordless import AsyncPasswordless, Passwordless
 from .pipes._resource import AsyncPipes, Pipes
 from .pipes_provider._resource import AsyncPipesProvider, PipesProvider
@@ -126,11 +122,6 @@ class WorkOSClient(_SyncBase):
     def groups(self) -> Groups:
         """Groups API resources."""
         return Groups(self)
-
-    @functools.cached_property
-    def organizations_data_providers(self) -> OrganizationsDataProviders:
-        """Organizations Data Providers API resources."""
-        return OrganizationsDataProviders(self)
 
     @functools.cached_property
     def platform_teams(self) -> PlatformTeams:
@@ -279,11 +270,6 @@ class AsyncWorkOSClient(_AsyncBase):
     def groups(self) -> AsyncGroups:
         """Groups API resources."""
         return AsyncGroups(self)
-
-    @functools.cached_property
-    def organizations_data_providers(self) -> AsyncOrganizationsDataProviders:
-        """Organizations Data Providers API resources."""
-        return AsyncOrganizationsDataProviders(self)
 
     @functools.cached_property
     def platform_teams(self) -> AsyncPlatformTeams:

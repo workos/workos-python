@@ -58,6 +58,7 @@ The client reads credentials from the environment when not passed explicitly:
 | `WORKOS_CLIENT_ID` | WorkOS client ID |
 | `WORKOS_BASE_URL` | Override the API base URL (defaults to `https://api.workos.com/`) |
 | `WORKOS_REQUEST_TIMEOUT` | HTTP timeout in seconds (defaults to `60`) |
+| `WORKOS_ISSUER` | Expected `iss` claim of session access tokens, comma-separated to accept several (not validated when unset; also settable via `jwt_issuer=`) |
 
 ## Available Resources
 

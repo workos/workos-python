@@ -289,6 +289,7 @@ class Session:
                 algorithms=self._JWK_ALGORITHMS,
                 options={"verify_aud": False},
                 leeway=self._client._jwt_leeway,
+                issuer=self._client._jwt_issuer,
             )
         except jwt.exceptions.InvalidTokenError:
             return AuthenticateWithSessionCookieErrorResponse(
@@ -370,6 +371,7 @@ class Session:
                     algorithms=self._JWK_ALGORITHMS,
                     options={"verify_aud": False},
                     leeway=self._client._jwt_leeway,
+                    issuer=self._client._jwt_issuer,
                 )
             except (
                 jwt.exceptions.InvalidTokenError,
@@ -497,6 +499,7 @@ class AsyncSession:
                 algorithms=self._JWK_ALGORITHMS,
                 options={"verify_aud": False},
                 leeway=self._client._jwt_leeway,
+                issuer=self._client._jwt_issuer,
             )
         except jwt.exceptions.InvalidTokenError:
             return AuthenticateWithSessionCookieErrorResponse(
@@ -578,6 +581,7 @@ class AsyncSession:
                     algorithms=self._JWK_ALGORITHMS,
                     options={"verify_aud": False},
                     leeway=self._client._jwt_leeway,
+                    issuer=self._client._jwt_issuer,
                 )
             except (
                 jwt.exceptions.InvalidTokenError,

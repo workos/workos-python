@@ -227,6 +227,142 @@ class TestPipes:
         body = json.loads(request.content)
         assert body["user_id"] == "test_user_id"
 
+    def test_get_organization_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.get_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    def test_get_organization_connected_account_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        workos.pipes.get_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    def test_create_organization_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.create_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    def test_update_organization_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account.json"),
+        )
+        result = workos.pipes.update_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    def test_update_organization_connected_account_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        workos.pipes.update_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    def test_delete_organization_connected_account(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.pipes.delete_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    def test_delete_organization_connected_account_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        workos.pipes.delete_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    def test_list_organization_data_providers(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integrations_list_response.json"),
+        )
+        result = workos.pipes.list_organization_data_providers("test_organization_id")
+        assert isinstance(result, DataIntegrationsListResponse)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/data_providers"
+        )
+
+    def test_list_organization_data_providers_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integrations_list_response.json")
+        )
+        workos.pipes.list_organization_data_providers(
+            "test_organization_id", supports_multiple_connections=True
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+
     def test_get_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("connected_account.json"),
@@ -641,6 +777,153 @@ class TestAsyncPipes:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/data-integrations/test_provider/token")
+
+    @pytest.mark.asyncio
+    async def test_get_organization_connected_account(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.get_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_organization_connected_account_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        await async_workos.pipes.get_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    @pytest.mark.asyncio
+    async def test_create_organization_connected_account(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.create_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_organization_connected_account(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        result = await async_workos.pipes.update_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert isinstance(result, ConnectedAccount)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_organization_connected_account_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        await async_workos.pipes.update_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_organization_connected_account(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.pipes.delete_organization_connected_account(
+            "test_organization_id", "test_slug"
+        )
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/connected_accounts/test_slug"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_organization_connected_account_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=204)
+        await async_workos.pipes.delete_organization_connected_account(
+            "test_organization_id",
+            "test_slug",
+            supports_multiple_connections=True,
+            connected_account_id="value connected_account_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
+        assert (
+            request.url.params["connected_account_id"]
+            == "value connected_account_id/test"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_organization_data_providers(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integrations_list_response.json")
+        )
+        result = await async_workos.pipes.list_organization_data_providers(
+            "test_organization_id"
+        )
+        assert isinstance(result, DataIntegrationsListResponse)
+        assert result.object == "list"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/organizations/test_organization_id/data_providers"
+        )
+
+    @pytest.mark.asyncio
+    async def test_list_organization_data_providers_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integrations_list_response.json")
+        )
+        await async_workos.pipes.list_organization_data_providers(
+            "test_organization_id", supports_multiple_connections=True
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["supports_multiple_connections"] == "true"
 
     @pytest.mark.asyncio
     async def test_get_user_connected_account(self, async_workos, httpx_mock):

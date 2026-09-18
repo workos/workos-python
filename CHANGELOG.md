@@ -1,5 +1,26 @@
 # Changelog
 
+## [10.4.0](https://github.com/workos/workos-python/compare/v10.3.0...v10.4.0) (2026-09-18)
+
+
+### Features
+
+* Add optional jwt_issuer option for session token validation ([#725](https://github.com/workos/workos-python/issues/725)) ([70987c7](https://github.com/workos/workos-python/commit/70987c71f56f2d2d6a3e94fe2605aba3f0f1c8e8))
+* **agents:** Add parameter `AgentsSessions.list.organization_id` ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* **generated:** Pipes (batch 8ad8e447) ([#723](https://github.com/workos/workos-python/issues/723)) ([50c29a3](https://github.com/workos/workos-python/commit/50c29a337021972d8768ae976ed28ad1d800b2ac))
+* **pipes:** Update Pipes API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* switch default HTTP client to httpx2 and accept a custom http_client ([#731](https://github.com/workos/workos-python/issues/731)) ([ce01fae](https://github.com/workos/workos-python/commit/ce01fae75c87d7ff86b25580d2bf02f99613a332))
+* **user_management:** Add user management API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+
+
+### Bug Fixes
+
+* **multi_factor_auth:** Change errors for endpoint `POST /auth/factors/{id}/challenge` ([#732](https://github.com/workos/workos-python/issues/732)) ([7d3a7f1](https://github.com/workos/workos-python/commit/7d3a7f10f0b72931e7839e0ee5462f6ae53ed7bc))
+* **multi_factor_auth:** Change errors for endpoint `POST /auth/factors/{id}/challenge` ([#733](https://github.com/workos/workos-python/issues/733)) ([abf5dc2](https://github.com/workos/workos-python/commit/abf5dc24c2ef2dcebd1359567ab45970b09cd581))
+* **pipes:** Move organization connected-account operations onto Pipes ([#733](https://github.com/workos/workos-python/issues/733)) ([abf5dc2](https://github.com/workos/workos-python/commit/abf5dc24c2ef2dcebd1359567ab45970b09cd581))
+* **pipes:** Update Pipes API surface ([#727](https://github.com/workos/workos-python/issues/727)) ([480c1c8](https://github.com/workos/workos-python/commit/480c1c87aefbf9397fb34f6aaa9da3c5a653e672))
+* reject empty and dot path segments before building request URLs ([#728](https://github.com/workos/workos-python/issues/728)) ([21735d2](https://github.com/workos/workos-python/commit/21735d2185dfd37e5873b079d92ad8f16a54719f))
+
 ## [10.3.0](https://github.com/workos/workos-python/compare/v10.2.0...v10.3.0) (2026-09-01)
 
 * [#719](https://github.com/workos/workos-python/pull/719) feat(generated)!: regenerate from spec (6 changes)

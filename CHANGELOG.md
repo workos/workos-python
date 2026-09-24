@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.5.0](https://github.com/workos/workos-python/compare/v10.4.0...v10.5.0) (2026-09-24)
+
+
+### Features
+
+* **generated:** Authorization (batch c64ce1e7) ([#734](https://github.com/workos/workos-python/issues/734)) ([0037bc3](https://github.com/workos/workos-python/commit/0037bc35dd2ab74737fff8d88e418a767ed6704f))
+
 ## [10.4.0](https://github.com/workos/workos-python/compare/v10.3.0...v10.4.0) (2026-09-18)
 
 ### Features

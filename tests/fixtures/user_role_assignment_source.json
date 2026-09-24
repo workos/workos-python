@@ -1,4 +1,5 @@
 {
   "type": "direct",
-  "group_role_assignment_id": null
+  "group_role_assignment_id": null,
+  "group": null
 }

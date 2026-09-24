@@ -61,3 +61,6 @@ from .user_role_assignment_resource import (
 from .user_role_assignment_source import (
     UserRoleAssignmentSource as UserRoleAssignmentSource,
 )
+from .user_role_assignment_source_group import (
+    UserRoleAssignmentSourceGroup as UserRoleAssignmentSourceGroup,
+)

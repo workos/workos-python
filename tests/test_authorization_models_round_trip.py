@@ -19,6 +19,7 @@ from workos.authorization.models import (
     UserRoleAssignment,
     UserRoleAssignmentResource,
     UserRoleAssignmentSource,
+    UserRoleAssignmentSourceGroup,
 )
 
 
@@ -283,7 +284,11 @@ class TestModelRoundTrip:
                 "external_id": "proj-456",
                 "resource_type_slug": "project",
             },
-            "source": {"type": "direct", "group_role_assignment_id": None},
+            "source": {
+                "type": "direct",
+                "group_role_assignment_id": None,
+                "group": None,
+            },
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -428,24 +433,27 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_role_assignment_source_minimal_payload(self):
-        data = {"type": "direct", "group_role_assignment_id": None}
+        data = {"type": "direct", "group_role_assignment_id": None, "group": None}
         instance = UserRoleAssignmentSource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
         assert (
             serialized["group_role_assignment_id"] == data["group_role_assignment_id"]
         )
+        assert serialized["group"] == data["group"]
 
     def test_user_role_assignment_source_preserves_nullable_fields(self):
-        data = {"type": "direct", "group_role_assignment_id": None}
+        data = {"type": "direct", "group_role_assignment_id": None, "group": None}
         instance = UserRoleAssignmentSource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["group_role_assignment_id"] is None
+        assert serialized["group"] is None
 
     def test_user_role_assignment_source_round_trips_unknown_enum_values(self):
         data = {
             "type": "unexpected_user_role_assignment_source_type",
             "group_role_assignment_id": None,
+            "group": None,
         }
         instance = UserRoleAssignmentSource.from_dict(data)
         assert instance.to_dict() == data
@@ -517,3 +525,18 @@ class TestModelRoundTrip:
         instance = Permission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
+
+    def test_user_role_assignment_source_group_round_trip(self):
+        data = load_fixture("user_role_assignment_source_group.json")
+        instance = UserRoleAssignmentSourceGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserRoleAssignmentSourceGroup.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_role_assignment_source_group_minimal_payload(self):
+        data = {"id": "group_01HXYZ123456789ABCDEFGHIJ", "name": "Marketing team"}
+        instance = UserRoleAssignmentSourceGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]

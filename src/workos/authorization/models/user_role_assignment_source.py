@@ -4,12 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, cast
 
 from workos._types import _raise_deserialize_error
 from workos.common.models.user_role_assignment_source_type import (
     UserRoleAssignmentSourceType,
 )
+
+from .user_role_assignment_source_group import UserRoleAssignmentSourceGroup
 
 
 @dataclass(slots=True)
@@ -20,6 +22,8 @@ class UserRoleAssignmentSource:
     """Whether the role was assigned directly or derived from a group."""
     group_role_assignment_id: str | None
     """The ID of the group role assignment the role was derived from, or null if direct."""
+    group: UserRoleAssignmentSourceGroup | None
+    """The group the role was derived from, or null if direct."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> UserRoleAssignmentSource:
@@ -28,6 +32,11 @@ class UserRoleAssignmentSource:
             return cls(
                 type=UserRoleAssignmentSourceType(data["type"]),
                 group_role_assignment_id=data["group_role_assignment_id"],
+                group=UserRoleAssignmentSourceGroup.from_dict(
+                    cast(dict[str, Any], _v_group)
+                )
+                if (_v_group := data["group"]) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserRoleAssignmentSource", e)
@@ -40,4 +49,8 @@ class UserRoleAssignmentSource:
             result["group_role_assignment_id"] = self.group_role_assignment_id
         else:
             result["group_role_assignment_id"] = None
+        if self.group is not None:
+            result["group"] = self.group.to_dict()
+        else:
+            result["group"] = None
         return result

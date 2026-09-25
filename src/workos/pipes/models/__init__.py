@@ -12,7 +12,12 @@ from workos.common.models.data_integrations_list_response_data_connected_account
 )
 
 from .api_key_installation import ApiKeyInstallation as ApiKeyInstallation
+from .connected_account_input import ConnectedAccountInput as ConnectedAccountInput
+from .create_connected_account import CreateConnectedAccount as CreateConnectedAccount
 from .create_data_integration import CreateDataIntegration as CreateDataIntegration
+from .create_organization_connected_account import (
+    CreateOrganizationConnectedAccount as CreateOrganizationConnectedAccount,
+)
 from .custom_provider_definition import (
     CustomProviderDefinition as CustomProviderDefinition,
 )
@@ -42,6 +47,15 @@ from .data_integration_custom_provider import (
 from .data_integration_installation import (
     DataIntegrationInstallation as DataIntegrationInstallation,
 )
+from .data_integration_vended_credential import (
+    DataIntegrationVendedCredential as DataIntegrationVendedCredential,
+)
+from .data_integrations_create_api_key_connection_request import (
+    DataIntegrationsCreateApiKeyConnectionRequest as DataIntegrationsCreateApiKeyConnectionRequest,
+)
+from .data_integrations_create_client_credentials_connection_request import (
+    DataIntegrationsCreateClientCredentialsConnectionRequest as DataIntegrationsCreateClientCredentialsConnectionRequest,
+)
 from .data_integrations_get_data_integration_authorize_url_request import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequest as DataIntegrationsGetDataIntegrationAuthorizeUrlRequest,
 )
@@ -51,13 +65,28 @@ from .data_integrations_get_user_token_request import (
 from .data_integrations_upsert_api_key_request import (
     DataIntegrationsUpsertApiKeyRequest as DataIntegrationsUpsertApiKeyRequest,
 )
+from .data_integrations_upsert_api_key_request_2 import (
+    DataIntegrationsUpsertApiKeyRequest2 as DataIntegrationsUpsertApiKeyRequest2,
+)
 from .data_integrations_upsert_client_credentials_request import (
     DataIntegrationsUpsertClientCredentialsRequest as DataIntegrationsUpsertClientCredentialsRequest,
+)
+from .data_integrations_upsert_client_credentials_request_2 import (
+    DataIntegrationsUpsertClientCredentialsRequest2 as DataIntegrationsUpsertClientCredentialsRequest2,
 )
 from .data_integrations_vend_credentials_request import (
     DataIntegrationsVendCredentialsRequest as DataIntegrationsVendCredentialsRequest,
 )
+from .organization_connected_account import (
+    OrganizationConnectedAccount as OrganizationConnectedAccount,
+)
 from .pipes_ownership import PipesOwnership as PipesOwnership
+from .reauthorize_data_integrations_upsert_api_key_request import (
+    ReauthorizeDataIntegrationsUpsertApiKeyRequest as ReauthorizeDataIntegrationsUpsertApiKeyRequest,
+)
+from .reauthorize_data_integrations_upsert_client_credentials_request import (
+    ReauthorizeDataIntegrationsUpsertClientCredentialsRequest as ReauthorizeDataIntegrationsUpsertClientCredentialsRequest,
+)
 from .update_custom_provider_definition import (
     UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
 )

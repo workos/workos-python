@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
-from workos.common.models.data_integrations_upsert_client_credentials_request_connection_owner import (
-    DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
+from workos.common.models.reauthorize_data_integrations_upsert_client_credentials_request_connection_owner import (
+    ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
 )
 
 
 @dataclass(slots=True)
-class DataIntegrationsUpsertClientCredentialsRequest:
-    """Data Integrations Upsert Client Credentials Request model."""
+class ReauthorizeDataIntegrationsUpsertClientCredentialsRequest:
+    """Reauthorize Data Integrations Upsert Client Credentials Request model."""
 
     user_id: str
     """A [User](https://workos.com/docs/reference/authkit/user) identifier."""
@@ -22,10 +22,14 @@ class DataIntegrationsUpsertClientCredentialsRequest:
     """The OAuth client ID to store for this integration."""
     client_secret: str
     """The OAuth client secret to store for this integration."""
+    connection_intent: Literal["reauthorize"]
+    """Reauthorize exactly the connection named by `connected_account_id`."""
+    connected_account_id: str
+    """The exact connected account to reauthorize. Required with `connection_intent: reauthorize`."""
     organization_id: str | None = None
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
     connection_owner: (
-        DataIntegrationsUpsertClientCredentialsRequestConnectionOwner | None
+        ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner | None
     ) = None
     """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
     config: dict[str, str] | None = None
@@ -34,15 +38,17 @@ class DataIntegrationsUpsertClientCredentialsRequest:
     @classmethod
     def from_dict(
         cls, data: dict[str, Any]
-    ) -> DataIntegrationsUpsertClientCredentialsRequest:
+    ) -> ReauthorizeDataIntegrationsUpsertClientCredentialsRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 user_id=data["user_id"],
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
+                connection_intent=data.get("connection_intent", "reauthorize"),
+                connected_account_id=data["connected_account_id"],
                 organization_id=data.get("organization_id"),
-                connection_owner=DataIntegrationsUpsertClientCredentialsRequestConnectionOwner(
+                connection_owner=ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner(
                     _v_connection_owner
                 )
                 if (_v_connection_owner := data.get("connection_owner")) is not None
@@ -51,7 +57,7 @@ class DataIntegrationsUpsertClientCredentialsRequest:
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
-                "DataIntegrationsUpsertClientCredentialsRequest", e
+                "ReauthorizeDataIntegrationsUpsertClientCredentialsRequest", e
             )
 
     def to_dict(self) -> dict[str, Any]:
@@ -60,6 +66,8 @@ class DataIntegrationsUpsertClientCredentialsRequest:
         result["user_id"] = self.user_id
         result["client_id"] = self.client_id
         result["client_secret"] = self.client_secret
+        result["connection_intent"] = self.connection_intent
+        result["connected_account_id"] = self.connected_account_id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.connection_owner is not None:

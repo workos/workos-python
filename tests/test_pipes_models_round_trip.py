@@ -20,6 +20,7 @@ from workos.pipes.models import (
     DataIntegrationsListResponse,
     DataIntegrationsListResponseData,
     DataIntegrationsListResponseDataConnectedAccount,
+    DataIntegrationVendedCredential,
     UpdateCustomProviderDefinition,
 )
 
@@ -386,6 +387,48 @@ class TestModelRoundTrip:
         instance = DataIntegrationAccessTokenResponse.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_data_integration_vended_credential_round_trip(self):
+        data = load_fixture("data_integration_vended_credential.json")
+        instance = DataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationVendedCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_vended_credential_minimal_payload(self):
+        data = {}
+        instance = DataIntegrationVendedCredential.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_data_integration_vended_credential_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"expires_at": "2025-12-31T23:59:59.000Z"}
+        instance = DataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert "object" not in serialized
+        assert "auth_method" not in serialized
+        assert "value" not in serialized
+        assert "scopes" not in serialized
+        assert "missing_scopes" not in serialized
+        assert "config" not in serialized
+        assert "metadata" not in serialized
+
+    def test_data_integration_vended_credential_preserves_nullable_fields(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+            "config": {"account": "myorg-myaccount"},
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+        }
+        instance = DataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
     def test_data_integration_credentials_response_round_trip(self):
         data = load_fixture("data_integration_credentials_response.json")
         instance = DataIntegrationCredentialsResponse.from_dict(data)
@@ -421,6 +464,8 @@ class TestModelRoundTrip:
                 "expires_at": "2025-12-31T23:59:59.000Z",
                 "scopes": ["repo", "user:email"],
                 "missing_scopes": [],
+                "config": {"account": "myorg-myaccount"},
+                "metadata": {"instance_url": "https://acme.my.salesforce.com"},
             },
             "error": "unexpected_data_integration_credentials_response_error",
         }
@@ -838,47 +883,6 @@ class TestModelRoundTrip:
         instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_data_integration_credentials_response_credential_round_trip(self):
-        data = load_fixture("data_integration_credentials_response_credential.json")
-        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DataIntegrationCredentialsResponseCredential.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_data_integration_credentials_response_credential_minimal_payload(self):
-        data = {
-            "object": "credential",
-            "auth_method": "oauth",
-            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
-            "expires_at": None,
-            "scopes": ["repo", "user:email"],
-            "missing_scopes": [],
-        }
-        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["auth_method"] == data["auth_method"]
-        assert serialized["value"] == data["value"]
-        assert serialized["expires_at"] == data["expires_at"]
-        assert serialized["scopes"] == data["scopes"]
-        assert serialized["missing_scopes"] == data["missing_scopes"]
-
-    def test_data_integration_credentials_response_credential_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "credential",
-            "auth_method": "oauth",
-            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
-            "expires_at": None,
-            "scopes": ["repo", "user:email"],
-            "missing_scopes": [],
-        }
-        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["expires_at"] is None
-
     def test_data_integration_access_token_response_access_token_round_trip(self):
         data = load_fixture("data_integration_access_token_response_access_token.json")
         instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
@@ -1210,3 +1214,44 @@ class TestModelRoundTrip:
         }
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_data_integration_credentials_response_credential_round_trip(self):
+        data = load_fixture("data_integration_credentials_response_credential.json")
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+
+    def test_data_integration_credentials_response_credential_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationCredentialsResponseCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None

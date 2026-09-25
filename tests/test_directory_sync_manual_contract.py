@@ -50,7 +50,9 @@ def test_manual_sync_preserves_rate_limit_details(workos, httpx_mock):
 
     assert raised.value.status_code == 429
     assert raised.value.code == "directory_sync_rate_limited"
+    assert raised.value.response_json is not None
     assert raised.value.response_json["retry_after_seconds"] == 120
+    assert raised.value.response is not None
     assert raised.value.response.headers["Retry-After"] == "120"
     assert len(httpx_mock.get_requests()) == 1
 

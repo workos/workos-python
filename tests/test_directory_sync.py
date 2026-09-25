@@ -15,7 +15,11 @@ from workos._errors import (
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import DirectoryGroup, PaginationOrder
-from workos.directory_sync.models import Directory, DirectoryUserWithGroups
+from workos.directory_sync.models import (
+    Directory,
+    DirectorySyncResponse,
+    DirectoryUserWithGroups,
+)
 
 
 class TestDirectorySync:
@@ -73,6 +77,17 @@ class TestDirectorySync:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/directories/test_id")
+
+    def test_sync_directory(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("directory_sync_response.json"),
+        )
+        result = workos.directory_sync.sync_directory("test_id")
+        assert isinstance(result, DirectorySyncResponse)
+        assert result.status == "queued"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/directories/test_id/sync")
 
     def test_list_groups(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -302,6 +317,16 @@ class TestAsyncDirectorySync:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/directories/test_id")
+
+    @pytest.mark.asyncio
+    async def test_sync_directory(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("directory_sync_response.json"))
+        result = await async_workos.directory_sync.sync_directory("test_id")
+        assert isinstance(result, DirectorySyncResponse)
+        assert result.status == "queued"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/directories/test_id/sync")
 
     @pytest.mark.asyncio
     async def test_list_groups(self, async_workos, httpx_mock):

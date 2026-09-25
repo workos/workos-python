@@ -1,0 +1,5 @@
+{
+  "code": "directory_sync_rate_limited",
+  "message": "Request could not be processed.",
+  "retry_after_seconds": 120
+}

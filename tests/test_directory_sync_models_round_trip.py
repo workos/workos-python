@@ -8,6 +8,7 @@ from workos.directory_sync.models import (
     DirectoryGroup,
     DirectoryMetadata,
     DirectoryMetadataUser,
+    DirectorySyncResponse,
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
@@ -79,6 +80,20 @@ class TestModelRoundTrip:
         }
         instance = Directory.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_directory_sync_response_round_trip(self):
+        data = load_fixture("directory_sync_response.json")
+        instance = DirectorySyncResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_response_minimal_payload(self):
+        data = {"status": "queued"}
+        instance = DirectorySyncResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["status"] == data["status"]
 
     def test_directory_group_round_trip(self):
         data = load_fixture("directory_group.json")

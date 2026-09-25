@@ -4,49 +4,63 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
-from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
-    DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+from workos.common.models.reauthorize_data_integrations_upsert_api_key_request_connection_owner import (
+    ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner,
 )
 
 
 @dataclass(slots=True)
-class DataIntegrationsUpsertApiKeyRequest:
-    """Data Integrations Upsert Api Key Request model."""
+class ReauthorizeDataIntegrationsUpsertApiKeyRequest:
+    """Reauthorize Data Integrations Upsert Api Key Request model."""
 
     user_id: str
     """A [User](https://workos.com/docs/reference/authkit/user) identifier."""
     secret: str
     """The API key secret to store for this integration."""
+    connection_intent: Literal["reauthorize"]
+    """Reauthorize exactly the connection named by `connected_account_id`."""
+    connected_account_id: str
+    """The exact connected account to reauthorize. Required with `connection_intent: reauthorize`."""
     organization_id: str | None = None
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
-    connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner | None = None
+    connection_owner: (
+        ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner | None
+    ) = None
     """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsUpsertApiKeyRequest:
+    def from_dict(
+        cls, data: dict[str, Any]
+    ) -> ReauthorizeDataIntegrationsUpsertApiKeyRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 user_id=data["user_id"],
                 secret=data["secret"],
+                connection_intent=data.get("connection_intent", "reauthorize"),
+                connected_account_id=data["connected_account_id"],
                 organization_id=data.get("organization_id"),
-                connection_owner=DataIntegrationsUpsertApiKeyRequestConnectionOwner(
+                connection_owner=ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner(
                     _v_connection_owner
                 )
                 if (_v_connection_owner := data.get("connection_owner")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("DataIntegrationsUpsertApiKeyRequest", e)
+            _raise_deserialize_error(
+                "ReauthorizeDataIntegrationsUpsertApiKeyRequest", e
+            )
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         result["secret"] = self.secret
+        result["connection_intent"] = self.connection_intent
+        result["connected_account_id"] = self.connected_account_id
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.connection_owner is not None:

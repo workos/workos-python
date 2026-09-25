@@ -4,49 +4,57 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
-from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
-    DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+from workos.common.models.data_integrations_create_api_key_connection_request_connection_owner import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
 )
 
 
 @dataclass(slots=True)
-class DataIntegrationsUpsertApiKeyRequest:
-    """Data Integrations Upsert Api Key Request model."""
+class DataIntegrationsCreateApiKeyConnectionRequest:
+    """Data Integrations Create Api Key Connection Request model."""
 
     user_id: str
     """A [User](https://workos.com/docs/reference/authkit/user) identifier."""
     secret: str
     """The API key secret to store for this integration."""
+    connection_intent: Literal["add"]
+    """Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`."""
     organization_id: str | None = None
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
-    connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner | None = None
+    connection_owner: (
+        DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner | None
+    ) = None
     """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsUpsertApiKeyRequest:
+    def from_dict(
+        cls, data: dict[str, Any]
+    ) -> DataIntegrationsCreateApiKeyConnectionRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
                 user_id=data["user_id"],
                 secret=data["secret"],
+                connection_intent=data.get("connection_intent", "add"),
                 organization_id=data.get("organization_id"),
-                connection_owner=DataIntegrationsUpsertApiKeyRequestConnectionOwner(
+                connection_owner=DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner(
                     _v_connection_owner
                 )
                 if (_v_connection_owner := data.get("connection_owner")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("DataIntegrationsUpsertApiKeyRequest", e)
+            _raise_deserialize_error("DataIntegrationsCreateApiKeyConnectionRequest", e)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["user_id"] = self.user_id
         result["secret"] = self.secret
+        result["connection_intent"] = self.connection_intent
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.connection_owner is not None:

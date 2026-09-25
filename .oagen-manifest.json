@@ -316,6 +316,7 @@
     "src/workos/common/models/data_integrations_vend_credentials_request_connection_owner.py",
     "src/workos/common/models/directory_group.py",
     "src/workos/common/models/directory_state.py",
+    "src/workos/common/models/directory_sync_rate_limit_error.py",
     "src/workos/common/models/directory_type.py",
     "src/workos/common/models/directory_user.py",
     "src/workos/common/models/directory_user_email.py",
@@ -637,6 +638,7 @@
     "src/workos/directory_sync/models/directory.py",
     "src/workos/directory_sync/models/directory_metadata.py",
     "src/workos/directory_sync/models/directory_metadata_user.py",
+    "src/workos/directory_sync/models/directory_sync_response.py",
     "src/workos/directory_sync/models/directory_user_with_groups.py",
     "src/workos/directory_sync/models/directory_user_with_groups_email.py",
     "src/workos/events/__init__.py",
@@ -1167,6 +1169,8 @@
     "tests/fixtures/directory_group.json",
     "tests/fixtures/directory_metadata.json",
     "tests/fixtures/directory_metadata_user.json",
+    "tests/fixtures/directory_sync_rate_limit_error.json",
+    "tests/fixtures/directory_sync_response.json",
     "tests/fixtures/directory_user.json",
     "tests/fixtures/directory_user_email.json",
     "tests/fixtures/directory_user_with_groups.json",
@@ -2633,6 +2637,10 @@
     "GET /audit_logs/exports/{auditLogExportId}": {
       "sdkMethod": "get_export",
       "service": "audit_logs"
+    },
+    "POST /directories/{id}/sync": {
+      "sdkMethod": "sync_directory",
+      "service": "directory_sync"
     }
   }
 }

@@ -92,6 +92,36 @@ The client exposes the WorkOS API through typed namespace properties:
 | `client.actions` | AuthKit Actions signature verification and response signing |
 | `client.pkce` | PKCE code verifier/challenge helpers |
 
+## Webhook Signature Verification
+
+Use `client.webhooks.verify_event()` rather than hand-rolling the HMAC check — it implements the exact scheme WorkOS signs with, and returns the deserialized event:
+
+```python
+from django.http import HttpResponse
+
+from workos import WorkOSClient
+
+client = WorkOSClient(api_key="sk_1234", client_id="client_1234")
+
+# In a Django view (Flask: request.get_data() / request.headers)
+def workos_webhook(request):
+    try:
+        event = client.webhooks.verify_event(
+            event_body=request.body,  # raw bytes, never a re-serialized dict
+            event_signature=request.headers["WorkOS-Signature"],
+            secret="wh_secret_1234",  # endpoint secret from the WorkOS dashboard
+        )
+    except ValueError:
+        return HttpResponse(status=400)  # invalid signature or stale timestamp
+
+    print(event.event, event.id)
+    return HttpResponse(status=200)
+```
+
+`verify_header()` does the same check without deserializing, for payloads you want to handle yourself.
+
+The `WorkOS-Signature` header is formatted `t=<unix-timestamp-ms>, v1=<hex-sha256>` — note the `, ` separator — and `v1` is the HMAC-SHA256 of `"{timestamp}.{raw body}"` keyed with the endpoint secret. Events older (or newer) than `tolerance` seconds are rejected; it defaults to 180. Verification is local and synchronous, so it works the same on `AsyncWorkOSClient`.
+
 ## Pagination
 
 Paginated endpoints return `SyncPage[T]` (or `AsyncPage[T]`) with built-in auto-pagination:

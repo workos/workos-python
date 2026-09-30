@@ -17,7 +17,7 @@ dependencies = [
 [project.urls]
 Homepage = "https://workos.com/docs/sdks/python"
 Documentation = "https://workos.com/docs/reference"
-Changelog = "https://workos.com/docs/sdks/python"
+Changelog = "https://github.com/workos/workos-python/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = [

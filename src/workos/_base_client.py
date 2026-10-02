@@ -679,6 +679,7 @@ class WorkOSClient(_BaseWorkOSClient):
 
         def _fetch(*, after: Optional[str] = None) -> SyncPage[D]:
             next_params = {**(params or {}), "after": after}
+            next_params.pop("before", None)
             return self.request_page(
                 method=method,
                 path=path,
@@ -922,6 +923,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
 
         async def _fetch(*, after: Optional[str] = None) -> AsyncPage[D]:
             next_params = {**(params or {}), "after": after}
+            next_params.pop("before", None)
             return await self.request_page(
                 method=method,
                 path=path,

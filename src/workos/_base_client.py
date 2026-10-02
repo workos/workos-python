@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import os
 import platform
 import time
@@ -136,7 +137,8 @@ class _BaseWorkOSClient:
         if not value:
             return None
         try:
-            return max(float(value), 0.0)
+            seconds = float(value)
+            return max(seconds, 0.0) if math.isfinite(seconds) else None
         except ValueError:
             pass
         try:

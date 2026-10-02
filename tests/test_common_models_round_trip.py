@@ -127,6 +127,7 @@ from workos.common.models import (
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    DirectorySyncRateLimitError,
     DirectoryUser,
     DirectoryUserEmail,
     DsyncActivated,
@@ -478,6 +479,26 @@ class TestModelRoundTrip:
         instance = ConnectApplicationM2M.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
+
+    def test_directory_sync_rate_limit_error_round_trip(self):
+        data = load_fixture("directory_sync_rate_limit_error.json")
+        instance = DirectorySyncRateLimitError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncRateLimitError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_rate_limit_error_minimal_payload(self):
+        data = {
+            "code": "directory_sync_rate_limited",
+            "message": "Request could not be processed.",
+            "retry_after_seconds": 120,
+        }
+        instance = DirectorySyncRateLimitError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["retry_after_seconds"] == data["retry_after_seconds"]
 
     def test_event_context_actor_round_trip(self):
         data = load_fixture("event_context_actor.json")

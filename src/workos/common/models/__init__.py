@@ -526,6 +526,9 @@ from .data_integrations_vend_credentials_request_connection_owner import (
 )
 from .directory_group import DirectoryGroup as DirectoryGroup
 from .directory_state import DirectoryState as DirectoryState
+from .directory_sync_rate_limit_error import (
+    DirectorySyncRateLimitError as DirectorySyncRateLimitError,
+)
 from .directory_type import DirectoryType as DirectoryType
 from .directory_user import DirectoryUser as DirectoryUser
 from .directory_user_email import DirectoryUserEmail as DirectoryUserEmail

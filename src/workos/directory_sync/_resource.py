@@ -12,7 +12,7 @@ from workos.common.models.pagination_order import PaginationOrder
 
 from .._pagination import AsyncPage, SyncPage
 from .._types import RequestOptions, enum_value
-from .models import Directory, DirectoryUserWithGroups
+from .models import Directory, DirectorySyncResponse, DirectoryUserWithGroups
 
 
 class DirectorySync:
@@ -132,6 +132,39 @@ class DirectorySync:
         self._client.request(
             method="delete",
             path=("directories", str(id)),
+            request_options=request_options,
+        )
+
+    def sync_directory(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectorySyncResponse:
+        """Sync a Directory
+
+        Request an asynchronous sync from the directory provider. Currently supports Google Workspace directories in linked or validating state. Manual requests share a five-minute per-directory cooldown across the API, Dashboard, Admin Portal, and MCP. Acceptance means the request was queued, not that the sync has started or completed. A running sync prevents another request from being queued.
+
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectorySyncResponse
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("directories", str(id), "sync"),
+            model=DirectorySyncResponse,
             request_options=request_options,
         )
 
@@ -431,6 +464,39 @@ class AsyncDirectorySync:
         await self._client.request(
             method="delete",
             path=("directories", str(id)),
+            request_options=request_options,
+        )
+
+    async def sync_directory(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectorySyncResponse:
+        """Sync a Directory
+
+        Request an asynchronous sync from the directory provider. Currently supports Google Workspace directories in linked or validating state. Manual requests share a five-minute per-directory cooldown across the API, Dashboard, Admin Portal, and MCP. Acceptance means the request was queued, not that the sync has started or completed. A running sync prevents another request from being queued.
+
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectorySyncResponse
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("directories", str(id), "sync"),
+            model=DirectorySyncResponse,
             request_options=request_options,
         )
 

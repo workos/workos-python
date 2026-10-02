@@ -5,6 +5,7 @@ from workos.common.models.directory_group import DirectoryGroup as DirectoryGrou
 from .directory import Directory as Directory
 from .directory_metadata import DirectoryMetadata as DirectoryMetadata
 from .directory_metadata_user import DirectoryMetadataUser as DirectoryMetadataUser
+from .directory_sync_response import DirectorySyncResponse as DirectorySyncResponse
 from .directory_user_with_groups import (
     DirectoryUserWithGroups as DirectoryUserWithGroups,
 )

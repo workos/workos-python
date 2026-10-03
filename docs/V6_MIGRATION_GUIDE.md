@@ -261,7 +261,7 @@ List endpoints now return typed page wrappers with cursor metadata and built-in 
 ```python
 page = client.organizations.list_organizations()
 
-for organization in page:
+for organization in page.auto_paging_iter():
     print(organization.id)
 
 assert page.before is None or isinstance(page.before, str)
@@ -273,12 +273,14 @@ assert page.after is None or isinstance(page.after, str)
 ```python
 page = await async_client.organizations.list_organizations()
 
-items = [organization async for organization in page]
+items = [organization async for organization in page.auto_paging_iter()]
 ```
 
 **Affected users:** Any code that expected a handwritten list wrapper or manually handled pagination state differently.
 
-**Migration:** Update pagination code to work with `SyncPage` or `AsyncPage`, and use `page.data`, `page.before`, `page.after`, or iteration over the page as needed.
+**Migration:** Update pagination code to work with `SyncPage` or `AsyncPage`, and use `page.data`, `page.before`, `page.after`, or `auto_paging_iter()` as needed.
+
+**Breaking change (v11):** Iterating a page directly (`for organization in page`, `async for`) yields only the current page's `data` and makes no further requests. In v6–v10 it auto-paginates; in v11, call `page.auto_paging_iter()` to iterate across all pages.
 
 ### Requests now retry by default
 

@@ -108,24 +108,26 @@ class TestAsyncPage:
         assert [i.id for i in items] == ["1", "2", "3"]
 
 
+ORG_BASE = {
+    "object": "organization",
+    "domains": [],
+    "metadata": {},
+    "external_id": None,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z",
+}
+
+
 class TestPaginationHTTPIntegration:
     """Integration test verifying auto_paging_iter fetches multiple pages via httpx."""
 
     def test_auto_paging_iter_fetches_two_pages(self, workos, httpx_mock):
-        org_base = {
-            "object": "organization",
-            "domains": [],
-            "metadata": {},
-            "external_id": None,
-            "created_at": "2024-01-01T00:00:00Z",
-            "updated_at": "2024-01-01T00:00:00Z",
-        }
         page1_json = {
-            "data": [{"id": "org_1", "name": "Org 1", **org_base}],
+            "data": [{"id": "org_1", "name": "Org 1", **ORG_BASE}],
             "list_metadata": {"after": "cursor_page2"},
         }
         page2_json = {
-            "data": [{"id": "org_2", "name": "Org 2", **org_base}],
+            "data": [{"id": "org_2", "name": "Org 2", **ORG_BASE}],
             "list_metadata": {},
         }
         httpx_mock.add_response(json=page1_json)
@@ -140,3 +142,46 @@ class TestPaginationHTTPIntegration:
         requests = httpx_mock.get_requests()
         assert len(requests) == 2
         assert "after=cursor_page2" in str(requests[1].url)
+
+
+class TestPageLocalIteration:
+    """Iterating a page yields only that page's data and makes no extra request."""
+
+    def test_iter_yields_current_page_only(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json={
+                "data": [
+                    {"id": "org_1", "name": "Org 1", **ORG_BASE},
+                    {"id": "org_2", "name": "Org 2", **ORG_BASE},
+                ],
+                "list_metadata": {"after": "cursor_page2"},
+            }
+        )
+
+        page = workos.organizations.list_organizations(
+            request_options={"max_retries": 0}
+        )
+        items = list(page)
+
+        assert [item.id for item in items] == ["org_1", "org_2"]
+        assert len(httpx_mock.get_requests()) == 1
+
+    @pytest.mark.asyncio
+    async def test_aiter_yields_current_page_only(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json={
+                "data": [
+                    {"id": "org_1", "name": "Org 1", **ORG_BASE},
+                    {"id": "org_2", "name": "Org 2", **ORG_BASE},
+                ],
+                "list_metadata": {"after": "cursor_page2"},
+            }
+        )
+
+        page = await async_workos.organizations.list_organizations(
+            request_options={"max_retries": 0}
+        )
+        items = [item async for item in page]
+
+        assert [item.id for item in items] == ["org_1", "org_2"]
+        assert len(httpx_mock.get_requests()) == 1

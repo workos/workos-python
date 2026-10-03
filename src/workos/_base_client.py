@@ -34,7 +34,7 @@ from ._http import (
     resolve_async_backend,
     resolve_sync_backend,
 )
-from ._pagination import AsyncPage, ListMetadata, SyncPage
+from ._pagination import AsyncPage, ListMetadata, PaginationDirection, SyncPage
 from ._types import D, Deserializable, RequestOptions
 
 try:
@@ -677,8 +677,24 @@ class WorkOSClient(_BaseWorkOSClient):
             cast(Dict[str, Any], data.get("list_metadata", {}))
         )
 
-        def _fetch(*, after: Optional[str] = None) -> SyncPage[D]:
-            next_params = {**(params or {}), "after": after}
+        direction: PaginationDirection = (
+            "backward"
+            if params and params.get("before") and not params.get("after")
+            else "forward"
+        )
+
+        def _fetch(
+            *, after: Optional[str] = None, before: Optional[str] = None
+        ) -> SyncPage[D]:
+            # Follow-up requests send only the cursor for the page's direction;
+            # the API rejects requests that carry both "after" and "before".
+            next_params = dict(params or {})
+            if direction == "backward":
+                next_params.pop("after", None)
+                next_params["before"] = before
+            else:
+                next_params.pop("before", None)
+                next_params["after"] = after
             return self.request_page(
                 method=method,
                 path=path,
@@ -688,7 +704,12 @@ class WorkOSClient(_BaseWorkOSClient):
                 request_options=request_options,
             )
 
-        return SyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
+        return SyncPage(
+            data=items,
+            list_metadata=list_metadata,
+            _fetch_page=_fetch,
+            _direction=direction,
+        )
 
 
 class AsyncWorkOSClient(_BaseWorkOSClient):
@@ -920,8 +941,24 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             cast(Dict[str, Any], data.get("list_metadata", {}))
         )
 
-        async def _fetch(*, after: Optional[str] = None) -> AsyncPage[D]:
-            next_params = {**(params or {}), "after": after}
+        direction: PaginationDirection = (
+            "backward"
+            if params and params.get("before") and not params.get("after")
+            else "forward"
+        )
+
+        async def _fetch(
+            *, after: Optional[str] = None, before: Optional[str] = None
+        ) -> AsyncPage[D]:
+            # Follow-up requests send only the cursor for the page's direction;
+            # the API rejects requests that carry both "after" and "before".
+            next_params = dict(params or {})
+            if direction == "backward":
+                next_params.pop("after", None)
+                next_params["before"] = before
+            else:
+                next_params.pop("before", None)
+                next_params["after"] = after
             return await self.request_page(
                 method=method,
                 path=path,
@@ -931,4 +968,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
                 request_options=request_options,
             )
 
-        return AsyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
+        return AsyncPage(
+            data=items,
+            list_metadata=list_metadata,
+            _fetch_page=_fetch,
+            _direction=direction,
+        )

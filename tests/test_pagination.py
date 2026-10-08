@@ -121,6 +121,53 @@ ORG_BASE = {
 class TestPaginationHTTPIntegration:
     """Integration test verifying auto_paging_iter fetches multiple pages via httpx."""
 
+    def test_forward_pagination_clears_before(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json={"data": [{"id": "1"}], "list_metadata": {"after": "next"}}
+        )
+        httpx_mock.add_response(json={"data": [{"id": "2"}], "list_metadata": {}})
+        params = {"before": "initial", "limit": 1, "organization_id": "org_1"}
+        page = workos.request_page("GET", ["items"], model=FakeItem, params=params)
+        assert [item.id for item in page.auto_paging_iter()] == ["1", "2"]
+        requests = httpx_mock.get_requests()
+        assert dict(requests[0].url.params) == {
+            "before": "initial",
+            "limit": "1",
+            "organization_id": "org_1",
+        }
+        assert dict(requests[1].url.params) == {
+            "after": "next",
+            "limit": "1",
+            "organization_id": "org_1",
+        }
+        assert params == {"before": "initial", "limit": 1, "organization_id": "org_1"}
+
+    @pytest.mark.asyncio
+    async def test_async_forward_pagination_clears_before(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json={"data": [{"id": "1"}], "list_metadata": {"after": "next"}}
+        )
+        httpx_mock.add_response(json={"data": [{"id": "2"}], "list_metadata": {}})
+        params = {"before": "initial", "limit": 1, "organization_id": "org_1"}
+        page = await async_workos.request_page(
+            "GET", ["items"], model=FakeItem, params=params
+        )
+        assert [item.id async for item in page.auto_paging_iter()] == ["1", "2"]
+        requests = httpx_mock.get_requests()
+        assert dict(requests[0].url.params) == {
+            "before": "initial",
+            "limit": "1",
+            "organization_id": "org_1",
+        }
+        assert dict(requests[1].url.params) == {
+            "after": "next",
+            "limit": "1",
+            "organization_id": "org_1",
+        }
+        assert params == {"before": "initial", "limit": 1, "organization_id": "org_1"}
+
     def test_auto_paging_iter_fetches_two_pages(self, workos, httpx_mock):
         page1_json = {
             "data": [{"id": "org_1", "name": "Org 1", **ORG_BASE}],

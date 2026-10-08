@@ -427,6 +427,9 @@ from .connection_saml_certificate_renewed_data_connection import (
 from .connection_state import ConnectionState as ConnectionState
 from .connection_status import ConnectionStatus as ConnectionStatus
 from .connection_type import ConnectionType as ConnectionType
+from .create_connected_account_state import (
+    CreateConnectedAccountState as CreateConnectedAccountState,
+)
 from .create_connection_oidc_options_id_token_signature_algorithm import (
     CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm as CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm,
 )
@@ -438,6 +441,9 @@ from .create_data_integration_auth_methods import (
 )
 from .create_data_integration_ownership import (
     CreateDataIntegrationOwnership as CreateDataIntegrationOwnership,
+)
+from .create_organization_connected_account_state import (
+    CreateOrganizationConnectedAccountState as CreateOrganizationConnectedAccountState,
 )
 from .create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale,
@@ -482,6 +488,12 @@ from .data_integration_ownership import (
     DataIntegrationOwnership as DataIntegrationOwnership,
 )
 from .data_integration_state import DataIntegrationState as DataIntegrationState
+from .data_integrations_create_api_key_connection_request_connection_owner import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
+)
+from .data_integrations_create_client_credentials_connection_request_connection_owner import (
+    DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner,
+)
 from .data_integrations_get_data_integration_authorize_url_request_connection_owner import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
 )
@@ -515,8 +527,14 @@ from .data_integrations_list_response_data_connection_owner import (
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
+from .data_integrations_upsert_api_key_request_2_connection_owner import (
+    DataIntegrationsUpsertApiKeyRequest2ConnectionOwner as DataIntegrationsUpsertApiKeyRequest2ConnectionOwner,
+)
 from .data_integrations_upsert_api_key_request_connection_owner import (
     DataIntegrationsUpsertApiKeyRequestConnectionOwner as DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from .data_integrations_upsert_client_credentials_request_2_connection_owner import (
+    DataIntegrationsUpsertClientCredentialsRequest2ConnectionOwner as DataIntegrationsUpsertClientCredentialsRequest2ConnectionOwner,
 )
 from .data_integrations_upsert_client_credentials_request_connection_owner import (
     DataIntegrationsUpsertClientCredentialsRequestConnectionOwner as DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
@@ -680,6 +698,9 @@ from .invite_it_contact_intents import InviteItContactIntents as InviteItContact
 from .list_metadata import ListMetadata as ListMetadata
 from .magic_auth_created import MagicAuthCreated as MagicAuthCreated
 from .magic_auth_created_data import MagicAuthCreatedData as MagicAuthCreatedData
+from .organization_connected_account_state import (
+    OrganizationConnectedAccountState as OrganizationConnectedAccountState,
+)
 from .organization_created import OrganizationCreated as OrganizationCreated
 from .organization_created_data import (
     OrganizationCreatedData as OrganizationCreatedData,
@@ -883,6 +904,12 @@ from .radar_standalone_response_control import (
 )
 from .radar_standalone_response_verdict import (
     RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict,
+)
+from .reauthorize_data_integrations_upsert_api_key_request_connection_owner import (
+    ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner as ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from .reauthorize_data_integrations_upsert_client_credentials_request_connection_owner import (
+    ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner as ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
 )
 from .resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale,

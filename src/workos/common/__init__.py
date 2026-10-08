@@ -257,6 +257,7 @@ from .models import (
 from .models import ConnectionState as ConnectionState
 from .models import ConnectionStatus as ConnectionStatus
 from .models import ConnectionType as ConnectionType
+from .models import CreateConnectedAccountState as CreateConnectedAccountState
 from .models import (
     CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm as CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm,
 )
@@ -265,6 +266,9 @@ from .models import (
 )
 from .models import CreateDataIntegrationAuthMethods as CreateDataIntegrationAuthMethods
 from .models import CreateDataIntegrationOwnership as CreateDataIntegrationOwnership
+from .models import (
+    CreateOrganizationConnectedAccountState as CreateOrganizationConnectedAccountState,
+)
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateUserPasswordSaltPosition as CreateUserPasswordSaltPosition
@@ -293,6 +297,12 @@ from .models import (
     DataIntegrationInstallationConnectionRole as DataIntegrationInstallationConnectionRole,
 )
 from .models import DataIntegrationOwnership as DataIntegrationOwnership
+from .models import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner,
+)
 from .models import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
 )
@@ -324,7 +334,13 @@ from .models import (
 )
 from .models import DataIntegrationState as DataIntegrationState
 from .models import (
+    DataIntegrationsUpsertApiKeyRequest2ConnectionOwner as DataIntegrationsUpsertApiKeyRequest2ConnectionOwner,
+)
+from .models import (
     DataIntegrationsUpsertApiKeyRequestConnectionOwner as DataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsUpsertClientCredentialsRequest2ConnectionOwner as DataIntegrationsUpsertClientCredentialsRequest2ConnectionOwner,
 )
 from .models import (
     DataIntegrationsUpsertClientCredentialsRequestConnectionOwner as DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
@@ -447,6 +463,9 @@ from .models import InviteItContactIntents as InviteItContactIntents
 from .models import ListMetadata as ListMetadata
 from .models import MagicAuthCreated as MagicAuthCreated
 from .models import MagicAuthCreatedData as MagicAuthCreatedData
+from .models import (
+    OrganizationConnectedAccountState as OrganizationConnectedAccountState,
+)
 from .models import OrganizationCreated as OrganizationCreated
 from .models import OrganizationCreatedData as OrganizationCreatedData
 from .models import OrganizationCreatedDataDomain as OrganizationCreatedDataDomain
@@ -560,6 +579,12 @@ from .models import (
 )
 from .models import RadarStandaloneResponseControl as RadarStandaloneResponseControl
 from .models import RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict
+from .models import (
+    ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner as ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner,
+)
+from .models import (
+    ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner as ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
+)
 from .models import ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale
 from .models import ResourceExportCompleted as ResourceExportCompleted
 from .models import ResourceExportCompletedData as ResourceExportCompletedData

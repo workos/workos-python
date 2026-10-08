@@ -108,6 +108,13 @@ print(page.has_more())  # Whether more pages exist
 print(page.after)       # Cursor for the next page
 ```
 
+> **Upgrading to v11?** Iterating a page directly no longer auto-paginates.
+> In v11, `for x in page` and `async for x in page` yield only the current
+> page's items and make no further requests; `auto_paging_iter()` iterates
+> forward across all pages. To migrate, replace `for x in page` with
+> `for x in page.auto_paging_iter()` (and `async for x in page` with
+> `async for x in page.auto_paging_iter()`).
+
 ## Error Handling
 
 All API errors map to typed exception classes with rich context:

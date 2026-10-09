@@ -1,5 +1,21 @@
 # Changelog
 
+## [11.0.0](https://github.com/workos/workos-python/compare/v10.5.0...v11.0.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* iterate only the current page when looping over a list response ([#744](https://github.com/workos/workos-python/issues/744))
+
+### Features
+
+* iterate only the current page when looping over a list response ([#744](https://github.com/workos/workos-python/issues/744)) ([40b902a](https://github.com/workos/workos-python/commit/40b902a1e65178353d8ec53f6d0e63fb701a0b99))
+
+
+### Bug Fixes
+
+* clear before cursor when advancing pagination ([#741](https://github.com/workos/workos-python/issues/741)) ([f1dab71](https://github.com/workos/workos-python/commit/f1dab71bbb2f830868d6d6258acbff239b5a07e1))
+
 ## [10.5.0](https://github.com/workos/workos-python/compare/v10.4.0...v10.5.0) (2026-09-24)
 
 * [#734](https://github.com/workos/workos-python/pull/734) feat(generated): regenerate from spec

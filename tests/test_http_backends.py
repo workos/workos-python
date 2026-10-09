@@ -374,13 +374,13 @@ class TestHttpxAdapter:
                 page = await client.user_management.list_users(
                     email="alice@example.com", limit=7
                 )
-                users = [user async for user in page]
+                users = [user async for user in page.auto_paging_iter()]
             else:
                 sync_client = WorkOSClient(api_key=API_KEY, http_client=http_client)
                 sync_page = sync_client.user_management.list_users(
                     email="alice@example.com", limit=7
                 )
-                users = list(sync_page)
+                users = list(sync_page.auto_paging_iter())
         finally:
             if asynchronous:
                 await http_client.aclose()

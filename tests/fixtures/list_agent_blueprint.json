@@ -17,6 +17,12 @@
           "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
         ]
       },
+      "invocable_as": {
+        "instance_types": [
+          "delegated",
+          "autonomous"
+        ]
+      },
       "session_settings": {
         "max_age_seconds": 3600,
         "access_token_ttl_seconds": 300,

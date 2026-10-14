@@ -18,6 +18,7 @@ class ResourceExportCompletedDataResourceType(str, Enum):
     AUDIT_LOG_EVENTS = "auditLogEvents"
     CONNECTIONS = "connections"
     DIRECTORY_USERS = "directoryUsers"
+    SCIM_LOGS = "scimLogs"
 
     @classmethod
     def _missing_(cls, value: object) -> ResourceExportCompletedDataResourceType | None:
@@ -37,4 +38,5 @@ ResourceExportCompletedDataResourceTypeLiteral: TypeAlias = Literal[
     "auditLogEvents",
     "connections",
     "directoryUsers",
+    "scimLogs",
 ]

@@ -3,18 +3,20 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from workos.common.models.create_data_integration_ownership import (
-        CreateDataIntegrationOwnership as PipesOwnership,
+    from workos.common.models.add_data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+        AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as PipesOwnership,
     )
 else:
 
     def __getattr__(name: str):
         if name == "PipesOwnership":
-            from workos.common.models.create_data_integration_ownership import (
-                CreateDataIntegrationOwnership,
+            from workos.common.models.add_data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+                AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
             )
 
-            return CreateDataIntegrationOwnership
+            return (
+                AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+            )
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 

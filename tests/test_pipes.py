@@ -17,6 +17,7 @@ from workos._errors import (
 from workos._pagination import AsyncPage, SyncPage
 from workos.common.models import (
     ConnectedAccount,
+    ConnectedAccountWriteResponse,
     DataIntegrationsListResponse,
     PaginationOrder,
 )
@@ -107,29 +108,51 @@ class TestPipes:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/data-integrations/test_slug")
 
+    def test_create_data_integration_api_key(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json"),
+        )
+        result = workos.pipes.create_data_integration_api_key(
+            "test_slug",
+            user_id="test_user_id",
+            secret="test_secret",
+            connection_intent="add",
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/data-integrations/test_slug/api-key")
+        body = json.loads(request.content)
+        assert body["user_id"] == "test_user_id"
+        assert body["secret"] == "test_secret"
+        assert body["connection_intent"] == "add"
+
     def test_update_data_integration_api_key(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
         result = workos.pipes.update_data_integration_api_key(
-            "test_slug", user_id="test_user_id", secret="test_secret"
+            "test_slug",
+            body=load_fixture("data_integrations_upsert_api_key_request.json"),
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
         assert request.method == "PUT"
         assert request.url.path.endswith("/data-integrations/test_slug/api-key")
-        body = json.loads(request.content)
-        assert body["user_id"] == "test_user_id"
-        assert body["secret"] == "test_secret"
 
     def test_authorize_data_integration(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("data_integration_authorize_url_response.json"),
         )
         result = workos.pipes.authorize_data_integration(
-            "test_slug", user_id="test_user_id"
+            "test_slug",
+            body=load_fixture(
+                "data_integrations_get_data_integration_authorize_url_request.json"
+            ),
         )
         assert isinstance(result, DataIntegrationAuthorizeUrlResponse)
         assert (
@@ -139,24 +162,23 @@ class TestPipes:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/data-integrations/test_slug/authorize")
-        body = json.loads(request.content)
-        assert body["user_id"] == "test_user_id"
 
-    def test_update_data_integration_client_credentials(self, workos, httpx_mock):
+    def test_create_data_integration_client_credential(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
-        result = workos.pipes.update_data_integration_client_credentials(
+        result = workos.pipes.create_data_integration_client_credential(
             "test_slug",
             user_id="test_user_id",
             client_id="test_client_id",
             client_secret="test_client_secret",
+            connection_intent="add",
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
-        assert request.method == "PUT"
+        assert request.method == "POST"
         assert request.url.path.endswith(
             "/data-integrations/test_slug/client-credentials"
         )
@@ -164,6 +186,26 @@ class TestPipes:
         assert body["user_id"] == "test_user_id"
         assert body["client_id"] == "test_client_id"
         assert body["client_secret"] == "test_client_secret"
+        assert body["connection_intent"] == "add"
+
+    def test_update_data_integration_client_credentials(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json"),
+        )
+        result = workos.pipes.update_data_integration_client_credentials(
+            "test_slug",
+            body=load_fixture(
+                "data_integrations_upsert_client_credentials_request.json"
+            ),
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/data-integrations/test_slug/client-credentials"
+        )
 
     def test_create_data_integration_credential(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -262,12 +304,12 @@ class TestPipes:
 
     def test_create_organization_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
         result = workos.pipes.create_organization_connected_account(
-            "test_organization_id", "test_slug"
+            "test_organization_id", "test_slug", user_id="test_user_id"
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -275,15 +317,17 @@ class TestPipes:
         assert request.url.path.endswith(
             "/organizations/test_organization_id/connected_accounts/test_slug"
         )
+        body = json.loads(request.content)
+        assert body["user_id"] == "test_user_id"
 
     def test_update_organization_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
         result = workos.pipes.update_organization_connected_account(
-            "test_organization_id", "test_slug"
+            "test_organization_id", "test_slug", user_id="test_user_id"
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -291,16 +335,22 @@ class TestPipes:
         assert request.url.path.endswith(
             "/organizations/test_organization_id/connected_accounts/test_slug"
         )
+        body = json.loads(request.content)
+        assert body["user_id"] == "test_user_id"
 
     def test_update_organization_connected_account_encodes_query_params(
         self, workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         workos.pipes.update_organization_connected_account(
             "test_organization_id",
             "test_slug",
+            user_id="test_user_id",
             supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
+            connection_intent="reauthorize",
         )
         request = httpx_mock.get_request()
         assert request.url.params["supports_multiple_connections"] == "true"
@@ -308,6 +358,7 @@ class TestPipes:
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
         )
+        assert request.url.params["connection_intent"] == "reauthorize"
 
     def test_delete_organization_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
@@ -396,10 +447,10 @@ class TestPipes:
 
     def test_create_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
         result = workos.pipes.create_user_connected_account("test_user_id", "test_slug")
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -411,7 +462,9 @@ class TestPipes:
     def test_create_user_connected_account_encodes_query_params(
         self, workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         workos.pipes.create_user_connected_account(
             "test_user_id", "test_slug", organization_id="value organization_id/test"
         )
@@ -420,10 +473,10 @@ class TestPipes:
 
     def test_update_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("connected_account.json"),
+            json=load_fixture("connected_account_write_response.json"),
         )
         result = workos.pipes.update_user_connected_account("test_user_id", "test_slug")
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -435,13 +488,16 @@ class TestPipes:
     def test_update_user_connected_account_encodes_query_params(
         self, workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         workos.pipes.update_user_connected_account(
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
             supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
+            connection_intent="reauthorize",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
@@ -450,6 +506,7 @@ class TestPipes:
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
         )
+        assert request.url.params["connection_intent"] == "reauthorize"
 
     def test_delete_user_connected_account(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
@@ -662,12 +719,33 @@ class TestAsyncPipes:
         assert request.url.path.endswith("/data-integrations/test_slug")
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_api_key(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        result = await async_workos.pipes.update_data_integration_api_key(
-            "test_slug", user_id="test_user_id", secret="test_secret"
+    async def test_create_data_integration_api_key(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
         )
-        assert isinstance(result, ConnectedAccount)
+        result = await async_workos.pipes.create_data_integration_api_key(
+            "test_slug",
+            user_id="test_user_id",
+            secret="test_secret",
+            connection_intent="add",
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/data-integrations/test_slug/api-key")
+
+    @pytest.mark.asyncio
+    async def test_update_data_integration_api_key(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
+        result = await async_workos.pipes.update_data_integration_api_key(
+            "test_slug",
+            body=load_fixture("data_integrations_upsert_api_key_request.json"),
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -680,7 +758,10 @@ class TestAsyncPipes:
             json=load_fixture("data_integration_authorize_url_response.json")
         )
         result = await async_workos.pipes.authorize_data_integration(
-            "test_slug", user_id="test_user_id"
+            "test_slug",
+            body=load_fixture(
+                "data_integrations_get_data_integration_authorize_url_request.json"
+            ),
         )
         assert isinstance(result, DataIntegrationAuthorizeUrlResponse)
         assert (
@@ -692,17 +773,42 @@ class TestAsyncPipes:
         assert request.url.path.endswith("/data-integrations/test_slug/authorize")
 
     @pytest.mark.asyncio
-    async def test_update_data_integration_client_credentials(
+    async def test_create_data_integration_client_credential(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        result = await async_workos.pipes.update_data_integration_client_credentials(
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
+        result = await async_workos.pipes.create_data_integration_client_credential(
             "test_slug",
             user_id="test_user_id",
             client_id="test_client_id",
             client_secret="test_client_secret",
+            connection_intent="add",
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
+        assert result.object == "connected_account"
+        assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/data-integrations/test_slug/client-credentials"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_data_integration_client_credentials(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
+        result = await async_workos.pipes.update_data_integration_client_credentials(
+            "test_slug",
+            body=load_fixture(
+                "data_integrations_upsert_client_credentials_request.json"
+            ),
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -815,11 +921,13 @@ class TestAsyncPipes:
     async def test_create_organization_connected_account(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        result = await async_workos.pipes.create_organization_connected_account(
-            "test_organization_id", "test_slug"
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
         )
-        assert isinstance(result, ConnectedAccount)
+        result = await async_workos.pipes.create_organization_connected_account(
+            "test_organization_id", "test_slug", user_id="test_user_id"
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -832,11 +940,13 @@ class TestAsyncPipes:
     async def test_update_organization_connected_account(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
-        result = await async_workos.pipes.update_organization_connected_account(
-            "test_organization_id", "test_slug"
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
         )
-        assert isinstance(result, ConnectedAccount)
+        result = await async_workos.pipes.update_organization_connected_account(
+            "test_organization_id", "test_slug", user_id="test_user_id"
+        )
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -849,12 +959,16 @@ class TestAsyncPipes:
     async def test_update_organization_connected_account_encodes_query_params(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         await async_workos.pipes.update_organization_connected_account(
             "test_organization_id",
             "test_slug",
+            user_id="test_user_id",
             supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
+            connection_intent="reauthorize",
         )
         request = httpx_mock.get_request()
         assert request.url.params["supports_multiple_connections"] == "true"
@@ -862,6 +976,7 @@ class TestAsyncPipes:
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
         )
+        assert request.url.params["connection_intent"] == "reauthorize"
 
     @pytest.mark.asyncio
     async def test_delete_organization_connected_account(
@@ -962,11 +1077,13 @@ class TestAsyncPipes:
 
     @pytest.mark.asyncio
     async def test_create_user_connected_account(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         result = await async_workos.pipes.create_user_connected_account(
             "test_user_id", "test_slug"
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -979,7 +1096,9 @@ class TestAsyncPipes:
     async def test_create_user_connected_account_encodes_query_params(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         await async_workos.pipes.create_user_connected_account(
             "test_user_id", "test_slug", organization_id="value organization_id/test"
         )
@@ -988,11 +1107,13 @@ class TestAsyncPipes:
 
     @pytest.mark.asyncio
     async def test_update_user_connected_account(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         result = await async_workos.pipes.update_user_connected_account(
             "test_user_id", "test_slug"
         )
-        assert isinstance(result, ConnectedAccount)
+        assert isinstance(result, ConnectedAccountWriteResponse)
         assert result.object == "connected_account"
         assert result.id == "data_installation_01EHZNVPK3SFK441A1RGBFSHRT"
         request = httpx_mock.get_request()
@@ -1005,13 +1126,16 @@ class TestAsyncPipes:
     async def test_update_user_connected_account_encodes_query_params(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("connected_account.json"))
+        httpx_mock.add_response(
+            json=load_fixture("connected_account_write_response.json")
+        )
         await async_workos.pipes.update_user_connected_account(
             "test_user_id",
             "test_slug",
             organization_id="value organization_id/test",
             supports_multiple_connections=True,
             connected_account_id="value connected_account_id/test",
+            connection_intent="reauthorize",
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
@@ -1020,6 +1144,7 @@ class TestAsyncPipes:
             request.url.params["connected_account_id"]
             == "value connected_account_id/test"
         )
+        assert request.url.params["connection_intent"] == "reauthorize"
 
     @pytest.mark.asyncio
     async def test_delete_user_connected_account(self, async_workos, httpx_mock):

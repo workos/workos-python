@@ -22,10 +22,12 @@ class DataIntegrationsUpsertClientCredentialsRequest:
     """The OAuth client ID to store for this integration."""
     client_secret: str
     """The OAuth client secret to store for this integration."""
+    account_display_name: str | None = None
+    """A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers."""
+    account_identifier: str | None = None
+    """A developer-attested provider account identifier, never inferred from a label or credential. Omit to preserve an existing identifier; null clears it."""
     organization_id: str | None = None
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
-    connected_account_id: str | None = None
-    """A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection."""
     connection_owner: (
         DataIntegrationsUpsertClientCredentialsRequestConnectionOwner | None
     ) = None
@@ -43,8 +45,9 @@ class DataIntegrationsUpsertClientCredentialsRequest:
                 user_id=data["user_id"],
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
+                account_display_name=data.get("account_display_name"),
+                account_identifier=data.get("account_identifier"),
                 organization_id=data.get("organization_id"),
-                connected_account_id=data.get("connected_account_id"),
                 connection_owner=DataIntegrationsUpsertClientCredentialsRequestConnectionOwner(
                     _v_connection_owner
                 )
@@ -63,10 +66,16 @@ class DataIntegrationsUpsertClientCredentialsRequest:
         result["user_id"] = self.user_id
         result["client_id"] = self.client_id
         result["client_secret"] = self.client_secret
+        if self.account_display_name is not None:
+            result["account_display_name"] = self.account_display_name
+        else:
+            result["account_display_name"] = None
+        if self.account_identifier is not None:
+            result["account_identifier"] = self.account_identifier
+        else:
+            result["account_identifier"] = None
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
-        if self.connected_account_id is not None:
-            result["connected_account_id"] = self.connected_account_id
         if self.connection_owner is not None:
             result["connection_owner"] = (
                 self.connection_owner.value

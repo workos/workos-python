@@ -42,7 +42,7 @@ class DataIntegrationsListResponseDataConnectedAccount:
     state: DataIntegrationsListResponseDataConnectedAccountState
     """The state of the connected account:
 - `connected`: The connection is active and tokens are valid.
-- `needs_reauthorization`: The user needs to reauthorize the connection, typically because required scopes have changed.
+- `needs_reauthorization`: The user needs to reauthorize the connection, typically because required scopes have changed. `state_reason` explains why when WorkOS invalidated the connection itself.
 - `disconnected`: The connection has been disconnected."""
     created_at: str
     """The timestamp when the connection was created."""
@@ -59,7 +59,14 @@ class DataIntegrationsListResponseDataConnectedAccount:
     client_secret_last_4: str | None = None
     """The last four characters of the client secret supplied for this connection, or `null` when it can't be read. Only present when `auth_method` is `client_credentials`."""
     config: dict[str, str] | None = None
-    """The connection-level configuration values stored for this connection — the fields the provider declares at `installation` scope, excluding any it declares as secret. Only present when `auth_method` is `client_credentials`."""
+    """The connection-level configuration values stored for this connection — the fields the provider declares at `installation` scope, excluding secret and undeclared fields. Returned for every authentication method; empty when no stored values can be disclosed."""
+    established_by_user_id: str | None = None
+    """The [User](https://workos.com/docs/reference/authkit/user) whose authorization established this connection. `null` when the connection is developer-managed or its establisher is unknown, and when the establishing member lost access to the organization — in which case `state_reason` is `establishing_member_membership_ended`."""
+    state_reason: Literal["establishing_member_membership_ended"] | None = None
+    """Why WorkOS put the connection in its current `state`, or `null` when there is no WorkOS-recorded reason:
+- `establishing_member_membership_ended`: The member who established this organization-owned connection is no longer an active member of the organization, so its credentials were cleared. An organization admin must provide new credentials.
+
+Additional values may be added; treat an unrecognized value as an unknown reason."""
     userland_user_id: str | None = None
     """Use `user_id` instead.
 
@@ -96,6 +103,8 @@ class DataIntegrationsListResponseDataConnectedAccount:
                 client_id=data.get("client_id"),
                 client_secret_last_4=data.get("client_secret_last_4"),
                 config=data.get("config"),
+                established_by_user_id=data.get("established_by_user_id"),
+                state_reason=data.get("state_reason"),
                 userland_user_id=data.get("userlandUserId"),
             )
         except (KeyError, ValueError) as e:
@@ -155,6 +164,14 @@ class DataIntegrationsListResponseDataConnectedAccount:
             result["client_secret_last_4"] = None
         if self.config is not None:
             result["config"] = self.config
+        if self.established_by_user_id is not None:
+            result["established_by_user_id"] = self.established_by_user_id
+        else:
+            result["established_by_user_id"] = None
+        if self.state_reason is not None:
+            result["state_reason"] = self.state_reason
+        else:
+            result["state_reason"] = None
         if self.userland_user_id is not None:
             result["userlandUserId"] = self.userland_user_id
         else:

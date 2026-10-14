@@ -48,6 +48,10 @@ class PipeConnectedAccount:
     """How the connection authenticates. Historical events may omit this field."""
     api_key_last_4: str | None = None
     """The last four characters of the API key, or null for other authentication methods. Historical events may omit this field."""
+    established_by_user_id: str | None = None
+    """The ID of the User whose authorization established the connected account, or null when it is developer-managed, its establisher is unknown, or the establishing member left the organization. Historical events may omit this field."""
+    state_reason: Literal["establishing_member_membership_ended"] | None = None
+    """Why WorkOS put the connected account in its current state, or null when there is no WorkOS-recorded reason. `establishing_member_membership_ended` means the member who established an organization-owned connection is no longer an active member. Additional values may be added. Historical events may omit this field."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> PipeConnectedAccount:
@@ -73,6 +77,8 @@ class PipeConnectedAccount:
                 if (_v_auth_method := data.get("auth_method")) is not None
                 else None,
                 api_key_last_4=data.get("api_key_last_4"),
+                established_by_user_id=data.get("established_by_user_id"),
+                state_reason=data.get("state_reason"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("PipeConnectedAccount", e)
@@ -122,4 +128,12 @@ class PipeConnectedAccount:
             result["api_key_last_4"] = self.api_key_last_4
         else:
             result["api_key_last_4"] = None
+        if self.established_by_user_id is not None:
+            result["established_by_user_id"] = self.established_by_user_id
+        else:
+            result["established_by_user_id"] = None
+        if self.state_reason is not None:
+            result["state_reason"] = self.state_reason
+        else:
+            result["state_reason"] = None
         return result

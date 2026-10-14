@@ -20,6 +20,8 @@ class GenerateLink:
     """The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used."""
     success_url: str | None = None
     """The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used."""
+    external_user_id: str | None = None
+    """The ID of the user in your application the link is generated for. The link and any Admin Portal sessions started from it can later be revoked by this ID, for example when that user is deprovisioned from your application."""
     intent: GenerateLinkIntent | None = None
     """
       The intent of the Admin Portal.
@@ -41,6 +43,7 @@ class GenerateLink:
                 organization=data["organization"],
                 return_url=data.get("return_url"),
                 success_url=data.get("success_url"),
+                external_user_id=data.get("external_user_id"),
                 intent=GenerateLinkIntent(_v_intent)
                 if (_v_intent := data.get("intent")) is not None
                 else None,
@@ -57,6 +60,8 @@ class GenerateLink:
             result["return_url"] = self.return_url
         if self.success_url is not None:
             result["success_url"] = self.success_url
+        if self.external_user_id is not None:
+            result["external_user_id"] = self.external_user_id
         if self.intent is not None:
             result["intent"] = (
                 self.intent.value if isinstance(self.intent, Enum) else self.intent

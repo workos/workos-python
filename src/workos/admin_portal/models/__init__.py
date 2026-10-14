@@ -2,3 +2,4 @@
 
 from .generate_link import GenerateLink as GenerateLink
 from .portal_link_response import PortalLinkResponse as PortalLinkResponse
+from .revoke_link import RevokeLink as RevokeLink

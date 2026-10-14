@@ -3,6 +3,7 @@
   "client_secret": "sk_example_123456789",
   "code": "authorization_code_value",
   "grant_type": "authorization_code",
+  "code_verifier": "code_verifier_value",
   "subject_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMifQ.example",
   "subject_token_type": "urn:ietf:params:oauth:token-type:id_token",
   "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3"

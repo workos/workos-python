@@ -6,10 +6,13 @@ from tests.generated_helpers import load_fixture
 from workos.agents.models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
     AgentBlueprint,
+    AgentBlueprintInvocableAs,
     AgentBlueprintInvocableBy,
+    AgentBlueprintsCreateRequestInvocableAs,
     AgentBlueprintsCreateRequestInvocableBy,
     AgentBlueprintsCreateRequestSessionSetting,
     AgentBlueprintSessionSetting,
+    AgentBlueprintsUpdateRequestInvocableAs,
     AgentBlueprintsUpdateRequestInvocableBy,
     AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
@@ -191,6 +194,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -207,6 +211,7 @@ class TestModelRoundTrip:
         assert serialized["description"] == data["description"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["invocable_as"] == data["invocable_as"]
         assert serialized["session_settings"] == data["session_settings"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -222,6 +227,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -453,6 +459,20 @@ class TestModelRoundTrip:
         assert serialized["role_slugs"] == data["role_slugs"]
         assert serialized["organization_ids"] == data["organization_ids"]
 
+    def test_agent_blueprint_invocable_as_round_trip(self):
+        data = load_fixture("agent_blueprint_invocable_as.json")
+        instance = AgentBlueprintInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintInvocableAs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_invocable_as_minimal_payload(self):
+        data = {"instance_types": ["delegated", "autonomous"]}
+        instance = AgentBlueprintInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["instance_types"] == data["instance_types"]
+
     def test_agent_blueprint_session_setting_round_trip(self):
         data = load_fixture("agent_blueprint_session_setting.json")
         instance = AgentBlueprintSessionSetting.from_dict(data)
@@ -583,6 +603,27 @@ class TestModelRoundTrip:
         assert "role_slugs" not in serialized
         assert "organization_ids" not in serialized
 
+    def test_agent_blueprints_create_request_invocable_as_round_trip(self):
+        data = load_fixture("agent_blueprints_create_request_invocable_as.json")
+        instance = AgentBlueprintsCreateRequestInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateRequestInvocableAs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_request_invocable_as_minimal_payload(self):
+        data = {}
+        instance = AgentBlueprintsCreateRequestInvocableAs.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_agent_blueprints_create_request_invocable_as_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AgentBlueprintsCreateRequestInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert "instance_types" not in serialized
+
     def test_agent_blueprints_create_request_session_setting_round_trip(self):
         data = load_fixture("agent_blueprints_create_request_session_setting.json")
         instance = AgentBlueprintsCreateRequestSessionSetting.from_dict(data)
@@ -628,6 +669,27 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "role_slugs" not in serialized
         assert "organization_ids" not in serialized
+
+    def test_agent_blueprints_update_request_invocable_as_round_trip(self):
+        data = load_fixture("agent_blueprints_update_request_invocable_as.json")
+        instance = AgentBlueprintsUpdateRequestInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateRequestInvocableAs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_request_invocable_as_minimal_payload(self):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestInvocableAs.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_agent_blueprints_update_request_invocable_as_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AgentBlueprintsUpdateRequestInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert "instance_types" not in serialized
 
     def test_agent_blueprints_update_request_session_setting_round_trip(self):
         data = load_fixture("agent_blueprints_update_request_session_setting.json")

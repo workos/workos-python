@@ -12,12 +12,14 @@ from workos.common.models import (
     ActionUserRegistrationDeniedData,
     AgentBlueprintCreated,
     AgentBlueprintCreatedData,
+    AgentBlueprintCreatedDataInvocableAs,
     AgentBlueprintCreatedDataInvocableBy,
     AgentBlueprintCreatedDataSessionSetting,
     AgentBlueprintDeleted,
     AgentBlueprintDeletedData,
     AgentBlueprintUpdated,
     AgentBlueprintUpdatedData,
+    AgentBlueprintUpdatedDataInvocableAs,
     AgentBlueprintUpdatedDataInvocableBy,
     AgentBlueprintUpdatedDataSessionSetting,
     AgentInstanceCreated,
@@ -127,6 +129,7 @@ from workos.common.models import (
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    DirectorySyncRateLimitError,
     DirectoryUser,
     DirectoryUserEmail,
     DsyncActivated,
@@ -304,6 +307,8 @@ from workos.common.models import (
     VaultDekDecryptedData,
     VaultDekRead,
     VaultDekReadData,
+    VaultDekRekeyed,
+    VaultDekRekeyedData,
     VaultKekCreated,
     VaultKekCreatedData,
     VaultKekDeleted,
@@ -478,6 +483,26 @@ class TestModelRoundTrip:
         instance = ConnectApplicationM2M.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
+
+    def test_directory_sync_rate_limit_error_round_trip(self):
+        data = load_fixture("directory_sync_rate_limit_error.json")
+        instance = DirectorySyncRateLimitError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncRateLimitError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_rate_limit_error_minimal_payload(self):
+        data = {
+            "code": "directory_sync_rate_limited",
+            "message": "Request could not be processed.",
+            "retry_after_seconds": 120,
+        }
+        instance = DirectorySyncRateLimitError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["retry_after_seconds"] == data["retry_after_seconds"]
 
     def test_event_context_actor_round_trip(self):
         data = load_fixture("event_context_actor.json")
@@ -722,6 +747,8 @@ class TestModelRoundTrip:
             "scopes": ["repo", "user:email"],
             "api_key_last_4": None,
             "state": "connected",
+            "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "state_reason": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -745,6 +772,8 @@ class TestModelRoundTrip:
             "auth_method": "oauth",
             "api_key_last_4": None,
             "state": "connected",
+            "established_by_user_id": None,
+            "state_reason": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -755,6 +784,8 @@ class TestModelRoundTrip:
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["api_key_last_4"] is None
+        assert serialized["established_by_user_id"] is None
+        assert serialized["state_reason"] is None
 
     def test_pipe_connected_account_round_trips_unknown_enum_values(self):
         data = {
@@ -771,6 +802,8 @@ class TestModelRoundTrip:
             "auth_method": "oauth",
             "api_key_last_4": None,
             "state": "connected",
+            "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "state_reason": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -1086,6 +1119,7 @@ class TestModelRoundTrip:
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
                 },
+                "invocable_as": {"instance_types": ["delegated", "autonomous"]},
                 "session_settings": {
                     "max_age_seconds": 3600,
                     "access_token_ttl_seconds": 300,
@@ -1119,6 +1153,7 @@ class TestModelRoundTrip:
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
                 },
+                "invocable_as": {"instance_types": ["delegated", "autonomous"]},
                 "session_settings": {
                     "max_age_seconds": 3600,
                     "access_token_ttl_seconds": 300,
@@ -1152,6 +1187,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -1168,6 +1204,7 @@ class TestModelRoundTrip:
         assert serialized["description"] == data["description"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["invocable_as"] == data["invocable_as"]
         assert serialized["session_settings"] == data["session_settings"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -1183,6 +1220,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -1212,6 +1250,20 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["role_slugs"] == data["role_slugs"]
         assert serialized["organization_ids"] == data["organization_ids"]
+
+    def test_agent_blueprint_created_data_invocable_as_round_trip(self):
+        data = load_fixture("agent_blueprint_created_data_invocable_as.json")
+        instance = AgentBlueprintCreatedDataInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreatedDataInvocableAs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_data_invocable_as_minimal_payload(self):
+        data = {"instance_types": ["delegated", "autonomous"]}
+        instance = AgentBlueprintCreatedDataInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["instance_types"] == data["instance_types"]
 
     def test_agent_blueprint_created_data_session_setting_round_trip(self):
         data = load_fixture("agent_blueprint_created_data_session_setting.json")
@@ -1332,6 +1384,7 @@ class TestModelRoundTrip:
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
                 },
+                "invocable_as": {"instance_types": ["delegated", "autonomous"]},
                 "session_settings": {
                     "max_age_seconds": 3600,
                     "access_token_ttl_seconds": 300,
@@ -1365,6 +1418,7 @@ class TestModelRoundTrip:
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
                 },
+                "invocable_as": {"instance_types": ["delegated", "autonomous"]},
                 "session_settings": {
                     "max_age_seconds": 3600,
                     "access_token_ttl_seconds": 300,
@@ -1398,6 +1452,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -1414,6 +1469,7 @@ class TestModelRoundTrip:
         assert serialized["description"] == data["description"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["invocable_by"] == data["invocable_by"]
+        assert serialized["invocable_as"] == data["invocable_as"]
         assert serialized["session_settings"] == data["session_settings"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -1429,6 +1485,7 @@ class TestModelRoundTrip:
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
             },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
             "session_settings": {
                 "max_age_seconds": 3600,
                 "access_token_ttl_seconds": 300,
@@ -1458,6 +1515,20 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["role_slugs"] == data["role_slugs"]
         assert serialized["organization_ids"] == data["organization_ids"]
+
+    def test_agent_blueprint_updated_data_invocable_as_round_trip(self):
+        data = load_fixture("agent_blueprint_updated_data_invocable_as.json")
+        instance = AgentBlueprintUpdatedDataInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdatedDataInvocableAs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_data_invocable_as_minimal_payload(self):
+        data = {"instance_types": ["delegated", "autonomous"]}
+        instance = AgentBlueprintUpdatedDataInvocableAs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["instance_types"] == data["instance_types"]
 
     def test_agent_blueprint_updated_data_session_setting_round_trip(self):
         data = load_fixture("agent_blueprint_updated_data_session_setting.json")
@@ -12523,6 +12594,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12557,6 +12630,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12717,6 +12792,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12751,6 +12828,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12787,6 +12866,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12821,6 +12902,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12857,6 +12940,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -12891,6 +12976,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13051,6 +13138,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13085,6 +13174,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13121,6 +13212,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -13155,6 +13248,8 @@ class TestModelRoundTrip:
                 "auth_method": "oauth",
                 "api_key_last_4": None,
                 "state": "connected",
+                "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "state_reason": None,
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -14989,6 +15084,89 @@ class TestModelRoundTrip:
         instance = VaultDekReadData.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_vault_dek_rekeyed_round_trip(self):
+        data = load_fixture("vault_dek_rekeyed.json")
+        instance = VaultDekRekeyed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekRekeyed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_rekeyed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.rekeyed",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = VaultDekRekeyed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_vault_dek_rekeyed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.rekeyed",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = VaultDekRekeyed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_dek_rekeyed_data_round_trip(self):
+        data = load_fixture("vault_dek_rekeyed_data.json")
+        instance = VaultDekRekeyedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekRekeyedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_rekeyed_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDekRekeyedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["key_ids"] == data["key_ids"]
+        assert serialized["key_context"] == data["key_context"]
+
+    def test_vault_dek_rekeyed_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_dek_rekeyed_data_actor_source",
+            "actor_name": "Jane Doe",
+            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDekRekeyedData.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_vault_kek_created_round_trip(self):
         data = load_fixture("vault_kek_created.json")
         instance = VaultKekCreated.from_dict(data)
@@ -15474,24 +15652,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "context" not in serialized
 
-    def test_account_selection_required_error_round_trip(self):
-        data = load_fixture("account_selection_required_error.json")
-        instance = AccountSelectionRequiredError.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AccountSelectionRequiredError.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_account_selection_required_error_minimal_payload(self):
-        data = {
-            "code": "account_selection_required",
-            "message": "Several connected accounts match this user for this provider. Name one with a connected account id.",
-        }
-        instance = AccountSelectionRequiredError.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
-
     def test_auth_method_mismatch_error_round_trip(self):
         data = load_fixture("auth_method_mismatch_error.json")
         instance = AuthMethodMismatchError.from_dict(data)
@@ -15506,6 +15666,24 @@ class TestModelRoundTrip:
             "message": "This installation uses oauth authentication. Use the POST /:slug/token endpoint instead.",
         }
         instance = AuthMethodMismatchError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_account_selection_required_error_round_trip(self):
+        data = load_fixture("account_selection_required_error.json")
+        instance = AccountSelectionRequiredError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AccountSelectionRequiredError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_account_selection_required_error_minimal_payload(self):
+        data = {
+            "code": "account_selection_required",
+            "message": "Several connected accounts match this user for this provider. Name one with a connected account id.",
+        }
+        instance = AccountSelectionRequiredError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]

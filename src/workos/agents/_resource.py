@@ -20,8 +20,10 @@ from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     AgentAdminLinkClaimAttemptToExternalUserRequestUser,
     AgentBlueprint,
+    AgentBlueprintsCreateRequestInvocableAs,
     AgentBlueprintsCreateRequestInvocableBy,
     AgentBlueprintsCreateRequestSessionSetting,
+    AgentBlueprintsUpdateRequestInvocableAs,
     AgentBlueprintsUpdateRequestInvocableBy,
     AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
@@ -93,6 +95,7 @@ class Agents:
         description: str | None = None,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        invocable_as: AgentBlueprintsCreateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
@@ -105,6 +108,7 @@ class Agents:
             description: Human-readable description of the agent blueprint.
             permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
             invocable_by: Who may mint sessions from this blueprint.
+            invocable_as: How sessions may be minted from this blueprint.
             session_settings: Token and session lifetimes for sessions minted from this blueprint.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -127,6 +131,9 @@ class Agents:
                 "permissions": permissions,
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
+                else None,
+                "invocable_as": invocable_as.to_dict()
+                if invocable_as is not None
                 else None,
                 "session_settings": session_settings.to_dict()
                 if session_settings is not None
@@ -180,6 +187,7 @@ class Agents:
         description: str | None | NotGiven = NOT_GIVEN,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
+        invocable_as: AgentBlueprintsUpdateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
@@ -193,6 +201,7 @@ class Agents:
             description: Human-readable description of the agent blueprint. Pass `null` to clear it.
             permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
             invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
+            invocable_as: How sessions may be minted from this blueprint. Omitted lists are left unchanged.
             session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -215,6 +224,9 @@ class Agents:
                 "permissions": permissions,
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
+                else None,
+                "invocable_as": invocable_as.to_dict()
+                if invocable_as is not None
                 else None,
                 "session_settings": session_settings.to_dict()
                 if session_settings is not None
@@ -765,6 +777,7 @@ class AsyncAgents:
         description: str | None = None,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
+        invocable_as: AgentBlueprintsCreateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
@@ -777,6 +790,7 @@ class AsyncAgents:
             description: Human-readable description of the agent blueprint.
             permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
             invocable_by: Who may mint sessions from this blueprint.
+            invocable_as: How sessions may be minted from this blueprint.
             session_settings: Token and session lifetimes for sessions minted from this blueprint.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -799,6 +813,9 @@ class AsyncAgents:
                 "permissions": permissions,
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
+                else None,
+                "invocable_as": invocable_as.to_dict()
+                if invocable_as is not None
                 else None,
                 "session_settings": session_settings.to_dict()
                 if session_settings is not None
@@ -852,6 +869,7 @@ class AsyncAgents:
         description: str | None | NotGiven = NOT_GIVEN,
         permissions: list[str] | None = None,
         invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
+        invocable_as: AgentBlueprintsUpdateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
         request_options: RequestOptions | None = None,
     ) -> AgentBlueprint:
@@ -865,6 +883,7 @@ class AsyncAgents:
             description: Human-readable description of the agent blueprint. Pass `null` to clear it.
             permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
             invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
+            invocable_as: How sessions may be minted from this blueprint. Omitted lists are left unchanged.
             session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -887,6 +906,9 @@ class AsyncAgents:
                 "permissions": permissions,
                 "invocable_by": invocable_by.to_dict()
                 if invocable_by is not None
+                else None,
+                "invocable_as": invocable_as.to_dict()
+                if invocable_as is not None
                 else None,
                 "session_settings": session_settings.to_dict()
                 if session_settings is not None

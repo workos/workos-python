@@ -2,7 +2,11 @@
 
 from typing import TypeAlias
 
-from .agent_instance_created_data_type import AgentInstanceCreatedDataType
+from .agent_blueprint_created_data_invocable_as_instance_types import (
+    AgentBlueprintCreatedDataInvocableAsInstanceTypes,
+)
 
-AgentInstanceDeletedDataType: TypeAlias = AgentInstanceCreatedDataType
+AgentInstanceDeletedDataType: TypeAlias = (
+    AgentBlueprintCreatedDataInvocableAsInstanceTypes
+)
 __all__ = ["AgentInstanceDeletedDataType"]

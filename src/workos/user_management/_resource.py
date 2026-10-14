@@ -1224,7 +1224,7 @@ class UserManagement:
         Create a new user in the current environment.
 
         Args:
-            email: The email address of the user.
+            email: The email address of the user. WorkOS trims whitespace and converts the address to lowercase before storing it.
             first_name: The first name of the user.
             last_name: The last name of the user.
             name: The user's full name.
@@ -3976,7 +3976,7 @@ class AsyncUserManagement:
         Create a new user in the current environment.
 
         Args:
-            email: The email address of the user.
+            email: The email address of the user. WorkOS trims whitespace and converts the address to lowercase before storing it.
             first_name: The first name of the user.
             last_name: The last name of the user.
             name: The user's full name.

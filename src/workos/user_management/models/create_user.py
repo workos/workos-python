@@ -20,7 +20,7 @@ class CreateUser:
     """Create User model."""
 
     email: str
-    """The email address of the user."""
+    """The email address of the user. WorkOS trims whitespace and converts the address to lowercase before storing it."""
     first_name: str | None = None
     """The first name of the user."""
     last_name: str | None = None

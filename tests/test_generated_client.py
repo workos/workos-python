@@ -2,6 +2,9 @@
 
 """Client tests: retries, errors, context manager, idempotency."""
 
+from datetime import datetime, timedelta, timezone
+from email.utils import format_datetime
+
 import httpx2 as httpx
 import pytest
 
@@ -29,6 +32,17 @@ from workos._errors import (
     RateLimitExceededError,
     ServerError,
 )
+
+# Retry-After values that must never reach time.sleep/asyncio.sleep unbounded:
+# non-finite or non-integer forms fall back to backoff, huge finite values and
+# far-future dates are capped.
+UNSAFE_RETRY_AFTER_VALUES = [
+    "NaN",
+    "Infinity",
+    "1e309",
+    "99999999999",
+    "Fri, 31 Dec 9999 23:59:59 GMT",
+]
 
 
 class TestWorkOSClient:
@@ -381,6 +395,51 @@ class TestWorkOSClient:
     def test_calculate_retry_delay_uses_retry_after_seconds(self):
         assert WorkOSClient._calculate_retry_delay(1, "30") == 30.0
 
+    @pytest.mark.parametrize(
+        "retry_after", ["3600", "99999999999", "Fri, 31 Dec 9999 23:59:59 GMT"]
+    )
+    def test_calculate_retry_delay_caps_retry_after(self, retry_after):
+        assert WorkOSClient._calculate_retry_delay(0, retry_after) == float(
+            generated_client_module.MAX_RETRY_AFTER
+        )
+
+    @pytest.mark.parametrize(
+        "retry_after",
+        ["NaN", "Infinity", "1e309", "-1", "1.5", "0x10", "1" * 400, "not a date"],
+    )
+    def test_parse_retry_after_rejects_non_delay_seconds(self, retry_after):
+        assert WorkOSClient._parse_retry_after(retry_after) is None
+
+    def test_parse_retry_after_keeps_raw_server_value(self):
+        assert WorkOSClient._parse_retry_after("3600") == 3600.0
+
+    def test_parse_retry_after_http_date(self):
+        retry_at = datetime.now(timezone.utc) + timedelta(seconds=30)
+        parsed = WorkOSClient._parse_retry_after(format_datetime(retry_at, usegmt=True))
+        assert parsed is not None
+        assert 28.0 <= parsed <= 30.0
+
+    def test_parse_retry_after_past_http_date_is_zero(self):
+        assert WorkOSClient._parse_retry_after("Thu, 01 Jan 1970 00:00:00 GMT") == 0.0
+
+    @pytest.mark.parametrize("retry_after", UNSAFE_RETRY_AFTER_VALUES)
+    def test_retry_sleep_is_finite_and_bounded(
+        self, httpx_mock, monkeypatch, retry_after
+    ):
+        delays: list[float] = []
+        monkeypatch.setattr(generated_client_module.time, "sleep", delays.append)
+        httpx_mock.add_response(
+            status_code=503,
+            headers={"Retry-After": retry_after},
+            json={"message": "down"},
+        )
+        httpx_mock.add_response(json={"ok": True})
+        client = WorkOSClient(api_key="sk_test_123", client_id="client_test")
+        assert client.request("GET", ("test",)) == {"ok": True}
+        client.close()
+        assert len(delays) == 1
+        assert 0.0 <= delays[0] <= generated_client_module.MAX_RETRY_AFTER
+
     def test_retry_exhaustion_raises_rate_limit(self, httpx_mock, monkeypatch):
         monkeypatch.setattr(generated_client_module.time, "sleep", lambda _: None)
         for _ in range(4):
@@ -408,6 +467,37 @@ class TestWorkOSClient:
         with pytest.raises(RateLimitExceededError) as exc_info:
             client.request("GET", ("test",))
         assert exc_info.value.retry_after == 30.0
+        client.close()
+
+    def test_rate_limit_retry_after_is_not_capped_on_error(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=429,
+            headers={"Retry-After": "3600"},
+            json={"message": "Slow down"},
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(RateLimitExceededError) as exc_info:
+            client.request("GET", ("test",))
+        assert exc_info.value.retry_after == 3600.0
+        client.close()
+
+    @pytest.mark.parametrize("retry_after", ["NaN", "Infinity", "1e309"])
+    def test_rate_limit_retry_after_is_none_for_invalid_header(
+        self, httpx_mock, retry_after
+    ):
+        httpx_mock.add_response(
+            status_code=429,
+            headers={"Retry-After": retry_after},
+            json={"message": "Slow down"},
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(RateLimitExceededError) as exc_info:
+            client.request("GET", ("test",))
+        assert exc_info.value.retry_after is None
         client.close()
 
     def test_timeout_error_is_wrapped(self, httpx_mock, monkeypatch):
@@ -704,6 +794,28 @@ class TestAsyncWorkOSClient:
         with pytest.raises(RateLimitExceededError):
             await client.request("GET", ("test",))
         await client.close()
+
+    @pytest.mark.parametrize("retry_after", UNSAFE_RETRY_AFTER_VALUES)
+    async def test_retry_sleep_is_finite_and_bounded(
+        self, httpx_mock, monkeypatch, retry_after
+    ):
+        delays: list[float] = []
+
+        async def _sleep(delay: float) -> None:
+            delays.append(delay)
+
+        monkeypatch.setattr(generated_client_module.asyncio, "sleep", _sleep)
+        httpx_mock.add_response(
+            status_code=503,
+            headers={"Retry-After": retry_after},
+            json={"message": "down"},
+        )
+        httpx_mock.add_response(json={"ok": True})
+        client = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test")
+        assert await client.request("GET", ("test",)) == {"ok": True}
+        await client.close()
+        assert len(delays) == 1
+        assert 0.0 <= delays[0] <= generated_client_module.MAX_RETRY_AFTER
 
     async def test_raises_500(self, httpx_mock):
         httpx_mock.add_response(

@@ -12,6 +12,9 @@ from .agent_admin_validate_credential_request import (
     AgentAdminValidateCredentialRequest as AgentAdminValidateCredentialRequest,
 )
 from .agent_blueprint import AgentBlueprint as AgentBlueprint
+from .agent_blueprint_invocable_as import (
+    AgentBlueprintInvocableAs as AgentBlueprintInvocableAs,
+)
 from .agent_blueprint_invocable_by import (
     AgentBlueprintInvocableBy as AgentBlueprintInvocableBy,
 )
@@ -20,6 +23,9 @@ from .agent_blueprint_session_setting import (
 )
 from .agent_blueprints_create_request import (
     AgentBlueprintsCreateRequest as AgentBlueprintsCreateRequest,
+)
+from .agent_blueprints_create_request_invocable_as import (
+    AgentBlueprintsCreateRequestInvocableAs as AgentBlueprintsCreateRequestInvocableAs,
 )
 from .agent_blueprints_create_request_invocable_by import (
     AgentBlueprintsCreateRequestInvocableBy as AgentBlueprintsCreateRequestInvocableBy,
@@ -35,6 +41,9 @@ from .agent_blueprints_token_validate_token_request import (
 )
 from .agent_blueprints_update_request import (
     AgentBlueprintsUpdateRequest as AgentBlueprintsUpdateRequest,
+)
+from .agent_blueprints_update_request_invocable_as import (
+    AgentBlueprintsUpdateRequestInvocableAs as AgentBlueprintsUpdateRequestInvocableAs,
 )
 from .agent_blueprints_update_request_invocable_by import (
     AgentBlueprintsUpdateRequestInvocableBy as AgentBlueprintsUpdateRequestInvocableBy,

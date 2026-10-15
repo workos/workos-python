@@ -17,7 +17,7 @@ class TestModelRoundTrip:
 
     def test_portal_link_response_minimal_payload(self):
         data = {
-            "link": "https://setup.workos.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            "link": "https://setup.workos.com/init?apiToken=01EHZNVPK3SFK441A1RGBFSHRT"
         }
         instance = PortalLinkResponse.from_dict(data)
         serialized = instance.to_dict()

@@ -194,6 +194,7 @@ from workos.common.models.vault_data_read import VaultDataRead
 from workos.common.models.vault_data_updated import VaultDataUpdated
 from workos.common.models.vault_dek_decrypted import VaultDekDecrypted
 from workos.common.models.vault_dek_read import VaultDekRead
+from workos.common.models.vault_dek_rekeyed import VaultDekRekeyed
 from workos.common.models.vault_kek_created import VaultKekCreated
 from workos.common.models.vault_kek_deleted import VaultKekDeleted
 from workos.common.models.vault_metadata_read import VaultMetadataRead
@@ -341,6 +342,7 @@ EventSchemaVariant = Union[
     VaultDataUpdated,
     VaultDekDecrypted,
     VaultDekRead,
+    VaultDekRekeyed,
     VaultKekCreated,
     VaultKekDeleted,
     VaultMetadataRead,
@@ -476,6 +478,7 @@ class EventSchema:
         "vault.data.updated": VaultDataUpdated,
         "vault.dek.decrypted": VaultDekDecrypted,
         "vault.dek.read": VaultDekRead,
+        "vault.dek.rekeyed": VaultDekRekeyed,
         "vault.kek.created": VaultKekCreated,
         "vault.kek.deleted": VaultKekDeleted,
         "vault.metadata.read": VaultMetadataRead,

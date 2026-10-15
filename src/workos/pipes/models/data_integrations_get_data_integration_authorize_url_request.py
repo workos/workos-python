@@ -18,6 +18,8 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
 
     user_id: str
     """The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account."""
+    account_display_name: str | None = None
+    """A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers."""
     organization_id: str | None = None
     """An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`."""
     connection_owner: (
@@ -37,6 +39,7 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
         try:
             return cls(
                 user_id=data["user_id"],
+                account_display_name=data.get("account_display_name"),
                 organization_id=data.get("organization_id"),
                 connection_owner=DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner(
                     _v_connection_owner
@@ -55,6 +58,10 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["user_id"] = self.user_id
+        if self.account_display_name is not None:
+            result["account_display_name"] = self.account_display_name
+        else:
+            result["account_display_name"] = None
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.connection_owner is not None:

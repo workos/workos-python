@@ -2,7 +2,11 @@
 
 from typing import TypeAlias
 
-from .create_data_integration_ownership import CreateDataIntegrationOwnership
+from .add_data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+)
 
-DataIntegrationOwnership: TypeAlias = CreateDataIntegrationOwnership
+DataIntegrationOwnership: TypeAlias = (
+    AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
+)
 __all__ = ["DataIntegrationOwnership"]

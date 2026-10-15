@@ -7,6 +7,9 @@ from typing import Any, Literal, cast
 
 from workos._types import _raise_deserialize_error
 
+from .agent_blueprint_created_data_invocable_as import (
+    AgentBlueprintCreatedDataInvocableAs,
+)
 from .agent_blueprint_created_data_invocable_by import (
     AgentBlueprintCreatedDataInvocableBy,
 )
@@ -31,6 +34,8 @@ class AgentBlueprintCreatedData:
     """Permission slugs forming the ceiling on what sessions minted from this blueprint may do."""
     invocable_by: AgentBlueprintCreatedDataInvocableBy
     """Who may mint sessions from this blueprint."""
+    invocable_as: AgentBlueprintCreatedDataInvocableAs
+    """How sessions may be minted from this blueprint."""
     session_settings: AgentBlueprintCreatedDataSessionSetting
     """Token and session lifetimes for sessions minted from this blueprint."""
     created_at: str
@@ -50,6 +55,9 @@ class AgentBlueprintCreatedData:
                 permissions=data["permissions"],
                 invocable_by=AgentBlueprintCreatedDataInvocableBy.from_dict(
                     cast(dict[str, Any], data["invocable_by"])
+                ),
+                invocable_as=AgentBlueprintCreatedDataInvocableAs.from_dict(
+                    cast(dict[str, Any], data["invocable_as"])
                 ),
                 session_settings=AgentBlueprintCreatedDataSessionSetting.from_dict(
                     cast(dict[str, Any], data["session_settings"])
@@ -72,6 +80,7 @@ class AgentBlueprintCreatedData:
             result["description"] = None
         result["permissions"] = self.permissions
         result["invocable_by"] = self.invocable_by.to_dict()
+        result["invocable_as"] = self.invocable_as.to_dict()
         result["session_settings"] = self.session_settings.to_dict()
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at

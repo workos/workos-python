@@ -804,6 +804,7 @@ class SSO:
         self,
         *,
         code: str | None = None,
+        code_verifier: str | None = None,
         subject_token: str | None = None,
         subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"]
         | None = None,
@@ -816,6 +817,7 @@ class SSO:
 
         Args:
             code: The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`.
+            code_verifier: The PKCE code verifier matching the `code_challenge` sent with the authorization request. Required when the authorization request included a `code_challenge`. Must be sent in the request body.
             subject_token: The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             subject_token_type: The type of the subject token. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             organization_id: The ID of the organization whose connection the subject token is validated against. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
@@ -836,6 +838,7 @@ class SSO:
             k: v
             for k, v in {
                 "code": code,
+                "code_verifier": code_verifier,
                 "subject_token": subject_token,
                 "subject_token_type": subject_token_type,
                 "organization_id": organization_id,
@@ -1672,6 +1675,7 @@ class AsyncSSO:
         self,
         *,
         code: str | None = None,
+        code_verifier: str | None = None,
         subject_token: str | None = None,
         subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"]
         | None = None,
@@ -1684,6 +1688,7 @@ class AsyncSSO:
 
         Args:
             code: The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`.
+            code_verifier: The PKCE code verifier matching the `code_challenge` sent with the authorization request. Required when the authorization request included a `code_challenge`. Must be sent in the request body.
             subject_token: The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             subject_token_type: The type of the subject token. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
             organization_id: The ID of the organization whose connection the subject token is validated against. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body.
@@ -1704,6 +1709,7 @@ class AsyncSSO:
             k: v
             for k, v in {
                 "code": code,
+                "code_verifier": code_verifier,
                 "subject_token": subject_token,
                 "subject_token_type": subject_token_type,
                 "organization_id": organization_id,

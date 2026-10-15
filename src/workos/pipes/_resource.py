@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -11,14 +11,26 @@ from workos.common.models.connected_account import ConnectedAccount
 from workos.common.models.connected_account_input_state import (
     ConnectedAccountInputState,
 )
+from workos.common.models.connected_account_write_response import (
+    ConnectedAccountWriteResponse,
+)
+from workos.common.models.create_connected_account_state import (
+    CreateConnectedAccountState,
+)
 from workos.common.models.create_data_integration_auth_methods import (
     CreateDataIntegrationAuthMethods,
 )
 from workos.common.models.create_data_integration_ownership import (
     CreateDataIntegrationOwnership,
 )
-from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_owner import (
-    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
+from workos.common.models.create_organization_connected_account_state import (
+    CreateOrganizationConnectedAccountState,
+)
+from workos.common.models.data_integrations_create_api_key_connection_request_connection_owner import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
+)
+from workos.common.models.data_integrations_create_client_credentials_connection_request_connection_owner import (
+    DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner,
 )
 from workos.common.models.data_integrations_get_user_token_request_connection_owner import (
     DataIntegrationsGetUserTokenRequestConnectionOwner,
@@ -26,20 +38,18 @@ from workos.common.models.data_integrations_get_user_token_request_connection_ow
 from workos.common.models.data_integrations_list_response import (
     DataIntegrationsListResponse,
 )
-from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
-    DataIntegrationsUpsertApiKeyRequestConnectionOwner,
-)
-from workos.common.models.data_integrations_upsert_client_credentials_request_connection_owner import (
-    DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
-)
 from workos.common.models.data_integrations_vend_credentials_request_connection_owner import (
     DataIntegrationsVendCredentialsRequestConnectionOwner,
+)
+from workos.common.models.organization_connected_account_state import (
+    OrganizationConnectedAccountState,
 )
 from workos.common.models.pagination_order import PaginationOrder
 
 from .._pagination import AsyncPage, SyncPage
 from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
+    AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest,
     ApiKeyInstallation,
     CustomProviderDefinition,
     DataIntegration,
@@ -47,7 +57,15 @@ from .models import (
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationCredentialsInput,
     DataIntegrationCredentialsResponse,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequest,
+    DataIntegrationsUpsertApiKeyRequest,
+    DataIntegrationsUpsertApiKeyRequest2,
+    DataIntegrationsUpsertClientCredentialsRequest,
+    DataIntegrationsUpsertClientCredentialsRequest2,
     PipesOwnership,
+    ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest,
+    ReauthorizeDataIntegrationsUpsertApiKeyRequest,
+    ReauthorizeDataIntegrationsUpsertClientCredentialsRequest,
     UpdateCustomProviderDefinition,
 )
 
@@ -305,34 +323,97 @@ class Pipes:
             request_options=request_options,
         )
 
-    def update_data_integration_api_key(
+    def create_data_integration_api_key(
         self,
         slug: str,
         *,
         user_id: str,
         secret: str,
+        connection_intent: Literal["add"],
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         organization_id: str | None = None,
-        connected_account_id: str | None = None,
-        connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner
+        connection_owner: DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner
         | str
         | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
-        """Upsert an API key for a connected account
+    ) -> ConnectedAccountWriteResponse:
+        """Create another API key connected account
 
-        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value.
+        Creates another API key-based connected account for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. Requires `connection_intent: add` and does not accept `connected_account_id`; use PUT to create or rotate the compatibility connection or to update an exact connection. Creating an additional connection is not yet available: until it is, this endpoint succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
 
         Args:
             slug: The identifier of the integration.
+            account_display_name: A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers.
+            account_identifier: A developer-attested provider account identifier, never inferred from a label or credential. Omit to preserve an existing identifier; null clears it.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
-            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
             connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             secret: The API key secret to store for this integration.
+            connection_intent: Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "secret": secret,
+                "connection_intent": connection_intent,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
+        return self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "api-key"),
+            body=body,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+
+    def update_data_integration_api_key(
+        self,
+        slug: str,
+        *,
+        body: DataIntegrationsUpsertApiKeyRequest
+        | ReauthorizeDataIntegrationsUpsertApiKeyRequest
+        | DataIntegrationsUpsertApiKeyRequest2
+        | dict[str, Any],
+        request_options: RequestOptions | None = None,
+    ) -> ConnectedAccountWriteResponse:
+        """Upsert an API key for a connected account
+
+        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value. To create another connection, use POST.
+
+        Args:
+            slug: The identifier of the integration.
+            body: The request body. Accepts: DataIntegrationsUpsertApiKeyRequest, ReauthorizeDataIntegrationsUpsertApiKeyRequest, DataIntegrationsUpsertApiKeyRequest2, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -344,24 +425,12 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "connected_account_id": connected_account_id,
-                "connection_owner": enum_value(connection_owner)
-                if connection_owner is not None
-                else None,
-                "secret": secret,
-            }.items()
-            if v is not None
-        }
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
             method="put",
             path=("data-integrations", str(slug), "api-key"),
-            body=body,
-            model=ConnectedAccount,
+            body=_body,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -369,13 +438,10 @@ class Pipes:
         self,
         slug: str,
         *,
-        user_id: str,
-        organization_id: str | None = None,
-        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
-        | str
-        | None = None,
-        return_to: str | None = None,
-        config: dict[str, str] | None = None,
+        body: DataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | dict[str, Any],
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationAuthorizeUrlResponse:
         """Get authorization URL
@@ -384,11 +450,7 @@ class Pipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
-            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
-            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
-            return_to: The URL to redirect the user to after authorization.
-            config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
+            body: The request body. Accepts: DataIntegrationsGetDataIntegrationAuthorizeUrlRequest, AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest, ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -399,6 +461,65 @@ class Pipes:
             AuthenticationError: If the API key is invalid (401).
             AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        return self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "authorize"),
+            body=_body,
+            model=DataIntegrationAuthorizeUrlResponse,
+            request_options=request_options,
+        )
+
+    def create_data_integration_client_credential(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        client_id: str,
+        client_secret: str,
+        connection_intent: Literal["add"],
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
+        organization_id: str | None = None,
+        connection_owner: DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner
+        | str
+        | None = None,
+        config: dict[str, str] | None = None,
+        idempotency_key: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> ConnectedAccountWriteResponse:
+        """Create another client credentials connected account
+
+        Creates another client credentials-based connected account for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. Requires `connection_intent: add` and does not accept `connected_account_id`; use PUT to create or rotate the compatibility connection or to update an exact connection. Creating an additional connection is not yet available: until it is, this endpoint succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
+
+        Args:
+            slug: The identifier of the integration.
+            account_display_name: A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers.
+            account_identifier: A developer-attested provider account identifier, never inferred from a label or credential. Omit to preserve an existing identifier; null clears it.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
+            client_id: The OAuth client ID to store for this integration.
+            client_secret: The OAuth client secret to store for this integration.
+            config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
+            connection_intent: Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccountWriteResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -410,16 +531,23 @@ class Pipes:
                 "connection_owner": enum_value(connection_owner)
                 if connection_owner is not None
                 else None,
-                "return_to": return_to,
+                "client_id": client_id,
+                "client_secret": client_secret,
                 "config": config,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         return self._client.request(
             method="post",
-            path=("data-integrations", str(slug), "authorize"),
+            path=("data-integrations", str(slug), "client-credentials"),
             body=body,
-            model=DataIntegrationAuthorizeUrlResponse,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -427,34 +555,23 @@ class Pipes:
         self,
         slug: str,
         *,
-        user_id: str,
-        client_id: str,
-        client_secret: str,
-        organization_id: str | None = None,
-        connected_account_id: str | None = None,
-        connection_owner: DataIntegrationsUpsertClientCredentialsRequestConnectionOwner
-        | str
-        | None = None,
-        config: dict[str, str] | None = None,
+        body: DataIntegrationsUpsertClientCredentialsRequest
+        | ReauthorizeDataIntegrationsUpsertClientCredentialsRequest
+        | DataIntegrationsUpsertClientCredentialsRequest2
+        | dict[str, Any],
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Upsert client credentials for a connected account
 
-        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values.
+        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values. To create another connection, use POST.
 
         Args:
             slug: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
-            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
-            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
-            client_id: The OAuth client ID to store for this integration.
-            client_secret: The OAuth client secret to store for this integration.
-            config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
+            body: The request body. Accepts: DataIntegrationsUpsertClientCredentialsRequest, ReauthorizeDataIntegrationsUpsertClientCredentialsRequest, DataIntegrationsUpsertClientCredentialsRequest2, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -466,26 +583,12 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "connected_account_id": connected_account_id,
-                "connection_owner": enum_value(connection_owner)
-                if connection_owner is not None
-                else None,
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "config": config,
-            }.items()
-            if v is not None
-        }
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
             method="put",
             path=("data-integrations", str(slug), "client-credentials"),
-            body=body,
-            model=ConnectedAccount,
+            body=_body,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -504,7 +607,7 @@ class Pipes:
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
 
-        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret.
+        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret. Every active credential includes `config`: provider-declared, non-secret values from the installation snapshot, with current provider defaults for unset fields. Editing integration or organization configuration does not change the snapshot; reconnect or explicitly rebind the connection to adopt those edits. Defaults remain live, so a changed default can appear in `config` before a cached token is refreshed or re-minted. Credentials that never refresh require a reconnect or rebind when a default changes their routing.
 
         Args:
             slug: The identifier of the integration.
@@ -788,32 +891,43 @@ class Pipes:
         organization_id: str,
         slug: str,
         *,
+        user_id: str,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: CreateOrganizationConnectedAccountState | str | None = None,
+        connection_intent: Literal["add"] | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Import an organization connected account
 
-        Imports an organization-owned [connected account](https://workos.com/docs/reference/pipes/connected-account) by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
+        Imports an organization-owned [connected account](https://workos.com/docs/reference/pipes/connected-account) by providing OAuth tokens directly. Omit `connection_intent` to create only the compatibility connection, or set it to `add` to explicitly create another connection. This creation-only endpoint does not accept `connected_account_id` or reauthorization intent.
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -828,9 +942,15 @@ class Pipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "user_id": user_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         return self._client.request(
             method="post",
             path=(
@@ -840,7 +960,8 @@ class Pipes:
                 str(slug),
             ),
             body=body,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -849,15 +970,19 @@ class Pipes:
         organization_id: str,
         slug: str,
         *,
+        user_id: str,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: OrganizationConnectedAccountState | str | None = None,
         supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
+        connection_intent: Literal["reauthorize"] | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Update an organization connected account
 
         Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
@@ -865,21 +990,26 @@ class Pipes:
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
-            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
+            user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            supports_multiple_connections: Accepted for compatibility; does not change update targeting. Omit intent and selector to update the compatibility connection, or supply `connected_account_id` to update an exact connection.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
+            connection_intent: Set to `reauthorize` with `connected_account_id` to update one exact connection. The intent may be omitted when supplying an ID. Omit both for permanent compatibility behavior.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -894,14 +1024,20 @@ class Pipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "user_id": user_id,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
                 "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
@@ -915,7 +1051,7 @@ class Pipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -1068,14 +1204,18 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: CreateConnectedAccountState | str | None = None,
+        connection_intent: Literal["add"] | None = None,
         organization_id: str | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Import a connected account
 
         Imports a [connected account](https://workos.com/docs/reference/pipes/connected-account) for a user by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
@@ -1083,16 +1223,20 @@ class Pipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
@@ -1110,9 +1254,14 @@ class Pipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
@@ -1131,7 +1280,8 @@ class Pipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -1140,6 +1290,8 @@ class Pipes:
         user_id: str,
         slug: str,
         *,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
@@ -1148,8 +1300,9 @@ class Pipes:
         organization_id: str | None = None,
         supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
+        connection_intent: Literal["reauthorize"] | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Update a connected account
 
         Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
@@ -1157,18 +1310,21 @@ class Pipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
-            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
+            supports_multiple_connections: Accepted for compatibility; does not change update targeting. Omit intent and selector to update the compatibility connection, or supply `connected_account_id` to update an exact connection.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
+            connection_intent: Set to `reauthorize` with `connected_account_id` to update one exact connection. The intent may be omitted when supplying an ID. Omit both for permanent compatibility behavior.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -1190,12 +1346,17 @@ class Pipes:
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
                 "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
@@ -1210,7 +1371,7 @@ class Pipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -1563,34 +1724,97 @@ class AsyncPipes:
             request_options=request_options,
         )
 
-    async def update_data_integration_api_key(
+    async def create_data_integration_api_key(
         self,
         slug: str,
         *,
         user_id: str,
         secret: str,
+        connection_intent: Literal["add"],
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         organization_id: str | None = None,
-        connected_account_id: str | None = None,
-        connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner
+        connection_owner: DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner
         | str
         | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
-        """Upsert an API key for a connected account
+    ) -> ConnectedAccountWriteResponse:
+        """Create another API key connected account
 
-        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value.
+        Creates another API key-based connected account for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. Requires `connection_intent: add` and does not accept `connected_account_id`; use PUT to create or rotate the compatibility connection or to update an exact connection. Creating an additional connection is not yet available: until it is, this endpoint succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
 
         Args:
             slug: The identifier of the integration.
+            account_display_name: A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers.
+            account_identifier: A developer-attested provider account identifier, never inferred from a label or credential. Omit to preserve an existing identifier; null clears it.
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
-            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
             connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
             secret: The API key secret to store for this integration.
+            connection_intent: Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "user_id": user_id,
+                "organization_id": organization_id,
+                "connection_owner": enum_value(connection_owner)
+                if connection_owner is not None
+                else None,
+                "secret": secret,
+                "connection_intent": connection_intent,
+            }.items()
+            if v is not None
+        }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
+        return await self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "api-key"),
+            body=body,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+
+    async def update_data_integration_api_key(
+        self,
+        slug: str,
+        *,
+        body: DataIntegrationsUpsertApiKeyRequest
+        | ReauthorizeDataIntegrationsUpsertApiKeyRequest
+        | DataIntegrationsUpsertApiKeyRequest2
+        | dict[str, Any],
+        request_options: RequestOptions | None = None,
+    ) -> ConnectedAccountWriteResponse:
+        """Upsert an API key for a connected account
+
+        Creates or updates an API-key-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored API key is rotated to the new value. To create another connection, use POST.
+
+        Args:
+            slug: The identifier of the integration.
+            body: The request body. Accepts: DataIntegrationsUpsertApiKeyRequest, ReauthorizeDataIntegrationsUpsertApiKeyRequest, DataIntegrationsUpsertApiKeyRequest2, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -1602,24 +1826,12 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "connected_account_id": connected_account_id,
-                "connection_owner": enum_value(connection_owner)
-                if connection_owner is not None
-                else None,
-                "secret": secret,
-            }.items()
-            if v is not None
-        }
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
             method="put",
             path=("data-integrations", str(slug), "api-key"),
-            body=body,
-            model=ConnectedAccount,
+            body=_body,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -1627,13 +1839,10 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        user_id: str,
-        organization_id: str | None = None,
-        connection_owner: DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner
-        | str
-        | None = None,
-        return_to: str | None = None,
-        config: dict[str, str] | None = None,
+        body: DataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest
+        | dict[str, Any],
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationAuthorizeUrlResponse:
         """Get authorization URL
@@ -1642,11 +1851,7 @@ class AsyncPipes:
 
         Args:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
-            user_id: The ID of the user to authorize. When `connection_owner` is `organization`, this is the user authorizing on behalf of the organization; they must be an active member of the organization and do not become the owner of the resulting connected account.
-            organization_id: An organization ID to scope the authorization to a specific organization. Required when `connection_owner` is `organization`.
-            connection_owner: Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`.
-            return_to: The URL to redirect the user to after authorization.
-            config: Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration.
+            body: The request body. Accepts: DataIntegrationsGetDataIntegrationAuthorizeUrlRequest, AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest, ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1657,6 +1862,65 @@ class AsyncPipes:
             AuthenticationError: If the API key is invalid (401).
             AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
+        return await self._client.request(
+            method="post",
+            path=("data-integrations", str(slug), "authorize"),
+            body=_body,
+            model=DataIntegrationAuthorizeUrlResponse,
+            request_options=request_options,
+        )
+
+    async def create_data_integration_client_credential(
+        self,
+        slug: str,
+        *,
+        user_id: str,
+        client_id: str,
+        client_secret: str,
+        connection_intent: Literal["add"],
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
+        organization_id: str | None = None,
+        connection_owner: DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner
+        | str
+        | None = None,
+        config: dict[str, str] | None = None,
+        idempotency_key: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> ConnectedAccountWriteResponse:
+        """Create another client credentials connected account
+
+        Creates another client credentials-based connected account for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. Requires `connection_intent: add` and does not accept `connected_account_id`; use PUT to create or rotate the compatibility connection or to update an exact connection. Creating an additional connection is not yet available: until it is, this endpoint succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
+
+        Args:
+            slug: The identifier of the integration.
+            account_display_name: A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers.
+            account_identifier: A developer-attested provider account identifier, never inferred from a label or credential. Omit to preserve an existing identifier; null clears it.
+            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
+            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
+            client_id: The OAuth client ID to store for this integration.
+            client_secret: The OAuth client secret to store for this integration.
+            config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
+            connection_intent: Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ConnectedAccountWriteResponse
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
@@ -1668,16 +1932,23 @@ class AsyncPipes:
                 "connection_owner": enum_value(connection_owner)
                 if connection_owner is not None
                 else None,
-                "return_to": return_to,
+                "client_id": client_id,
+                "client_secret": client_secret,
                 "config": config,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         return await self._client.request(
             method="post",
-            path=("data-integrations", str(slug), "authorize"),
+            path=("data-integrations", str(slug), "client-credentials"),
             body=body,
-            model=DataIntegrationAuthorizeUrlResponse,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -1685,34 +1956,23 @@ class AsyncPipes:
         self,
         slug: str,
         *,
-        user_id: str,
-        client_id: str,
-        client_secret: str,
-        organization_id: str | None = None,
-        connected_account_id: str | None = None,
-        connection_owner: DataIntegrationsUpsertClientCredentialsRequestConnectionOwner
-        | str
-        | None = None,
-        config: dict[str, str] | None = None,
+        body: DataIntegrationsUpsertClientCredentialsRequest
+        | ReauthorizeDataIntegrationsUpsertClientCredentialsRequest
+        | DataIntegrationsUpsertClientCredentialsRequest2
+        | dict[str, Any],
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Upsert client credentials for a connected account
 
-        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values.
+        Creates or updates a client-credentials-based installation for the specified integration, owned by the user or, when `connection_owner` is `organization`, shared by the organization. If an installation already exists, the stored client credentials are rotated to the new values. To create another connection, use POST.
 
         Args:
             slug: The identifier of the integration.
-            user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
-            organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`.
-            connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to rotate a specific existing connection.
-            connection_owner: Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization.
-            client_id: The OAuth client ID to store for this integration.
-            client_secret: The OAuth client secret to store for this integration.
-            config: Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors.
+            body: The request body. Accepts: DataIntegrationsUpsertClientCredentialsRequest, ReauthorizeDataIntegrationsUpsertClientCredentialsRequest, DataIntegrationsUpsertClientCredentialsRequest2, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -1724,26 +1984,12 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "connected_account_id": connected_account_id,
-                "connection_owner": enum_value(connection_owner)
-                if connection_owner is not None
-                else None,
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "config": config,
-            }.items()
-            if v is not None
-        }
+        _body: dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
             method="put",
             path=("data-integrations", str(slug), "client-credentials"),
-            body=body,
-            model=ConnectedAccount,
+            body=_body,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -1762,7 +2008,7 @@ class AsyncPipes:
     ) -> DataIntegrationCredentialsResponse:
         """Vend credentials for a connected account
 
-        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret.
+        Returns credentials for a user's connected account. Branches on the installation's `auth_method`: OAuth installations return an access token (refreshed if needed); API-key installations return the stored secret. Every active credential includes `config`: provider-declared, non-secret values from the installation snapshot, with current provider defaults for unset fields. Editing integration or organization configuration does not change the snapshot; reconnect or explicitly rebind the connection to adopt those edits. Defaults remain live, so a changed default can appear in `config` before a cached token is refreshed or re-minted. Credentials that never refresh require a reconnect or rebind when a default changes their routing.
 
         Args:
             slug: The identifier of the integration.
@@ -2046,32 +2292,43 @@ class AsyncPipes:
         organization_id: str,
         slug: str,
         *,
+        user_id: str,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: CreateOrganizationConnectedAccountState | str | None = None,
+        connection_intent: Literal["add"] | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Import an organization connected account
 
-        Imports an organization-owned [connected account](https://workos.com/docs/reference/pipes/connected-account) by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
+        Imports an organization-owned [connected account](https://workos.com/docs/reference/pipes/connected-account) by providing OAuth tokens directly. Omit `connection_intent` to create only the compatibility connection, or set it to `add` to explicitly create another connection. This creation-only endpoint does not accept `connected_account_id` or reauthorization intent.
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -2086,9 +2343,15 @@ class AsyncPipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "user_id": user_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         return await self._client.request(
             method="post",
             path=(
@@ -2098,7 +2361,8 @@ class AsyncPipes:
                 str(slug),
             ),
             body=body,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -2107,15 +2371,19 @@ class AsyncPipes:
         organization_id: str,
         slug: str,
         *,
+        user_id: str,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: OrganizationConnectedAccountState | str | None = None,
         supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
+        connection_intent: Literal["reauthorize"] | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Update an organization connected account
 
         Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
@@ -2123,21 +2391,26 @@ class AsyncPipes:
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
-            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
+            user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            supports_multiple_connections: Accepted for compatibility; does not change update targeting. Omit intent and selector to update the compatibility connection, or supply `connected_account_id` to update an exact connection.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
+            connection_intent: Set to `reauthorize` with `connected_account_id` to update one exact connection. The intent may be omitted when supplying an ID. Omit both for permanent compatibility behavior.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
             AuthenticationError: If the API key is invalid (401).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             ConflictError: If a conflict occurs (409).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -2152,14 +2425,20 @@ class AsyncPipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "user_id": user_id,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
                 "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
@@ -2173,7 +2452,7 @@ class AsyncPipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 
@@ -2326,14 +2605,18 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
         scopes: list[str] | None = None,
-        state: ConnectedAccountInputState | str | None = None,
+        state: CreateConnectedAccountState | str | None = None,
+        connection_intent: Literal["add"] | None = None,
         organization_id: str | None = None,
+        idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Import a connected account
 
         Imports a [connected account](https://workos.com/docs/reference/pipes/connected-account) for a user by providing OAuth tokens directly. Use this to migrate existing connections or set up connections without going through the OAuth flow.
@@ -2341,16 +2624,20 @@ class AsyncPipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration, which creates the compatibility connection, and otherwise returns 404 `multiple_connections_unavailable`.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+            idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
@@ -2368,9 +2655,14 @@ class AsyncPipes:
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
@@ -2389,7 +2681,8 @@ class AsyncPipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
+            idempotency_key=idempotency_key,
             request_options=request_options,
         )
 
@@ -2398,6 +2691,8 @@ class AsyncPipes:
         user_id: str,
         slug: str,
         *,
+        account_display_name: str | None | NotGiven = NOT_GIVEN,
+        account_identifier: str | None | NotGiven = NOT_GIVEN,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: str | None = None,
@@ -2406,8 +2701,9 @@ class AsyncPipes:
         organization_id: str | None = None,
         supports_multiple_connections: bool | None = None,
         connected_account_id: str | None = None,
+        connection_intent: Literal["reauthorize"] | None = None,
         request_options: RequestOptions | None = None,
-    ) -> ConnectedAccount:
+    ) -> ConnectedAccountWriteResponse:
         """Update a connected account
 
         Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
@@ -2415,18 +2711,21 @@ class AsyncPipes:
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+            account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
+            account_identifier: A developer-attested account identifier; null clears it.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
-            supports_multiple_connections: Set to `true` to use the plural connection contract. When omitted or `false`, only the compatibility connection is considered.
+            supports_multiple_connections: Accepted for compatibility; does not change update targeting. Omit intent and selector to update the compatibility connection, or supply `connected_account_id` to update an exact connection.
             connected_account_id: A [connected account](https://workos.com/docs/reference/pipes/connected-account) identifier. Use this to select the connection to update.
+            connection_intent: Set to `reauthorize` with `connected_account_id` to update one exact connection. The intent may be omitted when supplying an ID. Omit both for permanent compatibility behavior.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectedAccount
+            ConnectedAccountWriteResponse
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -2448,12 +2747,17 @@ class AsyncPipes:
             }.items()
             if v is not None
         }
+        if not isinstance(account_display_name, NotGiven):
+            body["account_display_name"] = account_display_name
+        if not isinstance(account_identifier, NotGiven):
+            body["account_identifier"] = account_identifier
         params: dict[str, Any] = {
             k: v
             for k, v in {
                 "organization_id": organization_id,
                 "supports_multiple_connections": supports_multiple_connections,
                 "connected_account_id": connected_account_id,
+                "connection_intent": connection_intent,
             }.items()
             if v is not None
         }
@@ -2468,7 +2772,7 @@ class AsyncPipes:
             ),
             body=body,
             params=params,
-            model=ConnectedAccount,
+            model=ConnectedAccountWriteResponse,
             request_options=request_options,
         )
 

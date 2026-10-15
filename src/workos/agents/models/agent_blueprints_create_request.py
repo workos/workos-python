@@ -7,6 +7,9 @@ from typing import Any, cast
 
 from workos._types import _raise_deserialize_error
 
+from .agent_blueprints_create_request_invocable_as import (
+    AgentBlueprintsCreateRequestInvocableAs,
+)
 from .agent_blueprints_create_request_invocable_by import (
     AgentBlueprintsCreateRequestInvocableBy,
 )
@@ -27,6 +30,8 @@ class AgentBlueprintsCreateRequest:
     """Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment."""
     invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None
     """Who may mint sessions from this blueprint."""
+    invocable_as: AgentBlueprintsCreateRequestInvocableAs | None = None
+    """How sessions may be minted from this blueprint."""
     session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None
     """Token and session lifetimes for sessions minted from this blueprint."""
 
@@ -42,6 +47,11 @@ class AgentBlueprintsCreateRequest:
                     cast(dict[str, Any], _v_invocable_by)
                 )
                 if (_v_invocable_by := data.get("invocable_by")) is not None
+                else None,
+                invocable_as=AgentBlueprintsCreateRequestInvocableAs.from_dict(
+                    cast(dict[str, Any], _v_invocable_as)
+                )
+                if (_v_invocable_as := data.get("invocable_as")) is not None
                 else None,
                 session_settings=AgentBlueprintsCreateRequestSessionSetting.from_dict(
                     cast(dict[str, Any], _v_session_settings)
@@ -62,6 +72,8 @@ class AgentBlueprintsCreateRequest:
             result["permissions"] = self.permissions
         if self.invocable_by is not None:
             result["invocable_by"] = self.invocable_by.to_dict()
+        if self.invocable_as is not None:
+            result["invocable_as"] = self.invocable_as.to_dict()
         if self.session_settings is not None:
             result["session_settings"] = self.session_settings.to_dict()
         return result

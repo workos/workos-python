@@ -26,13 +26,22 @@ class TestAdminPortal:
         assert isinstance(result, PortalLinkResponse)
         assert (
             result.link
-            == "https://setup.workos.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            == "https://setup.workos.com/init?apiToken=01EHZNVPK3SFK441A1RGBFSHRT"
         )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/portal/generate_link")
         body = json.loads(request.content)
         assert body["organization"] == "test_organization"
+
+    def test_create_revoke_link(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.admin_portal.create_revoke_link(
+            organization="test_organization", external_user_id="test_external_user_id"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/portal/revoke_link")
 
     def test_generate_link_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
@@ -121,11 +130,21 @@ class TestAsyncAdminPortal:
         assert isinstance(result, PortalLinkResponse)
         assert (
             result.link
-            == "https://setup.workos.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            == "https://setup.workos.com/init?apiToken=01EHZNVPK3SFK441A1RGBFSHRT"
         )
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/portal/generate_link")
+
+    @pytest.mark.asyncio
+    async def test_create_revoke_link(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        await async_workos.admin_portal.create_revoke_link(
+            organization="test_organization", external_user_id="test_external_user_id"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/portal/revoke_link")
 
     @pytest.mark.asyncio
     async def test_generate_link_with_request_options(self, async_workos, httpx_mock):

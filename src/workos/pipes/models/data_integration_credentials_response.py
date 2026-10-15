@@ -11,9 +11,7 @@ from workos.common.models.data_integration_credentials_response_error import (
     DataIntegrationCredentialsResponseError,
 )
 
-from .data_integration_credentials_response_credential import (
-    DataIntegrationCredentialsResponseCredential,
-)
+from .data_integration_vended_credential import DataIntegrationVendedCredential
 
 
 @dataclass(slots=True)
@@ -22,7 +20,7 @@ class DataIntegrationCredentialsResponse:
 
     active: Literal[True] | None = None
     """Indicates credentials are available."""
-    credential: DataIntegrationCredentialsResponseCredential | None = None
+    credential: DataIntegrationVendedCredential | None = None
     """The credential object containing the vended secret."""
     error: DataIntegrationCredentialsResponseError | None = None
     """The reason credentials are unavailable. Additional values may be added in the future; handle unknown values gracefully.
@@ -35,7 +33,7 @@ class DataIntegrationCredentialsResponse:
         try:
             return cls(
                 active=data.get("active"),
-                credential=DataIntegrationCredentialsResponseCredential.from_dict(
+                credential=DataIntegrationVendedCredential.from_dict(
                     cast(dict[str, Any], _v_credential)
                 )
                 if (_v_credential := data.get("credential")) is not None

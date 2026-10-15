@@ -22,6 +22,8 @@ class TokenQuery:
     """The grant type for the token request."""
     code: str | None = None
     """The authorization code received from the authorization callback. Required when `grant_type` is `authorization_code`."""
+    code_verifier: str | None = None
+    """The PKCE code verifier matching the `code_challenge` sent with the authorization request. Required when the authorization request included a `code_challenge`. Must be sent in the request body."""
     subject_token: str | None = None
     """The OIDC ID token to exchange. Required when `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`. Must be sent in the request body."""
     subject_token_type: Literal["urn:ietf:params:oauth:token-type:id_token"] | None = (
@@ -40,6 +42,7 @@ class TokenQuery:
                 client_secret=data["client_secret"],
                 grant_type=TokenQueryGrantType(data["grant_type"]),
                 code=data.get("code"),
+                code_verifier=data.get("code_verifier"),
                 subject_token=data.get("subject_token"),
                 subject_token_type=data.get("subject_token_type"),
                 organization_id=data.get("organization_id"),
@@ -59,6 +62,8 @@ class TokenQuery:
         )
         if self.code is not None:
             result["code"] = self.code
+        if self.code_verifier is not None:
+            result["code_verifier"] = self.code_verifier
         if self.subject_token is not None:
             result["subject_token"] = self.subject_token
         if self.subject_token_type is not None:

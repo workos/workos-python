@@ -119,6 +119,7 @@ class FeatureFlags:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -149,6 +150,7 @@ class FeatureFlags:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -423,6 +425,7 @@ class AsyncFeatureFlags:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
@@ -453,6 +456,7 @@ class AsyncFeatureFlags:
 
         Raises:
             NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.

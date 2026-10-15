@@ -25,6 +25,7 @@ class AdminPortal:
         organization: str,
         return_url: str | None = None,
         success_url: str | None = None,
+        external_user_id: str | None = None,
         intent: GenerateLinkIntent | str | None = None,
         it_contact_emails: list[str] | None = None,
         request_options: RequestOptions | None = None,
@@ -37,6 +38,7 @@ class AdminPortal:
             return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used.
             success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used.
             organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+            external_user_id: The ID of the user in your application the link is generated for. The link and any Admin Portal sessions started from it can later be revoked by this ID, for example when that user is deprovisioned from your application.
             intent: The intent of the Admin Portal.
                 - `sso` - Launch Admin Portal for creating SSO connections
                 - `dsync` - Launch Admin Portal for creating Directory Sync connections
@@ -66,6 +68,7 @@ class AdminPortal:
                 "return_url": return_url,
                 "success_url": success_url,
                 "organization": organization,
+                "external_user_id": external_user_id,
                 "intent": enum_value(intent) if intent is not None else None,
                 "it_contact_emails": it_contact_emails,
             }.items()
@@ -76,6 +79,40 @@ class AdminPortal:
             path=("portal", "generate_link"),
             body=body,
             model=PortalLinkResponse,
+            request_options=request_options,
+        )
+
+    def create_revoke_link(
+        self,
+        *,
+        organization: str,
+        external_user_id: str,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Revoke Portal Links
+
+        Revokes every Portal Link generated for the given organization with the given `external_user_id`, and immediately ends any Admin Portal sessions that were started from those links. Use this when an admin is deprovisioned from your application: unopened links stop working, and their already-open portal sessions are ended. Only links that were generated with an `external_user_id` can be revoked, so pass one to `generate_link` for every admin you may later need to deprovision.
+
+        Args:
+            organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+            external_user_id: The `external_user_id` the Portal Links were generated with for this organization. Every matching link is revoked, along with any Admin Portal sessions started from those links.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "organization": organization,
+            "external_user_id": external_user_id,
+        }
+        self._client.request(
+            method="post",
+            path=("portal", "revoke_link"),
+            body=body,
             request_options=request_options,
         )
 
@@ -92,6 +129,7 @@ class AsyncAdminPortal:
         organization: str,
         return_url: str | None = None,
         success_url: str | None = None,
+        external_user_id: str | None = None,
         intent: GenerateLinkIntent | str | None = None,
         it_contact_emails: list[str] | None = None,
         request_options: RequestOptions | None = None,
@@ -104,6 +142,7 @@ class AsyncAdminPortal:
             return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used.
             success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Admin Portal](https://dashboard.workos.com/admin-portal) page will be used.
             organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+            external_user_id: The ID of the user in your application the link is generated for. The link and any Admin Portal sessions started from it can later be revoked by this ID, for example when that user is deprovisioned from your application.
             intent: The intent of the Admin Portal.
                 - `sso` - Launch Admin Portal for creating SSO connections
                 - `dsync` - Launch Admin Portal for creating Directory Sync connections
@@ -133,6 +172,7 @@ class AsyncAdminPortal:
                 "return_url": return_url,
                 "success_url": success_url,
                 "organization": organization,
+                "external_user_id": external_user_id,
                 "intent": enum_value(intent) if intent is not None else None,
                 "it_contact_emails": it_contact_emails,
             }.items()
@@ -143,5 +183,39 @@ class AsyncAdminPortal:
             path=("portal", "generate_link"),
             body=body,
             model=PortalLinkResponse,
+            request_options=request_options,
+        )
+
+    async def create_revoke_link(
+        self,
+        *,
+        organization: str,
+        external_user_id: str,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Revoke Portal Links
+
+        Revokes every Portal Link generated for the given organization with the given `external_user_id`, and immediately ends any Admin Portal sessions that were started from those links. Use this when an admin is deprovisioned from your application: unopened links stop working, and their already-open portal sessions are ended. Only links that were generated with an `external_user_id` can be revoked, so pass one to `generate_link` for every admin you may later need to deprovision.
+
+        Args:
+            organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+            external_user_id: The `external_user_id` the Portal Links were generated with for this organization. Every matching link is revoked, along with any Admin Portal sessions started from those links.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            "organization": organization,
+            "external_user_id": external_user_id,
+        }
+        await self._client.request(
+            method="post",
+            path=("portal", "revoke_link"),
+            body=body,
             request_options=request_options,
         )

@@ -33,15 +33,25 @@ from workos._errors import (
     ServerError,
 )
 
-# Retry-After values that must never reach time.sleep/asyncio.sleep unbounded:
-# non-finite or non-integer forms fall back to backoff, huge finite values and
-# far-future dates are capped.
-UNSAFE_RETRY_AFTER_VALUES = [
-    "NaN",
-    "Infinity",
-    "1e309",
-    "99999999999",
-    "Fri, 31 Dec 9999 23:59:59 GMT",
+# Retry-After values that must never reach time.sleep/asyncio.sleep unbounded,
+# paired with the sleep range the client must use instead: non-finite or
+# non-integer forms fall back to the first backoff step (INITIAL_RETRY_DELAY
+# with +/-50% jitter), huge finite values and far-future dates are capped at
+# MAX_RETRY_AFTER.
+_BACKOFF_FIRST_STEP = (
+    generated_client_module.INITIAL_RETRY_DELAY * 0.5,
+    generated_client_module.INITIAL_RETRY_DELAY * 1.5,
+)
+_CAPPED = (
+    float(generated_client_module.MAX_RETRY_AFTER),
+    float(generated_client_module.MAX_RETRY_AFTER),
+)
+UNSAFE_RETRY_AFTER_CASES = [
+    ("NaN", _BACKOFF_FIRST_STEP),
+    ("Infinity", _BACKOFF_FIRST_STEP),
+    ("1e309", _BACKOFF_FIRST_STEP),
+    ("99999999999", _CAPPED),
+    ("Fri, 31 Dec 9999 23:59:59 GMT", _CAPPED),
 ]
 
 
@@ -422,9 +432,11 @@ class TestWorkOSClient:
     def test_parse_retry_after_past_http_date_is_zero(self):
         assert WorkOSClient._parse_retry_after("Thu, 01 Jan 1970 00:00:00 GMT") == 0.0
 
-    @pytest.mark.parametrize("retry_after", UNSAFE_RETRY_AFTER_VALUES)
+    @pytest.mark.parametrize(
+        ("retry_after", "expected_range"), UNSAFE_RETRY_AFTER_CASES
+    )
     def test_retry_sleep_is_finite_and_bounded(
-        self, httpx_mock, monkeypatch, retry_after
+        self, httpx_mock, monkeypatch, retry_after, expected_range
     ):
         delays: list[float] = []
         monkeypatch.setattr(generated_client_module.time, "sleep", delays.append)
@@ -438,7 +450,8 @@ class TestWorkOSClient:
         assert client.request("GET", ("test",)) == {"ok": True}
         client.close()
         assert len(delays) == 1
-        assert 0.0 <= delays[0] <= generated_client_module.MAX_RETRY_AFTER
+        low, high = expected_range
+        assert low <= delays[0] <= high
 
     def test_retry_exhaustion_raises_rate_limit(self, httpx_mock, monkeypatch):
         monkeypatch.setattr(generated_client_module.time, "sleep", lambda _: None)
@@ -795,9 +808,11 @@ class TestAsyncWorkOSClient:
             await client.request("GET", ("test",))
         await client.close()
 
-    @pytest.mark.parametrize("retry_after", UNSAFE_RETRY_AFTER_VALUES)
+    @pytest.mark.parametrize(
+        ("retry_after", "expected_range"), UNSAFE_RETRY_AFTER_CASES
+    )
     async def test_retry_sleep_is_finite_and_bounded(
-        self, httpx_mock, monkeypatch, retry_after
+        self, httpx_mock, monkeypatch, retry_after, expected_range
     ):
         delays: list[float] = []
 
@@ -815,7 +830,8 @@ class TestAsyncWorkOSClient:
         assert await client.request("GET", ("test",)) == {"ok": True}
         await client.close()
         assert len(delays) == 1
-        assert 0.0 <= delays[0] <= generated_client_module.MAX_RETRY_AFTER
+        low, high = expected_range
+        assert low <= delays[0] <= high
 
     async def test_raises_500(self, httpx_mock):
         httpx_mock.add_response(

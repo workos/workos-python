@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import os
 import platform
 import time
@@ -49,6 +50,10 @@ MAX_RETRIES = 3
 INITIAL_RETRY_DELAY = 1
 MAX_RETRY_DELAY = 30
 RETRY_MULTIPLIER = 2
+# Upper bound on a server-provided Retry-After sleep, in seconds. Matches the
+# Node SDK so an aggressive proxy or a far-future HTTP-date cannot stall the
+# caller. The raw header value is still reported on RateLimitExceededError.
+MAX_RETRY_AFTER = 60
 
 
 # Segments that URL normalization treats structurally; never valid identifiers.
@@ -129,16 +134,24 @@ class _BaseWorkOSClient:
 
     @staticmethod
     def _parse_retry_after(retry_after: Optional[str]) -> Optional[float]:
-        """Parse Retry-After as seconds or an HTTP-date."""
+        """Parse Retry-After as RFC 9110 delay-seconds or an HTTP-date.
+
+        Returns ``None`` for absent or unparseable values so callers fall back
+        to exponential backoff. Delay-seconds must be a plain non-negative
+        integer, which rejects forms ``float()`` would otherwise accept such as
+        ``NaN``, ``Infinity`` or ``1e309``. The result is not capped here so
+        :class:`RateLimitExceededError` reports what the server actually sent;
+        :meth:`_calculate_retry_delay` bounds the sleep.
+        """
         if not retry_after:
             return None
         value = retry_after.strip()
         if not value:
             return None
-        try:
-            return max(float(value), 0.0)
-        except ValueError:
-            pass
+        if value.isdecimal():
+            seconds = float(value)
+            # A digit string long enough to overflow float parses as inf.
+            return seconds if math.isfinite(seconds) else None
         try:
             retry_at = parsedate_to_datetime(value)
         except (TypeError, ValueError, IndexError, OverflowError):
@@ -151,10 +164,15 @@ class _BaseWorkOSClient:
     def _calculate_retry_delay(
         attempt: int, retry_after: Optional[str] = None
     ) -> float:
-        """Calculate retry delay with exponential backoff and jitter."""
+        """Calculate retry delay with exponential backoff and jitter.
+
+        A valid Retry-After header wins over backoff but is capped at
+        ``MAX_RETRY_AFTER`` so a huge value cannot overflow ``time.sleep`` or
+        leave an async retry waiting indefinitely.
+        """
         parsed_retry_after = _BaseWorkOSClient._parse_retry_after(retry_after)
         if parsed_retry_after is not None:
-            return parsed_retry_after
+            return min(parsed_retry_after, float(MAX_RETRY_AFTER))
         delay = min(INITIAL_RETRY_DELAY * (RETRY_MULTIPLIER**attempt), MAX_RETRY_DELAY)
         return delay * (0.5 + random.random())
 

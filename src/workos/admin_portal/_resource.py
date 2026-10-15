@@ -82,7 +82,7 @@ class AdminPortal:
             request_options=request_options,
         )
 
-    def create_revoke_link(
+    def revoke_link(
         self,
         *,
         organization: str,
@@ -186,7 +186,7 @@ class AsyncAdminPortal:
             request_options=request_options,
         )
 
-    async def create_revoke_link(
+    async def revoke_link(
         self,
         *,
         organization: str,

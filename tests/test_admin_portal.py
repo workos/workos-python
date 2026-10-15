@@ -34,9 +34,9 @@ class TestAdminPortal:
         body = json.loads(request.content)
         assert body["organization"] == "test_organization"
 
-    def test_create_revoke_link(self, workos, httpx_mock):
+    def test_revoke_link(self, workos, httpx_mock):
         httpx_mock.add_response(json={})
-        workos.admin_portal.create_revoke_link(
+        workos.admin_portal.revoke_link(
             organization="test_organization", external_user_id="test_external_user_id"
         )
         request = httpx_mock.get_request()
@@ -137,9 +137,9 @@ class TestAsyncAdminPortal:
         assert request.url.path.endswith("/portal/generate_link")
 
     @pytest.mark.asyncio
-    async def test_create_revoke_link(self, async_workos, httpx_mock):
+    async def test_revoke_link(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={})
-        await async_workos.admin_portal.create_revoke_link(
+        await async_workos.admin_portal.revoke_link(
             organization="test_organization", external_user_id="test_external_user_id"
         )
         request = httpx_mock.get_request()

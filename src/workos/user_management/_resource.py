@@ -1242,6 +1242,7 @@ class UserManagement:
 
         Raises:
             BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
             AuthenticationError: If the API key is invalid (401).
@@ -2040,6 +2041,7 @@ class UserManagement:
 
         Raises:
             BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).
@@ -3994,6 +3996,7 @@ class AsyncUserManagement:
 
         Raises:
             BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
             AuthenticationError: If the API key is invalid (401).
@@ -4792,6 +4795,7 @@ class AsyncUserManagement:
 
         Raises:
             BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
             UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).

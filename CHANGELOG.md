@@ -1,5 +1,34 @@
 # Changelog
 
+## [11.0.0](https://github.com/workos/workos-python/compare/v10.5.0...v11.0.0) (2026-10-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* iterate only the current page when looping over a list response ([#744](https://github.com/workos/workos-python/issues/744))
+
+### Features
+
+* **admin_portal:** SDK surface change: `AdminPortal.create_revoke_link` was renamed to `AdminPortal.revoke_link` ([#749](https://github.com/workos/workos-python/issues/749)) ([1ee820b](https://github.com/workos/workos-python/commit/1ee820be29fe1decc9eac1a42fe4deb2dec73350))
+* **admin_portal:** Update admin portal API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **audit_logs:** Update audit log API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **authorization:** Update authorization API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **feature_flags:** Update feature flag API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* iterate only the current page when looping over a list response ([#744](https://github.com/workos/workos-python/issues/744)) ([40b902a](https://github.com/workos/workos-python/commit/40b902a1e65178353d8ec53f6d0e63fb701a0b99))
+* **organizations:** Update organization API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **pipes:** Change Pipes API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **pipes:** Update Pipes API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **radar:** Update radar API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **user_management:** Update user management API surface ([#747](https://github.com/workos/workos-python/issues/747)) ([d8668e2](https://github.com/workos/workos-python/commit/d8668e2803e48555520ca8aefe459fe8a5b9e756))
+* **user_management:** Update user management API surface ([#749](https://github.com/workos/workos-python/issues/749)) ([1ee820b](https://github.com/workos/workos-python/commit/1ee820be29fe1decc9eac1a42fe4deb2dec73350))
+
+
+### Bug Fixes
+
+* clear before cursor when advancing pagination ([#741](https://github.com/workos/workos-python/issues/741)) ([f1dab71](https://github.com/workos/workos-python/commit/f1dab71bbb2f830868d6d6258acbff239b5a07e1))
+* fall back from nonfinite Retry-After values ([#742](https://github.com/workos/workos-python/issues/742)) ([a65c626](https://github.com/workos/workos-python/commit/a65c626e6056b33253d84e0175900a16d6ba5fd7))
+* **user_management:** Change errors for endpoint `POST /user_management/authenticate` ([#749](https://github.com/workos/workos-python/issues/749)) ([1ee820b](https://github.com/workos/workos-python/commit/1ee820be29fe1decc9eac1a42fe4deb2dec73350))
+
 ## [10.5.0](https://github.com/workos/workos-python/compare/v10.4.0...v10.5.0) (2026-09-24)
 
 * [#734](https://github.com/workos/workos-python/pull/734) feat(generated): regenerate from spec

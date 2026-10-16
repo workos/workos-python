@@ -263,6 +263,33 @@ class TestWorkOSClient:
             assert exc_info.value.pending_authentication_token == "pat_tok"
             client.close()
 
+    @pytest.mark.parametrize(
+        "error_code", ["radar_email_challenge", "radar_sms_challenge"]
+    )
+    @pytest.mark.parametrize("error_field", ["code", "error"])
+    def test_raises_radar_challenge(self, workos, httpx_mock, error_code, error_field):
+        payload = {
+            error_field: error_code,
+            "message": "Radar challenge required",
+            "pending_authentication_token": "pat_radar",
+            "radar_challenge_id": "radar_challenge_123",
+        }
+        httpx_mock.add_response(
+            status_code=403, json=payload, headers={"X-Request-ID": "req_radar"}
+        )
+        with pytest.raises(RadarChallengeError) as exc_info:
+            workos.user_management.authenticate_with_password(
+                email="user@example.com", password="password"
+            )
+        error = exc_info.value
+        assert isinstance(error, AuthenticationFlowError)
+        assert isinstance(error, AuthorizationError)
+        assert error.pending_authentication_token == "pat_radar"
+        assert error.response_json == payload
+        assert getattr(error, error_field) == error_code
+        assert error.status_code == 403
+        assert error.request_id == "req_radar"
+
     def test_auth_flow_errors_are_catchable_as_authorization_error(self, httpx_mock):
         httpx_mock.add_response(
             status_code=403,
@@ -730,6 +757,35 @@ class TestAsyncWorkOSClient:
         assert exc_info.value.pending_authentication_token == "pat_sso"
         assert exc_info.value.connection_ids == ["conn_1"]
         await client.close()
+
+    @pytest.mark.parametrize(
+        "error_code", ["radar_email_challenge", "radar_sms_challenge"]
+    )
+    @pytest.mark.parametrize("error_field", ["code", "error"])
+    async def test_raises_radar_challenge(
+        self, async_workos, httpx_mock, error_code, error_field
+    ):
+        payload = {
+            error_field: error_code,
+            "message": "Radar challenge required",
+            "pending_authentication_token": "pat_radar",
+            "radar_challenge_id": "radar_challenge_123",
+        }
+        httpx_mock.add_response(
+            status_code=403, json=payload, headers={"X-Request-ID": "req_radar"}
+        )
+        with pytest.raises(RadarChallengeError) as exc_info:
+            await async_workos.user_management.authenticate_with_password(
+                email="user@example.com", password="password"
+            )
+        error = exc_info.value
+        assert isinstance(error, AuthenticationFlowError)
+        assert isinstance(error, AuthorizationError)
+        assert error.pending_authentication_token == "pat_radar"
+        assert error.response_json == payload
+        assert getattr(error, error_field) == error_code
+        assert error.status_code == 403
+        assert error.request_id == "req_radar"
 
     async def test_auth_flow_errors_backward_compat(self, httpx_mock):
         httpx_mock.add_response(

@@ -250,7 +250,7 @@ class _BaseWorkOSClient:
     def _encode_query(params: Optional[Dict[str, Any]]) -> str:
         """Encode query parameters into a query string.
 
-        Mirrors httpx 0.28 so behaviour is identical for every HTTP backend:
+        Mirrors httpx 0.28 so behavior is identical for every HTTP backend:
         booleans become ``true`` / ``false``, ``None`` becomes an empty value,
         lists and tuples repeat the key, everything else is ``str()``-ed.
         Generated resources rely on this for raw ``bool``, ``int`` and ``list``

@@ -36,3 +36,12 @@ Don't hand-edit a file that has the generated header — the next
 `sdk:generate` run silently overwrites it. Instead, fix the emitter or the
 spec upstream and regenerate. If a requested fix lands in a generated file,
 say so and point at the upstream repo rather than patching it here.
+
+## Spelling
+
+Write American English in hand-maintained code, comments, docs and test names
+(`behavior`, `canceled`, `honor`), per the
+[WorkOS writing style guide](https://app.notion.com/p/workos/Writing-In-Our-Product-6975915fa9a74150916c669d562afe16#5d75728e33a040efa879e598340b8523).
+Never respell a name or value that already ships: public types, methods,
+parameters, API fields and enum values, generated files, and third-party
+commands or identifiers keep their spelling.

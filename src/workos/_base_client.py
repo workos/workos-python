@@ -12,7 +12,7 @@ import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any, Dict, List, Optional, Sequence, Type, Union, cast, overload
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlsplit, urlunsplit
 
 from ._errors import (
     APIError,
@@ -101,7 +101,7 @@ class _BaseWorkOSClient:
             "WORKOS_BASE_URL", "https://api.workos.com"
         )
         # Ensure base_url has a trailing slash for backward compatibility
-        self._base_url = resolved_base_url.rstrip("/") + "/"
+        self._base_url = self._join_url(resolved_base_url, "")
         self._request_timeout = (
             request_timeout
             if request_timeout is not None
@@ -126,11 +126,24 @@ class _BaseWorkOSClient:
         self, path: Sequence[str], params: Optional[Dict[str, Any]] = None
     ) -> str:
         """Build a full URL with query parameters for redirect/authorization endpoints."""
-        base = self._base_url.rstrip("/")
-        url = f"{base}/{self._encode_path(path)}"
-        if params:
-            url = f"{url}?{urlencode(params)}"
-        return url
+        return self._join_url(
+            self._base_url, self._encode_path(path), urlencode(params) if params else ""
+        )
+
+    @staticmethod
+    def _join_url(base_url: str, path: str, query: str = "") -> str:
+        """Append an encoded endpoint to the URL path, preserving URL components."""
+        base = urlsplit(base_url)
+        combined_query = "&".join(part for part in (base.query, query) if part)
+        return urlunsplit(
+            (
+                base.scheme,
+                base.netloc,
+                f"{base.path.rstrip('/')}/{path}",
+                combined_query,
+                base.fragment,
+            )
+        )
 
     @staticmethod
     def _parse_retry_after(retry_after: Optional[str]) -> Optional[float]:
@@ -180,8 +193,8 @@ class _BaseWorkOSClient:
         if request_options:
             base_url = request_options.get("base_url")
             if base_url:
-                return str(base_url).rstrip("/")
-        return self._base_url.rstrip("/")
+                return str(base_url)
+        return self._base_url
 
     @staticmethod
     def _encode_path(path: Sequence[str]) -> str:
@@ -282,9 +295,11 @@ class _BaseWorkOSClient:
         params: Optional[Dict[str, Any]],
         request_options: Optional[RequestOptions],
     ) -> str:
-        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
-        query = self._encode_query(params)
-        return f"{url}?{query}" if query else url
+        return self._join_url(
+            self._resolve_base_url(request_options),
+            self._encode_path(path),
+            self._encode_query(params),
+        )
 
     def _require_api_key(self) -> str:
         if not self._api_key:

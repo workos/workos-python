@@ -14,6 +14,7 @@ from email.utils import parsedate_to_datetime
 from typing import Any, Dict, List, Optional, Sequence, Type, Union, cast, overload
 from urllib.parse import quote, urlencode
 
+from ._types import _format_datetime
 from ._errors import (
     APIError,
     WorkOSError,
@@ -244,6 +245,8 @@ class _BaseWorkOSClient:
             return "false"
         if value is None:
             return ""
+        if isinstance(value, datetime):
+            return _format_datetime(value)
         return str(value)
 
     @staticmethod
@@ -273,8 +276,21 @@ class _BaseWorkOSClient:
         if body is None:
             return None
         return json.dumps(
-            body, ensure_ascii=False, separators=(",", ":"), allow_nan=False
+            body,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            allow_nan=False,
+            default=_BaseWorkOSClient._json_default,
         ).encode("utf-8")
+
+    @staticmethod
+    def _json_default(value: Any) -> str:
+        """Serialize values ``json.dumps`` does not handle natively."""
+        if isinstance(value, datetime):
+            return _format_datetime(value)
+        raise TypeError(
+            f"Object of type {type(value).__name__} is not JSON serializable"
+        )
 
     def _build_request_url(
         self,

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Literal, NoReturn, Protocol, TypedDict, TypeVar
 
@@ -81,9 +81,15 @@ def _raise_deserialize_error(cls_name: str, error: Exception) -> NoReturn:
 
 
 def _format_datetime(dt: datetime) -> str:
-    """Format a datetime as an ISO 8601 string with 'Z' suffix for UTC.
+    """Format a datetime as an ISO 8601 UTC string with a 'Z' suffix.
 
-    Inverse of _parse_datetime: produces millisecond-precision ISO strings
-    with '+00:00' replaced by 'Z' for consistency with the API.
+    Inverse of _parse_datetime: produces millisecond-precision ISO strings.
+    The API only accepts the 'Z' form, so this is the single serialization
+    path for every outgoing datetime. Aware datetimes are converted to UTC
+    first. Naive datetimes are assumed to already be UTC.
     """
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    else:
+        dt = dt.astimezone(timezone.utc)
     return dt.isoformat(timespec="milliseconds").replace("+00:00", "Z")

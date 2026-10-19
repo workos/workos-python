@@ -58,7 +58,7 @@ class HTTPResponse:
 
     ``headers`` must be a case-insensitive mapping (``httpx2.Headers`` and
     ``multidict.CIMultiDictProxy`` both qualify): the SDK reads ``Retry-After``
-    and ``x-request-id`` without normalising case.
+    and ``x-request-id`` without normalizing case.
     """
 
     status_code: int

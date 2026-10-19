@@ -6,7 +6,6 @@ from workos.common.models.add_role_permission import (
 from workos.common.models.authorization_permission import (
     AuthorizationPermission as AuthorizationPermission,
 )
-from workos.common.models.list_metadata import ListMetadata as ListMetadata
 from workos.common.models.slim_role import SlimRole as SlimRole
 
 from .assign_role import AssignRole as AssignRole

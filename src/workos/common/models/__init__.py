@@ -676,6 +676,9 @@ from .flag_updated_context_previous_attribute import (
 from .flag_updated_context_previous_attribute_data import (
     FlagUpdatedContextPreviousAttributeData as FlagUpdatedContextPreviousAttributeData,
 )
+from .flag_updated_context_previous_attribute_data_owner import (
+    FlagUpdatedContextPreviousAttributeDataOwner as FlagUpdatedContextPreviousAttributeDataOwner,
+)
 from .flag_updated_data import FlagUpdatedData as FlagUpdatedData
 from .flag_updated_data_owner import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .generate_link_intent import GenerateLinkIntent as GenerateLinkIntent

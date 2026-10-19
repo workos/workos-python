@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 from workos._types import _raise_deserialize_error
+
+from .flag_updated_context_previous_attribute_data_owner import (
+    FlagUpdatedContextPreviousAttributeDataOwner,
+)
 
 
 @dataclass(slots=True)
@@ -18,6 +22,8 @@ class FlagUpdatedContextPreviousAttributeData:
     """The previous description of the flag."""
     tags: list[str] | None = None
     """The previous tags of the flag."""
+    owner: FlagUpdatedContextPreviousAttributeDataOwner | None = None
+    """The previous owner of the flag, or `null` if it had none."""
     enabled: bool | None = None
     """Whether the flag was previously enabled."""
     default_value: bool | None = None
@@ -31,6 +37,11 @@ class FlagUpdatedContextPreviousAttributeData:
                 name=data.get("name"),
                 description=data.get("description"),
                 tags=data.get("tags"),
+                owner=FlagUpdatedContextPreviousAttributeDataOwner.from_dict(
+                    cast(dict[str, Any], _v_owner)
+                )
+                if (_v_owner := data.get("owner")) is not None
+                else None,
                 enabled=data.get("enabled"),
                 default_value=data.get("default_value"),
             )
@@ -48,6 +59,10 @@ class FlagUpdatedContextPreviousAttributeData:
             result["description"] = None
         if self.tags is not None:
             result["tags"] = self.tags
+        if self.owner is not None:
+            result["owner"] = self.owner.to_dict()
+        else:
+            result["owner"] = None
         if self.enabled is not None:
             result["enabled"] = self.enabled
         if self.default_value is not None:

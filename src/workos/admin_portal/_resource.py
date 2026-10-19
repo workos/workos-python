@@ -89,7 +89,7 @@ class AdminPortal:
         external_user_id: str,
         request_options: RequestOptions | None = None,
     ) -> None:
-        """Revoke Portal Links
+        """Revoke a Portal Link
 
         Revokes every Portal Link generated for the given organization with the given `external_user_id`, and immediately ends any Admin Portal sessions that were started from those links. Use this when an admin is deprovisioned from your application: unopened links stop working, and their already-open portal sessions are ended. Only links that were generated with an `external_user_id` can be revoked, so pass one to `generate_link` for every admin you may later need to deprovision.
 
@@ -193,7 +193,7 @@ class AsyncAdminPortal:
         external_user_id: str,
         request_options: RequestOptions | None = None,
     ) -> None:
-        """Revoke Portal Links
+        """Revoke a Portal Link
 
         Revokes every Portal Link generated for the given organization with the given `external_user_id`, and immediately ends any Admin Portal sessions that were started from those links. Use this when an admin is deprovisioned from your application: unopened links stop working, and their already-open portal sessions are ended. Only links that were generated with an `external_user_id` can be revoked, so pass one to `generate_link` for every admin you may later need to deprovision.
 

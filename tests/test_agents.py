@@ -202,6 +202,18 @@ class TestAgents:
         assert request.method == "GET"
         assert request.url.path.endswith("/agents/registrations/test_id")
 
+    def test_revoke_registration(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("agent_registration.json"),
+        )
+        result = workos.agents.revoke_registration("test_id")
+        assert isinstance(result, AgentRegistration)
+        assert result.id == "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        assert result.organization_id == "org_01EHQMYV6MBK39QC5PZXHY59C3"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/agents/registrations/test_id/revoke")
+
     def test_list_instances(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_agent_instance.json"),
@@ -545,6 +557,17 @@ class TestAsyncAgents:
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/agents/registrations/test_id")
+
+    @pytest.mark.asyncio
+    async def test_revoke_registration(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("agent_registration.json"))
+        result = await async_workos.agents.revoke_registration("test_id")
+        assert isinstance(result, AgentRegistration)
+        assert result.id == "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY"
+        assert result.organization_id == "org_01EHQMYV6MBK39QC5PZXHY59C3"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/agents/registrations/test_id/revoke")
 
     @pytest.mark.asyncio
     async def test_list_instances(self, async_workos, httpx_mock):

@@ -189,6 +189,7 @@ from workos.common.models import (
     FlagUpdatedContextActor,
     FlagUpdatedContextPreviousAttribute,
     FlagUpdatedContextPreviousAttributeData,
+    FlagUpdatedContextPreviousAttributeDataOwner,
     FlagUpdatedData,
     FlagUpdatedDataOwner,
     GroupCreated,
@@ -8698,6 +8699,11 @@ class TestModelRoundTrip:
                         "name": "My Feature Flag",
                         "description": "Enables the new feature.",
                         "tags": ["beta", "release"],
+                        "owner": {
+                            "email": "jane@example.com",
+                            "first_name": "Jane",
+                            "last_name": "Doe",
+                        },
                         "enabled": True,
                         "default_value": False,
                     }
@@ -8897,7 +8903,14 @@ class TestModelRoundTrip:
     def test_flag_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
         self,
     ):
-        data = {"description": "Enables the new feature."}
+        data = {
+            "description": "Enables the new feature.",
+            "owner": {
+                "email": "jane@example.com",
+                "first_name": "Jane",
+                "last_name": "Doe",
+            },
+        }
         instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
         serialized = instance.to_dict()
         assert "name" not in serialized
@@ -8912,12 +8925,39 @@ class TestModelRoundTrip:
             "name": "My Feature Flag",
             "description": None,
             "tags": ["beta", "release"],
+            "owner": None,
             "enabled": True,
             "default_value": False,
         }
         instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_flag_updated_context_previous_attribute_data_owner_round_trip(self):
+        data = load_fixture("flag_updated_context_previous_attribute_data_owner.json")
+        instance = FlagUpdatedContextPreviousAttributeDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedContextPreviousAttributeDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_context_previous_attribute_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagUpdatedContextPreviousAttributeDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_flag_updated_context_previous_attribute_data_owner_preserves_nullable_fields(
+        self,
+    ):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagUpdatedContextPreviousAttributeDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
 
     def test_group_created_round_trip(self):
         data = load_fixture("group_created.json")

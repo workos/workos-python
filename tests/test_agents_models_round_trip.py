@@ -26,10 +26,31 @@ from workos.agents.models import (
     AgentTokenValidation,
     ClaimViewResponse,
     ClaimViewResponseOrganization,
+    ListMetadata,
 )
 
 
 class TestModelRoundTrip:
+    def test_list_metadata_round_trip(self):
+        data = load_fixture("list_metadata.json")
+        instance = ListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ListMetadata.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_list_metadata_minimal_payload(self):
+        data = {}
+        instance = ListMetadata.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_list_metadata_preserves_nullable_fields(self):
+        data = {"after": None, "before": None}
+        instance = ListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["after"] is None
+        assert serialized["before"] is None
+
     def test_agent_registration_round_trip(self):
         data = load_fixture("agent_registration.json")
         instance = AgentRegistration.from_dict(data)
@@ -49,6 +70,7 @@ class TestModelRoundTrip:
             },
             "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
             "status": "verified",
+            "revoked_at": None,
             "kind": "service_auth",
             "claim": None,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -60,6 +82,7 @@ class TestModelRoundTrip:
         assert serialized["agent_identity"] == data["agent_identity"]
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["status"] == data["status"]
+        assert serialized["revoked_at"] == data["revoked_at"]
         assert serialized["kind"] == data["kind"]
         assert serialized["claim"] == data["claim"]
         assert serialized["created_at"] == data["created_at"]
@@ -76,6 +99,7 @@ class TestModelRoundTrip:
             },
             "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
             "status": "verified",
+            "revoked_at": None,
             "kind": "service_auth",
             "claim": None,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -83,6 +107,7 @@ class TestModelRoundTrip:
         }
         instance = AgentRegistration.from_dict(data)
         serialized = instance.to_dict()
+        assert serialized["revoked_at"] is None
         assert serialized["claim"] is None
 
     def test_agent_registration_round_trips_unknown_enum_values(self):
@@ -96,6 +121,7 @@ class TestModelRoundTrip:
             },
             "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
             "status": "unexpected_agent_registration_status",
+            "revoked_at": None,
             "kind": "service_auth",
             "claim": {
                 "id": "agent_reg_claim_01EHWNCE74X7JSDV0X3SZ3KJNY",

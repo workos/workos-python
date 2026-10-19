@@ -10,7 +10,6 @@ from workos.authorization.models import (
     GroupRoleAssignment,
     GroupRoleAssignmentList,
     GroupRoleAssignmentResource,
-    ListMetadata,
     Permission,
     ReplaceGroupRoleAssignmentEntry,
     Role,
@@ -47,26 +46,6 @@ class TestModelRoundTrip:
         assert "resource_id" not in serialized
         assert "resource_external_id" not in serialized
         assert "resource_type_slug" not in serialized
-
-    def test_list_metadata_round_trip(self):
-        data = load_fixture("list_metadata.json")
-        instance = ListMetadata.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ListMetadata.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_list_metadata_minimal_payload(self):
-        data = {}
-        instance = ListMetadata.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_list_metadata_preserves_nullable_fields(self):
-        data = {"after": None, "before": None}
-        instance = ListMetadata.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["after"] is None
-        assert serialized["before"] is None
 
     def test_authorization_check_round_trip(self):
         data = load_fixture("authorization_check.json")

@@ -493,6 +493,36 @@ class Agents:
             request_options=request_options,
         )
 
+    def revoke_registration(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentRegistration:
+        """Revoke an agent registration
+
+        Revoke an agent registration by ID. Revocation is permanent: the registration, its identity assertions, and every access token or API key issued from it stop working, and the agent must register again. Revoking an already revoked registration succeeds and returns the original `revoked_at`. The registration is scoped to the environment of the API key used to authenticate the request.
+
+        Args:
+            id: The unique ID of the agent registration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentRegistration
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="post",
+            path=("agents", "registrations", str(id), "revoke"),
+            model=AgentRegistration,
+            request_options=request_options,
+        )
+
     def list_instances(
         self,
         *,
@@ -1171,6 +1201,36 @@ class AsyncAgents:
         return await self._client.request(
             method="get",
             path=("agents", "registrations", str(id)),
+            model=AgentRegistration,
+            request_options=request_options,
+        )
+
+    async def revoke_registration(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> AgentRegistration:
+        """Revoke an agent registration
+
+        Revoke an agent registration by ID. Revocation is permanent: the registration, its identity assertions, and every access token or API key issued from it stop working, and the agent must register again. Revoking an already revoked registration succeeds and returns the original `revoked_at`. The registration is scoped to the environment of the API key used to authenticate the request.
+
+        Args:
+            id: The unique ID of the agent registration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AgentRegistration
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="post",
+            path=("agents", "registrations", str(id), "revoke"),
             model=AgentRegistration,
             request_options=request_options,
         )

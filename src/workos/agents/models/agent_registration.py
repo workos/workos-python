@@ -27,6 +27,8 @@ class AgentRegistration:
     """Identifier of the organization the agent is registered to."""
     status: AgentRegistrationStatus
     """The current verification status of the registration."""
+    revoked_at: datetime | None
+    """The timestamp when the registration was revoked, or `null` if it has not been revoked."""
     kind: AgentRegistrationKind
     """The kind of agent registration."""
     claim: AgentRegistrationClaim | None
@@ -47,6 +49,9 @@ class AgentRegistration:
                 ),
                 organization_id=data["organization_id"],
                 status=AgentRegistrationStatus(data["status"]),
+                revoked_at=_parse_datetime(_v_revoked_at)
+                if (_v_revoked_at := data["revoked_at"]) is not None
+                else None,
                 kind=AgentRegistrationKind(data["kind"]),
                 claim=AgentRegistrationClaim.from_dict(cast(dict[str, Any], _v_claim))
                 if (_v_claim := data["claim"]) is not None
@@ -66,6 +71,10 @@ class AgentRegistration:
         result["status"] = (
             self.status.value if isinstance(self.status, Enum) else self.status
         )
+        if self.revoked_at is not None:
+            result["revoked_at"] = _format_datetime(self.revoked_at)
+        else:
+            result["revoked_at"] = None
         result["kind"] = self.kind.value if isinstance(self.kind, Enum) else self.kind
         if self.claim is not None:
             result["claim"] = self.claim.to_dict()

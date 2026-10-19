@@ -470,6 +470,9 @@ from .models import (
 from .models import (
     FlagUpdatedContextPreviousAttributeData as FlagUpdatedContextPreviousAttributeData,
 )
+from .models import (
+    FlagUpdatedContextPreviousAttributeDataOwner as FlagUpdatedContextPreviousAttributeDataOwner,
+)
 from .models import FlagUpdatedData as FlagUpdatedData
 from .models import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .models import GenerateLinkIntent as GenerateLinkIntent

@@ -417,6 +417,7 @@
     "src/workos/common/models/flag_updated_context_actor_source.py",
     "src/workos/common/models/flag_updated_context_previous_attribute.py",
     "src/workos/common/models/flag_updated_context_previous_attribute_data.py",
+    "src/workos/common/models/flag_updated_context_previous_attribute_data_owner.py",
     "src/workos/common/models/flag_updated_data.py",
     "src/workos/common/models/flag_updated_data_owner.py",
     "src/workos/common/models/generate_link_intent.py",
@@ -1302,6 +1303,7 @@
     "tests/fixtures/flag_updated_context_actor.json",
     "tests/fixtures/flag_updated_context_previous_attribute.json",
     "tests/fixtures/flag_updated_context_previous_attribute_data.json",
+    "tests/fixtures/flag_updated_context_previous_attribute_data_owner.json",
     "tests/fixtures/flag_updated_data.json",
     "tests/fixtures/flag_updated_data_owner.json",
     "tests/fixtures/generate_link.json",
@@ -1694,6 +1696,10 @@
     },
     "GET /agents/registrations/{id}": {
       "sdkMethod": "get_registration",
+      "service": "agents"
+    },
+    "POST /agents/registrations/{id}/revoke": {
+      "sdkMethod": "revoke_registration",
       "service": "agents"
     },
     "GET /agents/instances": {

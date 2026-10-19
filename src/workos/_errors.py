@@ -423,5 +423,7 @@ _AUTH_CODE_TO_ERROR: Dict[str, Type[AuthenticationFlowError]] = {
     "email_password_auth_disabled": EmailPasswordAuthDisabledError,
     "passkey_progressive_enrollment": PasskeyProgressiveEnrollmentError,
     "radar_challenge": RadarChallengeError,
+    "radar_email_challenge": RadarChallengeError,
+    "radar_sms_challenge": RadarChallengeError,
     "radar_sign_up_challenge": RadarSignUpChallengeError,
 }

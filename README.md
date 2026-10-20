@@ -1,7 +1,6 @@
 # WorkOS Python Library
 
 ![PyPI](https://img.shields.io/pypi/v/workos)
-[![Build Status](https://github.com/workos/workos-python/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/workos/workos-python/actions/workflows/ci.yml?query=branch%3Amain)
 
 The WorkOS library for Python provides convenient access to the WorkOS API from applications written in Python, [hosted on PyPI](https://pypi.org/project/workos/).
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.6.1](https://github.com/workos/workos-python/compare/v10.6.0...v10.6.1) (2026-10-26)
+
+
+### Bug Fixes
+
+* Serialize datetime values as UTC with a Z suffix ([#754](https://github.com/workos/workos-python/issues/754)) ([b8349d7](https://github.com/workos/workos-python/commit/b8349d727a5c06b9d0bd0ea76050b85afcc2c8a7))
+
+
+### Documentation
+
+* fix Python SDK build status badge ([#756](https://github.com/workos/workos-python/issues/756)) ([75dee0a](https://github.com/workos/workos-python/commit/75dee0a57492fdaf82a2864490269ab93415e4ed))
+
 ## [10.6.0](https://github.com/workos/workos-python/compare/v10.5.0...v10.6.0) (2026-10-19)
 
 ### ⚠ BREAKING CHANGES

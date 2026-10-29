@@ -1,0 +1,4 @@
+{
+  "code": "both_saml_and_oidc_options_provided",
+  "message": "Request could not be processed."
+}

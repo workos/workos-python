@@ -22,6 +22,8 @@ class UpdateOAuthApplication:
     """The OAuth scopes granted to the application."""
     redirect_uris: list[RedirectUriInput] | None = None
     """Updated redirect URIs for the application. OAuth applications only."""
+    cors_origins: list[str] | None = None
+    """Updated origins allowed to call the OAuth token endpoint for this application from a browser. Replaces the existing list. OAuth applications only."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> UpdateOAuthApplication:
@@ -37,6 +39,7 @@ class UpdateOAuthApplication:
                 ]
                 if (_v_redirect_uris := data.get("redirect_uris")) is not None
                 else None,
+                cors_origins=data.get("cors_origins"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateOAuthApplication", e)
@@ -58,4 +61,8 @@ class UpdateOAuthApplication:
             result["redirect_uris"] = [item.to_dict() for item in self.redirect_uris]
         else:
             result["redirect_uris"] = None
+        if self.cors_origins is not None:
+            result["cors_origins"] = self.cors_origins
+        else:
+            result["cors_origins"] = None
         return result

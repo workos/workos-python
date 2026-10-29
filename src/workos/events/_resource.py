@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
@@ -28,8 +29,8 @@ class Events:
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
         events: list[str],
-        range_start: str | None = None,
-        range_end: str | None = None,
+        range_start: datetime | str | None = None,
+        range_end: datetime | str | None = None,
         organization_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SyncPage[EventSchemaVariant]:
@@ -43,8 +44,8 @@ class Events:
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
             order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             events: Filter events by one or more event types (e.g. `dsync.user.created`).
-            range_start: ISO-8601 date string to filter events created after this date.
-            range_end: ISO-8601 date string to filter events created before this date.
+            range_start: ISO 8601 UTC timestamp with a `Z` suffix to filter events created after this date. Timezone offsets such as `+00:00` are not accepted.
+            range_end: ISO 8601 UTC timestamp with a `Z` suffix to filter events created before this date. Timezone offsets such as `+00:00` are not accepted.
             organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -98,8 +99,8 @@ class AsyncEvents:
         after: str | None = None,
         order: PaginationOrder | str | None = "desc",
         events: list[str],
-        range_start: str | None = None,
-        range_end: str | None = None,
+        range_start: datetime | str | None = None,
+        range_end: datetime | str | None = None,
         organization_id: str | None = None,
         request_options: RequestOptions | None = None,
     ) -> AsyncPage[EventSchemaVariant]:
@@ -113,8 +114,8 @@ class AsyncEvents:
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
             order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
             events: Filter events by one or more event types (e.g. `dsync.user.created`).
-            range_start: ISO-8601 date string to filter events created after this date.
-            range_end: ISO-8601 date string to filter events created before this date.
+            range_start: ISO 8601 UTC timestamp with a `Z` suffix to filter events created after this date. Timezone offsets such as `+00:00` are not accepted.
+            range_end: ISO 8601 UTC timestamp with a `Z` suffix to filter events created before this date. Timezone offsets such as `+00:00` are not accepted.
             organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 

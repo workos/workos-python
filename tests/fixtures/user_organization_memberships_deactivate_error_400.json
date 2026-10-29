@@ -1,0 +1,4 @@
+{
+  "message": "A pending organization membership cannot be deactivated. This membership should be deleted instead.",
+  "code": "cannot_deactivate_pending_organization_membership"
+}

@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "code": "required",
+      "field": "events"
+    }
+  ],
+  "message": "Validation failed."
+}

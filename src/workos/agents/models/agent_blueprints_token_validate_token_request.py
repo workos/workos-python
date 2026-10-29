@@ -10,7 +10,7 @@ from workos._types import _raise_deserialize_error
 
 @dataclass(slots=True)
 class AgentBlueprintsTokenValidateTokenRequest:
-    """Agent Blueprints Token Validate Token Request model."""
+    """The agent access token to validate."""
 
     agent_access_token: str
     """The agent access token (a JWT) to validate."""

@@ -15,13 +15,11 @@ from workos._errors import (
     UnprocessableEntityError,
 )
 from workos.common.models import (
+    RadarListEntryAlreadyPresentResponse,
     RadarStandaloneAssessRequestAction,
     RadarStandaloneAssessRequestAuthMethod,
 )
-from workos.radar.models import (
-    RadarListEntryAlreadyPresentResponse,
-    RadarStandaloneResponse,
-)
+from workos.radar.models import RadarStandaloneResponse
 
 
 class TestRadar:

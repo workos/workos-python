@@ -20,7 +20,7 @@ from .agent_blueprints_create_request_session_setting import (
 
 @dataclass(slots=True)
 class AgentBlueprintsCreateRequest:
-    """Agent Blueprints Create Request model."""
+    """Configuration for the new agent blueprint."""
 
     name: str
     """Human-readable name of the agent blueprint."""

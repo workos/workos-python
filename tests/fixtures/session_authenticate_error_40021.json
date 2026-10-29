@@ -1,0 +1,4 @@
+{
+  "error": "invalid_link_authorization_code",
+  "error_description": "The request failed due to: invalid_link_authorization_code."
+}

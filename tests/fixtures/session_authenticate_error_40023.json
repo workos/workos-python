@@ -1,0 +1,4 @@
+{
+  "error": "pkce_not_supported",
+  "error_description": "The request failed due to: pkce_not_supported."
+}

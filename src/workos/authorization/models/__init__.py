@@ -10,6 +10,9 @@ from workos.common.models.slim_role import SlimRole as SlimRole
 
 from .assign_role import AssignRole as AssignRole
 from .authorization_assignment import AuthorizationAssignment as AuthorizationAssignment
+from .authorization_assignment import (
+    AuthorizationAssignmentLiteral as AuthorizationAssignmentLiteral,
+)
 from .authorization_check import AuthorizationCheck as AuthorizationCheck
 from .authorization_resource import AuthorizationResource as AuthorizationResource
 from .check_authorization import CheckAuthorization as CheckAuthorization
@@ -33,6 +36,9 @@ from .group_role_assignment_list import (
 )
 from .group_role_assignment_resource import (
     GroupRoleAssignmentResource as GroupRoleAssignmentResource,
+)
+from .patch_group_role_assignments import (
+    PatchGroupRoleAssignments as PatchGroupRoleAssignments,
 )
 from .permission import Permission as Permission
 from .remove_role import RemoveRole as RemoveRole

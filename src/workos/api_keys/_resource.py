@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -80,7 +81,7 @@ class ApiKeys:
         *,
         name: str,
         permissions: list[str] | None = None,
-        expires_at: str | None = None,
+        expires_at: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
@@ -185,7 +186,7 @@ class ApiKeys:
         self,
         id: str,
         *,
-        expires_at: str | None | NotGiven = NOT_GIVEN,
+        expires_at: datetime | str | None | NotGiven = NOT_GIVEN,
         request_options: RequestOptions | None = None,
     ) -> ApiKey:
         """Expire an API key
@@ -281,7 +282,7 @@ class AsyncApiKeys:
         *,
         name: str,
         permissions: list[str] | None = None,
-        expires_at: str | None = None,
+        expires_at: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
@@ -386,7 +387,7 @@ class AsyncApiKeys:
         self,
         id: str,
         *,
-        expires_at: str | None | NotGiven = NOT_GIVEN,
+        expires_at: datetime | str | None | NotGiven = NOT_GIVEN,
         request_options: RequestOptions | None = None,
     ) -> ApiKey:
         """Expire an API key

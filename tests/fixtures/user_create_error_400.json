@@ -1,0 +1,10 @@
+{
+  "code": "password_strength_error",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "unknown_event_type",
+      "message": "Invalid enum value."
+    }
+  ]
+}

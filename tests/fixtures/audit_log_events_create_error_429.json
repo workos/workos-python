@@ -1,0 +1,4 @@
+{
+  "message": "Too many requests.",
+  "code": "rate_limit_exceeded"
+}

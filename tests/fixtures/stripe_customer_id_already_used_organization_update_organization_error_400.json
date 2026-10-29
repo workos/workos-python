@@ -1,0 +1,4 @@
+{
+  "code": "stripe_customer_id_already_used",
+  "message": "Request could not be processed."
+}

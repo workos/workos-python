@@ -1,0 +1,4 @@
+{
+  "code": "duplicate_cors_origin",
+  "message": "CORS origin already exists."
+}

@@ -35,6 +35,8 @@ class ConnectApplicationOAuth:
     """The type of the application."""
     redirect_uris: list[ConnectApplicationOAuthRedirectUris]
     """The redirect URIs configured for this application."""
+    cors_origins: list[str]
+    """The CORS origins allowed to call the OAuth token endpoint for this application from a browser."""
     uses_pkce: bool
     """Whether the application uses PKCE for authorization."""
     is_first_party: bool
@@ -64,6 +66,7 @@ class ConnectApplicationOAuth:
                     )
                     for item in cast(list[Any], data["redirect_uris"])
                 ],
+                cors_origins=data["cors_origins"],
                 uses_pkce=data["uses_pkce"],
                 is_first_party=data["is_first_party"],
                 was_dynamically_registered=data.get("was_dynamically_registered"),
@@ -88,6 +91,7 @@ class ConnectApplicationOAuth:
         result["updated_at"] = _format_datetime(self.updated_at)
         result["application_type"] = self.application_type
         result["redirect_uris"] = [item.to_dict() for item in self.redirect_uris]
+        result["cors_origins"] = self.cors_origins
         result["uses_pkce"] = self.uses_pkce
         result["is_first_party"] = self.is_first_party
         if self.was_dynamically_registered is not None:

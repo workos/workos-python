@@ -1,0 +1,4 @@
+{
+  "error": "Bad Request",
+  "message": "Claim \"sub\" is reserved and cannot be used."
+}

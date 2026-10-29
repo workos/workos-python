@@ -16,6 +16,9 @@ from .application_credentials_list_item import (
 from .applications_registration_types import (
     ApplicationsRegistrationTypes as ApplicationsRegistrationTypes,
 )
+from .applications_registration_types import (
+    ApplicationsRegistrationTypesLiteral as ApplicationsRegistrationTypesLiteral,
+)
 from .create_application_secret import (
     CreateApplicationSecret as CreateApplicationSecret,
 )

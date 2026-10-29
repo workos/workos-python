@@ -1,3 +1,4 @@
 {
-  "new_email": "new.email@example.com"
+  "new_email": "new.email@example.com",
+  "locale": "en"
 }

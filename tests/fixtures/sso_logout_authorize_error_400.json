@@ -1,0 +1,4 @@
+{
+  "error": "connection_invalid",
+  "error_description": "Single Logout is only supported for GenericOIDC connections."
+}

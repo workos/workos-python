@@ -368,6 +368,7 @@ class TestModelRoundTrip:
                 "redirect_uris": [
                     {"uri": "https://example.com/callback", "default": True}
                 ],
+                "cors_origins": ["https://app.example.com"],
                 "uses_pkce": True,
                 "is_first_party": True,
                 "was_dynamically_registered": True,
@@ -403,6 +404,7 @@ class TestModelRoundTrip:
                 "redirect_uris": [
                     {"uri": "https://example.com/callback", "default": True}
                 ],
+                "cors_origins": ["https://app.example.com"],
                 "uses_pkce": True,
                 "is_first_party": True,
                 "was_dynamically_registered": True,

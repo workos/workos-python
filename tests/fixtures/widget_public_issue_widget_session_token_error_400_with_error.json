@@ -1,0 +1,6 @@
+{
+  "message": [
+    "organization_id must be a string"
+  ],
+  "error": "Bad Request"
+}

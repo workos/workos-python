@@ -15,7 +15,7 @@ from .agent_registration_claim_claim_completion import (
 
 @dataclass(slots=True)
 class AgentRegistrationClaim:
-    """Agent Registration Claim model."""
+    """The claim associated with this registration, or `null` if the registration has no claim."""
 
     id: str
     """Unique identifier of the claim."""

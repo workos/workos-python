@@ -1,0 +1,4 @@
+{
+  "code": "saml_request_binding_unsupported_for_signing",
+  "message": "Request could not be processed."
+}

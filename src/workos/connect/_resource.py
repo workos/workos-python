@@ -299,6 +299,7 @@ class Connect:
         description: str | None | NotGiven = NOT_GIVEN,
         scopes: list[str] | None | NotGiven = NOT_GIVEN,
         redirect_uris: list[RedirectUriInput] | None | NotGiven = NOT_GIVEN,
+        cors_origins: list[str] | None | NotGiven = NOT_GIVEN,
         request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -311,6 +312,7 @@ class Connect:
             description: A description for the application.
             scopes: The OAuth scopes granted to the application.
             redirect_uris: Updated redirect URIs for the application. OAuth applications only.
+            cors_origins: Updated origins allowed to call the OAuth token endpoint for this application from a browser. Replaces the existing list. OAuth applications only.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -340,6 +342,8 @@ class Connect:
                 if redirect_uris is not None
                 else None
             )
+        if not isinstance(cors_origins, NotGiven):
+            body["cors_origins"] = cors_origins
         return cast(
             ConnectApplicationVariant,
             self._client.request(
@@ -741,6 +745,7 @@ class AsyncConnect:
         description: str | None | NotGiven = NOT_GIVEN,
         scopes: list[str] | None | NotGiven = NOT_GIVEN,
         redirect_uris: list[RedirectUriInput] | None | NotGiven = NOT_GIVEN,
+        cors_origins: list[str] | None | NotGiven = NOT_GIVEN,
         request_options: RequestOptions | None = None,
     ) -> ConnectApplicationVariant:
         """Update a Connect Application
@@ -753,6 +758,7 @@ class AsyncConnect:
             description: A description for the application.
             scopes: The OAuth scopes granted to the application.
             redirect_uris: Updated redirect URIs for the application. OAuth applications only.
+            cors_origins: Updated origins allowed to call the OAuth token endpoint for this application from a browser. Replaces the existing list. OAuth applications only.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -782,6 +788,8 @@ class AsyncConnect:
                 if redirect_uris is not None
                 else None
             )
+        if not isinstance(cors_origins, NotGiven):
+            body["cors_origins"] = cors_origins
         return cast(
             ConnectApplicationVariant,
             await self._client.request(

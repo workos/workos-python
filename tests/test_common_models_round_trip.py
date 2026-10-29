@@ -10,6 +10,14 @@ from workos.common.models import (
     ActionAuthenticationDeniedData,
     ActionUserRegistrationDenied,
     ActionUserRegistrationDeniedData,
+    AgentAdminGetRegistrationError404,
+    AgentAdminLinkClaimAttemptToExternalUserError400,
+    AgentAdminLinkClaimAttemptToExternalUserError403,
+    AgentAdminLinkClaimAttemptToExternalUserError409,
+    AgentAdminLinkClaimAttemptToExternalUserError409Organization,
+    AgentAdminLinkClaimAttemptToExternalUserError410,
+    AgentAdminRevokeRegistrationError404,
+    AgentAdminValidateCredentialError400,
     AgentBlueprintCreated,
     AgentBlueprintCreatedData,
     AgentBlueprintCreatedDataInvocableAs,
@@ -17,6 +25,21 @@ from workos.common.models import (
     AgentBlueprintCreatedDataSessionSetting,
     AgentBlueprintDeleted,
     AgentBlueprintDeletedData,
+    AgentBlueprintsCreateError400,
+    AgentBlueprintsCreateError409,
+    AgentBlueprintsCreateError422,
+    AgentBlueprintsDeleteError404,
+    AgentBlueprintsGetError404,
+    AgentBlueprintsListError401,
+    AgentBlueprintsTokenMintTokenError400,
+    AgentBlueprintsTokenMintTokenError403,
+    AgentBlueprintsTokenMintTokenError404,
+    AgentBlueprintsTokenValidateTokenError400,
+    AgentBlueprintsTokenValidateTokenError404,
+    AgentBlueprintsUpdateError400,
+    AgentBlueprintsUpdateError404,
+    AgentBlueprintsUpdateError409,
+    AgentBlueprintsUpdateError422,
     AgentBlueprintUpdated,
     AgentBlueprintUpdatedData,
     AgentBlueprintUpdatedDataInvocableAs,
@@ -26,10 +49,18 @@ from workos.common.models import (
     AgentInstanceCreatedData,
     AgentInstanceDeleted,
     AgentInstanceDeletedData,
+    AgentInstancesDeleteError404,
     AgentInstanceSessionCreated,
     AgentInstanceSessionCreatedData,
     AgentInstanceSessionRevoked,
     AgentInstanceSessionRevokedData,
+    AgentInstanceSessionsGetError404,
+    AgentInstanceSessionsListError401,
+    AgentInstanceSessionsListError422,
+    AgentInstanceSessionsListError422Error,
+    AgentInstanceSessionsRevokeError404,
+    AgentInstancesGetError404,
+    AgentInstancesListError401,
     AgentRegistrationClaimAttemptCreated,
     AgentRegistrationClaimAttemptCreatedData,
     AgentRegistrationClaimCompleted,
@@ -51,26 +82,83 @@ from workos.common.models import (
     AgentRegistrationRefreshedData,
     AgentRegistrationRevoked,
     AgentRegistrationRevokedData,
+    AlreadyClaimedAgentAdminLinkClaimAttemptToExternalUserError409,
+    AmbiguousSAMLOptionsConnectionCreateError400,
+    AmbiguousSAMLOptionsConnectionPatchError400,
     ApiKeyCreated,
     ApiKeyCreatedData,
     ApiKeyCreatedDataOwner,
+    ApiKeyDataIntegrationVendedCredential,
     ApiKeyRevoked,
     ApiKeyRevokedData,
     ApiKeyRevokedDataOwner,
+    ApiKeysDeleteError404,
+    ApiKeysExpireError404,
+    ApiKeysExpireError409,
+    ApiKeysExpireError422,
+    ApiKeysValidateApiKeyError422,
     ApiKeyUpdated,
     ApiKeyUpdatedData,
     ApiKeyUpdatedDataOwner,
     ApiKeyUpdatedDataPreviousAttribute,
+    ApplicationConsentRequiredSessionAuthenticateError403,
+    ApplicationCreateError404,
+    ApplicationCreateError422,
+    ApplicationCredentialsCreateError404,
+    ApplicationCredentialsCreateError422,
+    ApplicationCredentialsDeleteError404,
+    ApplicationCredentialsListError404,
+    ApplicationDeleteError404,
+    ApplicationFindError404,
+    ApplicationListError422,
+    ApplicationUpdateError404,
+    ApplicationUpdateError422,
+    AuditLogEventsCreateError400,
+    AuditLogEventsCreateError400Error,
+    AuditLogEventsCreateError402,
+    AuditLogEventsCreateError404,
+    AuditLogEventsCreateError422,
+    AuditLogEventsCreateError422Error,
+    AuditLogEventsCreateError429,
+    AuditLogEventsCreateError4002,
+    AuditLogExportsExportError402,
+    AuditLogExportsExportError404,
+    AuditLogExportsExportsError400,
+    AuditLogExportsExportsError400WithError,
+    AuditLogExportsExportsError402,
+    AuditLogsRetentionAuditLogsRetentionError402,
+    AuditLogsRetentionAuditLogsRetentionError404,
+    AuditLogsRetentionUpdateAuditLogsRetentionError402,
+    AuditLogsRetentionUpdateAuditLogsRetentionError404,
+    AuditLogsRetentionUpdateAuditLogsRetentionError422,
+    AuditLogValidatorsListError402,
+    AuditLogValidatorsListError404,
+    AuditLogValidatorsListError422,
+    AuditLogValidatorVersionsCreateError402,
+    AuditLogValidatorVersionsCreateError422,
+    AuditLogValidatorVersionsSchemasError402,
+    AuditLogValidatorVersionsSchemasError404,
+    AuditLogValidatorVersionsSchemasError422,
+    AuthenticationChallengesVerifyError400,
+    AuthenticationChallengesVerifyError404,
+    AuthenticationChallengesVerifyError422,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
     AuthenticationEmailVerificationSucceeded,
     AuthenticationEmailVerificationSucceededData,
+    AuthenticationFactorsChallengeError404,
+    AuthenticationFactorsChallengeError422,
+    AuthenticationFactorsChallengeError429,
+    AuthenticationFactorsCreateError422,
+    AuthenticationFactorsDeleteError404,
+    AuthenticationFactorsGetError404,
     AuthenticationMagicAuthFailed,
     AuthenticationMagicAuthFailedData,
     AuthenticationMagicAuthFailedDataError,
     AuthenticationMagicAuthSucceeded,
     AuthenticationMagicAuthSucceededData,
+    AuthenticationMethodNotAllowedSessionAuthenticateError403,
     AuthenticationMFAFailed,
     AuthenticationMFAFailedData,
     AuthenticationMFAFailedDataError,
@@ -109,18 +197,200 @@ from workos.common.models import (
     AuthenticationSSOTimedOutData,
     AuthenticationSSOTimedOutDataError,
     AuthenticationSSOTimedOutDataSSO,
+    AuthkitOAuthResourcesCreateError401,
+    AuthkitOAuthResourcesCreateError422,
+    AuthkitOAuthResourcesDeleteError401,
+    AuthkitOAuthResourcesDeleteError404,
+    AuthkitOAuthResourcesListError401,
+    AuthMethodDisabledAgentAdminLinkClaimAttemptToExternalUserError403,
     AuthMethodMismatchError,
+    AuthorizationCheckError402,
+    AuthorizationCheckError403,
+    AuthorizationCheckError404,
+    AuthorizationCheckError422,
+    AuthorizationGroupRoleAssignmentsCreateError402,
+    AuthorizationGroupRoleAssignmentsCreateError403,
+    AuthorizationGroupRoleAssignmentsCreateError404,
+    AuthorizationGroupRoleAssignmentsCreateError409,
+    AuthorizationGroupRoleAssignmentsCreateError422,
+    AuthorizationGroupRoleAssignmentsGetError402,
+    AuthorizationGroupRoleAssignmentsGetError403,
+    AuthorizationGroupRoleAssignmentsGetError404,
+    AuthorizationGroupRoleAssignmentsListError402,
+    AuthorizationGroupRoleAssignmentsListError403,
+    AuthorizationGroupRoleAssignmentsListError404,
+    AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError400,
+    AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError402,
+    AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError403,
+    AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError404,
+    AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError422,
+    AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError403,
+    AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError404,
+    AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError403,
+    AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError404,
+    AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError422,
+    AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError402,
+    AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError403,
+    AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError404,
+    AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError422,
+    AuthorizationListEffectivePermissionsError402,
+    AuthorizationListEffectivePermissionsError403,
+    AuthorizationListEffectivePermissionsError404,
+    AuthorizationListEffectivePermissionsError422,
+    AuthorizationListResourcesForMembershipError400,
+    AuthorizationListResourcesForMembershipError402,
+    AuthorizationListResourcesForMembershipError403,
+    AuthorizationListResourcesForMembershipError404,
+    AuthorizationListResourcesForMembershipError422,
+    AuthorizationOrganizationRolePermissionsAddPermissionError400,
+    AuthorizationOrganizationRolePermissionsAddPermissionError403,
+    AuthorizationOrganizationRolePermissionsAddPermissionError404,
+    AuthorizationOrganizationRolePermissionsAddPermissionError422,
+    AuthorizationOrganizationRolePermissionsRemovePermissionError403,
+    AuthorizationOrganizationRolePermissionsRemovePermissionError404,
+    AuthorizationOrganizationRolePermissionsSetPermissionsError403,
+    AuthorizationOrganizationRolePermissionsSetPermissionsError404,
+    AuthorizationOrganizationRolePermissionsSetPermissionsError422,
+    AuthorizationOrganizationRolesCreateError400,
+    AuthorizationOrganizationRolesCreateError403,
+    AuthorizationOrganizationRolesCreateError404,
+    AuthorizationOrganizationRolesCreateError409,
+    AuthorizationOrganizationRolesCreateError422,
+    AuthorizationOrganizationRolesDeleteError400,
+    AuthorizationOrganizationRolesDeleteError403,
+    AuthorizationOrganizationRolesDeleteError404,
+    AuthorizationOrganizationRolesDeleteError409,
+    AuthorizationOrganizationRolesGetError403,
+    AuthorizationOrganizationRolesGetError404,
+    AuthorizationOrganizationRolesListError403,
+    AuthorizationOrganizationRolesListError404,
+    AuthorizationOrganizationRolesUpdateError400,
+    AuthorizationOrganizationRolesUpdateError403,
+    AuthorizationOrganizationRolesUpdateError404,
+    AuthorizationOrganizationRolesUpdateError422,
+    AuthorizationPermissionsCreateError400,
+    AuthorizationPermissionsCreateError404,
+    AuthorizationPermissionsCreateError409,
+    AuthorizationPermissionsCreateError422,
+    AuthorizationPermissionsDeleteError403,
+    AuthorizationPermissionsDeleteError404,
+    AuthorizationPermissionsFindError404,
+    AuthorizationPermissionsListError404,
+    AuthorizationPermissionsUpdateError403,
+    AuthorizationPermissionsUpdateError404,
+    AuthorizationPermissionsUpdateError422,
+    AuthorizationResourcesCreateError400,
+    AuthorizationResourcesCreateError402,
+    AuthorizationResourcesCreateError403,
+    AuthorizationResourcesCreateError404,
+    AuthorizationResourcesCreateError409,
+    AuthorizationResourcesCreateError422,
+    AuthorizationResourcesDeleteError400,
+    AuthorizationResourcesDeleteError403,
+    AuthorizationResourcesDeleteError404,
+    AuthorizationResourcesDeleteError409,
+    AuthorizationResourcesFindByIdError402,
+    AuthorizationResourcesFindByIdError403,
+    AuthorizationResourcesFindByIdError404,
+    AuthorizationResourcesFindByIdError422,
+    AuthorizationResourcesGetError402,
+    AuthorizationResourcesGetError403,
+    AuthorizationResourcesGetError404,
+    AuthorizationResourcesListError400,
+    AuthorizationResourcesListError402,
+    AuthorizationResourcesListError403,
+    AuthorizationResourcesListError422,
+    AuthorizationResourcesListOrganizationMembershipsError400,
+    AuthorizationResourcesListOrganizationMembershipsError402,
+    AuthorizationResourcesListOrganizationMembershipsError403,
+    AuthorizationResourcesListOrganizationMembershipsError404,
+    AuthorizationResourcesListOrganizationMembershipsError422,
+    AuthorizationResourcesUpdateError400,
+    AuthorizationResourcesUpdateError402,
+    AuthorizationResourcesUpdateError403,
+    AuthorizationResourcesUpdateError404,
+    AuthorizationResourcesUpdateError409,
+    AuthorizationResourcesUpdateError422,
+    AuthorizationRoleAssignmentsAssignRoleError402,
+    AuthorizationRoleAssignmentsAssignRoleError403,
+    AuthorizationRoleAssignmentsAssignRoleError404,
+    AuthorizationRoleAssignmentsAssignRoleError422,
+    AuthorizationRoleAssignmentsListRoleAssignmentsError402,
+    AuthorizationRoleAssignmentsListRoleAssignmentsError403,
+    AuthorizationRoleAssignmentsListRoleAssignmentsError404,
+    AuthorizationRoleAssignmentsRemoveRoleByCriteriaError403,
+    AuthorizationRoleAssignmentsRemoveRoleByCriteriaError404,
+    AuthorizationRoleAssignmentsRemoveRoleByCriteriaError422,
+    AuthorizationRoleAssignmentsRemoveRoleByIdError403,
+    AuthorizationRoleAssignmentsRemoveRoleByIdError404,
+    AuthorizationRolePermissionsAddPermissionError400,
+    AuthorizationRolePermissionsAddPermissionError403,
+    AuthorizationRolePermissionsAddPermissionError404,
+    AuthorizationRolePermissionsAddPermissionError422,
+    AuthorizationRolePermissionsSetPermissionsError400,
+    AuthorizationRolePermissionsSetPermissionsError403,
+    AuthorizationRolePermissionsSetPermissionsError404,
+    AuthorizationRolePermissionsSetPermissionsError422,
+    AuthorizationRolesCreateError400,
+    AuthorizationRolesCreateError403,
+    AuthorizationRolesCreateError404,
+    AuthorizationRolesCreateError409,
+    AuthorizationRolesCreateError422,
+    AuthorizationRolesGetError403,
+    AuthorizationRolesGetError404,
+    AuthorizationRolesListError403,
+    AuthorizationRolesUpdateError400,
+    AuthorizationRolesUpdateError403,
+    AuthorizationRolesUpdateError404,
+    AuthorizationRolesUpdateError422,
+    AuthorizedApplicationsDeleteError404,
+    AuthorizedApplicationsListError404,
+    AuthorizedApplicationsListError422,
+    BothSAMLAndOIDCOptionsProvidedConnectionCreateError400,
+    BothSAMLAndOIDCOptionsProvidedConnectionPatchError400,
+    CertificateExpiredSAMLIdpSigningCertificatesCreateError400,
+    ChainDepthExceededAgentBlueprintsTokenMintTokenError400,
+    ClientApiTokenIssueClientApiTokenError400,
+    ClientApiTokenIssueClientApiTokenError404,
+    ClientApiTokenIssueClientApiTokenError422,
+    ClientCredentialsDataIntegrationVendedCredential,
+    ClientSecretNotAcceptedConnectionCreateError400,
+    ClientSecretNotAcceptedConnectionPatchError400,
+    ClientSecretRequiredConnectionCreateError400,
+    ClientSecretRequiredConnectionPatchError400,
     ConnectApplicationM2M,
     ConnectApplicationOAuth,
     ConnectApplicationOAuthRedirectUris,
     ConnectionActivated,
     ConnectionActivatedData,
     ConnectionActivatedDataDomain,
+    ConnectionCreateError400,
+    ConnectionCreateError403,
+    ConnectionCreateError404,
+    ConnectionCreateError409,
+    ConnectionCreateError422,
+    ConnectionCreateError4222,
+    ConnectionCreateError4223,
+    ConnectionCreateError4224,
     ConnectionDeactivated,
     ConnectionDeactivatedData,
     ConnectionDeactivatedDataDomain,
     ConnectionDeleted,
     ConnectionDeletedData,
+    ConnectionDeleteError403,
+    ConnectionDeleteError404,
+    ConnectionFindError403,
+    ConnectionFindError404,
+    ConnectionListError403,
+    ConnectionListError422,
+    ConnectionPatchError400,
+    ConnectionPatchError403,
+    ConnectionPatchError404,
+    ConnectionPatchError409,
+    ConnectionPatchError422,
+    ConnectionPatchError4222,
+    ConnectionPatchError4223,
+    ConnectionPatchError4224,
     ConnectionSAMLCertificateRenewalRequired,
     ConnectionSAMLCertificateRenewalRequiredData,
     ConnectionSAMLCertificateRenewalRequiredDataCertificate,
@@ -129,9 +399,144 @@ from workos.common.models import (
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    ConnectionTypeConflictsWithOptionsConnectionCreateError400,
+    ConnectionTypeConflictsWithOptionsConnectionPatchError400,
+    ConnectionTypeNotSupportedConnectionCreateError400,
+    ConnectionTypeNotSupportedConnectionPatchError400,
+    ConnectionTypeNotSupportedSAMLSpSigningCertificatesCreateError400,
+    ConnectionTypeOrOptionsRequiredConnectionCreateError400,
+    CORSOriginsCreateCORSOriginError409,
+    CORSOriginsCreateCORSOriginError422,
+    CORSOriginsCreateCORSOriginError422Error,
+    CORSOriginsListError401,
+    DataIntegrationAccessTokenResponseWithAccessToken,
+    DataIntegrationAccessTokenResponseWithAccessTokenAccessToken,
+    DataIntegrationAccessTokenResponseWithError,
+    DataIntegrationCredentialsResponseWithCredential,
+    DataIntegrationCredentialsResponseWithError,
+    DataIntegrationsCreateApiKeyConnectionError400,
+    DataIntegrationsCreateApiKeyConnectionError403,
+    DataIntegrationsCreateApiKeyConnectionError404,
+    DataIntegrationsCreateApiKeyConnectionError409,
+    DataIntegrationsCreateApiKeyConnectionError503,
+    DataIntegrationsCreateApiKeyConnectionError4042,
+    DataIntegrationsCreateApiKeyConnectionError4092,
+    DataIntegrationsCreateClientCredentialsConnectionError400,
+    DataIntegrationsCreateClientCredentialsConnectionError403,
+    DataIntegrationsCreateClientCredentialsConnectionError404,
+    DataIntegrationsCreateClientCredentialsConnectionError409,
+    DataIntegrationsCreateClientCredentialsConnectionError503,
+    DataIntegrationsCreateClientCredentialsConnectionError4042,
+    DataIntegrationsCreateClientCredentialsConnectionError4092,
+    DataIntegrationsFinishConnectionError400,
+    DataIntegrationsFinishConnectionError403,
+    DataIntegrationsFinishConnectionError4002,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError400,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError403,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError404,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError409,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError4002,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError4042,
+    DataIntegrationsGetDataIntegrationAuthorizeUrlError4092,
+    DataIntegrationsGetUserTokenError400,
+    DataIntegrationsGetUserTokenError403,
+    DataIntegrationsGetUserTokenError404,
+    DataIntegrationsManagementCreateDataIntegrationError400,
+    DataIntegrationsManagementCreateDataIntegrationError403,
+    DataIntegrationsManagementCreateDataIntegrationError404,
+    DataIntegrationsManagementCreateDataIntegrationError409,
+    DataIntegrationsManagementCreateDataIntegrationError422,
+    DataIntegrationsManagementDeleteDataIntegrationError404,
+    DataIntegrationsManagementDeleteOrganizationDataIntegrationError404,
+    DataIntegrationsManagementGetDataIntegrationError404,
+    DataIntegrationsManagementGetOrganizationDataIntegrationError404,
+    DataIntegrationsManagementListDataIntegrationsError404,
+    DataIntegrationsManagementListDataIntegrationsError422,
+    DataIntegrationsManagementUpdateDataIntegrationError400,
+    DataIntegrationsManagementUpdateDataIntegrationError403,
+    DataIntegrationsManagementUpdateDataIntegrationError404,
+    DataIntegrationsManagementUpdateDataIntegrationError409,
+    DataIntegrationsManagementUpdateDataIntegrationError422,
+    DataIntegrationsManagementUpdateOrganizationDataIntegrationError400,
+    DataIntegrationsManagementUpdateOrganizationDataIntegrationError403,
+    DataIntegrationsManagementUpdateOrganizationDataIntegrationError404,
+    DataIntegrationsManagementUpdateOrganizationDataIntegrationError409,
+    DataIntegrationsManagementUpdateOrganizationDataIntegrationError422,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError403,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError404,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError409,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError422,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrors,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrorsError,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError503,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError4042,
+    DataIntegrationsOrganizationCreateOrganizationDataInstallationError4092,
+    DataIntegrationsOrganizationDeleteOrganizationDataInstallationError400,
+    DataIntegrationsOrganizationDeleteOrganizationDataInstallationError404,
+    DataIntegrationsOrganizationDeleteOrganizationDataInstallationError503,
+    DataIntegrationsOrganizationGetOrganizationDataInstallationError400,
+    DataIntegrationsOrganizationGetOrganizationDataInstallationError404,
+    DataIntegrationsOrganizationGetOrganizationDataIntegrationsError404,
+    DataIntegrationsOrganizationUpdateOrganizationDataInstallationError400,
+    DataIntegrationsOrganizationUpdateOrganizationDataInstallationError403,
+    DataIntegrationsOrganizationUpdateOrganizationDataInstallationError404,
+    DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422,
+    DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422Error,
+    DataIntegrationsUpsertApiKeyError400,
+    DataIntegrationsUpsertApiKeyError403,
+    DataIntegrationsUpsertApiKeyError404,
+    DataIntegrationsUpsertApiKeyError4042,
+    DataIntegrationsUpsertClientCredentialsError400,
+    DataIntegrationsUpsertClientCredentialsError403,
+    DataIntegrationsUpsertClientCredentialsError404,
+    DataIntegrationsUpsertClientCredentialsError4042,
+    DataIntegrationsUserManagementCreateUserDataInstallationError404,
+    DataIntegrationsUserManagementCreateUserDataInstallationError409,
+    DataIntegrationsUserManagementCreateUserDataInstallationError422,
+    DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrors,
+    DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrorsError,
+    DataIntegrationsUserManagementCreateUserDataInstallationError503,
+    DataIntegrationsUserManagementCreateUserDataInstallationError4042,
+    DataIntegrationsUserManagementCreateUserDataInstallationError4092,
+    DataIntegrationsUserManagementDeleteUserDataInstallationError400,
+    DataIntegrationsUserManagementDeleteUserDataInstallationError404,
+    DataIntegrationsUserManagementDeleteUserDataInstallationError503,
+    DataIntegrationsUserManagementGetUserDataInstallationError400,
+    DataIntegrationsUserManagementGetUserDataInstallationError404,
+    DataIntegrationsUserManagementGetUserDataIntegrationsError404,
+    DataIntegrationsUserManagementUpdateUserDataInstallationError400,
+    DataIntegrationsUserManagementUpdateUserDataInstallationError404,
+    DataIntegrationsUserManagementUpdateUserDataInstallationError422,
+    DataIntegrationsUserManagementUpdateUserDataInstallationError503,
+    DataIntegrationsVendCredentialsError400,
+    DataIntegrationsVendCredentialsError403,
+    DataIntegrationsVendCredentialsError404,
+    DataIntegrationsVendCredentialsError422,
+    DirectoryDeleteDirectoryError403,
+    DirectoryFindError403,
+    DirectoryFindError404,
+    DirectoryGroupsFindError403,
+    DirectoryGroupsFindError404,
+    DirectoryGroupsListError403,
+    DirectoryGroupsListError404,
+    DirectoryGroupsListError422,
+    DirectoryListError403,
+    DirectoryListError422,
+    DirectorySyncDirectoryError403,
+    DirectorySyncDirectoryError404,
+    DirectorySyncDirectoryError409,
+    DirectorySyncDirectoryError422,
+    DirectorySyncDirectoryError503,
     DirectorySyncRateLimitError,
     DirectoryUser,
     DirectoryUserEmail,
+    DirectoryUsersFindError403,
+    DirectoryUsersFindError404,
+    DirectoryUsersListError403,
+    DirectoryUsersListError404,
+    DirectoryUsersListError422,
+    DiscoveryEndpointMustUseHttpsConnectionCreateError400,
+    DiscoveryEndpointMustUseHttpsConnectionPatchError400,
     DsyncActivated,
     DsyncActivatedData,
     DsyncActivatedDataDomain,
@@ -154,12 +559,56 @@ from workos.common.models import (
     DsyncUserUpdated,
     DsyncUserUpdatedData,
     DsyncUserUpdatedDataEmail,
+    EmailAlreadyInUseAgentAdminLinkClaimAttemptToExternalUserError409,
+    EmailAlreadyInvitedUserInvitesCreateError400,
+    EmailAlreadyVerifiedUserUpdateError400,
+    EmailChangeCodeIncorrectUserConfirmEmailChangeError400,
+    EmailChangeCodePreviouslyUsedUserConfirmEmailChangeError409,
+    EmailChangeNotAllowedUserConfirmEmailChangeError409,
+    EmailChangeNotAllowedUserSendEmailChangeError409,
+    EmailChangeNotAllowedUserUpdateError400,
+    EmailCompletionRequiredSessionAuthenticateError403,
+    EmailDomainNotDeliverableUserInvitesCreateError400,
+    EmailDomainNotDeliverableUserInvitesResendError400,
+    EmailMismatchAgentAdminLinkClaimAttemptToExternalUserError400,
+    EmailNotAvailableUserConfirmEmailChangeError409,
+    EmailNotAvailableUserSendEmailChangeError409,
+    EmailNotAvailableUserUpdateError400,
+    EmailPasswordAuthDisabledSessionAuthenticateError403,
+    EmailVerificationCodeExpiredUserEmailVerificationError400,
+    EmailVerificationCodeIncorrectUserEmailVerificationError400,
+    EmailVerificationCodePreviouslyUsedUserEmailVerificationError400,
     EmailVerificationCreated,
     EmailVerificationCreatedData,
+    EmailVerificationRequiredSessionAuthenticateError403,
     ErrorResponse,
     EventContext,
     EventContextActor,
     EventContextGoogleAnalyticsSession,
+    EventListError400,
+    EventListError422,
+    EventListError422Error,
+    ExpiresInDaysTooLongUserInvitesCreateError400,
+    ExpiresInDaysTooShortUserInvitesCreateError400,
+    ExternalAuthCompleteLoginError400,
+    ExternalAuthCompleteLoginError400WithError,
+    ExternalAuthCompleteLoginError404,
+    ExternalAuthCompleteLoginError422,
+    ExternalAuthCompleteLoginError4002,
+    ExternalAuthCompleteLoginError4003,
+    ExternalAuthCompleteLoginError4004,
+    ExternalAuthCompleteLoginError4005,
+    ExternalIdAlreadyUsedOrganizationCreateError400,
+    ExternalIdAlreadyUsedOrganizationUpdateOrganizationError400,
+    ExternalIdAlreadyUsedUserUpdateError400,
+    FeatureFlagsDisableFlagError404,
+    FeatureFlagsDisableFlagError409,
+    FeatureFlagsEnableFlagError404,
+    FeatureFlagsEnableFlagError409,
+    FeatureFlagsFindBySlugError404,
+    FeatureFlagsListError400,
+    FeatureFlagsListError404,
+    FeatureFlagsListError422,
     FlagCreated,
     FlagCreatedContext,
     FlagCreatedContextActor,
@@ -184,6 +633,12 @@ from workos.common.models import (
     FlagRuleUpdatedContextPreviousAttributeData,
     FlagRuleUpdatedData,
     FlagRuleUpdatedDataOwner,
+    FlagTargetsCreateTargetError400,
+    FlagTargetsCreateTargetError403,
+    FlagTargetsCreateTargetError404,
+    FlagTargetsDeleteTargetError400,
+    FlagTargetsDeleteTargetError403,
+    FlagTargetsDeleteTargetError404,
     FlagUpdated,
     FlagUpdatedContext,
     FlagUpdatedContextActor,
@@ -193,32 +648,144 @@ from workos.common.models import (
     FlagUpdatedData,
     FlagUpdatedDataOwner,
     GroupCreated,
+    GroupCreateError400,
+    GroupCreateError403,
+    GroupCreateError404,
+    GroupCreateError422,
     GroupDeleted,
+    GroupDeleteError403,
+    GroupDeleteError404,
+    GroupGetError403,
+    GroupGetError404,
+    GroupListError403,
+    GroupListError404,
     GroupMemberAdded,
     GroupMemberAddedData,
     GroupMemberRemoved,
     GroupMemberRemovedData,
+    GroupMembershipsAddMemberError400,
+    GroupMembershipsAddMemberError403,
+    GroupMembershipsAddMemberError404,
+    GroupMembershipsAddMemberError422,
+    GroupMembershipsListMembersError403,
+    GroupMembershipsListMembersError404,
+    GroupMembershipsRemoveMemberError403,
+    GroupMembershipsRemoveMemberError404,
     GroupUpdated,
+    GroupUpdateError400,
+    GroupUpdateError403,
+    GroupUpdateError404,
+    GroupUpdateError422,
+    IdTokenSignatureAlgorithmNotSupportedConnectionPatchError400,
+    IncompleteSAMLOptionsConnectionCreateError400,
+    InvalidAgentAccessTokenAgentBlueprintsTokenMintTokenError400,
+    InvalidAgentAccessTokenAgentBlueprintsTokenValidateTokenError400,
+    InvalidCertificateConnectionCreateError400,
+    InvalidCertificateSAMLIdpSigningCertificatesCreateError400,
+    InvalidClaimAgentAdminLinkClaimAttemptToExternalUserError400,
+    InvalidEmailUserConfirmEmailChangeError422,
+    InvalidEmailUserSendEmailChangeError422,
+    InvalidEmailUserUpdateError400,
+    InvalidGrantSSOTokenError400,
+    InvalidLocaleUserUpdateError400,
+    InvalidMetadataUserCreateError400,
+    InvalidMetadataUserUpdateError400,
+    InvalidOrganizationAgentAdminLinkClaimAttemptToExternalUserError400,
+    InvalidPasswordHashUserCreateError400,
+    InvalidPasswordHashUserUpdateError400,
+    InvalidRefreshTokenAgentBlueprintsTokenMintTokenError400,
+    InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422,
+    InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422Error,
+    InvalidRequestParametersWaitlistCreateEntryError422,
+    InvalidRequestParametersWebhookEndpointsCreateError422,
+    InvalidRequestParametersWebhookEndpointsCreateError422Error,
+    InvalidRequestParametersWebhookEndpointsUpdateError422,
+    InvalidRequestParametersWebhookEndpointsUpdateError422Error,
+    InvalidRequestSessionAuthenticateError400Variant29,
+    InvalidRoleUserInvitesCreateError400,
+    InvalidRoleUserOrganizationMembershipsCreateError422,
+    InvalidRoleUserOrganizationMembershipsUpdateError422,
+    InvalidUserAccessTokenAgentBlueprintsTokenMintTokenError400,
     InvitationAccepted,
     InvitationAcceptedData,
     InvitationCreated,
     InvitationCreatedData,
+    InvitationEmailNotSentWaitlistEntriesApproveError422,
     InvitationResent,
     InvitationResentData,
     InvitationRevoked,
     InvitationRevokedData,
+    InviteAcceptedUserInvitesResendError400,
+    InviteRevokedUserInvitesResendError400,
+    ItContactsCreateError403,
+    ItContactsCreateError404,
+    ItContactsCreateError409,
+    ItContactsCreateError422,
+    ItContactsCreateError503,
+    ItContactsDeleteError403,
+    ItContactsDeleteError404,
+    ItContactsDeleteError503,
+    ItContactsInviteError402,
+    ItContactsInviteError403,
+    ItContactsInviteError404,
+    ItContactsInviteError409,
+    ItContactsInviteError422,
+    ItContactsInviteError429,
+    ItContactsInviteError503,
+    ItContactsListError403,
+    ItContactsListError404,
+    ItContactsRevokeError403,
+    ItContactsRevokeError404,
+    ItContactsRevokeError503,
+    JWTTemplatesGetJWTTemplateError404,
+    JWTTemplatesUpdateJWTTemplateError422,
+    KeyPairNotAcceptedConnectionCreateError400,
+    KeyPairNotAcceptedSAMLSpEncryptionCertificatesCreateError400,
+    KeyPairNotAcceptedSAMLSpSigningCertificatesCreateError400,
+    LockTimeoutAuthorizationResourcesCreateError400,
     MagicAuthCreated,
     MagicAuthCreatedData,
+    MagicAuthGetError404,
+    MagicAuthSendMagicAuthCodeAndReturnError400,
+    MagicAuthSendMagicAuthCodeAndReturnError400WithCode,
+    MagicAuthSendMagicAuthCodeAndReturnError403,
+    MagicAuthSendMagicAuthCodeAndReturnError422,
+    MagicAuthSendMagicAuthCodeAndReturnError429,
+    MagicAuthSendMagicAuthCodeAndReturnError4002,
+    MagicAuthSendMagicAuthCodeAndReturnError4003,
+    MaxAgeExceededAgentBlueprintsTokenMintTokenError400,
+    MFAChallengeSessionAuthenticateError403,
+    MFAEnrollmentSessionAuthenticateError400Variant29,
+    MissingUserIdOrOrganizationIdUserOrganizationMembershipsListError400,
+    MultipleRolesNotEnabledUserOrganizationMembershipsCreateError422,
+    MultipleRolesNotEnabledUserOrganizationMembershipsUpdateError422,
+    OAuthDataIntegrationVendedCredential,
+    OIDCOptionsRequiredConnectionCreateError400,
+    OrganizationApiKeysCreateError404,
+    OrganizationApiKeysCreateError422,
+    OrganizationApiKeysCreateError422Error,
+    OrganizationApiKeysListError404,
+    OrganizationAuthorizedApplicationsListError404,
+    OrganizationAuthorizedApplicationsListError422,
+    OrganizationBlockedFromSendingInvitesUserInvitesCreateError400,
     OrganizationCreated,
     OrganizationCreatedData,
     OrganizationCreatedDataDomain,
+    OrganizationCreateError400,
+    OrganizationCreateError409,
+    OrganizationCreateError422,
     OrganizationDeleted,
     OrganizationDeletedData,
     OrganizationDeletedDataDomain,
+    OrganizationDeleteOrganizationError403,
     OrganizationDomainCreated,
     OrganizationDomainCreatedData,
     OrganizationDomainDeleted,
     OrganizationDomainDeletedData,
+    OrganizationDomainsCreateError409,
+    OrganizationDomainsDeleteError404,
+    OrganizationDomainsGetError404,
+    OrganizationDomainsVerifyError400,
     OrganizationDomainUpdated,
     OrganizationDomainUpdatedData,
     OrganizationDomainVerificationFailed,
@@ -226,25 +793,50 @@ from workos.common.models import (
     OrganizationDomainVerificationFailedDataOrganizationDomain,
     OrganizationDomainVerified,
     OrganizationDomainVerifiedData,
+    OrganizationFeatureFlagsListError404,
+    OrganizationFindError404,
+    OrganizationGetAuditLogConfigurationError404,
+    OrganizationGetError404,
+    OrganizationListError422,
     OrganizationMembershipCreated,
     OrganizationMembershipCreatedData,
     OrganizationMembershipDeleted,
     OrganizationMembershipDeletedData,
+    OrganizationMembershipGroupsListGroupsError404,
+    OrganizationMembershipNotFoundSessionAuthenticateError400Variant29,
     OrganizationMembershipUpdated,
     OrganizationMembershipUpdatedData,
+    OrganizationNotFoundAgentBlueprintsCreateError422,
+    OrganizationNotFoundAgentBlueprintsUpdateError422,
+    OrganizationNotFoundSessionAuthenticateError400Variant29,
+    OrganizationNotInvocableAgentBlueprintsTokenMintTokenError403,
     OrganizationRoleCreated,
     OrganizationRoleCreatedData,
     OrganizationRoleDeleted,
     OrganizationRoleDeletedData,
     OrganizationRoleUpdated,
     OrganizationRoleUpdatedData,
+    OrganizationSelectionRequiredSessionAuthenticateError403,
     OrganizationUpdated,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
+    OrganizationUpdateOrganizationError400,
+    OrganizationUpdateOrganizationError403,
+    OrganizationUpdateOrganizationError404,
+    OrganizationUpdateOrganizationError409,
+    OrganizationUpdateOrganizationError422,
+    PasskeyProgressiveEnrollmentSessionAuthenticateError403,
+    PasswordAndPasswordHashProvidedUserCreateError400,
+    PasswordAndPasswordHashProvidedUserUpdateError400,
+    PasswordAndPasswordHashTypeProvidedUserCreateError400,
+    PasswordAndPasswordHashTypeProvidedUserUpdateError400,
     PasswordResetCreated,
     PasswordResetCreatedData,
+    PasswordResetNotAllowedUserCreatePasswordResetTokenError403,
     PasswordResetSucceeded,
     PasswordResetSucceededData,
+    PasswordSaltPositionRequiresPasswordHashUserCreateError400,
+    PasswordSaltPositionRequiresPasswordHashUserUpdateError400,
     PermissionCreated,
     PermissionCreatedData,
     PermissionDeleted,
@@ -264,8 +856,40 @@ from workos.common.models import (
     PipesConnectedAccountConnectionFailedData,
     PipesConnectedAccountDisconnected,
     PipesConnectedAccountReauthorizationNeeded,
+    PolicyDeniedSessionAuthenticateError403,
+    PortalSessionsCreateError400,
+    PortalSessionsCreateError402,
+    PortalSessionsCreateError403,
+    PortalSessionsCreateError404,
+    PortalSessionsCreateError422,
+    PortalSessionsRevokeLinkError404,
+    PortalSessionsRevokeLinkError422,
+    ProviderConfigureError400,
+    ProviderConfigureError404,
+    ProviderConfigureError422,
+    ProviderListForOrganizationError404,
+    PublicRadarChallengesGetError404,
     RadarChallengeCreated,
     RadarChallengeCreatedData,
+    RadarChallengeSessionAuthenticateError403,
+    RadarSignUpChallengeSessionAuthenticateError403,
+    RadarSmsSignInChallengeSessionAuthenticateError403,
+    RadarStandaloneAssessError400,
+    RadarStandaloneAssessError402,
+    RadarStandaloneDeleteRadarListEntryError400,
+    RadarStandaloneDeleteRadarListEntryError404,
+    RadarStandaloneUpdateRadarAttemptError400,
+    RadarStandaloneUpdateRadarAttemptError402,
+    RadarStandaloneUpdateRadarAttemptError404,
+    RadarStandaloneUpdateRadarListError400,
+    RadarStandaloneUpdateRadarListError402,
+    RedirectUrisCreateError400,
+    RedirectUrisCreateError401,
+    RedirectUrisCreateError422,
+    RedirectUrisDeleteError401,
+    RedirectUrisDeleteError404,
+    RedirectUrisDeleteError409,
+    RedirectUrisListError401,
     ResourceExportCompleted,
     ResourceExportCompletedData,
     ResourceExportCreated,
@@ -274,24 +898,221 @@ from workos.common.models import (
     ResourceExportDownloadedData,
     ResourceExportFailed,
     ResourceExportFailedData,
+    ResourceLimitExceededConnectionCreateError409,
+    ResourceTypeUpdateInProgressAuthorizationResourcesCreateError409,
+    ResourceTypeUpdateInProgressAuthorizationResourcesDeleteError409,
     RoleCreated,
     RoleCreatedData,
     RoleDeleted,
     RoleDeletedData,
+    RoleHasGroupRoleMappingsAuthorizationOrganizationRolesDeleteError409,
+    RoleNotFoundAgentBlueprintsCreateError422,
+    RoleNotFoundAgentBlueprintsUpdateError422,
+    RoleNotInvocableAgentBlueprintsTokenMintTokenError403,
     RoleUpdated,
     RoleUpdatedData,
+    SAMLIdpSigningCertificatesCreateError400,
+    SAMLIdpSigningCertificatesCreateError403,
+    SAMLIdpSigningCertificatesCreateError404,
+    SAMLIdpSigningCertificatesCreateError422,
+    SAMLIdpSigningCertificatesDeleteError400,
+    SAMLIdpSigningCertificatesDeleteError403,
+    SAMLIdpSigningCertificatesDeleteError404,
+    SAMLIdpSigningCertificatesListError400,
+    SAMLIdpSigningCertificatesListError403,
+    SAMLIdpSigningCertificatesListError404,
+    SAMLOptionsRequiredConnectionCreateError400,
+    SAMLRequestBindingUnsupportedForSigningSAMLSpSigningCertificatesCreateError400,
+    SAMLSpEncryptionCertificatesCreateError400,
+    SAMLSpEncryptionCertificatesCreateError403,
+    SAMLSpEncryptionCertificatesCreateError404,
+    SAMLSpEncryptionCertificatesCreateError409,
+    SAMLSpEncryptionCertificatesCreateError503,
+    SAMLSpEncryptionCertificatesDeleteError403,
+    SAMLSpEncryptionCertificatesDeleteError404,
+    SAMLSpEncryptionCertificatesListError400,
+    SAMLSpEncryptionCertificatesListError403,
+    SAMLSpEncryptionCertificatesListError404,
+    SAMLSpSigningCertificatesCreateError400,
+    SAMLSpSigningCertificatesCreateError403,
+    SAMLSpSigningCertificatesCreateError404,
+    SAMLSpSigningCertificatesCreateError409,
+    SAMLSpSigningCertificatesCreateError503,
+    SAMLSpSigningCertificatesDeleteError403,
+    SAMLSpSigningCertificatesDeleteError404,
+    SAMLSpSigningCertificatesGetError400,
+    SAMLSpSigningCertificatesGetError403,
+    SAMLSpSigningCertificatesGetError404,
+    SessionAuthenticateError400,
+    SessionAuthenticateError400Variant29,
+    SessionAuthenticateError400Variant29Variant7,
+    SessionAuthenticateError403,
+    SessionAuthenticateError404,
+    SessionAuthenticateError422,
+    SessionAuthenticateError429,
+    SessionAuthenticateError429WithError,
+    SessionAuthenticateError4002,
+    SessionAuthenticateError4003,
+    SessionAuthenticateError4004,
+    SessionAuthenticateError4005,
+    SessionAuthenticateError4006,
+    SessionAuthenticateError4007,
+    SessionAuthenticateError4008,
+    SessionAuthenticateError4009,
+    SessionAuthenticateError40010,
+    SessionAuthenticateError40011,
+    SessionAuthenticateError40012,
+    SessionAuthenticateError40013,
+    SessionAuthenticateError40014,
+    SessionAuthenticateError40015,
+    SessionAuthenticateError40016,
+    SessionAuthenticateError40017,
+    SessionAuthenticateError40018,
+    SessionAuthenticateError40019,
+    SessionAuthenticateError40020,
+    SessionAuthenticateError40021,
+    SessionAuthenticateError40022,
+    SessionAuthenticateError40023,
+    SessionAuthenticateError40024,
+    SessionAuthenticateError40025,
+    SessionAuthenticateError40026,
+    SessionAuthenticateError40027,
+    SessionAuthenticateError40028,
     SessionCreated,
     SessionCreatedData,
     SessionCreatedDataImpersonator,
+    SessionExpiredAgentBlueprintsTokenMintTokenError400,
+    SessionExpiredAgentBlueprintsTokenValidateTokenError400,
+    SessionLogoutError422,
     SessionRevoked,
+    SessionRevokedAgentBlueprintsTokenMintTokenError400,
+    SessionRevokedAgentBlueprintsTokenValidateTokenError400,
     SessionRevokedData,
     SessionRevokedDataImpersonator,
+    SessionRevokeSessionError400,
+    SessionSettingsNotFoundAgentBlueprintsTokenMintTokenError400,
+    SmsChallengeQuotaReachedAuthenticationFactorsChallengeError429,
+    SmsChallengeRateLimitedAuthenticationFactorsChallengeError429,
+    SSODeviceAuthorizationError400,
+    SSODeviceAuthorizationError403,
+    SSOGetProfileError401,
+    SSOGetProfileError404,
+    SSOJsonWebKeySetError404,
+    SSOLogoutAuthorizeError400,
+    SSOLogoutAuthorizeError404,
+    SSOLogoutError404,
+    SSOTokenError400,
+    SSOTokenError404,
+    SSOTokenError422,
+    StripeCustomerIdAlreadyUsedOrganizationUpdateOrganizationError400,
+    SubResourceScopedRoleNotAllowedUserOrganizationMembershipsCreateError422,
+    SubResourceScopedRoleNotAllowedUserOrganizationMembershipsUpdateError422,
+    TeamCreateTeamError409,
+    TeamCreateTeamError422,
+    TeamGetTeamError404,
+    TokenAuthenticationMethodNotSupportedConnectionCreateError400,
+    TokenAuthenticationMethodNotSupportedConnectionPatchError400,
+    TokenTooBigSessionAuthenticateError400Variant29,
+    TooManySpEncryptionCertsConnectionCreateError409,
+    UnauthorizedClientSSOTokenError400,
+    UnsupportedGrantTypeSSOTokenError400,
+    UnsupportedInvocationTypeAgentBlueprintsTokenMintTokenError403,
+    UpdateAuditLogsRetentionWithRetentionPeriod,
+    UpdateAuditLogsRetentionWithRetentionPeriodInDays,
+    UpdateUserOrganizationMembershipWithRoleSlug,
+    UpdateUserOrganizationMembershipWithRoleSlugs,
+    UserAlreadyExistsUserInvitesCreateError400,
+    UserAlreadyOrganizationMemberUserInvitesCreateError400,
     UserApiKeyCreatedDataOwner,
     UserApiKeyRevokedDataOwner,
+    UserApiKeysCreateError400,
+    UserApiKeysCreateError400Error,
+    UserApiKeysCreateError404,
+    UserApiKeysCreateError422,
+    UserApiKeysListError404,
     UserApiKeyUpdatedDataOwner,
+    UserAuthenticationFactorsCreateError422,
+    UserAuthenticationFactorsListError422,
+    UserCodeExpiredAgentAdminLinkClaimAttemptToExternalUserError410,
+    UserConfirmEmailChangeError400,
+    UserConfirmEmailChangeError404,
+    UserConfirmEmailChangeError409,
+    UserConfirmEmailChangeError422,
+    UserConfirmEmailChangeError429,
     UserCreated,
+    UserCreateError400,
+    UserCreateError400Error,
+    UserCreateError403,
+    UserCreateError404,
+    UserCreateError422,
+    UserCreatePasswordResetTokenError403,
+    UserCreatePasswordResetTokenError404,
+    UserCreatePasswordResetTokenError422,
+    UserCreatePasswordResetTokenError429,
+    UserCreationErrorUserCreateError400,
+    UserCreationErrorUserCreateError400Error,
     UserDeleted,
+    UserDeleteError404,
+    UserEmailVerificationError400,
+    UserEmailVerificationError404,
+    UserEmailVerificationError422,
+    UserFeatureFlagsListError404,
+    UserGetEmailVerificationError404,
+    UserGetError404,
+    UserGetPasswordResetError404,
+    UserIdentitiesGetError404,
+    UserInvitesAcceptError400,
+    UserInvitesAcceptError404,
+    UserInvitesCreateError400,
+    UserInvitesCreateError404,
+    UserInvitesCreateError422,
+    UserInvitesGetByTokenError404,
+    UserInvitesGetError404,
+    UserInvitesListError422,
+    UserInvitesResendError400,
+    UserInvitesResendError404,
+    UserInvitesResendError422,
+    UserInvitesRevokeError400,
+    UserListError422,
+    UserOrganizationMembershipsCreateError400,
+    UserOrganizationMembershipsCreateError404,
+    UserOrganizationMembershipsCreateError422,
+    UserOrganizationMembershipsDeactivateError400,
+    UserOrganizationMembershipsDeactivateError404,
+    UserOrganizationMembershipsDeactivateError422,
+    UserOrganizationMembershipsDeleteError404,
+    UserOrganizationMembershipsDeleteError422,
+    UserOrganizationMembershipsGetError404,
+    UserOrganizationMembershipsListError400,
+    UserOrganizationMembershipsListError404,
+    UserOrganizationMembershipsListError422,
+    UserOrganizationMembershipsReactivateError400,
+    UserOrganizationMembershipsReactivateError404,
+    UserOrganizationMembershipsReactivateError422,
+    UserOrganizationMembershipsUpdateError404,
+    UserOrganizationMembershipsUpdateError422,
+    UserResetPasswordError400,
+    UserResetPasswordError400Error,
+    UserResetPasswordError403,
+    UserResetPasswordError404,
+    UserResetPasswordError422,
+    UserSendEmailChangeError404,
+    UserSendEmailChangeError409,
+    UserSendEmailChangeError422,
+    UserSendEmailChangeError429,
+    UserSendVerificationEmailError400,
+    UserSendVerificationEmailError404,
+    UserSendVerificationEmailError422,
+    UserSendVerificationEmailError429,
+    UserSessionEndedAgentBlueprintsTokenMintTokenError400,
+    UserSessionEndedAgentBlueprintsTokenValidateTokenError400,
+    UserSessionsListError404,
+    UserSessionsListError422,
     UserUpdated,
+    UserUpdateError400,
+    UserUpdateError400Error,
+    UserUpdateError422,
+    UserUpdateError503,
     VaultByokKeyDeleted,
     VaultByokKeyDeletedData,
     VaultByokKeyVerificationCompleted,
@@ -318,14 +1139,108 @@ from workos.common.models import (
     VaultMetadataReadData,
     VaultNamesListed,
     VaultNamesListedData,
+    WaitlistCreateEntryError404,
+    WaitlistCreateEntryError422,
+    WaitlistEntriesApproveError404,
+    WaitlistEntriesApproveError422,
+    WaitlistEntriesDeleteError404,
+    WaitlistEntriesDenyError404,
+    WaitlistEntriesDenyError422,
+    WaitlistFindError404,
+    WaitlistListEntriesError404,
+    WaitlistListEntriesError422,
     WaitlistUser,
     WaitlistUserApproved,
     WaitlistUserCreated,
     WaitlistUserDenied,
+    WebhookEndpointsCreateError409,
+    WebhookEndpointsCreateError422,
+    WebhookEndpointsDeleteError404,
+    WebhookEndpointsUpdateError404,
+    WebhookEndpointsUpdateError409,
+    WebhookEndpointsUpdateError422,
+    WidgetPublicIssueWidgetSessionTokenError400,
+    WidgetPublicIssueWidgetSessionTokenError400WithError,
+    WidgetPublicIssueWidgetSessionTokenError404,
+    WidgetPublicIssueWidgetSessionTokenError422,
+    WrongAccountAgentAdminLinkClaimAttemptToExternalUserError400,
 )
 
 
 class TestModelRoundTrip:
+    def test_update_audit_logs_retention_with_retention_period_round_trip(self):
+        data = load_fixture("update_audit_logs_retention_with_retention_period.json")
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_audit_logs_retention_with_retention_period_minimal_payload(self):
+        data = {"retention_period": "1_MONTH"}
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["retention_period"] == data["retention_period"]
+
+    def test_update_audit_logs_retention_with_retention_period_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "retention_period": "unexpected_update_audit_logs_retention_with_retention_period_retention_period"
+        }
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_update_audit_logs_retention_with_retention_period_in_days_round_trip(self):
+        data = load_fixture(
+            "update_audit_logs_retention_with_retention_period_in_days.json"
+        )
+        instance = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_update_audit_logs_retention_with_retention_period_in_days_minimal_payload(
+        self,
+    ):
+        data = {"retention_period_in_days": 30}
+        instance = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(data)
+        serialized = instance.to_dict()
+        assert (
+            serialized["retention_period_in_days"] == data["retention_period_in_days"]
+        )
+
+    def test_update_user_organization_membership_with_role_slug_round_trip(self):
+        data = load_fixture("update_user_organization_membership_with_role_slug.json")
+        instance = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_user_organization_membership_with_role_slug_minimal_payload(self):
+        data = {"role_slug": "admin"}
+        instance = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_update_user_organization_membership_with_role_slugs_round_trip(self):
+        data = load_fixture("update_user_organization_membership_with_role_slugs.json")
+        instance = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_user_organization_membership_with_role_slugs_minimal_payload(self):
+        data = {"role_slugs": ["admin"]}
+        instance = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slugs"] == data["role_slugs"]
+
     def test_error_response_round_trip(self):
         data = load_fixture("error_response.json")
         instance = ErrorResponse.from_dict(data)
@@ -360,6 +1275,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
         }
@@ -375,6 +1291,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["application_type"] == data["application_type"]
         assert serialized["redirect_uris"] == data["redirect_uris"]
+        assert serialized["cors_origins"] == data["cors_origins"]
         assert serialized["uses_pkce"] == data["uses_pkce"]
         assert serialized["is_first_party"] == data["is_first_party"]
 
@@ -390,6 +1307,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
         }
@@ -410,6 +1328,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
             "was_dynamically_registered": True,
@@ -15710,6 +16629,115 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
+    def test_data_integration_access_token_response_with_access_token_round_trip(self):
+        data = load_fixture(
+            "data_integration_access_token_response_with_access_token.json"
+        )
+        instance = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_access_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "active": True,
+            "access_token": {
+                "object": "access_token",
+                "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+            },
+        }
+        instance = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["access_token"] == data["access_token"]
+
+    def test_data_integration_access_token_response_with_access_token_access_token_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integration_access_token_response_with_access_token_access_token.json"
+        )
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_access_token_access_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["access_token"] == data["access_token"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+
+    def test_data_integration_access_token_response_with_access_token_access_token_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_data_integration_access_token_response_with_error_round_trip(self):
+        data = load_fixture("data_integration_access_token_response_with_error.json")
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponseWithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_error_minimal_payload(self):
+        data = {"active": False, "error": "not_installed"}
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["error"] == data["error"]
+
+    def test_data_integration_access_token_response_with_error_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": False,
+            "error": "unexpected_data_integration_access_token_response_with_error_error",
+        }
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_account_selection_required_error_round_trip(self):
         data = load_fixture("account_selection_required_error.json")
         instance = AccountSelectionRequiredError.from_dict(data)
@@ -15727,6 +16755,184 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_oauth_data_integration_vended_credential_round_trip(self):
+        data = load_fixture("oauth_data_integration_vended_credential.json")
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OAuthDataIntegrationVendedCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_oauth_data_integration_vended_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["config"] == data["config"]
+
+    def test_oauth_data_integration_vended_credential_preserves_nullable_fields(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_api_key_data_integration_vended_credential_round_trip(self):
+        data = load_fixture("api_key_data_integration_vended_credential.json")
+        instance = ApiKeyDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyDataIntegrationVendedCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_data_integration_vended_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "api_key",
+            "value": "sk-1234567890abcdef",
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ApiKeyDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["config"] == data["config"]
+
+    def test_client_credentials_data_integration_vended_credential_round_trip(self):
+        data = load_fixture(
+            "client_credentials_data_integration_vended_credential.json"
+        )
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientCredentialsDataIntegrationVendedCredential.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_client_credentials_data_integration_vended_credential_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "client_credentials",
+            "value": "00D5g000000XXXX!AQEAQ...",
+            "expires_at": None,
+            "scopes": ["api"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["config"] == data["config"]
+
+    def test_client_credentials_data_integration_vended_credential_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "client_credentials",
+            "value": "00D5g000000XXXX!AQEAQ...",
+            "expires_at": None,
+            "scopes": ["api"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_data_integration_credentials_response_with_credential_round_trip(self):
+        data = load_fixture(
+            "data_integration_credentials_response_with_credential.json"
+        )
+        instance = DataIntegrationCredentialsResponseWithCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseWithCredential.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_with_credential_minimal_payload(
+        self,
+    ):
+        data = {
+            "active": True,
+            "credential": {
+                "object": "credential",
+                "auth_method": "oauth",
+                "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+                "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+                "config": {"account": "myorg-myaccount"},
+            },
+        }
+        instance = DataIntegrationCredentialsResponseWithCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["credential"] == data["credential"]
+
+    def test_data_integration_credentials_response_with_error_round_trip(self):
+        data = load_fixture("data_integration_credentials_response_with_error.json")
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseWithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_with_error_minimal_payload(self):
+        data = {"active": False, "error": "not_installed"}
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["error"] == data["error"]
+
+    def test_data_integration_credentials_response_with_error_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": False,
+            "error": "unexpected_data_integration_credentials_response_with_error_error",
+        }
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_directory_user_email_round_trip(self):
         data = load_fixture("directory_user_email.json")
@@ -15776,3 +16982,16085 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "sessionId" not in serialized
         assert "sessionNumber" not in serialized
+
+    def test_agent_blueprints_list_error_401_round_trip(self):
+        data = load_fixture("agent_blueprints_list_error_401.json")
+        instance = AgentBlueprintsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_create_error_400_round_trip(self):
+        data = load_fixture("agent_blueprints_create_error_400.json")
+        instance = AgentBlueprintsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_error_400_minimal_payload(self):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentBlueprintsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_create_error_409_round_trip(self):
+        data = load_fixture("agent_blueprints_create_error_409.json")
+        instance = AgentBlueprintsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_error_409_minimal_payload(self):
+        data = {
+            "code": "name_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = AgentBlueprintsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_create_error_422_round_trip(self):
+        data = load_fixture("agent_blueprints_create_error_422.json")
+        instance = AgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_error_422_minimal_payload(self):
+        data = {
+            "code": "permission_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = AgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_role_not_found_agent_blueprints_create_error_422_round_trip(self):
+        data = load_fixture("role_not_found_agent_blueprints_create_error_422.json")
+        instance = RoleNotFoundAgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleNotFoundAgentBlueprintsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_not_found_agent_blueprints_create_error_422_minimal_payload(self):
+        data = {"code": "role_not_found", "message": "Request could not be processed."}
+        instance = RoleNotFoundAgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_not_found_agent_blueprints_create_error_422_round_trip(self):
+        data = load_fixture(
+            "organization_not_found_agent_blueprints_create_error_422.json"
+        )
+        instance = OrganizationNotFoundAgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationNotFoundAgentBlueprintsCreateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_not_found_agent_blueprints_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationNotFoundAgentBlueprintsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_get_error_404_round_trip(self):
+        data = load_fixture("agent_blueprints_get_error_404.json")
+        instance = AgentBlueprintsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_update_error_400_round_trip(self):
+        data = load_fixture("agent_blueprints_update_error_400.json")
+        instance = AgentBlueprintsUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_error_400_minimal_payload(self):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentBlueprintsUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_update_error_404_round_trip(self):
+        data = load_fixture("agent_blueprints_update_error_404.json")
+        instance = AgentBlueprintsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_update_error_409_round_trip(self):
+        data = load_fixture("agent_blueprints_update_error_409.json")
+        instance = AgentBlueprintsUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_error_409_minimal_payload(self):
+        data = {
+            "code": "name_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = AgentBlueprintsUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_update_error_422_round_trip(self):
+        data = load_fixture("agent_blueprints_update_error_422.json")
+        instance = AgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_error_422_minimal_payload(self):
+        data = {
+            "code": "permission_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = AgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_role_not_found_agent_blueprints_update_error_422_round_trip(self):
+        data = load_fixture("role_not_found_agent_blueprints_update_error_422.json")
+        instance = RoleNotFoundAgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleNotFoundAgentBlueprintsUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_not_found_agent_blueprints_update_error_422_minimal_payload(self):
+        data = {"code": "role_not_found", "message": "Request could not be processed."}
+        instance = RoleNotFoundAgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_not_found_agent_blueprints_update_error_422_round_trip(self):
+        data = load_fixture(
+            "organization_not_found_agent_blueprints_update_error_422.json"
+        )
+        instance = OrganizationNotFoundAgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationNotFoundAgentBlueprintsUpdateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_not_found_agent_blueprints_update_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationNotFoundAgentBlueprintsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_delete_error_404_round_trip(self):
+        data = load_fixture("agent_blueprints_delete_error_404.json")
+        instance = AgentBlueprintsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_token_mint_token_error_400_round_trip(self):
+        data = load_fixture("agent_blueprints_token_mint_token_error_400.json")
+        instance = AgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsTokenMintTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_token_mint_token_error_400_minimal_payload(self):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_user_access_token_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_user_access_token_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = (
+            InvalidUserAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidUserAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_user_access_token_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_user_access_token",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            InvalidUserAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_agent_access_token_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_agent_access_token_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_agent_access_token_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_agent_access_token",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_refresh_token_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_refresh_token_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = InvalidRefreshTokenAgentBlueprintsTokenMintTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRefreshTokenAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_refresh_token_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_refresh_token",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidRefreshTokenAgentBlueprintsTokenMintTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_revoked_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "session_revoked_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = SessionRevokedAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "session_revoked", "message": "Request could not be processed."}
+        instance = SessionRevokedAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_expired_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "session_expired_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = SessionExpiredAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionExpiredAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_session_expired_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "session_expired", "message": "Request could not be processed."}
+        instance = SessionExpiredAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_session_ended_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "user_session_ended_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = UserSessionEndedAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSessionEndedAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_user_session_ended_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "user_session_ended",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSessionEndedAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_max_age_exceeded_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "max_age_exceeded_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = MaxAgeExceededAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MaxAgeExceededAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_max_age_exceeded_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "max_age_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = MaxAgeExceededAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_settings_not_found_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "session_settings_not_found_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = (
+            SessionSettingsNotFoundAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            SessionSettingsNotFoundAgentBlueprintsTokenMintTokenError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_session_settings_not_found_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "session_settings_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            SessionSettingsNotFoundAgentBlueprintsTokenMintTokenError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_chain_depth_exceeded_agent_blueprints_token_mint_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "chain_depth_exceeded_agent_blueprints_token_mint_token_error_400.json"
+        )
+        instance = ChainDepthExceededAgentBlueprintsTokenMintTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ChainDepthExceededAgentBlueprintsTokenMintTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_chain_depth_exceeded_agent_blueprints_token_mint_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "chain_depth_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = ChainDepthExceededAgentBlueprintsTokenMintTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_token_mint_token_error_403_round_trip(self):
+        data = load_fixture("agent_blueprints_token_mint_token_error_403.json")
+        instance = AgentBlueprintsTokenMintTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsTokenMintTokenError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_token_mint_token_error_403_minimal_payload(self):
+        data = {
+            "code": "user_not_member_of_organization",
+            "message": "Request could not be processed.",
+        }
+        instance = AgentBlueprintsTokenMintTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_not_invocable_agent_blueprints_token_mint_token_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_not_invocable_agent_blueprints_token_mint_token_error_403.json"
+        )
+        instance = (
+            OrganizationNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            OrganizationNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_not_invocable_agent_blueprints_token_mint_token_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_not_invocable",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            OrganizationNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_unsupported_invocation_type_agent_blueprints_token_mint_token_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "unsupported_invocation_type_agent_blueprints_token_mint_token_error_403.json"
+        )
+        instance = (
+            UnsupportedInvocationTypeAgentBlueprintsTokenMintTokenError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            UnsupportedInvocationTypeAgentBlueprintsTokenMintTokenError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_unsupported_invocation_type_agent_blueprints_token_mint_token_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "unsupported_invocation_type",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            UnsupportedInvocationTypeAgentBlueprintsTokenMintTokenError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_role_not_invocable_agent_blueprints_token_mint_token_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "role_not_invocable_agent_blueprints_token_mint_token_error_403.json"
+        )
+        instance = RoleNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_role_not_invocable_agent_blueprints_token_mint_token_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "role_not_invocable",
+            "message": "Request could not be processed.",
+        }
+        instance = RoleNotInvocableAgentBlueprintsTokenMintTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_token_mint_token_error_404_round_trip(self):
+        data = load_fixture("agent_blueprints_token_mint_token_error_404.json")
+        instance = AgentBlueprintsTokenMintTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsTokenMintTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_token_mint_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsTokenMintTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_token_validate_token_error_400_round_trip(self):
+        data = load_fixture("agent_blueprints_token_validate_token_error_400.json")
+        instance = AgentBlueprintsTokenValidateTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsTokenValidateTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_token_validate_token_error_400_minimal_payload(self):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentBlueprintsTokenValidateTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_agent_access_token_agent_blueprints_token_validate_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_agent_access_token_agent_blueprints_token_validate_token_error_400.json"
+        )
+        instance = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenValidateTokenError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenValidateTokenError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_agent_access_token_agent_blueprints_token_validate_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_agent_access_token",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            InvalidAgentAccessTokenAgentBlueprintsTokenValidateTokenError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_revoked_agent_blueprints_token_validate_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "session_revoked_agent_blueprints_token_validate_token_error_400.json"
+        )
+        instance = SessionRevokedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_agent_blueprints_token_validate_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "session_revoked", "message": "Request could not be processed."}
+        instance = SessionRevokedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_expired_agent_blueprints_token_validate_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "session_expired_agent_blueprints_token_validate_token_error_400.json"
+        )
+        instance = SessionExpiredAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionExpiredAgentBlueprintsTokenValidateTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_session_expired_agent_blueprints_token_validate_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "session_expired", "message": "Request could not be processed."}
+        instance = SessionExpiredAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_session_ended_agent_blueprints_token_validate_token_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "user_session_ended_agent_blueprints_token_validate_token_error_400.json"
+        )
+        instance = UserSessionEndedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSessionEndedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_user_session_ended_agent_blueprints_token_validate_token_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "user_session_ended",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSessionEndedAgentBlueprintsTokenValidateTokenError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_blueprints_token_validate_token_error_404_round_trip(self):
+        data = load_fixture("agent_blueprints_token_validate_token_error_404.json")
+        instance = AgentBlueprintsTokenValidateTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsTokenValidateTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_token_validate_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentBlueprintsTokenValidateTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_400_round_trip(self):
+        data = load_fixture(
+            "agent_admin_link_claim_attempt_to_external_user_error_400.json"
+        )
+        instance = AgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_claim_agent_admin_link_claim_attempt_to_external_user_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_claim_agent_admin_link_claim_attempt_to_external_user_error_400.json"
+        )
+        instance = (
+            InvalidClaimAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidClaimAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_claim_agent_admin_link_claim_attempt_to_external_user_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "invalid_claim", "message": "Request could not be processed."}
+        instance = (
+            InvalidClaimAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_organization_agent_admin_link_claim_attempt_to_external_user_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_organization_agent_admin_link_claim_attempt_to_external_user_error_400.json"
+        )
+        instance = InvalidOrganizationAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidOrganizationAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_organization_agent_admin_link_claim_attempt_to_external_user_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_organization",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidOrganizationAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_mismatch_agent_admin_link_claim_attempt_to_external_user_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_mismatch_agent_admin_link_claim_attempt_to_external_user_error_400.json"
+        )
+        instance = (
+            EmailMismatchAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            EmailMismatchAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_mismatch_agent_admin_link_claim_attempt_to_external_user_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "email_mismatch", "message": "Request could not be processed."}
+        instance = (
+            EmailMismatchAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_wrong_account_agent_admin_link_claim_attempt_to_external_user_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "wrong_account_agent_admin_link_claim_attempt_to_external_user_error_400.json"
+        )
+        instance = (
+            WrongAccountAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            WrongAccountAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_wrong_account_agent_admin_link_claim_attempt_to_external_user_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "wrong_account", "message": "Request could not be processed."}
+        instance = (
+            WrongAccountAgentAdminLinkClaimAttemptToExternalUserError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_403_round_trip(self):
+        data = load_fixture(
+            "agent_admin_link_claim_attempt_to_external_user_error_403.json"
+        )
+        instance = AgentAdminLinkClaimAttemptToExternalUserError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminLinkClaimAttemptToExternalUserError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_403_minimal_payload(
+        self,
+    ):
+        data = {"code": "claim_denied", "message": "Request could not be processed."}
+        instance = AgentAdminLinkClaimAttemptToExternalUserError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_auth_method_disabled_agent_admin_link_claim_attempt_to_external_user_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "auth_method_disabled_agent_admin_link_claim_attempt_to_external_user_error_403.json"
+        )
+        instance = AuthMethodDisabledAgentAdminLinkClaimAttemptToExternalUserError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthMethodDisabledAgentAdminLinkClaimAttemptToExternalUserError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_auth_method_disabled_agent_admin_link_claim_attempt_to_external_user_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "auth_method_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthMethodDisabledAgentAdminLinkClaimAttemptToExternalUserError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_409_round_trip(self):
+        data = load_fixture(
+            "agent_admin_link_claim_attempt_to_external_user_error_409.json"
+        )
+        instance = AgentAdminLinkClaimAttemptToExternalUserError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_selection_required",
+            "message": "Request could not be processed.",
+            "organizations": [
+                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+            ],
+        }
+        instance = AgentAdminLinkClaimAttemptToExternalUserError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["organizations"] == data["organizations"]
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_409_organization_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "agent_admin_link_claim_attempt_to_external_user_error_409_organization.json"
+        )
+        instance = (
+            AgentAdminLinkClaimAttemptToExternalUserError409Organization.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AgentAdminLinkClaimAttemptToExternalUserError409Organization.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_409_organization_minimal_payload(
+        self,
+    ):
+        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+        instance = (
+            AgentAdminLinkClaimAttemptToExternalUserError409Organization.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_email_already_in_use_agent_admin_link_claim_attempt_to_external_user_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_already_in_use_agent_admin_link_claim_attempt_to_external_user_error_409.json"
+        )
+        instance = (
+            EmailAlreadyInUseAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            EmailAlreadyInUseAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_already_in_use_agent_admin_link_claim_attempt_to_external_user_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            EmailAlreadyInUseAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_already_claimed_agent_admin_link_claim_attempt_to_external_user_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "already_claimed_agent_admin_link_claim_attempt_to_external_user_error_409.json"
+        )
+        instance = (
+            AlreadyClaimedAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AlreadyClaimedAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_already_claimed_agent_admin_link_claim_attempt_to_external_user_error_409_minimal_payload(
+        self,
+    ):
+        data = {"code": "already_claimed", "message": "Request could not be processed."}
+        instance = (
+            AlreadyClaimedAgentAdminLinkClaimAttemptToExternalUserError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_410_round_trip(self):
+        data = load_fixture(
+            "agent_admin_link_claim_attempt_to_external_user_error_410.json"
+        )
+        instance = AgentAdminLinkClaimAttemptToExternalUserError410.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminLinkClaimAttemptToExternalUserError410.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_link_claim_attempt_to_external_user_error_410_minimal_payload(
+        self,
+    ):
+        data = {"code": "claim_expired", "message": "Request could not be processed."}
+        instance = AgentAdminLinkClaimAttemptToExternalUserError410.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_code_expired_agent_admin_link_claim_attempt_to_external_user_error_410_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "user_code_expired_agent_admin_link_claim_attempt_to_external_user_error_410.json"
+        )
+        instance = (
+            UserCodeExpiredAgentAdminLinkClaimAttemptToExternalUserError410.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            UserCodeExpiredAgentAdminLinkClaimAttemptToExternalUserError410.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_user_code_expired_agent_admin_link_claim_attempt_to_external_user_error_410_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "user_code_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            UserCodeExpiredAgentAdminLinkClaimAttemptToExternalUserError410.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_validate_credential_error_400_round_trip(self):
+        data = load_fixture("agent_admin_validate_credential_error_400.json")
+        instance = AgentAdminValidateCredentialError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminValidateCredentialError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_validate_credential_error_400_minimal_payload(self):
+        data = {"code": "invalid_request", "message": "Request could not be processed."}
+        instance = AgentAdminValidateCredentialError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instances_list_error_401_round_trip(self):
+        data = load_fixture("agent_instances_list_error_401.json")
+        instance = AgentInstancesListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstancesListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instances_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstancesListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instances_get_error_404_round_trip(self):
+        data = load_fixture("agent_instances_get_error_404.json")
+        instance = AgentInstancesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstancesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instances_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstancesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instances_delete_error_404_round_trip(self):
+        data = load_fixture("agent_instances_delete_error_404.json")
+        instance = AgentInstancesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstancesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instances_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstancesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_get_registration_error_404_round_trip(self):
+        data = load_fixture("agent_admin_get_registration_error_404.json")
+        instance = AgentAdminGetRegistrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminGetRegistrationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_get_registration_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentAdminGetRegistrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_admin_revoke_registration_error_404_round_trip(self):
+        data = load_fixture("agent_admin_revoke_registration_error_404.json")
+        instance = AgentAdminRevokeRegistrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentAdminRevokeRegistrationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_admin_revoke_registration_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentAdminRevokeRegistrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instance_sessions_list_error_401_round_trip(self):
+        data = load_fixture("agent_instance_sessions_list_error_401.json")
+        instance = AgentInstanceSessionsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionsListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_sessions_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstanceSessionsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instance_sessions_list_error_422_round_trip(self):
+        data = load_fixture("agent_instance_sessions_list_error_422.json")
+        instance = AgentInstanceSessionsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_sessions_list_error_422_minimal_payload(self):
+        data = {
+            "message": "Validation failed.",
+            "errors": [{"code": "required", "field": "event.action"}],
+        }
+        instance = AgentInstanceSessionsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_agent_instance_sessions_list_error_422_error_round_trip(self):
+        data = load_fixture("agent_instance_sessions_list_error_422_error.json")
+        instance = AgentInstanceSessionsListError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionsListError422Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_sessions_list_error_422_error_minimal_payload(self):
+        data = {"code": "required", "field": "event.action"}
+        instance = AgentInstanceSessionsListError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_agent_instance_sessions_get_error_404_round_trip(self):
+        data = load_fixture("agent_instance_sessions_get_error_404.json")
+        instance = AgentInstanceSessionsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_sessions_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstanceSessionsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_agent_instance_sessions_revoke_error_404_round_trip(self):
+        data = load_fixture("agent_instance_sessions_revoke_error_404.json")
+        instance = AgentInstanceSessionsRevokeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentInstanceSessionsRevokeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_instance_sessions_revoke_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AgentInstanceSessionsRevokeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_api_keys_validate_api_key_error_422_round_trip(self):
+        data = load_fixture("api_keys_validate_api_key_error_422.json")
+        instance = ApiKeysValidateApiKeyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeysValidateApiKeyError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_keys_validate_api_key_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApiKeysValidateApiKeyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_api_keys_delete_error_404_round_trip(self):
+        data = load_fixture("api_keys_delete_error_404.json")
+        instance = ApiKeysDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeysDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_keys_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApiKeysDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_api_keys_expire_error_404_round_trip(self):
+        data = load_fixture("api_keys_expire_error_404.json")
+        instance = ApiKeysExpireError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeysExpireError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_keys_expire_error_404_minimal_payload(self):
+        data = {"message": "API Key not found: 'api_key_01EHZNVPK3SFK441A1RGBFSHRT'."}
+        instance = ApiKeysExpireError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_api_keys_expire_error_409_round_trip(self):
+        data = load_fixture("api_keys_expire_error_409.json")
+        instance = ApiKeysExpireError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeysExpireError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_keys_expire_error_409_minimal_payload(self):
+        data = {
+            "code": "api_key_already_expired",
+            "message": "API key is already expired",
+        }
+        instance = ApiKeysExpireError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_api_keys_expire_error_422_round_trip(self):
+        data = load_fixture("api_keys_expire_error_422.json")
+        instance = ApiKeysExpireError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeysExpireError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_keys_expire_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApiKeysExpireError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validators_list_error_402_round_trip(self):
+        data = load_fixture("audit_log_validators_list_error_402.json")
+        instance = AuditLogValidatorsListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorsListError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validators_list_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogValidatorsListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validators_list_error_404_round_trip(self):
+        data = load_fixture("audit_log_validators_list_error_404.json")
+        instance = AuditLogValidatorsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validators_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogValidatorsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validators_list_error_422_round_trip(self):
+        data = load_fixture("audit_log_validators_list_error_422.json")
+        instance = AuditLogValidatorsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validators_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogValidatorsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validator_versions_schemas_error_402_round_trip(self):
+        data = load_fixture("audit_log_validator_versions_schemas_error_402.json")
+        instance = AuditLogValidatorVersionsSchemasError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorVersionsSchemasError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validator_versions_schemas_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogValidatorVersionsSchemasError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validator_versions_schemas_error_404_round_trip(self):
+        data = load_fixture("audit_log_validator_versions_schemas_error_404.json")
+        instance = AuditLogValidatorVersionsSchemasError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorVersionsSchemasError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validator_versions_schemas_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogValidatorVersionsSchemasError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validator_versions_schemas_error_422_round_trip(self):
+        data = load_fixture("audit_log_validator_versions_schemas_error_422.json")
+        instance = AuditLogValidatorVersionsSchemasError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorVersionsSchemasError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validator_versions_schemas_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogValidatorVersionsSchemasError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validator_versions_create_error_402_round_trip(self):
+        data = load_fixture("audit_log_validator_versions_create_error_402.json")
+        instance = AuditLogValidatorVersionsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorVersionsCreateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validator_versions_create_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogValidatorVersionsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_validator_versions_create_error_422_round_trip(self):
+        data = load_fixture("audit_log_validator_versions_create_error_422.json")
+        instance = AuditLogValidatorVersionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogValidatorVersionsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_validator_versions_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogValidatorVersionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_events_create_error_400_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_400.json")
+        instance = AuditLogEventsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_400_minimal_payload(self):
+        data = {
+            "errors": [{"instancePath": "/targets"}],
+            "message": "Invalid Audit Log event.",
+            "code": "invalid_audit_log_event",
+        }
+        instance = AuditLogEventsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["errors"] == data["errors"]
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_audit_log_events_create_error_400_error_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_400_error.json")
+        instance = AuditLogEventsCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_400_error_minimal_payload(self):
+        data = {"instancePath": "/targets"}
+        instance = AuditLogEventsCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["instancePath"] == data["instancePath"]
+
+    def test_audit_log_events_create_error_4002_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_4002.json")
+        instance = AuditLogEventsCreateError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError4002.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_4002_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogEventsCreateError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_events_create_error_402_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_402.json")
+        instance = AuditLogEventsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogEventsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_events_create_error_404_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_404.json")
+        instance = AuditLogEventsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogEventsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_events_create_error_422_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_422.json")
+        instance = AuditLogEventsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_422_minimal_payload(self):
+        data = {
+            "errors": [{"code": "required", "field": "event.action"}],
+            "message": "Validation failed.",
+        }
+        instance = AuditLogEventsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["errors"] == data["errors"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_events_create_error_422_error_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_422_error.json")
+        instance = AuditLogEventsCreateError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError422Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_422_error_minimal_payload(self):
+        data = {"code": "required", "field": "event.action"}
+        instance = AuditLogEventsCreateError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_audit_log_events_create_error_429_round_trip(self):
+        data = load_fixture("audit_log_events_create_error_429.json")
+        instance = AuditLogEventsCreateError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogEventsCreateError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_events_create_error_429_minimal_payload(self):
+        data = {"message": "Too many requests.", "code": "rate_limit_exceeded"}
+        instance = AuditLogEventsCreateError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_audit_log_exports_exports_error_400_round_trip(self):
+        data = load_fixture("audit_log_exports_exports_error_400.json")
+        instance = AuditLogExportsExportsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogExportsExportsError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_exports_exports_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogExportsExportsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_exports_exports_error_400_with_error_round_trip(self):
+        data = load_fixture("audit_log_exports_exports_error_400_with_error.json")
+        instance = AuditLogExportsExportsError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogExportsExportsError400WithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_exports_exports_error_400_with_error_minimal_payload(self):
+        data = {"message": ["Invalid date range"], "error": "Bad Request"}
+        instance = AuditLogExportsExportsError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["error"] == data["error"]
+
+    def test_audit_log_exports_exports_error_402_round_trip(self):
+        data = load_fixture("audit_log_exports_exports_error_402.json")
+        instance = AuditLogExportsExportsError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogExportsExportsError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_exports_exports_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogExportsExportsError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_exports_export_error_402_round_trip(self):
+        data = load_fixture("audit_log_exports_export_error_402.json")
+        instance = AuditLogExportsExportError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogExportsExportError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_exports_export_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogExportsExportError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_log_exports_export_error_404_round_trip(self):
+        data = load_fixture("audit_log_exports_export_error_404.json")
+        instance = AuditLogExportsExportError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogExportsExportError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_log_exports_export_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogExportsExportError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_challenges_verify_error_400_round_trip(self):
+        data = load_fixture("authentication_challenges_verify_error_400.json")
+        instance = AuthenticationChallengesVerifyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationChallengesVerifyError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_challenges_verify_error_400_minimal_payload(self):
+        data = {
+            "code": "one_time_code_too_many_attempts",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthenticationChallengesVerifyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_challenges_verify_error_404_round_trip(self):
+        data = load_fixture("authentication_challenges_verify_error_404.json")
+        instance = AuthenticationChallengesVerifyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationChallengesVerifyError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_challenges_verify_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationChallengesVerifyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_challenges_verify_error_422_round_trip(self):
+        data = load_fixture("authentication_challenges_verify_error_422.json")
+        instance = AuthenticationChallengesVerifyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationChallengesVerifyError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_challenges_verify_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationChallengesVerifyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_create_error_422_round_trip(self):
+        data = load_fixture("authentication_factors_create_error_422.json")
+        instance = AuthenticationFactorsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationFactorsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_get_error_404_round_trip(self):
+        data = load_fixture("authentication_factors_get_error_404.json")
+        instance = AuthenticationFactorsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationFactorsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_delete_error_404_round_trip(self):
+        data = load_fixture("authentication_factors_delete_error_404.json")
+        instance = AuthenticationFactorsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationFactorsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_challenge_error_404_round_trip(self):
+        data = load_fixture("authentication_factors_challenge_error_404.json")
+        instance = AuthenticationFactorsChallengeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsChallengeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_challenge_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationFactorsChallengeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_challenge_error_422_round_trip(self):
+        data = load_fixture("authentication_factors_challenge_error_422.json")
+        instance = AuthenticationFactorsChallengeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsChallengeError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_challenge_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthenticationFactorsChallengeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_factors_challenge_error_429_round_trip(self):
+        data = load_fixture("authentication_factors_challenge_error_429.json")
+        instance = AuthenticationFactorsChallengeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationFactorsChallengeError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_factors_challenge_error_429_minimal_payload(self):
+        data = {
+            "code": "rate_limit_exceeded",
+            "message": "Request could not be processed.",
+            "retry_after": 60,
+        }
+        instance = AuthenticationFactorsChallengeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["retry_after"] == data["retry_after"]
+
+    def test_sms_challenge_rate_limited_authentication_factors_challenge_error_429_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sms_challenge_rate_limited_authentication_factors_challenge_error_429.json"
+        )
+        instance = (
+            SmsChallengeRateLimitedAuthenticationFactorsChallengeError429.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            SmsChallengeRateLimitedAuthenticationFactorsChallengeError429.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sms_challenge_rate_limited_authentication_factors_challenge_error_429_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "sms_challenge_rate_limited",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            SmsChallengeRateLimitedAuthenticationFactorsChallengeError429.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_sms_challenge_quota_reached_authentication_factors_challenge_error_429_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sms_challenge_quota_reached_authentication_factors_challenge_error_429.json"
+        )
+        instance = (
+            SmsChallengeQuotaReachedAuthenticationFactorsChallengeError429.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            SmsChallengeQuotaReachedAuthenticationFactorsChallengeError429.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sms_challenge_quota_reached_authentication_factors_challenge_error_429_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "sms_challenge_quota_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            SmsChallengeQuotaReachedAuthenticationFactorsChallengeError429.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_400_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_400.json")
+        instance = ExternalAuthCompleteLoginError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_400_minimal_payload(self):
+        data = {
+            "code": "external_auth_session_already_completed",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalAuthCompleteLoginError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_4002_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_4002.json")
+        instance = ExternalAuthCompleteLoginError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError4002.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_4002_minimal_payload(self):
+        data = {
+            "code": "user_consent_options_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalAuthCompleteLoginError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_4003_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_4003.json")
+        instance = ExternalAuthCompleteLoginError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError4003.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_4003_minimal_payload(self):
+        data = {
+            "code": "email_change_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalAuthCompleteLoginError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_4004_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_4004.json")
+        instance = ExternalAuthCompleteLoginError4004.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError4004.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_4004_minimal_payload(self):
+        data = {
+            "code": "email_not_available",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalAuthCompleteLoginError4004.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_4005_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_4005.json")
+        instance = ExternalAuthCompleteLoginError4005.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError4005.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_4005_minimal_payload(self):
+        data = {"code": "invalid_email", "message": "Request could not be processed."}
+        instance = ExternalAuthCompleteLoginError4005.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_400_with_error_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_400_with_error.json")
+        instance = ExternalAuthCompleteLoginError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError400WithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_400_with_error_minimal_payload(self):
+        data = {
+            "error": "Bad Request",
+            "message": 'Claim "sub" is reserved and cannot be used.',
+        }
+        instance = ExternalAuthCompleteLoginError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_404_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_404.json")
+        instance = ExternalAuthCompleteLoginError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ExternalAuthCompleteLoginError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_external_auth_complete_login_error_422_round_trip(self):
+        data = load_fixture("external_auth_complete_login_error_422.json")
+        instance = ExternalAuthCompleteLoginError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthCompleteLoginError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_complete_login_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ExternalAuthCompleteLoginError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_list_error_402_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_list_error_402.json")
+        instance = AuthorizationGroupRoleAssignmentsListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsListError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_list_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_list_error_403_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_list_error_403.json")
+        instance = AuthorizationGroupRoleAssignmentsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_list_error_404_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_list_error_404.json")
+        instance = AuthorizationGroupRoleAssignmentsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_create_error_402_round_trip(self):
+        data = load_fixture(
+            "authorization_group_role_assignments_create_error_402.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsCreateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_create_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_create_error_403_round_trip(self):
+        data = load_fixture(
+            "authorization_group_role_assignments_create_error_403.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_create_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_create_error_404_round_trip(self):
+        data = load_fixture(
+            "authorization_group_role_assignments_create_error_404.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_create_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_create_error_409_round_trip(self):
+        data = load_fixture(
+            "authorization_group_role_assignments_create_error_409.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_create_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "duplicate_group_role_assignment",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_create_error_422_round_trip(self):
+        data = load_fixture(
+            "authorization_group_role_assignments_create_error_422.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_402_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_replace_group_role_assignments_error_402.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError402.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_replace_group_role_assignments_error_403.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_replace_group_role_assignments_error_404.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_replace_group_role_assignments_error_422.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_replace_group_role_assignments_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsReplaceGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_patch_group_role_assignments_error_400.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "group_role_assignment_update_overlap",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_402_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_patch_group_role_assignments_error_402.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError402.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_patch_group_role_assignments_error_403.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_patch_group_role_assignments_error_404.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_patch_group_role_assignments_error_422.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_patch_group_role_assignments_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsPatchGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_remove_group_role_assignments_error_403.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_remove_group_role_assignments_error_404.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_remove_group_role_assignments_error_422.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_remove_group_role_assignments_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_get_error_402_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_get_error_402.json")
+        instance = AuthorizationGroupRoleAssignmentsGetError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsGetError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_get_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationGroupRoleAssignmentsGetError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_get_error_403_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_get_error_403.json")
+        instance = AuthorizationGroupRoleAssignmentsGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_get_error_404_round_trip(self):
+        data = load_fixture("authorization_group_role_assignments_get_error_404.json")
+        instance = AuthorizationGroupRoleAssignmentsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_remove_group_role_assignment_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_remove_group_role_assignment_error_403.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_remove_group_role_assignment_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_group_role_assignments_remove_group_role_assignment_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_group_role_assignments_remove_group_role_assignment_error_404.json"
+        )
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_group_role_assignments_remove_group_role_assignment_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationGroupRoleAssignmentsRemoveGroupRoleAssignmentError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_check_error_402_round_trip(self):
+        data = load_fixture("authorization_check_error_402.json")
+        instance = AuthorizationCheckError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationCheckError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_check_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationCheckError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_check_error_403_round_trip(self):
+        data = load_fixture("authorization_check_error_403.json")
+        instance = AuthorizationCheckError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationCheckError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_check_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationCheckError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_check_error_404_round_trip(self):
+        data = load_fixture("authorization_check_error_404.json")
+        instance = AuthorizationCheckError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationCheckError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_check_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationCheckError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_check_error_422_round_trip(self):
+        data = load_fixture("authorization_check_error_422.json")
+        instance = AuthorizationCheckError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationCheckError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_check_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationCheckError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_resources_for_membership_error_400_round_trip(self):
+        data = load_fixture(
+            "authorization_list_resources_for_membership_error_400.json"
+        )
+        instance = AuthorizationListResourcesForMembershipError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListResourcesForMembershipError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_resources_for_membership_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationListResourcesForMembershipError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_resources_for_membership_error_402_round_trip(self):
+        data = load_fixture(
+            "authorization_list_resources_for_membership_error_402.json"
+        )
+        instance = AuthorizationListResourcesForMembershipError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListResourcesForMembershipError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_resources_for_membership_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationListResourcesForMembershipError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_resources_for_membership_error_403_round_trip(self):
+        data = load_fixture(
+            "authorization_list_resources_for_membership_error_403.json"
+        )
+        instance = AuthorizationListResourcesForMembershipError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListResourcesForMembershipError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_resources_for_membership_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListResourcesForMembershipError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_resources_for_membership_error_404_round_trip(self):
+        data = load_fixture(
+            "authorization_list_resources_for_membership_error_404.json"
+        )
+        instance = AuthorizationListResourcesForMembershipError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListResourcesForMembershipError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_resources_for_membership_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListResourcesForMembershipError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_resources_for_membership_error_422_round_trip(self):
+        data = load_fixture(
+            "authorization_list_resources_for_membership_error_422.json"
+        )
+        instance = AuthorizationListResourcesForMembershipError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListResourcesForMembershipError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_resources_for_membership_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListResourcesForMembershipError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_effective_permissions_error_402_round_trip(self):
+        data = load_fixture("authorization_list_effective_permissions_error_402.json")
+        instance = AuthorizationListEffectivePermissionsError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListEffectivePermissionsError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_effective_permissions_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationListEffectivePermissionsError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_effective_permissions_error_403_round_trip(self):
+        data = load_fixture("authorization_list_effective_permissions_error_403.json")
+        instance = AuthorizationListEffectivePermissionsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListEffectivePermissionsError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_effective_permissions_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListEffectivePermissionsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_effective_permissions_error_404_round_trip(self):
+        data = load_fixture("authorization_list_effective_permissions_error_404.json")
+        instance = AuthorizationListEffectivePermissionsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListEffectivePermissionsError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_effective_permissions_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListEffectivePermissionsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_list_effective_permissions_error_422_round_trip(self):
+        data = load_fixture("authorization_list_effective_permissions_error_422.json")
+        instance = AuthorizationListEffectivePermissionsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationListEffectivePermissionsError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_list_effective_permissions_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationListEffectivePermissionsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_list_role_assignments_error_402_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_list_role_assignments_error_402.json"
+        )
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsListRoleAssignmentsError402.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_list_role_assignments_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_list_role_assignments_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_list_role_assignments_error_403.json"
+        )
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsListRoleAssignmentsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_list_role_assignments_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_list_role_assignments_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_list_role_assignments_error_404.json"
+        )
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsListRoleAssignmentsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_list_role_assignments_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsListRoleAssignmentsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_assign_role_error_402_round_trip(self):
+        data = load_fixture("authorization_role_assignments_assign_role_error_402.json")
+        instance = AuthorizationRoleAssignmentsAssignRoleError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsAssignRoleError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_assign_role_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationRoleAssignmentsAssignRoleError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_assign_role_error_403_round_trip(self):
+        data = load_fixture("authorization_role_assignments_assign_role_error_403.json")
+        instance = AuthorizationRoleAssignmentsAssignRoleError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsAssignRoleError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_assign_role_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsAssignRoleError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_assign_role_error_404_round_trip(self):
+        data = load_fixture("authorization_role_assignments_assign_role_error_404.json")
+        instance = AuthorizationRoleAssignmentsAssignRoleError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsAssignRoleError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_assign_role_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsAssignRoleError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_assign_role_error_422_round_trip(self):
+        data = load_fixture("authorization_role_assignments_assign_role_error_422.json")
+        instance = AuthorizationRoleAssignmentsAssignRoleError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsAssignRoleError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_assign_role_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsAssignRoleError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_remove_role_by_criteria_error_403.json"
+        )
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_remove_role_by_criteria_error_404.json"
+        )
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_remove_role_by_criteria_error_422.json"
+        )
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_remove_role_by_criteria_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsRemoveRoleByCriteriaError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_remove_role_by_id_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_remove_role_by_id_error_403.json"
+        )
+        instance = AuthorizationRoleAssignmentsRemoveRoleByIdError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsRemoveRoleByIdError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_remove_role_by_id_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsRemoveRoleByIdError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_assignments_remove_role_by_id_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_role_assignments_remove_role_by_id_error_404.json"
+        )
+        instance = AuthorizationRoleAssignmentsRemoveRoleByIdError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRoleAssignmentsRemoveRoleByIdError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_assignments_remove_role_by_id_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRoleAssignmentsRemoveRoleByIdError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_list_error_403_round_trip(self):
+        data = load_fixture("authorization_organization_roles_list_error_403.json")
+        instance = AuthorizationOrganizationRolesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_list_error_404_round_trip(self):
+        data = load_fixture("authorization_organization_roles_list_error_404.json")
+        instance = AuthorizationOrganizationRolesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_create_error_400_round_trip(self):
+        data = load_fixture("authorization_organization_roles_create_error_400.json")
+        instance = AuthorizationOrganizationRolesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_create_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationOrganizationRolesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_create_error_403_round_trip(self):
+        data = load_fixture("authorization_organization_roles_create_error_403.json")
+        instance = AuthorizationOrganizationRolesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_create_error_404_round_trip(self):
+        data = load_fixture("authorization_organization_roles_create_error_404.json")
+        instance = AuthorizationOrganizationRolesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_create_error_409_round_trip(self):
+        data = load_fixture("authorization_organization_roles_create_error_409.json")
+        instance = AuthorizationOrganizationRolesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_create_error_409_minimal_payload(self):
+        data = {
+            "code": "organization_role_slug_conflict",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationOrganizationRolesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_create_error_422_round_trip(self):
+        data = load_fixture("authorization_organization_roles_create_error_422.json")
+        instance = AuthorizationOrganizationRolesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_get_error_403_round_trip(self):
+        data = load_fixture("authorization_organization_roles_get_error_403.json")
+        instance = AuthorizationOrganizationRolesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_get_error_404_round_trip(self):
+        data = load_fixture("authorization_organization_roles_get_error_404.json")
+        instance = AuthorizationOrganizationRolesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_update_error_400_round_trip(self):
+        data = load_fixture("authorization_organization_roles_update_error_400.json")
+        instance = AuthorizationOrganizationRolesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_update_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationOrganizationRolesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_update_error_403_round_trip(self):
+        data = load_fixture("authorization_organization_roles_update_error_403.json")
+        instance = AuthorizationOrganizationRolesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesUpdateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_update_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_update_error_404_round_trip(self):
+        data = load_fixture("authorization_organization_roles_update_error_404.json")
+        instance = AuthorizationOrganizationRolesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_update_error_422_round_trip(self):
+        data = load_fixture("authorization_organization_roles_update_error_422.json")
+        instance = AuthorizationOrganizationRolesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_delete_error_400_round_trip(self):
+        data = load_fixture("authorization_organization_roles_delete_error_400.json")
+        instance = AuthorizationOrganizationRolesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesDeleteError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_delete_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationOrganizationRolesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_delete_error_403_round_trip(self):
+        data = load_fixture("authorization_organization_roles_delete_error_403.json")
+        instance = AuthorizationOrganizationRolesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_delete_error_404_round_trip(self):
+        data = load_fixture("authorization_organization_roles_delete_error_404.json")
+        instance = AuthorizationOrganizationRolesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationOrganizationRolesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_roles_delete_error_409_round_trip(self):
+        data = load_fixture("authorization_organization_roles_delete_error_409.json")
+        instance = AuthorizationOrganizationRolesDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationOrganizationRolesDeleteError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_roles_delete_error_409_minimal_payload(self):
+        data = {
+            "code": "role_has_assignments",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationOrganizationRolesDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_role_has_group_role_mappings_authorization_organization_roles_delete_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "role_has_group_role_mappings_authorization_organization_roles_delete_error_409.json"
+        )
+        instance = RoleHasGroupRoleMappingsAuthorizationOrganizationRolesDeleteError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleHasGroupRoleMappingsAuthorizationOrganizationRolesDeleteError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_role_has_group_role_mappings_authorization_organization_roles_delete_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "role_has_group_role_mappings",
+            "message": "Request could not be processed.",
+        }
+        instance = RoleHasGroupRoleMappingsAuthorizationOrganizationRolesDeleteError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_add_permission_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_add_permission_error_400.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_add_permission_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_add_permission_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_add_permission_error_403.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_add_permission_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_add_permission_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_add_permission_error_404.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_add_permission_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_add_permission_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_add_permission_error_422.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_add_permission_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsAddPermissionError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_set_permissions_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_set_permissions_error_403.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_set_permissions_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_set_permissions_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_set_permissions_error_404.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_set_permissions_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_set_permissions_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_set_permissions_error_422.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_set_permissions_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsSetPermissionsError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_remove_permission_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_remove_permission_error_403.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_remove_permission_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError403.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_organization_role_permissions_remove_permission_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_organization_role_permissions_remove_permission_error_404.json"
+        )
+        instance = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_organization_role_permissions_remove_permission_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            AuthorizationOrganizationRolePermissionsRemovePermissionError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_get_error_402_round_trip(self):
+        data = load_fixture("authorization_resources_get_error_402.json")
+        instance = AuthorizationResourcesGetError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesGetError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_get_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesGetError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_get_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_get_error_403.json")
+        instance = AuthorizationResourcesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_get_error_404_round_trip(self):
+        data = load_fixture("authorization_resources_get_error_404.json")
+        instance = AuthorizationResourcesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_400_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_400.json")
+        instance = AuthorizationResourcesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_400_minimal_payload(self):
+        data = {"code": "lock_timeout", "message": "Request could not be processed."}
+        instance = AuthorizationResourcesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_402_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_402.json")
+        instance = AuthorizationResourcesUpdateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesUpdateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_403.json")
+        instance = AuthorizationResourcesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_404_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_404.json")
+        instance = AuthorizationResourcesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_409_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_409.json")
+        instance = AuthorizationResourcesUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_409_minimal_payload(self):
+        data = {
+            "code": "resource_type_update_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_update_error_422_round_trip(self):
+        data = load_fixture("authorization_resources_update_error_422.json")
+        instance = AuthorizationResourcesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_delete_error_400_round_trip(self):
+        data = load_fixture("authorization_resources_delete_error_400.json")
+        instance = AuthorizationResourcesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesDeleteError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_delete_error_400_minimal_payload(self):
+        data = {"code": "lock_timeout", "message": "Request could not be processed."}
+        instance = AuthorizationResourcesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_delete_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_delete_error_403.json")
+        instance = AuthorizationResourcesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_delete_error_404_round_trip(self):
+        data = load_fixture("authorization_resources_delete_error_404.json")
+        instance = AuthorizationResourcesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_delete_error_409_round_trip(self):
+        data = load_fixture("authorization_resources_delete_error_409.json")
+        instance = AuthorizationResourcesDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesDeleteError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_delete_error_409_minimal_payload(self):
+        data = {
+            "code": "resource_has_dependents",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_resource_type_update_in_progress_authorization_resources_delete_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "resource_type_update_in_progress_authorization_resources_delete_error_409.json"
+        )
+        instance = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesDeleteError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesDeleteError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_resource_type_update_in_progress_authorization_resources_delete_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "resource_type_update_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesDeleteError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_organization_memberships_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_resources_list_organization_memberships_error_400.json"
+        )
+        instance = AuthorizationResourcesListOrganizationMembershipsError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListOrganizationMembershipsError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_organization_memberships_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationResourcesListOrganizationMembershipsError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_organization_memberships_error_402_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_resources_list_organization_memberships_error_402.json"
+        )
+        instance = AuthorizationResourcesListOrganizationMembershipsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListOrganizationMembershipsError402.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_organization_memberships_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesListOrganizationMembershipsError402.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_organization_memberships_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_resources_list_organization_memberships_error_403.json"
+        )
+        instance = AuthorizationResourcesListOrganizationMembershipsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListOrganizationMembershipsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_organization_memberships_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesListOrganizationMembershipsError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_organization_memberships_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_resources_list_organization_memberships_error_404.json"
+        )
+        instance = AuthorizationResourcesListOrganizationMembershipsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListOrganizationMembershipsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_organization_memberships_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesListOrganizationMembershipsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_organization_memberships_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authorization_resources_list_organization_memberships_error_422.json"
+        )
+        instance = AuthorizationResourcesListOrganizationMembershipsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListOrganizationMembershipsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_organization_memberships_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesListOrganizationMembershipsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_list_error_404_round_trip(self):
+        data = load_fixture("authorization_permissions_list_error_404.json")
+        instance = AuthorizationPermissionsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_create_error_400_round_trip(self):
+        data = load_fixture("authorization_permissions_create_error_400.json")
+        instance = AuthorizationPermissionsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_create_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationPermissionsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_create_error_404_round_trip(self):
+        data = load_fixture("authorization_permissions_create_error_404.json")
+        instance = AuthorizationPermissionsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_create_error_409_round_trip(self):
+        data = load_fixture("authorization_permissions_create_error_409.json")
+        instance = AuthorizationPermissionsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_create_error_409_minimal_payload(self):
+        data = {
+            "code": "permission_slug_conflict",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationPermissionsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_create_error_422_round_trip(self):
+        data = load_fixture("authorization_permissions_create_error_422.json")
+        instance = AuthorizationPermissionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_find_error_404_round_trip(self):
+        data = load_fixture("authorization_permissions_find_error_404.json")
+        instance = AuthorizationPermissionsFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_update_error_403_round_trip(self):
+        data = load_fixture("authorization_permissions_update_error_403.json")
+        instance = AuthorizationPermissionsUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsUpdateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_update_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_update_error_404_round_trip(self):
+        data = load_fixture("authorization_permissions_update_error_404.json")
+        instance = AuthorizationPermissionsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_update_error_422_round_trip(self):
+        data = load_fixture("authorization_permissions_update_error_422.json")
+        instance = AuthorizationPermissionsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_delete_error_403_round_trip(self):
+        data = load_fixture("authorization_permissions_delete_error_403.json")
+        instance = AuthorizationPermissionsDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_permissions_delete_error_404_round_trip(self):
+        data = load_fixture("authorization_permissions_delete_error_404.json")
+        instance = AuthorizationPermissionsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermissionsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permissions_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationPermissionsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_error_400_round_trip(self):
+        data = load_fixture("authorization_resources_list_error_400.json")
+        instance = AuthorizationResourcesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_error_400_minimal_payload(self):
+        data = {
+            "code": "missing_organization_id_or_resource_type_slug",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_error_402_round_trip(self):
+        data = load_fixture("authorization_resources_list_error_402.json")
+        instance = AuthorizationResourcesListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_list_error_403.json")
+        instance = AuthorizationResourcesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_list_error_422_round_trip(self):
+        data = load_fixture("authorization_resources_list_error_422.json")
+        instance = AuthorizationResourcesListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_400_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_400.json")
+        instance = AuthorizationResourcesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationResourcesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_lock_timeout_authorization_resources_create_error_400_round_trip(self):
+        data = load_fixture(
+            "lock_timeout_authorization_resources_create_error_400.json"
+        )
+        instance = LockTimeoutAuthorizationResourcesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = LockTimeoutAuthorizationResourcesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_lock_timeout_authorization_resources_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "lock_timeout", "message": "Request could not be processed."}
+        instance = LockTimeoutAuthorizationResourcesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_402_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_402.json")
+        instance = AuthorizationResourcesCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_403.json")
+        instance = AuthorizationResourcesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_404_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_404.json")
+        instance = AuthorizationResourcesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_409_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_409.json")
+        instance = AuthorizationResourcesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_409_minimal_payload(self):
+        data = {
+            "code": "authorization_resource_external_id_conflict",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_resource_type_update_in_progress_authorization_resources_create_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "resource_type_update_in_progress_authorization_resources_create_error_409.json"
+        )
+        instance = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesCreateError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesCreateError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_resource_type_update_in_progress_authorization_resources_create_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "resource_type_update_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            ResourceTypeUpdateInProgressAuthorizationResourcesCreateError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_create_error_422_round_trip(self):
+        data = load_fixture("authorization_resources_create_error_422.json")
+        instance = AuthorizationResourcesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_find_by_id_error_402_round_trip(self):
+        data = load_fixture("authorization_resources_find_by_id_error_402.json")
+        instance = AuthorizationResourcesFindByIdError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesFindByIdError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_find_by_id_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationResourcesFindByIdError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_find_by_id_error_403_round_trip(self):
+        data = load_fixture("authorization_resources_find_by_id_error_403.json")
+        instance = AuthorizationResourcesFindByIdError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesFindByIdError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_find_by_id_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesFindByIdError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_find_by_id_error_404_round_trip(self):
+        data = load_fixture("authorization_resources_find_by_id_error_404.json")
+        instance = AuthorizationResourcesFindByIdError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesFindByIdError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_find_by_id_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesFindByIdError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_resources_find_by_id_error_422_round_trip(self):
+        data = load_fixture("authorization_resources_find_by_id_error_422.json")
+        instance = AuthorizationResourcesFindByIdError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationResourcesFindByIdError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_resources_find_by_id_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationResourcesFindByIdError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_list_error_403_round_trip(self):
+        data = load_fixture("authorization_roles_list_error_403.json")
+        instance = AuthorizationRolesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_create_error_400_round_trip(self):
+        data = load_fixture("authorization_roles_create_error_400.json")
+        instance = AuthorizationRolesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_create_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationRolesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_create_error_403_round_trip(self):
+        data = load_fixture("authorization_roles_create_error_403.json")
+        instance = AuthorizationRolesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_create_error_404_round_trip(self):
+        data = load_fixture("authorization_roles_create_error_404.json")
+        instance = AuthorizationRolesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_create_error_409_round_trip(self):
+        data = load_fixture("authorization_roles_create_error_409.json")
+        instance = AuthorizationRolesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_create_error_409_minimal_payload(self):
+        data = {
+            "code": "role_slug_conflict",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationRolesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_create_error_422_round_trip(self):
+        data = load_fixture("authorization_roles_create_error_422.json")
+        instance = AuthorizationRolesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_get_error_403_round_trip(self):
+        data = load_fixture("authorization_roles_get_error_403.json")
+        instance = AuthorizationRolesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_get_error_404_round_trip(self):
+        data = load_fixture("authorization_roles_get_error_404.json")
+        instance = AuthorizationRolesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_update_error_400_round_trip(self):
+        data = load_fixture("authorization_roles_update_error_400.json")
+        instance = AuthorizationRolesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_update_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationRolesUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_update_error_403_round_trip(self):
+        data = load_fixture("authorization_roles_update_error_403.json")
+        instance = AuthorizationRolesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesUpdateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_update_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_update_error_404_round_trip(self):
+        data = load_fixture("authorization_roles_update_error_404.json")
+        instance = AuthorizationRolesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_roles_update_error_422_round_trip(self):
+        data = load_fixture("authorization_roles_update_error_422.json")
+        instance = AuthorizationRolesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolesUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_roles_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolesUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_add_permission_error_400_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_add_permission_error_400.json"
+        )
+        instance = AuthorizationRolePermissionsAddPermissionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsAddPermissionError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_add_permission_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationRolePermissionsAddPermissionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_add_permission_error_403_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_add_permission_error_403.json"
+        )
+        instance = AuthorizationRolePermissionsAddPermissionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsAddPermissionError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_add_permission_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsAddPermissionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_add_permission_error_404_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_add_permission_error_404.json"
+        )
+        instance = AuthorizationRolePermissionsAddPermissionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsAddPermissionError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_add_permission_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsAddPermissionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_add_permission_error_422_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_add_permission_error_422.json"
+        )
+        instance = AuthorizationRolePermissionsAddPermissionError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsAddPermissionError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_add_permission_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsAddPermissionError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_set_permissions_error_400_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_set_permissions_error_400.json"
+        )
+        instance = AuthorizationRolePermissionsSetPermissionsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsSetPermissionsError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_set_permissions_error_400_minimal_payload(
+        self,
+    ):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = AuthorizationRolePermissionsSetPermissionsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_set_permissions_error_403_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_set_permissions_error_403.json"
+        )
+        instance = AuthorizationRolePermissionsSetPermissionsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsSetPermissionsError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_set_permissions_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsSetPermissionsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_set_permissions_error_404_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_set_permissions_error_404.json"
+        )
+        instance = AuthorizationRolePermissionsSetPermissionsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsSetPermissionsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_set_permissions_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsSetPermissionsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_role_permissions_set_permissions_error_422_round_trip(self):
+        data = load_fixture(
+            "authorization_role_permissions_set_permissions_error_422.json"
+        )
+        instance = AuthorizationRolePermissionsSetPermissionsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationRolePermissionsSetPermissionsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authorization_role_permissions_set_permissions_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizationRolePermissionsSetPermissionsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_client_api_token_issue_client_api_token_error_400_round_trip(self):
+        data = load_fixture("client_api_token_issue_client_api_token_error_400.json")
+        instance = ClientApiTokenIssueClientApiTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientApiTokenIssueClientApiTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_api_token_issue_client_api_token_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ClientApiTokenIssueClientApiTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_client_api_token_issue_client_api_token_error_404_round_trip(self):
+        data = load_fixture("client_api_token_issue_client_api_token_error_404.json")
+        instance = ClientApiTokenIssueClientApiTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientApiTokenIssueClientApiTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_api_token_issue_client_api_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ClientApiTokenIssueClientApiTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_client_api_token_issue_client_api_token_error_422_round_trip(self):
+        data = load_fixture("client_api_token_issue_client_api_token_error_422.json")
+        instance = ClientApiTokenIssueClientApiTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientApiTokenIssueClientApiTokenError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_api_token_issue_client_api_token_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ClientApiTokenIssueClientApiTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_list_error_422_round_trip(self):
+        data = load_fixture("application_list_error_422.json")
+        instance = ApplicationListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_create_error_404_round_trip(self):
+        data = load_fixture("application_create_error_404.json")
+        instance = ApplicationCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_create_error_422_round_trip(self):
+        data = load_fixture("application_create_error_422.json")
+        instance = ApplicationCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_find_error_404_round_trip(self):
+        data = load_fixture("application_find_error_404.json")
+        instance = ApplicationFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_update_error_404_round_trip(self):
+        data = load_fixture("application_update_error_404.json")
+        instance = ApplicationUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_update_error_422_round_trip(self):
+        data = load_fixture("application_update_error_422.json")
+        instance = ApplicationUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_delete_error_404_round_trip(self):
+        data = load_fixture("application_delete_error_404.json")
+        instance = ApplicationDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_credentials_list_error_404_round_trip(self):
+        data = load_fixture("application_credentials_list_error_404.json")
+        instance = ApplicationCredentialsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCredentialsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_credentials_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCredentialsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_credentials_create_error_404_round_trip(self):
+        data = load_fixture("application_credentials_create_error_404.json")
+        instance = ApplicationCredentialsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCredentialsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_credentials_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCredentialsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_credentials_create_error_422_round_trip(self):
+        data = load_fixture("application_credentials_create_error_422.json")
+        instance = ApplicationCredentialsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCredentialsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_credentials_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCredentialsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_application_credentials_delete_error_404_round_trip(self):
+        data = load_fixture("application_credentials_delete_error_404.json")
+        instance = ApplicationCredentialsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationCredentialsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_credentials_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ApplicationCredentialsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_list_error_403_round_trip(self):
+        data = load_fixture("connection_list_error_403.json")
+        instance = ConnectionListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_list_error_422_round_trip(self):
+        data = load_fixture("connection_list_error_422.json")
+        instance = ConnectionListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_400_round_trip(self):
+        data = load_fixture("connection_create_error_400.json")
+        instance = ConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "external_id_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_not_supported_connection_create_error_400_round_trip(self):
+        data = load_fixture(
+            "connection_type_not_supported_connection_create_error_400.json"
+        )
+        instance = ConnectionTypeNotSupportedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeNotSupportedConnectionCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_not_supported_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeNotSupportedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_or_options_required_connection_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_type_or_options_required_connection_create_error_400.json"
+        )
+        instance = ConnectionTypeOrOptionsRequiredConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeOrOptionsRequiredConnectionCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_or_options_required_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_or_options_required",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeOrOptionsRequiredConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_conflicts_with_options_connection_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_type_conflicts_with_options_connection_create_error_400.json"
+        )
+        instance = ConnectionTypeConflictsWithOptionsConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeConflictsWithOptionsConnectionCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_conflicts_with_options_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_conflicts_with_options",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeConflictsWithOptionsConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_both_saml_and_oidc_options_provided_connection_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "both_saml_and_oidc_options_provided_connection_create_error_400.json"
+        )
+        instance = BothSAMLAndOIDCOptionsProvidedConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = BothSAMLAndOIDCOptionsProvidedConnectionCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_both_saml_and_oidc_options_provided_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "both_saml_and_oidc_options_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = BothSAMLAndOIDCOptionsProvidedConnectionCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_ambiguous_saml_options_connection_create_error_400_round_trip(self):
+        data = load_fixture("ambiguous_saml_options_connection_create_error_400.json")
+        instance = AmbiguousSAMLOptionsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AmbiguousSAMLOptionsConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_ambiguous_saml_options_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "ambiguous_saml_options",
+            "message": "Request could not be processed.",
+        }
+        instance = AmbiguousSAMLOptionsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_incomplete_saml_options_connection_create_error_400_round_trip(self):
+        data = load_fixture("incomplete_saml_options_connection_create_error_400.json")
+        instance = IncompleteSAMLOptionsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = IncompleteSAMLOptionsConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_incomplete_saml_options_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "incomplete_saml_options",
+            "message": "Request could not be processed.",
+        }
+        instance = IncompleteSAMLOptionsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_options_required_connection_create_error_400_round_trip(self):
+        data = load_fixture("saml_options_required_connection_create_error_400.json")
+        instance = SAMLOptionsRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLOptionsRequiredConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_options_required_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "saml_options_required",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLOptionsRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_oidc_options_required_connection_create_error_400_round_trip(self):
+        data = load_fixture("oidc_options_required_connection_create_error_400.json")
+        instance = OIDCOptionsRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OIDCOptionsRequiredConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_oidc_options_required_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "oidc_options_required",
+            "message": "Request could not be processed.",
+        }
+        instance = OIDCOptionsRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_certificate_connection_create_error_400_round_trip(self):
+        data = load_fixture("invalid_certificate_connection_create_error_400.json")
+        instance = InvalidCertificateConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidCertificateConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_certificate_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_certificate",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidCertificateConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_client_secret_required_connection_create_error_400_round_trip(self):
+        data = load_fixture("client_secret_required_connection_create_error_400.json")
+        instance = ClientSecretRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientSecretRequiredConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_secret_required_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "client_secret_required",
+            "message": "Request could not be processed.",
+        }
+        instance = ClientSecretRequiredConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_client_secret_not_accepted_connection_create_error_400_round_trip(self):
+        data = load_fixture(
+            "client_secret_not_accepted_connection_create_error_400.json"
+        )
+        instance = ClientSecretNotAcceptedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientSecretNotAcceptedConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_secret_not_accepted_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "client_secret_not_accepted",
+            "message": "Request could not be processed.",
+        }
+        instance = ClientSecretNotAcceptedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_key_pair_not_accepted_connection_create_error_400_round_trip(self):
+        data = load_fixture("key_pair_not_accepted_connection_create_error_400.json")
+        instance = KeyPairNotAcceptedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = KeyPairNotAcceptedConnectionCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_key_pair_not_accepted_connection_create_error_400_minimal_payload(self):
+        data = {
+            "code": "key_pair_not_accepted",
+            "message": "Request could not be processed.",
+        }
+        instance = KeyPairNotAcceptedConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_discovery_endpoint_must_use_https_connection_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "discovery_endpoint_must_use_https_connection_create_error_400.json"
+        )
+        instance = DiscoveryEndpointMustUseHttpsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DiscoveryEndpointMustUseHttpsConnectionCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_discovery_endpoint_must_use_https_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "discovery_endpoint_must_use_https",
+            "message": "Request could not be processed.",
+        }
+        instance = DiscoveryEndpointMustUseHttpsConnectionCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_token_authentication_method_not_supported_connection_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "token_authentication_method_not_supported_connection_create_error_400.json"
+        )
+        instance = (
+            TokenAuthenticationMethodNotSupportedConnectionCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            TokenAuthenticationMethodNotSupportedConnectionCreateError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_token_authentication_method_not_supported_connection_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "token_authentication_method_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            TokenAuthenticationMethodNotSupportedConnectionCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_403_round_trip(self):
+        data = load_fixture("connection_create_error_403.json")
+        instance = ConnectionCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_404_round_trip(self):
+        data = load_fixture("connection_create_error_404.json")
+        instance = ConnectionCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_409_round_trip(self):
+        data = load_fixture("connection_create_error_409.json")
+        instance = ConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_409_minimal_payload(self):
+        data = {
+            "code": "connection_deletion_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_resource_limit_exceeded_connection_create_error_409_round_trip(self):
+        data = load_fixture("resource_limit_exceeded_connection_create_error_409.json")
+        instance = ResourceLimitExceededConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ResourceLimitExceededConnectionCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_resource_limit_exceeded_connection_create_error_409_minimal_payload(self):
+        data = {
+            "code": "resource_limit_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = ResourceLimitExceededConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_too_many_sp_encryption_certs_connection_create_error_409_round_trip(self):
+        data = load_fixture(
+            "too_many_sp_encryption_certs_connection_create_error_409.json"
+        )
+        instance = TooManySpEncryptionCertsConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TooManySpEncryptionCertsConnectionCreateError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_too_many_sp_encryption_certs_connection_create_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "too_many_sp_encryption_certs",
+            "message": "Request could not be processed.",
+        }
+        instance = TooManySpEncryptionCertsConnectionCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_422_round_trip(self):
+        data = load_fixture("connection_create_error_422.json")
+        instance = ConnectionCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_4222_round_trip(self):
+        data = load_fixture("connection_create_error_4222.json")
+        instance = ConnectionCreateError4222.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError4222.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_4222_minimal_payload(self):
+        data = {
+            "code": "idp_metadata_fetch_failed",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreateError4222.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_4223_round_trip(self):
+        data = load_fixture("connection_create_error_4223.json")
+        instance = ConnectionCreateError4223.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError4223.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_4223_minimal_payload(self):
+        data = {
+            "code": "connection_could_not_be_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreateError4223.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_create_error_4224_round_trip(self):
+        data = load_fixture("connection_create_error_4224.json")
+        instance = ConnectionCreateError4224.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreateError4224.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_create_error_4224_minimal_payload(self):
+        data = {
+            "code": "invalid_idp_sso_url",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreateError4224.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_list_error_400_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_list_error_400.json")
+        instance = SAMLIdpSigningCertificatesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_list_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLIdpSigningCertificatesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_list_error_403_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_list_error_403.json")
+        instance = SAMLIdpSigningCertificatesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_list_error_404_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_list_error_404.json")
+        instance = SAMLIdpSigningCertificatesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_create_error_400_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_create_error_400.json")
+        instance = SAMLIdpSigningCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_create_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLIdpSigningCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_certificate_saml_idp_signing_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_certificate_saml_idp_signing_certificates_create_error_400.json"
+        )
+        instance = InvalidCertificateSAMLIdpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidCertificateSAMLIdpSigningCertificatesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_certificate_saml_idp_signing_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_certificate",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidCertificateSAMLIdpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_certificate_expired_saml_idp_signing_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "certificate_expired_saml_idp_signing_certificates_create_error_400.json"
+        )
+        instance = CertificateExpiredSAMLIdpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CertificateExpiredSAMLIdpSigningCertificatesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_certificate_expired_saml_idp_signing_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "certificate_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = CertificateExpiredSAMLIdpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_create_error_403_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_create_error_403.json")
+        instance = SAMLIdpSigningCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_create_error_404_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_create_error_404.json")
+        instance = SAMLIdpSigningCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_create_error_422_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_create_error_422.json")
+        instance = SAMLIdpSigningCertificatesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_delete_error_400_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_delete_error_400.json")
+        instance = SAMLIdpSigningCertificatesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesDeleteError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_delete_error_400_minimal_payload(self):
+        data = {
+            "code": "cannot_delete_last_certificate",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLIdpSigningCertificatesDeleteError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_delete_error_403_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_delete_error_403.json")
+        instance = SAMLIdpSigningCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_idp_signing_certificates_delete_error_404_round_trip(self):
+        data = load_fixture("saml_idp_signing_certificates_delete_error_404.json")
+        instance = SAMLIdpSigningCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLIdpSigningCertificatesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_idp_signing_certificates_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLIdpSigningCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_list_error_400_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_list_error_400.json")
+        instance = SAMLSpEncryptionCertificatesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_list_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpEncryptionCertificatesListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_list_error_403_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_list_error_403.json")
+        instance = SAMLSpEncryptionCertificatesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_list_error_404_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_list_error_404.json")
+        instance = SAMLSpEncryptionCertificatesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_create_error_400_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_create_error_400.json")
+        instance = SAMLSpEncryptionCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_create_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpEncryptionCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_key_pair_not_accepted_saml_sp_encryption_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "key_pair_not_accepted_saml_sp_encryption_certificates_create_error_400.json"
+        )
+        instance = (
+            KeyPairNotAcceptedSAMLSpEncryptionCertificatesCreateError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            KeyPairNotAcceptedSAMLSpEncryptionCertificatesCreateError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_key_pair_not_accepted_saml_sp_encryption_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "key_pair_not_accepted",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            KeyPairNotAcceptedSAMLSpEncryptionCertificatesCreateError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_create_error_403_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_create_error_403.json")
+        instance = SAMLSpEncryptionCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_create_error_404_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_create_error_404.json")
+        instance = SAMLSpEncryptionCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_create_error_409_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_create_error_409.json")
+        instance = SAMLSpEncryptionCertificatesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_create_error_409_minimal_payload(self):
+        data = {
+            "code": "too_many_sp_encryption_certs",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpEncryptionCertificatesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_create_error_503_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_create_error_503.json")
+        instance = SAMLSpEncryptionCertificatesCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesCreateError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_create_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpEncryptionCertificatesCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_delete_error_403_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_delete_error_403.json")
+        instance = SAMLSpEncryptionCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_encryption_certificates_delete_error_404_round_trip(self):
+        data = load_fixture("saml_sp_encryption_certificates_delete_error_404.json")
+        instance = SAMLSpEncryptionCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpEncryptionCertificatesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_encryption_certificates_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpEncryptionCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_get_error_400_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_get_error_400.json")
+        instance = SAMLSpSigningCertificatesGetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesGetError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_get_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpSigningCertificatesGetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_get_error_403_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_get_error_403.json")
+        instance = SAMLSpSigningCertificatesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_get_error_404_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_get_error_404.json")
+        instance = SAMLSpSigningCertificatesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_create_error_400_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_create_error_400.json")
+        instance = SAMLSpSigningCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_create_error_400_minimal_payload(self):
+        data = {
+            "code": "connection_is_not_saml",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpSigningCertificatesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_key_pair_not_accepted_saml_sp_signing_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "key_pair_not_accepted_saml_sp_signing_certificates_create_error_400.json"
+        )
+        instance = KeyPairNotAcceptedSAMLSpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = KeyPairNotAcceptedSAMLSpSigningCertificatesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_key_pair_not_accepted_saml_sp_signing_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "key_pair_not_accepted",
+            "message": "Request could not be processed.",
+        }
+        instance = KeyPairNotAcceptedSAMLSpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_not_supported_saml_sp_signing_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_type_not_supported_saml_sp_signing_certificates_create_error_400.json"
+        )
+        instance = (
+            ConnectionTypeNotSupportedSAMLSpSigningCertificatesCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            ConnectionTypeNotSupportedSAMLSpSigningCertificatesCreateError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_not_supported_saml_sp_signing_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            ConnectionTypeNotSupportedSAMLSpSigningCertificatesCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_request_binding_unsupported_for_signing_saml_sp_signing_certificates_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "saml_request_binding_unsupported_for_signing_saml_sp_signing_certificates_create_error_400.json"
+        )
+        instance = SAMLRequestBindingUnsupportedForSigningSAMLSpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLRequestBindingUnsupportedForSigningSAMLSpSigningCertificatesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_saml_request_binding_unsupported_for_signing_saml_sp_signing_certificates_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "saml_request_binding_unsupported_for_signing",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLRequestBindingUnsupportedForSigningSAMLSpSigningCertificatesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_create_error_403_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_create_error_403.json")
+        instance = SAMLSpSigningCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_create_error_404_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_create_error_404.json")
+        instance = SAMLSpSigningCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_create_error_409_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_create_error_409.json")
+        instance = SAMLSpSigningCertificatesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_create_error_409_minimal_payload(self):
+        data = {
+            "code": "sp_signing_cert_already_exists",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpSigningCertificatesCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_create_error_503_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_create_error_503.json")
+        instance = SAMLSpSigningCertificatesCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesCreateError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_create_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = SAMLSpSigningCertificatesCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_delete_error_403_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_delete_error_403.json")
+        instance = SAMLSpSigningCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_saml_sp_signing_certificates_delete_error_404_round_trip(self):
+        data = load_fixture("saml_sp_signing_certificates_delete_error_404.json")
+        instance = SAMLSpSigningCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SAMLSpSigningCertificatesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_saml_sp_signing_certificates_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SAMLSpSigningCertificatesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_find_error_403_round_trip(self):
+        data = load_fixture("connection_find_error_403.json")
+        instance = ConnectionFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionFindError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_find_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_find_error_404_round_trip(self):
+        data = load_fixture("connection_find_error_404.json")
+        instance = ConnectionFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_400_round_trip(self):
+        data = load_fixture("connection_patch_error_400.json")
+        instance = ConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_400_minimal_payload(self):
+        data = {
+            "code": "external_id_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_not_supported_connection_patch_error_400_round_trip(self):
+        data = load_fixture(
+            "connection_type_not_supported_connection_patch_error_400.json"
+        )
+        instance = ConnectionTypeNotSupportedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeNotSupportedConnectionPatchError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_not_supported_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeNotSupportedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_conflicts_with_options_connection_patch_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_type_conflicts_with_options_connection_patch_error_400.json"
+        )
+        instance = ConnectionTypeConflictsWithOptionsConnectionPatchError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeConflictsWithOptionsConnectionPatchError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_conflicts_with_options_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connection_type_conflicts_with_options",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeConflictsWithOptionsConnectionPatchError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_both_saml_and_oidc_options_provided_connection_patch_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "both_saml_and_oidc_options_provided_connection_patch_error_400.json"
+        )
+        instance = BothSAMLAndOIDCOptionsProvidedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = BothSAMLAndOIDCOptionsProvidedConnectionPatchError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_both_saml_and_oidc_options_provided_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "both_saml_and_oidc_options_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = BothSAMLAndOIDCOptionsProvidedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_ambiguous_saml_options_connection_patch_error_400_round_trip(self):
+        data = load_fixture("ambiguous_saml_options_connection_patch_error_400.json")
+        instance = AmbiguousSAMLOptionsConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AmbiguousSAMLOptionsConnectionPatchError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_ambiguous_saml_options_connection_patch_error_400_minimal_payload(self):
+        data = {
+            "code": "ambiguous_saml_options",
+            "message": "Request could not be processed.",
+        }
+        instance = AmbiguousSAMLOptionsConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_token_authentication_method_not_supported_connection_patch_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "token_authentication_method_not_supported_connection_patch_error_400.json"
+        )
+        instance = (
+            TokenAuthenticationMethodNotSupportedConnectionPatchError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            TokenAuthenticationMethodNotSupportedConnectionPatchError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_token_authentication_method_not_supported_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "token_authentication_method_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            TokenAuthenticationMethodNotSupportedConnectionPatchError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_id_token_signature_algorithm_not_supported_connection_patch_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "id_token_signature_algorithm_not_supported_connection_patch_error_400.json"
+        )
+        instance = (
+            IdTokenSignatureAlgorithmNotSupportedConnectionPatchError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            IdTokenSignatureAlgorithmNotSupportedConnectionPatchError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_id_token_signature_algorithm_not_supported_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "id_token_signature_algorithm_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            IdTokenSignatureAlgorithmNotSupportedConnectionPatchError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_client_secret_required_connection_patch_error_400_round_trip(self):
+        data = load_fixture("client_secret_required_connection_patch_error_400.json")
+        instance = ClientSecretRequiredConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientSecretRequiredConnectionPatchError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_secret_required_connection_patch_error_400_minimal_payload(self):
+        data = {
+            "code": "client_secret_required",
+            "message": "Request could not be processed.",
+        }
+        instance = ClientSecretRequiredConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_client_secret_not_accepted_connection_patch_error_400_round_trip(self):
+        data = load_fixture(
+            "client_secret_not_accepted_connection_patch_error_400.json"
+        )
+        instance = ClientSecretNotAcceptedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientSecretNotAcceptedConnectionPatchError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_client_secret_not_accepted_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "client_secret_not_accepted",
+            "message": "Request could not be processed.",
+        }
+        instance = ClientSecretNotAcceptedConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_discovery_endpoint_must_use_https_connection_patch_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "discovery_endpoint_must_use_https_connection_patch_error_400.json"
+        )
+        instance = DiscoveryEndpointMustUseHttpsConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DiscoveryEndpointMustUseHttpsConnectionPatchError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_discovery_endpoint_must_use_https_connection_patch_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "discovery_endpoint_must_use_https",
+            "message": "Request could not be processed.",
+        }
+        instance = DiscoveryEndpointMustUseHttpsConnectionPatchError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_403_round_trip(self):
+        data = load_fixture("connection_patch_error_403.json")
+        instance = ConnectionPatchError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionPatchError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_404_round_trip(self):
+        data = load_fixture("connection_patch_error_404.json")
+        instance = ConnectionPatchError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionPatchError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_409_round_trip(self):
+        data = load_fixture("connection_patch_error_409.json")
+        instance = ConnectionPatchError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_409_minimal_payload(self):
+        data = {
+            "code": "connection_deletion_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionPatchError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_422_round_trip(self):
+        data = load_fixture("connection_patch_error_422.json")
+        instance = ConnectionPatchError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionPatchError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_4222_round_trip(self):
+        data = load_fixture("connection_patch_error_4222.json")
+        instance = ConnectionPatchError4222.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError4222.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_4222_minimal_payload(self):
+        data = {
+            "code": "connection_type_not_updatable",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionPatchError4222.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_4223_round_trip(self):
+        data = load_fixture("connection_patch_error_4223.json")
+        instance = ConnectionPatchError4223.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError4223.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_4223_minimal_payload(self):
+        data = {
+            "code": "idp_metadata_fetch_failed",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionPatchError4223.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_patch_error_4224_round_trip(self):
+        data = load_fixture("connection_patch_error_4224.json")
+        instance = ConnectionPatchError4224.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionPatchError4224.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_patch_error_4224_minimal_payload(self):
+        data = {
+            "code": "connection_could_not_be_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionPatchError4224.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_delete_error_403_round_trip(self):
+        data = load_fixture("connection_delete_error_403.json")
+        instance = ConnectionDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_connection_delete_error_404_round_trip(self):
+        data = load_fixture("connection_delete_error_404.json")
+        instance = ConnectionDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ConnectionDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_list_data_integrations_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_list_data_integrations_error_404.json"
+        )
+        instance = DataIntegrationsManagementListDataIntegrationsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementListDataIntegrationsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_list_data_integrations_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementListDataIntegrationsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_list_data_integrations_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_list_data_integrations_error_422.json"
+        )
+        instance = DataIntegrationsManagementListDataIntegrationsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementListDataIntegrationsError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_list_data_integrations_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementListDataIntegrationsError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_create_data_integration_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_create_data_integration_error_400.json"
+        )
+        instance = DataIntegrationsManagementCreateDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementCreateDataIntegrationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_create_data_integration_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementCreateDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_create_data_integration_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_create_data_integration_error_403.json"
+        )
+        instance = DataIntegrationsManagementCreateDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementCreateDataIntegrationError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_create_data_integration_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementCreateDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_create_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_create_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementCreateDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementCreateDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_create_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementCreateDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_create_data_integration_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_create_data_integration_error_409.json"
+        )
+        instance = DataIntegrationsManagementCreateDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementCreateDataIntegrationError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_create_data_integration_error_409_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementCreateDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_create_data_integration_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_create_data_integration_error_422.json"
+        )
+        instance = DataIntegrationsManagementCreateDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementCreateDataIntegrationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_create_data_integration_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementCreateDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_finish_connection_error_400_round_trip(self):
+        data = load_fixture("data_integrations_finish_connection_error_400.json")
+        instance = DataIntegrationsFinishConnectionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsFinishConnectionError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_finish_connection_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_connect_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsFinishConnectionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_finish_connection_error_400_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_finish_connection_error_400_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsFinishConnectionError400.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_data_integrations_finish_connection_error_4002_round_trip(self):
+        data = load_fixture("data_integrations_finish_connection_error_4002.json")
+        instance = DataIntegrationsFinishConnectionError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsFinishConnectionError4002.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_finish_connection_error_4002_minimal_payload(self):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsFinishConnectionError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_finish_connection_error_403_round_trip(self):
+        data = load_fixture("data_integrations_finish_connection_error_403.json")
+        instance = DataIntegrationsFinishConnectionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsFinishConnectionError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_finish_connection_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsFinishConnectionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_get_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_get_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementGetDataIntegrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementGetDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_get_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementGetDataIntegrationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_data_integration_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_data_integration_error_400.json"
+        )
+        instance = DataIntegrationsManagementUpdateDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateDataIntegrationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_data_integration_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_data_integration_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_data_integration_error_403.json"
+        )
+        instance = DataIntegrationsManagementUpdateDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateDataIntegrationError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_data_integration_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementUpdateDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_data_integration_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_data_integration_error_409.json"
+        )
+        instance = DataIntegrationsManagementUpdateDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateDataIntegrationError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_data_integration_error_409_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_data_integration_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_data_integration_error_422.json"
+        )
+        instance = DataIntegrationsManagementUpdateDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateDataIntegrationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_data_integration_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_delete_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_delete_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementDeleteDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementDeleteDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_delete_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementDeleteDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_400_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_400.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsCreateApiKeyConnectionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_403_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_403.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateApiKeyConnectionError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_404_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_404.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateApiKeyConnectionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_404_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_create_api_key_connection_error_404_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateApiKeyConnectionError404.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_data_integrations_create_api_key_connection_error_4042_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_4042.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError4042.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateApiKeyConnectionError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_409_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_409.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateApiKeyConnectionError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_409_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_create_api_key_connection_error_409_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateApiKeyConnectionError409.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_data_integrations_create_api_key_connection_error_4092_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_4092.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError4092.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError4092.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_4092_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateApiKeyConnectionError4092.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_api_key_connection_error_503_round_trip(self):
+        data = load_fixture(
+            "data_integrations_create_api_key_connection_error_503.json"
+        )
+        instance = DataIntegrationsCreateApiKeyConnectionError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateApiKeyConnectionError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_api_key_connection_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateApiKeyConnectionError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_api_key_error_400_round_trip(self):
+        data = load_fixture("data_integrations_upsert_api_key_error_400.json")
+        instance = DataIntegrationsUpsertApiKeyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertApiKeyError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_api_key_error_400_minimal_payload(self):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsUpsertApiKeyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_api_key_error_403_round_trip(self):
+        data = load_fixture("data_integrations_upsert_api_key_error_403.json")
+        instance = DataIntegrationsUpsertApiKeyError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertApiKeyError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_api_key_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsUpsertApiKeyError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_api_key_error_404_round_trip(self):
+        data = load_fixture("data_integrations_upsert_api_key_error_404.json")
+        instance = DataIntegrationsUpsertApiKeyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertApiKeyError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_api_key_error_404_minimal_payload(self):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsUpsertApiKeyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_api_key_error_4042_round_trip(self):
+        data = load_fixture("data_integrations_upsert_api_key_error_4042.json")
+        instance = DataIntegrationsUpsertApiKeyError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertApiKeyError4042.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_api_key_error_4042_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsUpsertApiKeyError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_400.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_return_to",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_400_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_get_data_integration_authorize_url_error_400_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError400.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4002_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_4002.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4002.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError4002.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4002_minimal_payload(
+        self,
+    ):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4002.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_403.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_404.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_404_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_get_data_integration_authorize_url_error_404_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError404.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4042_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_4042.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError4042.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_409.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4092_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_get_data_integration_authorize_url_error_4092.json"
+        )
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetDataIntegrationAuthorizeUrlError4092.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_data_integration_authorize_url_error_4092_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetDataIntegrationAuthorizeUrlError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_400.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsCreateClientCredentialsConnectionError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_403.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateClientCredentialsConnectionError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_404.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateClientCredentialsConnectionError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_404_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_create_client_credentials_connection_error_404_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateClientCredentialsConnectionError404.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_create_client_credentials_connection_error_4042_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_4042.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError4042.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateClientCredentialsConnectionError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_409.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateClientCredentialsConnectionError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_409_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_create_client_credentials_connection_error_409_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateClientCredentialsConnectionError409.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_create_client_credentials_connection_error_4092_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_4092.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError4092.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_4092_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsCreateClientCredentialsConnectionError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_create_client_credentials_connection_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_create_client_credentials_connection_error_503.json"
+        )
+        instance = DataIntegrationsCreateClientCredentialsConnectionError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsCreateClientCredentialsConnectionError503.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_create_client_credentials_connection_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsCreateClientCredentialsConnectionError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_client_credentials_error_400_round_trip(self):
+        data = load_fixture(
+            "data_integrations_upsert_client_credentials_error_400.json"
+        )
+        instance = DataIntegrationsUpsertClientCredentialsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertClientCredentialsError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_client_credentials_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "test_message"}
+        instance = DataIntegrationsUpsertClientCredentialsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_client_credentials_error_403_round_trip(self):
+        data = load_fixture(
+            "data_integrations_upsert_client_credentials_error_403.json"
+        )
+        instance = DataIntegrationsUpsertClientCredentialsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertClientCredentialsError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_client_credentials_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsUpsertClientCredentialsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_client_credentials_error_404_round_trip(self):
+        data = load_fixture(
+            "data_integrations_upsert_client_credentials_error_404.json"
+        )
+        instance = DataIntegrationsUpsertClientCredentialsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertClientCredentialsError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_client_credentials_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsUpsertClientCredentialsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_upsert_client_credentials_error_4042_round_trip(self):
+        data = load_fixture(
+            "data_integrations_upsert_client_credentials_error_4042.json"
+        )
+        instance = DataIntegrationsUpsertClientCredentialsError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUpsertClientCredentialsError4042.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_upsert_client_credentials_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsUpsertClientCredentialsError4042.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_vend_credentials_error_400_round_trip(self):
+        data = load_fixture("data_integrations_vend_credentials_error_400.json")
+        instance = DataIntegrationsVendCredentialsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsVendCredentialsError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_vend_credentials_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsVendCredentialsError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_vend_credentials_error_403_round_trip(self):
+        data = load_fixture("data_integrations_vend_credentials_error_403.json")
+        instance = DataIntegrationsVendCredentialsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsVendCredentialsError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_vend_credentials_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsVendCredentialsError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_vend_credentials_error_404_round_trip(self):
+        data = load_fixture("data_integrations_vend_credentials_error_404.json")
+        instance = DataIntegrationsVendCredentialsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsVendCredentialsError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_vend_credentials_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsVendCredentialsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_vend_credentials_error_422_round_trip(self):
+        data = load_fixture("data_integrations_vend_credentials_error_422.json")
+        instance = DataIntegrationsVendCredentialsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsVendCredentialsError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_vend_credentials_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsVendCredentialsError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_get_organization_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_get_organization_data_integration_error_404.json"
+        )
+        instance = (
+            DataIntegrationsManagementGetOrganizationDataIntegrationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsManagementGetOrganizationDataIntegrationError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_get_organization_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsManagementGetOrganizationDataIntegrationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_organization_data_integration_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_organization_data_integration_error_400.json"
+        )
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateOrganizationDataIntegrationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_organization_data_integration_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_organization_data_integration_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_organization_data_integration_error_403.json"
+        )
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateOrganizationDataIntegrationError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_organization_data_integration_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_organization_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_organization_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateOrganizationDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_organization_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_organization_data_integration_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_organization_data_integration_error_409.json"
+        )
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateOrganizationDataIntegrationError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_organization_data_integration_error_409_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_update_organization_data_integration_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_update_organization_data_integration_error_422.json"
+        )
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementUpdateOrganizationDataIntegrationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_update_organization_data_integration_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementUpdateOrganizationDataIntegrationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_management_delete_organization_data_integration_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_management_delete_organization_data_integration_error_404.json"
+        )
+        instance = DataIntegrationsManagementDeleteOrganizationDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsManagementDeleteOrganizationDataIntegrationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_management_delete_organization_data_integration_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsManagementDeleteOrganizationDataIntegrationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_list_error_403_round_trip(self):
+        data = load_fixture("directory_list_error_403.json")
+        instance = DirectoryListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_list_error_422_round_trip(self):
+        data = load_fixture("directory_list_error_422.json")
+        instance = DirectoryListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_find_error_403_round_trip(self):
+        data = load_fixture("directory_find_error_403.json")
+        instance = DirectoryFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryFindError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_find_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_find_error_404_round_trip(self):
+        data = load_fixture("directory_find_error_404.json")
+        instance = DirectoryFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_delete_directory_error_403_round_trip(self):
+        data = load_fixture("directory_delete_directory_error_403.json")
+        instance = DirectoryDeleteDirectoryError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryDeleteDirectoryError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_delete_directory_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryDeleteDirectoryError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_sync_directory_error_403_round_trip(self):
+        data = load_fixture("directory_sync_directory_error_403.json")
+        instance = DirectorySyncDirectoryError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncDirectoryError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_directory_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectorySyncDirectoryError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_sync_directory_error_404_round_trip(self):
+        data = load_fixture("directory_sync_directory_error_404.json")
+        instance = DirectorySyncDirectoryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncDirectoryError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_directory_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectorySyncDirectoryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_sync_directory_error_409_round_trip(self):
+        data = load_fixture("directory_sync_directory_error_409.json")
+        instance = DirectorySyncDirectoryError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncDirectoryError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_directory_error_409_minimal_payload(self):
+        data = {
+            "code": "directory_sync_in_progress",
+            "message": "Request could not be processed.",
+        }
+        instance = DirectorySyncDirectoryError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_directory_sync_directory_error_422_round_trip(self):
+        data = load_fixture("directory_sync_directory_error_422.json")
+        instance = DirectorySyncDirectoryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncDirectoryError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_directory_error_422_minimal_payload(self):
+        data = {
+            "code": "directory_sync_unsupported",
+            "message": "Request could not be processed.",
+        }
+        instance = DirectorySyncDirectoryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_directory_sync_directory_error_503_round_trip(self):
+        data = load_fixture("directory_sync_directory_error_503.json")
+        instance = DirectorySyncDirectoryError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectorySyncDirectoryError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_sync_directory_error_503_minimal_payload(self):
+        data = {
+            "code": "directory_sync_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = DirectorySyncDirectoryError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_directory_groups_list_error_403_round_trip(self):
+        data = load_fixture("directory_groups_list_error_403.json")
+        instance = DirectoryGroupsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryGroupsListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_groups_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryGroupsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_groups_list_error_404_round_trip(self):
+        data = load_fixture("directory_groups_list_error_404.json")
+        instance = DirectoryGroupsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryGroupsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_groups_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryGroupsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_groups_list_error_422_round_trip(self):
+        data = load_fixture("directory_groups_list_error_422.json")
+        instance = DirectoryGroupsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryGroupsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_groups_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryGroupsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_groups_find_error_403_round_trip(self):
+        data = load_fixture("directory_groups_find_error_403.json")
+        instance = DirectoryGroupsFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryGroupsFindError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_groups_find_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryGroupsFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_groups_find_error_404_round_trip(self):
+        data = load_fixture("directory_groups_find_error_404.json")
+        instance = DirectoryGroupsFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryGroupsFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_groups_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryGroupsFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_users_list_error_403_round_trip(self):
+        data = load_fixture("directory_users_list_error_403.json")
+        instance = DirectoryUsersListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUsersListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_users_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryUsersListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_users_list_error_404_round_trip(self):
+        data = load_fixture("directory_users_list_error_404.json")
+        instance = DirectoryUsersListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUsersListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_users_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryUsersListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_users_list_error_422_round_trip(self):
+        data = load_fixture("directory_users_list_error_422.json")
+        instance = DirectoryUsersListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUsersListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_users_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryUsersListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_users_find_error_403_round_trip(self):
+        data = load_fixture("directory_users_find_error_403.json")
+        instance = DirectoryUsersFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUsersFindError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_users_find_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryUsersFindError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_directory_users_find_error_404_round_trip(self):
+        data = load_fixture("directory_users_find_error_404.json")
+        instance = DirectoryUsersFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUsersFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_users_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DirectoryUsersFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_event_list_error_400_round_trip(self):
+        data = load_fixture("event_list_error_400.json")
+        instance = EventListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_list_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = EventListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_event_list_error_422_round_trip(self):
+        data = load_fixture("event_list_error_422.json")
+        instance = EventListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_list_error_422_minimal_payload(self):
+        data = {
+            "errors": [{"code": "required", "field": "events"}],
+            "message": "Validation failed.",
+        }
+        instance = EventListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["errors"] == data["errors"]
+        assert serialized["message"] == data["message"]
+
+    def test_event_list_error_422_error_round_trip(self):
+        data = load_fixture("event_list_error_422_error.json")
+        instance = EventListError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventListError422Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_list_error_422_error_minimal_payload(self):
+        data = {"code": "required", "field": "events"}
+        instance = EventListError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_feature_flags_list_error_400_round_trip(self):
+        data = load_fixture("feature_flags_list_error_400.json")
+        instance = FeatureFlagsListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_list_error_400_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = FeatureFlagsListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_list_error_404_round_trip(self):
+        data = load_fixture("feature_flags_list_error_404.json")
+        instance = FeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_list_error_422_round_trip(self):
+        data = load_fixture("feature_flags_list_error_422.json")
+        instance = FeatureFlagsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FeatureFlagsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_find_by_slug_error_404_round_trip(self):
+        data = load_fixture("feature_flags_find_by_slug_error_404.json")
+        instance = FeatureFlagsFindBySlugError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFindBySlugError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_find_by_slug_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FeatureFlagsFindBySlugError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_disable_flag_error_404_round_trip(self):
+        data = load_fixture("feature_flags_disable_flag_error_404.json")
+        instance = FeatureFlagsDisableFlagError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsDisableFlagError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_disable_flag_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FeatureFlagsDisableFlagError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_disable_flag_error_409_round_trip(self):
+        data = load_fixture("feature_flags_disable_flag_error_409.json")
+        instance = FeatureFlagsDisableFlagError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsDisableFlagError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_disable_flag_error_409_minimal_payload(self):
+        data = {
+            "code": "concurrent_flag_target_update",
+            "message": "Request could not be processed.",
+        }
+        instance = FeatureFlagsDisableFlagError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_enable_flag_error_404_round_trip(self):
+        data = load_fixture("feature_flags_enable_flag_error_404.json")
+        instance = FeatureFlagsEnableFlagError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsEnableFlagError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_enable_flag_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FeatureFlagsEnableFlagError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_feature_flags_enable_flag_error_409_round_trip(self):
+        data = load_fixture("feature_flags_enable_flag_error_409.json")
+        instance = FeatureFlagsEnableFlagError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsEnableFlagError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_enable_flag_error_409_minimal_payload(self):
+        data = {
+            "code": "concurrent_flag_target_update",
+            "message": "Request could not be processed.",
+        }
+        instance = FeatureFlagsEnableFlagError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_flag_targets_create_target_error_400_round_trip(self):
+        data = load_fixture("flag_targets_create_target_error_400.json")
+        instance = FlagTargetsCreateTargetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsCreateTargetError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_create_target_error_400_minimal_payload(self):
+        data = {}
+        instance = FlagTargetsCreateTargetError400.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_targets_create_target_error_400_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagTargetsCreateTargetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert "message" not in serialized
+        assert "code" not in serialized
+        assert "statusCode" not in serialized
+
+    def test_flag_targets_create_target_error_403_round_trip(self):
+        data = load_fixture("flag_targets_create_target_error_403.json")
+        instance = FlagTargetsCreateTargetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsCreateTargetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_create_target_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FlagTargetsCreateTargetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_flag_targets_create_target_error_404_round_trip(self):
+        data = load_fixture("flag_targets_create_target_error_404.json")
+        instance = FlagTargetsCreateTargetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsCreateTargetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_create_target_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FlagTargetsCreateTargetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_flag_targets_delete_target_error_400_round_trip(self):
+        data = load_fixture("flag_targets_delete_target_error_400.json")
+        instance = FlagTargetsDeleteTargetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsDeleteTargetError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_delete_target_error_400_minimal_payload(self):
+        data = {}
+        instance = FlagTargetsDeleteTargetError400.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_targets_delete_target_error_400_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagTargetsDeleteTargetError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert "message" not in serialized
+        assert "code" not in serialized
+        assert "statusCode" not in serialized
+
+    def test_flag_targets_delete_target_error_403_round_trip(self):
+        data = load_fixture("flag_targets_delete_target_error_403.json")
+        instance = FlagTargetsDeleteTargetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsDeleteTargetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_delete_target_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FlagTargetsDeleteTargetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_flag_targets_delete_target_error_404_round_trip(self):
+        data = load_fixture("flag_targets_delete_target_error_404.json")
+        instance = FlagTargetsDeleteTargetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetsDeleteTargetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_targets_delete_target_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = FlagTargetsDeleteTargetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_domains_create_error_409_round_trip(self):
+        data = load_fixture("organization_domains_create_error_409.json")
+        instance = OrganizationDomainsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domains_create_error_409_minimal_payload(self):
+        data = {
+            "code": "domain_already_exists",
+            "message": "Domain already exists for this organization.",
+        }
+        instance = OrganizationDomainsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_domains_get_error_404_round_trip(self):
+        data = load_fixture("organization_domains_get_error_404.json")
+        instance = OrganizationDomainsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domains_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationDomainsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_domains_delete_error_404_round_trip(self):
+        data = load_fixture("organization_domains_delete_error_404.json")
+        instance = OrganizationDomainsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domains_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationDomainsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_domains_verify_error_400_round_trip(self):
+        data = load_fixture("organization_domains_verify_error_400.json")
+        instance = OrganizationDomainsVerifyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainsVerifyError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domains_verify_error_400_minimal_payload(self):
+        data = {
+            "code": "domain_already_verified",
+            "message": "Domain is already verified.",
+        }
+        instance = OrganizationDomainsVerifyError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_list_error_422_round_trip(self):
+        data = load_fixture("organization_list_error_422.json")
+        instance = OrganizationListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_create_error_400_round_trip(self):
+        data = load_fixture("organization_create_error_400.json")
+        instance = OrganizationCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_create_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_metadata",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_id_already_used_organization_create_error_400_round_trip(self):
+        data = load_fixture(
+            "external_id_already_used_organization_create_error_400.json"
+        )
+        instance = ExternalIdAlreadyUsedOrganizationCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalIdAlreadyUsedOrganizationCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_id_already_used_organization_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "external_id_already_used",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalIdAlreadyUsedOrganizationCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_create_error_409_round_trip(self):
+        data = load_fixture("organization_create_error_409.json")
+        instance = OrganizationCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_create_error_409_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_create_error_422_round_trip(self):
+        data = load_fixture("organization_create_error_422.json")
+        instance = OrganizationCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_get_error_404_round_trip(self):
+        data = load_fixture("organization_get_error_404.json")
+        instance = OrganizationGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_find_error_404_round_trip(self):
+        data = load_fixture("organization_find_error_404.json")
+        instance = OrganizationFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_update_organization_error_400_round_trip(self):
+        data = load_fixture("organization_update_organization_error_400.json")
+        instance = OrganizationUpdateOrganizationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdateOrganizationError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_update_organization_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_metadata",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationUpdateOrganizationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_id_already_used_organization_update_organization_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "external_id_already_used_organization_update_organization_error_400.json"
+        )
+        instance = (
+            ExternalIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            ExternalIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_external_id_already_used_organization_update_organization_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "external_id_already_used",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            ExternalIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_stripe_customer_id_already_used_organization_update_organization_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "stripe_customer_id_already_used_organization_update_organization_error_400.json"
+        )
+        instance = (
+            StripeCustomerIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            StripeCustomerIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_stripe_customer_id_already_used_organization_update_organization_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "stripe_customer_id_already_used",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            StripeCustomerIdAlreadyUsedOrganizationUpdateOrganizationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_update_organization_error_403_round_trip(self):
+        data = load_fixture("organization_update_organization_error_403.json")
+        instance = OrganizationUpdateOrganizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdateOrganizationError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_update_organization_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationUpdateOrganizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_update_organization_error_404_round_trip(self):
+        data = load_fixture("organization_update_organization_error_404.json")
+        instance = OrganizationUpdateOrganizationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdateOrganizationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_update_organization_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationUpdateOrganizationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_update_organization_error_409_round_trip(self):
+        data = load_fixture("organization_update_organization_error_409.json")
+        instance = OrganizationUpdateOrganizationError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdateOrganizationError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_update_organization_error_409_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationUpdateOrganizationError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_update_organization_error_422_round_trip(self):
+        data = load_fixture("organization_update_organization_error_422.json")
+        instance = OrganizationUpdateOrganizationError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdateOrganizationError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_update_organization_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationUpdateOrganizationError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_delete_organization_error_403_round_trip(self):
+        data = load_fixture("organization_delete_organization_error_403.json")
+        instance = OrganizationDeleteOrganizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeleteOrganizationError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_delete_organization_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationDeleteOrganizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_get_audit_log_configuration_error_404_round_trip(self):
+        data = load_fixture("organization_get_audit_log_configuration_error_404.json")
+        instance = OrganizationGetAuditLogConfigurationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationGetAuditLogConfigurationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_get_audit_log_configuration_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationGetAuditLogConfigurationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_logs_retention_audit_logs_retention_error_402_round_trip(self):
+        data = load_fixture("audit_logs_retention_audit_logs_retention_error_402.json")
+        instance = AuditLogsRetentionAuditLogsRetentionError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogsRetentionAuditLogsRetentionError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_logs_retention_audit_logs_retention_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogsRetentionAuditLogsRetentionError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_logs_retention_audit_logs_retention_error_404_round_trip(self):
+        data = load_fixture("audit_logs_retention_audit_logs_retention_error_404.json")
+        instance = AuditLogsRetentionAuditLogsRetentionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogsRetentionAuditLogsRetentionError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_audit_logs_retention_audit_logs_retention_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogsRetentionAuditLogsRetentionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_402_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "audit_logs_retention_update_audit_logs_retention_error_402.json"
+        )
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogsRetentionUpdateAuditLogsRetentionError402.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_402_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "audit_logs_retention_update_audit_logs_retention_error_404.json"
+        )
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogsRetentionUpdateAuditLogsRetentionError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "audit_logs_retention_update_audit_logs_retention_error_422.json"
+        )
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuditLogsRetentionUpdateAuditLogsRetentionError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_audit_logs_retention_update_audit_logs_retention_error_422_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuditLogsRetentionUpdateAuditLogsRetentionError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_api_keys_list_error_404_round_trip(self):
+        data = load_fixture("organization_api_keys_list_error_404.json")
+        instance = OrganizationApiKeysListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationApiKeysListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_api_keys_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationApiKeysListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_api_keys_create_error_404_round_trip(self):
+        data = load_fixture("organization_api_keys_create_error_404.json")
+        instance = OrganizationApiKeysCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationApiKeysCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_api_keys_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationApiKeysCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_api_keys_create_error_422_round_trip(self):
+        data = load_fixture("organization_api_keys_create_error_422.json")
+        instance = OrganizationApiKeysCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationApiKeysCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_api_keys_create_error_422_minimal_payload(self):
+        data = {
+            "message": "Validation failed.",
+            "errors": [{"code": "required", "field": "event.action"}],
+        }
+        instance = OrganizationApiKeysCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_organization_api_keys_create_error_422_error_round_trip(self):
+        data = load_fixture("organization_api_keys_create_error_422_error.json")
+        instance = OrganizationApiKeysCreateError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationApiKeysCreateError422Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_api_keys_create_error_422_error_minimal_payload(self):
+        data = {"code": "required", "field": "event.action"}
+        instance = OrganizationApiKeysCreateError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_provider_list_for_organization_error_404_round_trip(self):
+        data = load_fixture("provider_list_for_organization_error_404.json")
+        instance = ProviderListForOrganizationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ProviderListForOrganizationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_provider_list_for_organization_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ProviderListForOrganizationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_provider_configure_error_400_round_trip(self):
+        data = load_fixture("provider_configure_error_400.json")
+        instance = ProviderConfigureError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ProviderConfigureError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_provider_configure_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ProviderConfigureError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_provider_configure_error_404_round_trip(self):
+        data = load_fixture("provider_configure_error_404.json")
+        instance = ProviderConfigureError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ProviderConfigureError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_provider_configure_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ProviderConfigureError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_provider_configure_error_422_round_trip(self):
+        data = load_fixture("provider_configure_error_422.json")
+        instance = ProviderConfigureError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ProviderConfigureError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_provider_configure_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ProviderConfigureError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_feature_flags_list_error_404_round_trip(self):
+        data = load_fixture("organization_feature_flags_list_error_404.json")
+        instance = OrganizationFeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationFeatureFlagsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_feature_flags_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationFeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_list_error_403_round_trip(self):
+        data = load_fixture("group_list_error_403.json")
+        instance = GroupListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_list_error_404_round_trip(self):
+        data = load_fixture("group_list_error_404.json")
+        instance = GroupListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_create_error_400_round_trip(self):
+        data = load_fixture("group_create_error_400.json")
+        instance = GroupCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_create_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = GroupCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_group_create_error_403_round_trip(self):
+        data = load_fixture("group_create_error_403.json")
+        instance = GroupCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_create_error_404_round_trip(self):
+        data = load_fixture("group_create_error_404.json")
+        instance = GroupCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_create_error_422_round_trip(self):
+        data = load_fixture("group_create_error_422.json")
+        instance = GroupCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_get_error_403_round_trip(self):
+        data = load_fixture("group_get_error_403.json")
+        instance = GroupGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupGetError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_get_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupGetError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_get_error_404_round_trip(self):
+        data = load_fixture("group_get_error_404.json")
+        instance = GroupGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_update_error_400_round_trip(self):
+        data = load_fixture("group_update_error_400.json")
+        instance = GroupUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_update_error_400_minimal_payload(self):
+        data = {"code": "bad_request", "message": "Request could not be processed."}
+        instance = GroupUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_group_update_error_403_round_trip(self):
+        data = load_fixture("group_update_error_403.json")
+        instance = GroupUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupUpdateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_update_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupUpdateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_update_error_404_round_trip(self):
+        data = load_fixture("group_update_error_404.json")
+        instance = GroupUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_update_error_422_round_trip(self):
+        data = load_fixture("group_update_error_422.json")
+        instance = GroupUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_update_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_delete_error_403_round_trip(self):
+        data = load_fixture("group_delete_error_403.json")
+        instance = GroupDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_delete_error_404_round_trip(self):
+        data = load_fixture("group_delete_error_404.json")
+        instance = GroupDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_list_members_error_403_round_trip(self):
+        data = load_fixture("group_memberships_list_members_error_403.json")
+        instance = GroupMembershipsListMembersError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsListMembersError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_list_members_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsListMembersError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_list_members_error_404_round_trip(self):
+        data = load_fixture("group_memberships_list_members_error_404.json")
+        instance = GroupMembershipsListMembersError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsListMembersError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_list_members_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsListMembersError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_add_member_error_400_round_trip(self):
+        data = load_fixture("group_memberships_add_member_error_400.json")
+        instance = GroupMembershipsAddMemberError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsAddMemberError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_add_member_error_400_minimal_payload(self):
+        data = {
+            "code": "group_membership_limit_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = GroupMembershipsAddMemberError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_add_member_error_403_round_trip(self):
+        data = load_fixture("group_memberships_add_member_error_403.json")
+        instance = GroupMembershipsAddMemberError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsAddMemberError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_add_member_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsAddMemberError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_add_member_error_404_round_trip(self):
+        data = load_fixture("group_memberships_add_member_error_404.json")
+        instance = GroupMembershipsAddMemberError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsAddMemberError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_add_member_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsAddMemberError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_add_member_error_422_round_trip(self):
+        data = load_fixture("group_memberships_add_member_error_422.json")
+        instance = GroupMembershipsAddMemberError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsAddMemberError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_add_member_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsAddMemberError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_remove_member_error_403_round_trip(self):
+        data = load_fixture("group_memberships_remove_member_error_403.json")
+        instance = GroupMembershipsRemoveMemberError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsRemoveMemberError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_remove_member_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsRemoveMemberError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_group_memberships_remove_member_error_404_round_trip(self):
+        data = load_fixture("group_memberships_remove_member_error_404.json")
+        instance = GroupMembershipsRemoveMemberError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMembershipsRemoveMemberError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_memberships_remove_member_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = GroupMembershipsRemoveMemberError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_authorized_applications_list_error_404_round_trip(self):
+        data = load_fixture("organization_authorized_applications_list_error_404.json")
+        instance = OrganizationAuthorizedApplicationsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationAuthorizedApplicationsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_authorized_applications_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationAuthorizedApplicationsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_authorized_applications_list_error_422_round_trip(self):
+        data = load_fixture("organization_authorized_applications_list_error_422.json")
+        instance = OrganizationAuthorizedApplicationsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationAuthorizedApplicationsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_authorized_applications_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationAuthorizedApplicationsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_get_organization_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_get_organization_data_installation_error_400.json"
+        )
+        instance = DataIntegrationsOrganizationGetOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationGetOrganizationDataInstallationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_get_organization_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationGetOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_get_organization_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_get_organization_data_installation_error_404.json"
+        )
+        instance = DataIntegrationsOrganizationGetOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationGetOrganizationDataInstallationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_get_organization_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationGetOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_403.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_404.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_404_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_organization_create_organization_data_installation_error_404_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_organization_create_organization_data_installation_error_4042_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_4042.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4042.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4042.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_409.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError409.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_409_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_organization_create_organization_data_installation_error_409_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError409.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_organization_create_organization_data_installation_error_4092_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_4092.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4092.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_4092_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError4092.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_422.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_token_combination",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_organization_create_organization_data_installation_error_422_code",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_with_errors_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_422_with_errors.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrors.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrors.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_with_errors_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrors.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_with_errors_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_422_with_errors_error.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrorsError.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrorsError.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_422_with_errors_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError422WithErrorsError.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_create_organization_data_installation_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_create_organization_data_installation_error_503.json"
+        )
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationCreateOrganizationDataInstallationError503.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_create_organization_data_installation_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationCreateOrganizationDataInstallationError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_update_organization_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_update_organization_data_installation_error_400.json"
+        )
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_update_organization_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_update_organization_data_installation_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_update_organization_data_installation_error_403.json"
+        )
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_update_organization_data_installation_error_403_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_update_organization_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_update_organization_data_installation_error_404.json"
+        )
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_update_organization_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_update_organization_data_installation_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_update_organization_data_installation_error_422.json"
+        )
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_update_organization_data_installation_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_data_integrations_organization_update_organization_data_installation_error_422_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_update_organization_data_installation_error_422_error.json"
+        )
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422Error.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422Error.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_update_organization_data_installation_error_422_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = DataIntegrationsOrganizationUpdateOrganizationDataInstallationError422Error.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_delete_organization_data_installation_error_400.json"
+        )
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_delete_organization_data_installation_error_404.json"
+        )
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_delete_organization_data_installation_error_503.json"
+        )
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError503.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_delete_organization_data_installation_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = DataIntegrationsOrganizationDeleteOrganizationDataInstallationError503.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_organization_get_organization_data_integrations_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_organization_get_organization_data_integrations_error_404.json"
+        )
+        instance = DataIntegrationsOrganizationGetOrganizationDataIntegrationsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsOrganizationGetOrganizationDataIntegrationsError404.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_organization_get_organization_data_integrations_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsOrganizationGetOrganizationDataIntegrationsError404.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_list_error_403_round_trip(self):
+        data = load_fixture("it_contacts_list_error_403.json")
+        instance = ItContactsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsListError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_list_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsListError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_list_error_404_round_trip(self):
+        data = load_fixture("it_contacts_list_error_404.json")
+        instance = ItContactsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_create_error_403_round_trip(self):
+        data = load_fixture("it_contacts_create_error_403.json")
+        instance = ItContactsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_create_error_404_round_trip(self):
+        data = load_fixture("it_contacts_create_error_404.json")
+        instance = ItContactsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_create_error_409_round_trip(self):
+        data = load_fixture("it_contacts_create_error_409.json")
+        instance = ItContactsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_create_error_409_minimal_payload(self):
+        data = {
+            "code": "it_contact_already_exists",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_create_error_422_round_trip(self):
+        data = load_fixture("it_contacts_create_error_422.json")
+        instance = ItContactsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_create_error_503_round_trip(self):
+        data = load_fixture("it_contacts_create_error_503.json")
+        instance = ItContactsCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsCreateError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_create_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsCreateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_delete_error_403_round_trip(self):
+        data = load_fixture("it_contacts_delete_error_403.json")
+        instance = ItContactsDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsDeleteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_delete_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsDeleteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_delete_error_404_round_trip(self):
+        data = load_fixture("it_contacts_delete_error_404.json")
+        instance = ItContactsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_delete_error_503_round_trip(self):
+        data = load_fixture("it_contacts_delete_error_503.json")
+        instance = ItContactsDeleteError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsDeleteError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_delete_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsDeleteError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_402_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_402.json")
+        instance = ItContactsInviteError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsInviteError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_403_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_403.json")
+        instance = ItContactsInviteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsInviteError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_404_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_404.json")
+        instance = ItContactsInviteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsInviteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_409_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_409.json")
+        instance = ItContactsInviteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_409_minimal_payload(self):
+        data = {
+            "code": "it_contact_invitation_already_active",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsInviteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_422_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_422.json")
+        instance = ItContactsInviteError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsInviteError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_429_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_429.json")
+        instance = ItContactsInviteError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsInviteError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_invite_error_503_round_trip(self):
+        data = load_fixture("it_contacts_invite_error_503.json")
+        instance = ItContactsInviteError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsInviteError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_invite_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsInviteError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_revoke_error_403_round_trip(self):
+        data = load_fixture("it_contacts_revoke_error_403.json")
+        instance = ItContactsRevokeError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsRevokeError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_revoke_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsRevokeError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_revoke_error_404_round_trip(self):
+        data = load_fixture("it_contacts_revoke_error_404.json")
+        instance = ItContactsRevokeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsRevokeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_revoke_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = ItContactsRevokeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_it_contacts_revoke_error_503_round_trip(self):
+        data = load_fixture("it_contacts_revoke_error_503.json")
+        instance = ItContactsRevokeError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ItContactsRevokeError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_it_contacts_revoke_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = ItContactsRevokeError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_team_create_team_error_409_round_trip(self):
+        data = load_fixture("team_create_team_error_409.json")
+        instance = TeamCreateTeamError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TeamCreateTeamError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_team_create_team_error_409_minimal_payload(self):
+        data = {
+            "code": "user_already_exists",
+            "message": "Request could not be processed.",
+        }
+        instance = TeamCreateTeamError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_team_create_team_error_422_round_trip(self):
+        data = load_fixture("team_create_team_error_422.json")
+        instance = TeamCreateTeamError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TeamCreateTeamError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_team_create_team_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = TeamCreateTeamError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_team_get_team_error_404_round_trip(self):
+        data = load_fixture("team_get_team_error_404.json")
+        instance = TeamGetTeamError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TeamGetTeamError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_team_get_team_error_404_minimal_payload(self):
+        data = {"code": "team_not_found", "message": "Request could not be processed."}
+        instance = TeamGetTeamError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_create_error_400_round_trip(self):
+        data = load_fixture("portal_sessions_create_error_400.json")
+        instance = PortalSessionsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_create_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_create_error_402_round_trip(self):
+        data = load_fixture("portal_sessions_create_error_402.json")
+        instance = PortalSessionsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsCreateError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_create_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = PortalSessionsCreateError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_create_error_403_round_trip(self):
+        data = load_fixture("portal_sessions_create_error_403.json")
+        instance = PortalSessionsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_create_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_create_error_404_round_trip(self):
+        data = load_fixture("portal_sessions_create_error_404.json")
+        instance = PortalSessionsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_create_error_422_round_trip(self):
+        data = load_fixture("portal_sessions_create_error_422.json")
+        instance = PortalSessionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_revoke_link_error_404_round_trip(self):
+        data = load_fixture("portal_sessions_revoke_link_error_404.json")
+        instance = PortalSessionsRevokeLinkError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsRevokeLinkError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_revoke_link_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsRevokeLinkError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_portal_sessions_revoke_link_error_422_round_trip(self):
+        data = load_fixture("portal_sessions_revoke_link_error_422.json")
+        instance = PortalSessionsRevokeLinkError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PortalSessionsRevokeLinkError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_portal_sessions_revoke_link_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PortalSessionsRevokeLinkError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_assess_error_400_round_trip(self):
+        data = load_fixture("radar_standalone_assess_error_400.json")
+        instance = RadarStandaloneAssessError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneAssessError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_assess_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneAssessError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_assess_error_402_round_trip(self):
+        data = load_fixture("radar_standalone_assess_error_402.json")
+        instance = RadarStandaloneAssessError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneAssessError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_assess_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarStandaloneAssessError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_update_radar_attempt_error_400_round_trip(self):
+        data = load_fixture("radar_standalone_update_radar_attempt_error_400.json")
+        instance = RadarStandaloneUpdateRadarAttemptError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneUpdateRadarAttemptError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_update_radar_attempt_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneUpdateRadarAttemptError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_update_radar_attempt_error_402_round_trip(self):
+        data = load_fixture("radar_standalone_update_radar_attempt_error_402.json")
+        instance = RadarStandaloneUpdateRadarAttemptError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneUpdateRadarAttemptError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_update_radar_attempt_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarStandaloneUpdateRadarAttemptError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_update_radar_attempt_error_404_round_trip(self):
+        data = load_fixture("radar_standalone_update_radar_attempt_error_404.json")
+        instance = RadarStandaloneUpdateRadarAttemptError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneUpdateRadarAttemptError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_update_radar_attempt_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneUpdateRadarAttemptError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_update_radar_list_error_400_round_trip(self):
+        data = load_fixture("radar_standalone_update_radar_list_error_400.json")
+        instance = RadarStandaloneUpdateRadarListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneUpdateRadarListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_update_radar_list_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneUpdateRadarListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_update_radar_list_error_402_round_trip(self):
+        data = load_fixture("radar_standalone_update_radar_list_error_402.json")
+        instance = RadarStandaloneUpdateRadarListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneUpdateRadarListError402.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_update_radar_list_error_402_minimal_payload(self):
+        data = {
+            "code": "production_feature_requires_billing",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarStandaloneUpdateRadarListError402.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_delete_radar_list_entry_error_400_round_trip(self):
+        data = load_fixture("radar_standalone_delete_radar_list_entry_error_400.json")
+        instance = RadarStandaloneDeleteRadarListEntryError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneDeleteRadarListEntryError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_delete_radar_list_entry_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneDeleteRadarListEntryError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_radar_standalone_delete_radar_list_entry_error_404_round_trip(self):
+        data = load_fixture("radar_standalone_delete_radar_list_entry_error_404.json")
+        instance = RadarStandaloneDeleteRadarListEntryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarStandaloneDeleteRadarListEntryError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_standalone_delete_radar_list_entry_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RadarStandaloneDeleteRadarListEntryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_json_web_key_set_error_404_round_trip(self):
+        data = load_fixture("sso_json_web_key_set_error_404.json")
+        instance = SSOJsonWebKeySetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOJsonWebKeySetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_json_web_key_set_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOJsonWebKeySetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_logout_error_404_round_trip(self):
+        data = load_fixture("sso_logout_error_404.json")
+        instance = SSOLogoutError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOLogoutError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_logout_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOLogoutError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_logout_authorize_error_400_round_trip(self):
+        data = load_fixture("sso_logout_authorize_error_400.json")
+        instance = SSOLogoutAuthorizeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOLogoutAuthorizeError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_logout_authorize_error_400_minimal_payload(self):
+        data = {
+            "error": "connection_invalid",
+            "error_description": "Single Logout is only supported for GenericOIDC connections.",
+        }
+        instance = SSOLogoutAuthorizeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_sso_logout_authorize_error_404_round_trip(self):
+        data = load_fixture("sso_logout_authorize_error_404.json")
+        instance = SSOLogoutAuthorizeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOLogoutAuthorizeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_logout_authorize_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOLogoutAuthorizeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_get_profile_error_401_round_trip(self):
+        data = load_fixture("sso_get_profile_error_401.json")
+        instance = SSOGetProfileError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOGetProfileError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_get_profile_error_401_minimal_payload(self):
+        data = {"error": "Unauthorized"}
+        instance = SSOGetProfileError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+
+    def test_sso_get_profile_error_404_round_trip(self):
+        data = load_fixture("sso_get_profile_error_404.json")
+        instance = SSOGetProfileError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOGetProfileError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_get_profile_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOGetProfileError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_token_error_400_round_trip(self):
+        data = load_fixture("sso_token_error_400.json")
+        instance = SSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_token_error_400_minimal_payload(self):
+        data = {
+            "error": "invalid_client",
+            "error_description": "Invalid client ID or secret.",
+        }
+        instance = SSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_unauthorized_client_sso_token_error_400_round_trip(self):
+        data = load_fixture("unauthorized_client_sso_token_error_400.json")
+        instance = UnauthorizedClientSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UnauthorizedClientSSOTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_unauthorized_client_sso_token_error_400_minimal_payload(self):
+        data = {
+            "error": "unauthorized_client",
+            "error_description": "The client is not authorized to use this grant type.",
+        }
+        instance = UnauthorizedClientSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_grant_sso_token_error_400_round_trip(self):
+        data = load_fixture("invalid_grant_sso_token_error_400.json")
+        instance = InvalidGrantSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidGrantSSOTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_grant_sso_token_error_400_minimal_payload(self):
+        data = {
+            "error": "invalid_grant",
+            "error_description": "The code has expired or has already been used.",
+        }
+        instance = InvalidGrantSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_unsupported_grant_type_sso_token_error_400_round_trip(self):
+        data = load_fixture("unsupported_grant_type_sso_token_error_400.json")
+        instance = UnsupportedGrantTypeSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UnsupportedGrantTypeSSOTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_unsupported_grant_type_sso_token_error_400_minimal_payload(self):
+        data = {
+            "error": "unsupported_grant_type",
+            "error_description": "The grant type is not supported.",
+        }
+        instance = UnsupportedGrantTypeSSOTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_sso_token_error_404_round_trip(self):
+        data = load_fixture("sso_token_error_404.json")
+        instance = SSOTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_token_error_422_round_trip(self):
+        data = load_fixture("sso_token_error_422.json")
+        instance = SSOTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSOTokenError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_token_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SSOTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_400_round_trip(self):
+        data = load_fixture("session_authenticate_error_400.json")
+        instance = SessionAuthenticateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_organization_id",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4002_round_trip(self):
+        data = load_fixture("session_authenticate_error_4002.json")
+        instance = SessionAuthenticateError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4002.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4002_minimal_payload(self):
+        data = {
+            "code": "code_challenge_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4003_round_trip(self):
+        data = load_fixture("session_authenticate_error_4003.json")
+        instance = SessionAuthenticateError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4003.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4003_minimal_payload(self):
+        data = {
+            "code": "invalid_credentials",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4004_round_trip(self):
+        data = load_fixture("session_authenticate_error_4004.json")
+        instance = SessionAuthenticateError4004.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4004.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4004_minimal_payload(self):
+        data = {
+            "code": "invalid_one_time_code",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4004.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4005_round_trip(self):
+        data = load_fixture("session_authenticate_error_4005.json")
+        instance = SessionAuthenticateError4005.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4005.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4005_minimal_payload(self):
+        data = {
+            "code": "one_time_code_previously_used",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4005.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4006_round_trip(self):
+        data = load_fixture("session_authenticate_error_4006.json")
+        instance = SessionAuthenticateError4006.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4006.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4006_minimal_payload(self):
+        data = {
+            "code": "one_time_code_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4006.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4007_round_trip(self):
+        data = load_fixture("session_authenticate_error_4007.json")
+        instance = SessionAuthenticateError4007.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4007.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4007_minimal_payload(self):
+        data = {
+            "code": "one_time_code_too_many_attempts",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4007.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4008_round_trip(self):
+        data = load_fixture("session_authenticate_error_4008.json")
+        instance = SessionAuthenticateError4008.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4008.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4008_minimal_payload(self):
+        data = {
+            "code": "invalid_pending_authentication_token",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError4008.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_4009_round_trip(self):
+        data = load_fixture("session_authenticate_error_4009.json")
+        instance = SessionAuthenticateError4009.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError4009.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_4009_minimal_payload(self):
+        data = {"code": "user_mismatch", "message": "Request could not be processed."}
+        instance = SessionAuthenticateError4009.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_40010_round_trip(self):
+        data = load_fixture("session_authenticate_error_40010.json")
+        instance = SessionAuthenticateError40010.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40010.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40010_minimal_payload(self):
+        data = {
+            "code": "phone_number_required",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError40010.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_40011_round_trip(self):
+        data = load_fixture("session_authenticate_error_40011.json")
+        instance = SessionAuthenticateError40011.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40011.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40011_minimal_payload(self):
+        data = {
+            "code": "verification_id_required",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError40011.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_40012_round_trip(self):
+        data = load_fixture("session_authenticate_error_40012.json")
+        instance = SessionAuthenticateError40012.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40012.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40012_minimal_payload(self):
+        data = {
+            "error": "invalid_client",
+            "error_description": "The request failed due to: invalid_client.",
+        }
+        instance = SessionAuthenticateError40012.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40013_round_trip(self):
+        data = load_fixture("session_authenticate_error_40013.json")
+        instance = SessionAuthenticateError40013.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40013.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40013_minimal_payload(self):
+        data = {
+            "error": "unauthorized_client",
+            "error_description": "The request failed due to: unauthorized_client.",
+        }
+        instance = SessionAuthenticateError40013.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40014_round_trip(self):
+        data = load_fixture("session_authenticate_error_40014.json")
+        instance = SessionAuthenticateError40014.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40014.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40014_minimal_payload(self):
+        data = {
+            "error": "invalid_profile",
+            "error_description": "The request failed due to: invalid_profile.",
+        }
+        instance = SessionAuthenticateError40014.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40015_round_trip(self):
+        data = load_fixture("session_authenticate_error_40015.json")
+        instance = SessionAuthenticateError40015.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40015.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40015_minimal_payload(self):
+        data = {
+            "error": "invitation_invalid",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = SessionAuthenticateError40015.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40016_round_trip(self):
+        data = load_fixture("session_authenticate_error_40016.json")
+        instance = SessionAuthenticateError40016.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40016.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40016_minimal_payload(self):
+        data = {
+            "error": "invitation_cannot_be_used_for_email",
+            "error_description": "The request failed due to: invitation_cannot_be_used_for_email.",
+        }
+        instance = SessionAuthenticateError40016.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40017_round_trip(self):
+        data = load_fixture("session_authenticate_error_40017.json")
+        instance = SessionAuthenticateError40017.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40017.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40017_minimal_payload(self):
+        data = {
+            "error": "authentication_method_not_allowed",
+            "error_description": "The request failed due to: authentication_method_not_allowed.",
+        }
+        instance = SessionAuthenticateError40017.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40018_round_trip(self):
+        data = load_fixture("session_authenticate_error_40018.json")
+        instance = SessionAuthenticateError40018.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40018.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40018_minimal_payload(self):
+        data = {
+            "error": "invalid_connection",
+            "error_description": "The request failed due to: invalid_connection.",
+        }
+        instance = SessionAuthenticateError40018.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40019_round_trip(self):
+        data = load_fixture("session_authenticate_error_40019.json")
+        instance = SessionAuthenticateError40019.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40019.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40019_minimal_payload(self):
+        data = {
+            "error": "sign_up_not_allowed",
+            "error_description": "The request failed due to: sign_up_not_allowed.",
+        }
+        instance = SessionAuthenticateError40019.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40020_round_trip(self):
+        data = load_fixture("session_authenticate_error_40020.json")
+        instance = SessionAuthenticateError40020.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40020.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40020_minimal_payload(self):
+        data = {
+            "error": "organization_authentication_methods_required",
+            "error_description": "The request failed due to: organization_authentication_methods_required.",
+        }
+        instance = SessionAuthenticateError40020.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40021_round_trip(self):
+        data = load_fixture("session_authenticate_error_40021.json")
+        instance = SessionAuthenticateError40021.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40021.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40021_minimal_payload(self):
+        data = {
+            "error": "invalid_link_authorization_code",
+            "error_description": "The request failed due to: invalid_link_authorization_code.",
+        }
+        instance = SessionAuthenticateError40021.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40022_round_trip(self):
+        data = load_fixture("session_authenticate_error_40022.json")
+        instance = SessionAuthenticateError40022.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40022.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40022_minimal_payload(self):
+        data = {
+            "error": "extra_attributes_required",
+            "error_description": "The request failed due to: extra_attributes_required.",
+        }
+        instance = SessionAuthenticateError40022.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40023_round_trip(self):
+        data = load_fixture("session_authenticate_error_40023.json")
+        instance = SessionAuthenticateError40023.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40023.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40023_minimal_payload(self):
+        data = {
+            "error": "pkce_not_supported",
+            "error_description": "The request failed due to: pkce_not_supported.",
+        }
+        instance = SessionAuthenticateError40023.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40024_round_trip(self):
+        data = load_fixture("session_authenticate_error_40024.json")
+        instance = SessionAuthenticateError40024.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40024.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40024_minimal_payload(self):
+        data = {
+            "error": "expired_token",
+            "error_description": "The request failed due to: expired_token.",
+        }
+        instance = SessionAuthenticateError40024.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40025_round_trip(self):
+        data = load_fixture("session_authenticate_error_40025.json")
+        instance = SessionAuthenticateError40025.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40025.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40025_minimal_payload(self):
+        data = {
+            "error": "authorization_pending",
+            "error_description": "The request failed due to: authorization_pending.",
+        }
+        instance = SessionAuthenticateError40025.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40026_round_trip(self):
+        data = load_fixture("session_authenticate_error_40026.json")
+        instance = SessionAuthenticateError40026.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40026.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40026_minimal_payload(self):
+        data = {
+            "error": "access_denied",
+            "error_description": "The request failed due to: access_denied.",
+        }
+        instance = SessionAuthenticateError40026.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40027_round_trip(self):
+        data = load_fixture("session_authenticate_error_40027.json")
+        instance = SessionAuthenticateError40027.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40027.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40027_minimal_payload(self):
+        data = {
+            "error": "slow_down",
+            "error_description": "The request failed due to: slow_down.",
+        }
+        instance = SessionAuthenticateError40027.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_40028_round_trip(self):
+        data = load_fixture("session_authenticate_error_40028.json")
+        instance = SessionAuthenticateError40028.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError40028.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_40028_minimal_payload(self):
+        data = {"message": "Must use SSO for selected organization"}
+        instance = SessionAuthenticateError40028.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_400_variant_29_round_trip(self):
+        data = load_fixture("session_authenticate_error_400_variant_29.json")
+        instance = SessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError400Variant29.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_400_variant_29_minimal_payload(self):
+        data = {
+            "error": "invalid_grant",
+            "error_description": "The request failed due to: invalid_grant.",
+        }
+        instance = SessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_request_session_authenticate_error_400_variant_29_round_trip(self):
+        data = load_fixture(
+            "invalid_request_session_authenticate_error_400_variant_29.json"
+        )
+        instance = InvalidRequestSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestSessionAuthenticateError400Variant29.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_session_authenticate_error_400_variant_29_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "invalid_request",
+            "error_description": "The request failed due to: invalid_request.",
+        }
+        instance = InvalidRequestSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_organization_not_found_session_authenticate_error_400_variant_29_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_not_found_session_authenticate_error_400_variant_29.json"
+        )
+        instance = OrganizationNotFoundSessionAuthenticateError400Variant29.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationNotFoundSessionAuthenticateError400Variant29.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_not_found_session_authenticate_error_400_variant_29_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "organization_not_found",
+            "error_description": "The request failed due to: organization_not_found.",
+        }
+        instance = OrganizationNotFoundSessionAuthenticateError400Variant29.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_organization_membership_not_found_session_authenticate_error_400_variant_29_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_membership_not_found_session_authenticate_error_400_variant_29.json"
+        )
+        instance = OrganizationMembershipNotFoundSessionAuthenticateError400Variant29.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipNotFoundSessionAuthenticateError400Variant29.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_not_found_session_authenticate_error_400_variant_29_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "organization_membership_not_found",
+            "error_description": "The request failed due to: organization_membership_not_found.",
+        }
+        instance = OrganizationMembershipNotFoundSessionAuthenticateError400Variant29.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_mfa_enrollment_session_authenticate_error_400_variant_29_round_trip(self):
+        data = load_fixture(
+            "mfa_enrollment_session_authenticate_error_400_variant_29.json"
+        )
+        instance = MFAEnrollmentSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MFAEnrollmentSessionAuthenticateError400Variant29.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_mfa_enrollment_session_authenticate_error_400_variant_29_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "mfa_enrollment",
+            "error_description": "The request failed due to: mfa_enrollment.",
+        }
+        instance = MFAEnrollmentSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_token_too_big_session_authenticate_error_400_variant_29_round_trip(self):
+        data = load_fixture(
+            "token_too_big_session_authenticate_error_400_variant_29.json"
+        )
+        instance = TokenTooBigSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TokenTooBigSessionAuthenticateError400Variant29.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_token_too_big_session_authenticate_error_400_variant_29_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "token_too_big",
+            "error_description": "The request failed due to: token_too_big.",
+        }
+        instance = TokenTooBigSessionAuthenticateError400Variant29.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_session_authenticate_error_400_variant_29_variant_7_round_trip(self):
+        data = load_fixture("session_authenticate_error_400_variant_29_variant_7.json")
+        instance = SessionAuthenticateError400Variant29Variant7.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError400Variant29Variant7.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_400_variant_29_variant_7_minimal_payload(self):
+        data = {
+            "error": "sso_required",
+            "error_description": "The request failed due to: sso_required.",
+            "connection_ids": ["connection_ids_01234"],
+            "email": "user@example.com",
+        }
+        instance = SessionAuthenticateError400Variant29Variant7.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+        assert serialized["connection_ids"] == data["connection_ids"]
+        assert serialized["email"] == data["email"]
+
+    def test_session_authenticate_error_400_variant_29_variant_7_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "error": "sso_required",
+            "error_description": "The request failed due to: sso_required.",
+            "connection_ids": ["connection_ids_01234"],
+            "email": "user@example.com",
+        }
+        instance = SessionAuthenticateError400Variant29Variant7.from_dict(data)
+        serialized = instance.to_dict()
+        assert "pending_authentication_token" not in serialized
+
+    def test_session_authenticate_error_403_round_trip(self):
+        data = load_fixture("session_authenticate_error_403.json")
+        instance = SessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_403_minimal_payload(self):
+        data = {"code": "mfa_enrollment", "message": "Request could not be processed."}
+        instance = SessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_mfa_challenge_session_authenticate_error_403_round_trip(self):
+        data = load_fixture("mfa_challenge_session_authenticate_error_403.json")
+        instance = MFAChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MFAChallengeSessionAuthenticateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_mfa_challenge_session_authenticate_error_403_minimal_payload(self):
+        data = {"code": "mfa_challenge", "message": "Request could not be processed."}
+        instance = MFAChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_method_not_allowed_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_method_not_allowed_session_authenticate_error_403.json"
+        )
+        instance = AuthenticationMethodNotAllowedSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMethodNotAllowedSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_method_not_allowed_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "authentication_method_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthenticationMethodNotAllowedSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_completion_required_session_authenticate_error_403_round_trip(self):
+        data = load_fixture(
+            "email_completion_required_session_authenticate_error_403.json"
+        )
+        instance = EmailCompletionRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailCompletionRequiredSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_completion_required_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_completion_required",
+            "message": "Request could not be processed.",
+            "email_completion_token": "JZ8kQ2mR5vT7wX1yA3bC6dE9f",
+        }
+        instance = EmailCompletionRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["email_completion_token"] == data["email_completion_token"]
+
+    def test_email_verification_required_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_verification_required_session_authenticate_error_403.json"
+        )
+        instance = EmailVerificationRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationRequiredSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_required_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_verification_required",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailVerificationRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_password_auth_disabled_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_password_auth_disabled_session_authenticate_error_403.json"
+        )
+        instance = EmailPasswordAuthDisabledSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailPasswordAuthDisabledSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_password_auth_disabled_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_password_auth_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailPasswordAuthDisabledSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_selection_required_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_selection_required_session_authenticate_error_403.json"
+        )
+        instance = OrganizationSelectionRequiredSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_selection_required",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationSelectionRequiredSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_passkey_progressive_enrollment_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "passkey_progressive_enrollment_session_authenticate_error_403.json"
+        )
+        instance = PasskeyProgressiveEnrollmentSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasskeyProgressiveEnrollmentSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_passkey_progressive_enrollment_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "passkey_progressive_enrollment",
+            "message": "Request could not be processed.",
+        }
+        instance = PasskeyProgressiveEnrollmentSessionAuthenticateError403.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_challenge_session_authenticate_error_403_round_trip(self):
+        data = load_fixture("radar_challenge_session_authenticate_error_403.json")
+        instance = RadarChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarChallengeSessionAuthenticateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_challenge_session_authenticate_error_403_minimal_payload(self):
+        data = {"code": "radar_challenge", "message": "Request could not be processed."}
+        instance = RadarChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_sign_up_challenge_session_authenticate_error_403_round_trip(self):
+        data = load_fixture(
+            "radar_sign_up_challenge_session_authenticate_error_403.json"
+        )
+        instance = RadarSignUpChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarSignUpChallengeSessionAuthenticateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_sign_up_challenge_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "radar_sign_up_challenge",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarSignUpChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_sms_sign_in_challenge_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "radar_sms_sign_in_challenge_session_authenticate_error_403.json"
+        )
+        instance = RadarSmsSignInChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarSmsSignInChallengeSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_radar_sms_sign_in_challenge_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "radar_sms_sign_in_challenge",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarSmsSignInChallengeSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_application_consent_required_session_authenticate_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "application_consent_required_session_authenticate_error_403.json"
+        )
+        instance = ApplicationConsentRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationConsentRequiredSessionAuthenticateError403.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_application_consent_required_session_authenticate_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "application_consent_required",
+            "message": "Request could not be processed.",
+        }
+        instance = ApplicationConsentRequiredSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_policy_denied_session_authenticate_error_403_round_trip(self):
+        data = load_fixture("policy_denied_session_authenticate_error_403.json")
+        instance = PolicyDeniedSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PolicyDeniedSessionAuthenticateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_policy_denied_session_authenticate_error_403_minimal_payload(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = PolicyDeniedSessionAuthenticateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_404_round_trip(self):
+        data = load_fixture("session_authenticate_error_404.json")
+        instance = SessionAuthenticateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SessionAuthenticateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_422_round_trip(self):
+        data = load_fixture("session_authenticate_error_422.json")
+        instance = SessionAuthenticateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = SessionAuthenticateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_429_round_trip(self):
+        data = load_fixture("session_authenticate_error_429.json")
+        instance = SessionAuthenticateError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = SessionAuthenticateError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_session_authenticate_error_429_with_error_round_trip(self):
+        data = load_fixture("session_authenticate_error_429_with_error.json")
+        instance = SessionAuthenticateError429WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionAuthenticateError429WithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_authenticate_error_429_with_error_minimal_payload(self):
+        data = {
+            "error": "too_many_requests",
+            "error_description": "The request failed due to: too_many_requests.",
+        }
+        instance = SessionAuthenticateError429WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_authkit_oauth_resources_list_error_401_round_trip(self):
+        data = load_fixture("authkit_oauth_resources_list_error_401.json")
+        instance = AuthkitOAuthResourcesListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResourcesListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resources_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthkitOAuthResourcesListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authkit_oauth_resources_create_error_401_round_trip(self):
+        data = load_fixture("authkit_oauth_resources_create_error_401.json")
+        instance = AuthkitOAuthResourcesCreateError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResourcesCreateError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resources_create_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthkitOAuthResourcesCreateError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authkit_oauth_resources_create_error_422_round_trip(self):
+        data = load_fixture("authkit_oauth_resources_create_error_422.json")
+        instance = AuthkitOAuthResourcesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResourcesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resources_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthkitOAuthResourcesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authkit_oauth_resources_delete_error_401_round_trip(self):
+        data = load_fixture("authkit_oauth_resources_delete_error_401.json")
+        instance = AuthkitOAuthResourcesDeleteError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResourcesDeleteError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resources_delete_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthkitOAuthResourcesDeleteError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authkit_oauth_resources_delete_error_404_round_trip(self):
+        data = load_fixture("authkit_oauth_resources_delete_error_404.json")
+        instance = AuthkitOAuthResourcesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthkitOAuthResourcesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authkit_oauth_resources_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthkitOAuthResourcesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_sso_device_authorization_error_400_round_trip(self):
+        data = load_fixture("sso_device_authorization_error_400.json")
+        instance = SSODeviceAuthorizationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSODeviceAuthorizationError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_device_authorization_error_400_minimal_payload(self):
+        data = {"error": "invalid_client", "error_description": "Unknown client"}
+        instance = SSODeviceAuthorizationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_sso_device_authorization_error_403_round_trip(self):
+        data = load_fixture("sso_device_authorization_error_403.json")
+        instance = SSODeviceAuthorizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSODeviceAuthorizationError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sso_device_authorization_error_403_minimal_payload(self):
+        data = {
+            "error": "access_denied",
+            "error_description": "Device authorization grant is not enabled for this team",
+        }
+        instance = SSODeviceAuthorizationError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_cors_origins_list_error_401_round_trip(self):
+        data = load_fixture("cors_origins_list_error_401.json")
+        instance = CORSOriginsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CORSOriginsListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_cors_origins_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = CORSOriginsListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_cors_origins_create_cors_origin_error_409_round_trip(self):
+        data = load_fixture("cors_origins_create_cors_origin_error_409.json")
+        instance = CORSOriginsCreateCORSOriginError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CORSOriginsCreateCORSOriginError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_cors_origins_create_cors_origin_error_409_minimal_payload(self):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError409.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_cors_origins_create_cors_origin_error_409_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert "code" not in serialized
+        assert "message" not in serialized
+
+    def test_cors_origins_create_cors_origin_error_422_round_trip(self):
+        data = load_fixture("cors_origins_create_cors_origin_error_422.json")
+        instance = CORSOriginsCreateCORSOriginError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CORSOriginsCreateCORSOriginError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_cors_origins_create_cors_origin_error_422_minimal_payload(self):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError422.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_cors_origins_create_cors_origin_error_422_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert "message" not in serialized
+        assert "errors" not in serialized
+
+    def test_cors_origins_create_cors_origin_error_422_error_round_trip(self):
+        data = load_fixture("cors_origins_create_cors_origin_error_422_error.json")
+        instance = CORSOriginsCreateCORSOriginError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CORSOriginsCreateCORSOriginError422Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_cors_origins_create_cors_origin_error_422_error_minimal_payload(self):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError422Error.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_cors_origins_create_cors_origin_error_422_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = CORSOriginsCreateCORSOriginError422Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert "property" not in serialized
+        assert "constraints" not in serialized
+
+    def test_user_get_email_verification_error_404_round_trip(self):
+        data = load_fixture("user_get_email_verification_error_404.json")
+        instance = UserGetEmailVerificationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserGetEmailVerificationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_get_email_verification_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserGetEmailVerificationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_list_error_422_round_trip(self):
+        data = load_fixture("user_invites_list_error_422.json")
+        instance = UserInvitesListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_list_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserInvitesListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_create_error_400_round_trip(self):
+        data = load_fixture("user_invites_create_error_400.json")
+        instance = UserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_create_error_400_minimal_payload(self):
+        data = {
+            "code": "email_already_invited_to_organization",
+            "message": "Request could not be processed.",
+        }
+        instance = UserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_already_organization_member_user_invites_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "user_already_organization_member_user_invites_create_error_400.json"
+        )
+        instance = UserAlreadyOrganizationMemberUserInvitesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserAlreadyOrganizationMemberUserInvitesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_user_already_organization_member_user_invites_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "user_already_organization_member",
+            "message": "Request could not be processed.",
+        }
+        instance = UserAlreadyOrganizationMemberUserInvitesCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_already_invited_user_invites_create_error_400_round_trip(self):
+        data = load_fixture("email_already_invited_user_invites_create_error_400.json")
+        instance = EmailAlreadyInvitedUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailAlreadyInvitedUserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_already_invited_user_invites_create_error_400_minimal_payload(self):
+        data = {
+            "code": "email_already_invited",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailAlreadyInvitedUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_already_exists_user_invites_create_error_400_round_trip(self):
+        data = load_fixture("user_already_exists_user_invites_create_error_400.json")
+        instance = UserAlreadyExistsUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserAlreadyExistsUserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_already_exists_user_invites_create_error_400_minimal_payload(self):
+        data = {
+            "code": "user_already_exists",
+            "message": "Request could not be processed.",
+        }
+        instance = UserAlreadyExistsUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_expires_in_days_too_short_user_invites_create_error_400_round_trip(self):
+        data = load_fixture(
+            "expires_in_days_too_short_user_invites_create_error_400.json"
+        )
+        instance = ExpiresInDaysTooShortUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExpiresInDaysTooShortUserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_expires_in_days_too_short_user_invites_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "expires_in_days_too_short",
+            "message": "Request could not be processed.",
+        }
+        instance = ExpiresInDaysTooShortUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_expires_in_days_too_long_user_invites_create_error_400_round_trip(self):
+        data = load_fixture(
+            "expires_in_days_too_long_user_invites_create_error_400.json"
+        )
+        instance = ExpiresInDaysTooLongUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExpiresInDaysTooLongUserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_expires_in_days_too_long_user_invites_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "expires_in_days_too_long",
+            "message": "Request could not be processed.",
+        }
+        instance = ExpiresInDaysTooLongUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_role_user_invites_create_error_400_round_trip(self):
+        data = load_fixture("invalid_role_user_invites_create_error_400.json")
+        instance = InvalidRoleUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRoleUserInvitesCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_role_user_invites_create_error_400_minimal_payload(self):
+        data = {"code": "invalid_role", "message": "Request could not be processed."}
+        instance = InvalidRoleUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_blocked_from_sending_invites_user_invites_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_blocked_from_sending_invites_user_invites_create_error_400.json"
+        )
+        instance = (
+            OrganizationBlockedFromSendingInvitesUserInvitesCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            OrganizationBlockedFromSendingInvitesUserInvitesCreateError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_blocked_from_sending_invites_user_invites_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_blocked_from_sending_invites",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            OrganizationBlockedFromSendingInvitesUserInvitesCreateError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_domain_not_deliverable_user_invites_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_domain_not_deliverable_user_invites_create_error_400.json"
+        )
+        instance = EmailDomainNotDeliverableUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailDomainNotDeliverableUserInvitesCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_domain_not_deliverable_user_invites_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_domain_not_deliverable",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailDomainNotDeliverableUserInvitesCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_create_error_404_round_trip(self):
+        data = load_fixture("user_invites_create_error_404.json")
+        instance = UserInvitesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserInvitesCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_create_error_422_round_trip(self):
+        data = load_fixture("user_invites_create_error_422.json")
+        instance = UserInvitesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_create_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserInvitesCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_get_by_token_error_404_round_trip(self):
+        data = load_fixture("user_invites_get_by_token_error_404.json")
+        instance = UserInvitesGetByTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesGetByTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_get_by_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserInvitesGetByTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_get_error_404_round_trip(self):
+        data = load_fixture("user_invites_get_error_404.json")
+        instance = UserInvitesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserInvitesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_accept_error_400_round_trip(self):
+        data = load_fixture("user_invites_accept_error_400.json")
+        instance = UserInvitesAcceptError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesAcceptError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_accept_error_400_minimal_payload(self):
+        data = {"code": "invite_not_pending", "message": "Invite is not pending."}
+        instance = UserInvitesAcceptError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_accept_error_400_round_trips_unknown_enum_values(self):
+        data = {
+            "code": "unexpected_user_invites_accept_error_400_code",
+            "message": "Invite is not pending.",
+        }
+        instance = UserInvitesAcceptError400.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_invites_accept_error_404_round_trip(self):
+        data = load_fixture("user_invites_accept_error_404.json")
+        instance = UserInvitesAcceptError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesAcceptError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_accept_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserInvitesAcceptError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_resend_error_400_round_trip(self):
+        data = load_fixture("user_invites_resend_error_400.json")
+        instance = UserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesResendError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_resend_error_400_minimal_payload(self):
+        data = {"code": "invite_expired", "message": "Invite has expired."}
+        instance = UserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invite_revoked_user_invites_resend_error_400_round_trip(self):
+        data = load_fixture("invite_revoked_user_invites_resend_error_400.json")
+        instance = InviteRevokedUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InviteRevokedUserInvitesResendError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invite_revoked_user_invites_resend_error_400_minimal_payload(self):
+        data = {"code": "invite_revoked", "message": "Invite has been revoked."}
+        instance = InviteRevokedUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invite_accepted_user_invites_resend_error_400_round_trip(self):
+        data = load_fixture("invite_accepted_user_invites_resend_error_400.json")
+        instance = InviteAcceptedUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InviteAcceptedUserInvitesResendError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invite_accepted_user_invites_resend_error_400_minimal_payload(self):
+        data = {
+            "code": "invite_accepted",
+            "message": "Invite has already been accepted.",
+        }
+        instance = InviteAcceptedUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_domain_not_deliverable_user_invites_resend_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_domain_not_deliverable_user_invites_resend_error_400.json"
+        )
+        instance = EmailDomainNotDeliverableUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailDomainNotDeliverableUserInvitesResendError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_domain_not_deliverable_user_invites_resend_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_domain_not_deliverable",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailDomainNotDeliverableUserInvitesResendError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_resend_error_404_round_trip(self):
+        data = load_fixture("user_invites_resend_error_404.json")
+        instance = UserInvitesResendError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesResendError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_resend_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserInvitesResendError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_resend_error_422_round_trip(self):
+        data = load_fixture("user_invites_resend_error_422.json")
+        instance = UserInvitesResendError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesResendError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_resend_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserInvitesResendError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_invites_revoke_error_400_round_trip(self):
+        data = load_fixture("user_invites_revoke_error_400.json")
+        instance = UserInvitesRevokeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserInvitesRevokeError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_invites_revoke_error_400_minimal_payload(self):
+        data = {"code": "invite_not_pending", "message": "Invite is not pending."}
+        instance = UserInvitesRevokeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_jwt_templates_get_jwt_template_error_404_round_trip(self):
+        data = load_fixture("jwt_templates_get_jwt_template_error_404.json")
+        instance = JWTTemplatesGetJWTTemplateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = JWTTemplatesGetJWTTemplateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_jwt_templates_get_jwt_template_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = JWTTemplatesGetJWTTemplateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_jwt_templates_update_jwt_template_error_422_round_trip(self):
+        data = load_fixture("jwt_templates_update_jwt_template_error_422.json")
+        instance = JWTTemplatesUpdateJWTTemplateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = JWTTemplatesUpdateJWTTemplateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_jwt_templates_update_jwt_template_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = JWTTemplatesUpdateJWTTemplateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_400_round_trip(self):
+        data = load_fixture("magic_auth_send_magic_auth_code_and_return_error_400.json")
+        instance = MagicAuthSendMagicAuthCodeAndReturnError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_400_minimal_payload(self):
+        data = {
+            "error": "invitation_invalid",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = MagicAuthSendMagicAuthCodeAndReturnError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_4002_round_trip(self):
+        data = load_fixture(
+            "magic_auth_send_magic_auth_code_and_return_error_4002.json"
+        )
+        instance = MagicAuthSendMagicAuthCodeAndReturnError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError4002.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_4002_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "authentication_method_not_allowed",
+            "error_description": "The request failed due to: authentication_method_not_allowed.",
+        }
+        instance = MagicAuthSendMagicAuthCodeAndReturnError4002.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_4003_round_trip(self):
+        data = load_fixture(
+            "magic_auth_send_magic_auth_code_and_return_error_4003.json"
+        )
+        instance = MagicAuthSendMagicAuthCodeAndReturnError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError4003.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_4003_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "sign_up_not_allowed",
+            "error_description": "The request failed due to: sign_up_not_allowed.",
+        }
+        instance = MagicAuthSendMagicAuthCodeAndReturnError4003.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_400_with_code_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "magic_auth_send_magic_auth_code_and_return_error_400_with_code.json"
+        )
+        instance = MagicAuthSendMagicAuthCodeAndReturnError400WithCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError400WithCode.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_400_with_code_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_domain_not_deliverable",
+            "message": "Request could not be processed.",
+        }
+        instance = MagicAuthSendMagicAuthCodeAndReturnError400WithCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_403_round_trip(self):
+        data = load_fixture("magic_auth_send_magic_auth_code_and_return_error_403.json")
+        instance = MagicAuthSendMagicAuthCodeAndReturnError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_403_minimal_payload(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = MagicAuthSendMagicAuthCodeAndReturnError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_422_round_trip(self):
+        data = load_fixture("magic_auth_send_magic_auth_code_and_return_error_422.json")
+        instance = MagicAuthSendMagicAuthCodeAndReturnError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = MagicAuthSendMagicAuthCodeAndReturnError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_429_round_trip(self):
+        data = load_fixture("magic_auth_send_magic_auth_code_and_return_error_429.json")
+        instance = MagicAuthSendMagicAuthCodeAndReturnError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthSendMagicAuthCodeAndReturnError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_send_magic_auth_code_and_return_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = MagicAuthSendMagicAuthCodeAndReturnError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_magic_auth_get_error_404_round_trip(self):
+        data = load_fixture("magic_auth_get_error_404.json")
+        instance = MagicAuthGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = MagicAuthGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_list_error_400_round_trip(self):
+        data = load_fixture("user_organization_memberships_list_error_400.json")
+        instance = UserOrganizationMembershipsListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsListError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_list_error_400_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserOrganizationMembershipsListError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_missing_user_id_or_organization_id_user_organization_memberships_list_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "missing_user_id_or_organization_id_user_organization_memberships_list_error_400.json"
+        )
+        instance = MissingUserIdOrOrganizationIdUserOrganizationMembershipsListError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MissingUserIdOrOrganizationIdUserOrganizationMembershipsListError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_missing_user_id_or_organization_id_user_organization_memberships_list_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "missing_user_id_or_organization_id",
+            "message": "Request could not be processed.",
+        }
+        instance = MissingUserIdOrOrganizationIdUserOrganizationMembershipsListError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_list_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_list_error_404.json")
+        instance = UserOrganizationMembershipsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_list_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_list_error_422.json")
+        instance = UserOrganizationMembershipsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_create_error_400_round_trip(self):
+        data = load_fixture("user_organization_memberships_create_error_400.json")
+        instance = UserOrganizationMembershipsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_create_error_400_minimal_payload(self):
+        data = {
+            "message": "A pending organization membership cannot be reactivated. The user needs to accept the invitation instead.",
+            "code": "cannot_reactivate_pending_organization_membership",
+        }
+        instance = UserOrganizationMembershipsCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_user_organization_memberships_create_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_create_error_404.json")
+        instance = UserOrganizationMembershipsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_create_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_create_error_422.json")
+        instance = UserOrganizationMembershipsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_create_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserOrganizationMembershipsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_role_user_organization_memberships_create_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_role_user_organization_memberships_create_error_422.json"
+        )
+        instance = InvalidRoleUserOrganizationMembershipsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRoleUserOrganizationMembershipsCreateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_role_user_organization_memberships_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Role 'invalid_slug' is not a valid role.",
+            "code": "invalid_role",
+        }
+        instance = InvalidRoleUserOrganizationMembershipsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_multiple_roles_not_enabled_user_organization_memberships_create_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "multiple_roles_not_enabled_user_organization_memberships_create_error_422.json"
+        )
+        instance = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsCreateError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsCreateError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_multiple_roles_not_enabled_user_organization_memberships_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Multiple roles are not enabled for this environment.",
+            "code": "multiple_roles_not_enabled",
+        }
+        instance = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsCreateError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_sub_resource_scoped_role_not_allowed_user_organization_memberships_create_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sub_resource_scoped_role_not_allowed_user_organization_memberships_create_error_422.json"
+        )
+        instance = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsCreateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsCreateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sub_resource_scoped_role_not_allowed_user_organization_memberships_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Sub-resource scoped roles are not allowed for this operation.",
+            "code": "sub_resource_scoped_role_not_allowed",
+            "role_slug": "admin",
+        }
+        instance = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsCreateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_user_organization_memberships_get_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_get_error_404.json")
+        instance = UserOrganizationMembershipsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_update_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_update_error_404.json")
+        instance = UserOrganizationMembershipsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_update_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_update_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_update_error_422.json")
+        instance = UserOrganizationMembershipsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_update_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserOrganizationMembershipsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_role_user_organization_memberships_update_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_role_user_organization_memberships_update_error_422.json"
+        )
+        instance = InvalidRoleUserOrganizationMembershipsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRoleUserOrganizationMembershipsUpdateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_role_user_organization_memberships_update_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Role 'invalid_slug' is not a valid role.",
+            "code": "invalid_role",
+        }
+        instance = InvalidRoleUserOrganizationMembershipsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_multiple_roles_not_enabled_user_organization_memberships_update_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "multiple_roles_not_enabled_user_organization_memberships_update_error_422.json"
+        )
+        instance = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsUpdateError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsUpdateError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_multiple_roles_not_enabled_user_organization_memberships_update_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Multiple roles are not enabled for this environment.",
+            "code": "multiple_roles_not_enabled",
+        }
+        instance = (
+            MultipleRolesNotEnabledUserOrganizationMembershipsUpdateError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_sub_resource_scoped_role_not_allowed_user_organization_memberships_update_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sub_resource_scoped_role_not_allowed_user_organization_memberships_update_error_422.json"
+        )
+        instance = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsUpdateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsUpdateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sub_resource_scoped_role_not_allowed_user_organization_memberships_update_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Sub-resource scoped roles are not allowed for this operation.",
+            "code": "sub_resource_scoped_role_not_allowed",
+            "role_slug": "admin",
+        }
+        instance = SubResourceScopedRoleNotAllowedUserOrganizationMembershipsUpdateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_user_organization_memberships_delete_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_delete_error_404.json")
+        instance = UserOrganizationMembershipsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_delete_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_delete_error_422.json")
+        instance = UserOrganizationMembershipsDeleteError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsDeleteError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_delete_error_422_minimal_payload(self):
+        data = {
+            "message": "This organization membership is managed by a directory and cannot be deleted. Remove the user from the directory in the identity provider instead.",
+            "code": "organization_membership_directory_managed",
+        }
+        instance = UserOrganizationMembershipsDeleteError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_user_organization_memberships_deactivate_error_400_round_trip(self):
+        data = load_fixture("user_organization_memberships_deactivate_error_400.json")
+        instance = UserOrganizationMembershipsDeactivateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsDeactivateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_deactivate_error_400_minimal_payload(self):
+        data = {
+            "message": "A pending organization membership cannot be deactivated. This membership should be deleted instead.",
+            "code": "cannot_deactivate_pending_organization_membership",
+        }
+        instance = UserOrganizationMembershipsDeactivateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_user_organization_memberships_deactivate_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_deactivate_error_404.json")
+        instance = UserOrganizationMembershipsDeactivateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsDeactivateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_deactivate_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsDeactivateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_deactivate_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_deactivate_error_422.json")
+        instance = UserOrganizationMembershipsDeactivateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsDeactivateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_deactivate_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserOrganizationMembershipsDeactivateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_reactivate_error_400_round_trip(self):
+        data = load_fixture("user_organization_memberships_reactivate_error_400.json")
+        instance = UserOrganizationMembershipsReactivateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsReactivateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_reactivate_error_400_minimal_payload(self):
+        data = {
+            "message": "A pending organization membership cannot be reactivated. The user needs to accept the invitation instead.",
+            "code": "cannot_reactivate_pending_organization_membership",
+        }
+        instance = UserOrganizationMembershipsReactivateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_user_organization_memberships_reactivate_error_404_round_trip(self):
+        data = load_fixture("user_organization_memberships_reactivate_error_404.json")
+        instance = UserOrganizationMembershipsReactivateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsReactivateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_reactivate_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserOrganizationMembershipsReactivateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_organization_memberships_reactivate_error_422_round_trip(self):
+        data = load_fixture("user_organization_memberships_reactivate_error_422.json")
+        instance = UserOrganizationMembershipsReactivateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserOrganizationMembershipsReactivateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_organization_memberships_reactivate_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserOrganizationMembershipsReactivateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_membership_groups_list_groups_error_404_round_trip(self):
+        data = load_fixture("organization_membership_groups_list_groups_error_404.json")
+        instance = OrganizationMembershipGroupsListGroupsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipGroupsListGroupsError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_groups_list_groups_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = OrganizationMembershipGroupsListGroupsError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_password_reset_token_error_403_round_trip(self):
+        data = load_fixture("user_create_password_reset_token_error_403.json")
+        instance = UserCreatePasswordResetTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatePasswordResetTokenError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_password_reset_token_error_403_minimal_payload(self):
+        data = {
+            "code": "email_password_auth_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = UserCreatePasswordResetTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_reset_not_allowed_user_create_password_reset_token_error_403_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "password_reset_not_allowed_user_create_password_reset_token_error_403.json"
+        )
+        instance = (
+            PasswordResetNotAllowedUserCreatePasswordResetTokenError403.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            PasswordResetNotAllowedUserCreatePasswordResetTokenError403.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_not_allowed_user_create_password_reset_token_error_403_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_reset_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            PasswordResetNotAllowedUserCreatePasswordResetTokenError403.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_password_reset_token_error_404_round_trip(self):
+        data = load_fixture("user_create_password_reset_token_error_404.json")
+        instance = UserCreatePasswordResetTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatePasswordResetTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_password_reset_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserCreatePasswordResetTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_password_reset_token_error_422_round_trip(self):
+        data = load_fixture("user_create_password_reset_token_error_422.json")
+        instance = UserCreatePasswordResetTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatePasswordResetTokenError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_password_reset_token_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserCreatePasswordResetTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_password_reset_token_error_429_round_trip(self):
+        data = load_fixture("user_create_password_reset_token_error_429.json")
+        instance = UserCreatePasswordResetTokenError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatePasswordResetTokenError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_password_reset_token_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = UserCreatePasswordResetTokenError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_reset_password_error_400_round_trip(self):
+        data = load_fixture("user_reset_password_error_400.json")
+        instance = UserResetPasswordError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserResetPasswordError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_reset_password_error_400_minimal_payload(self):
+        data = {
+            "code": "password_reset_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = UserResetPasswordError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_reset_password_error_400_error_round_trip(self):
+        data = load_fixture("user_reset_password_error_400_error.json")
+        instance = UserResetPasswordError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserResetPasswordError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_reset_password_error_400_error_minimal_payload(self):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = UserResetPasswordError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_reset_password_error_403_round_trip(self):
+        data = load_fixture("user_reset_password_error_403.json")
+        instance = UserResetPasswordError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserResetPasswordError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_reset_password_error_403_minimal_payload(self):
+        data = {
+            "code": "email_password_auth_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = UserResetPasswordError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_reset_password_error_404_round_trip(self):
+        data = load_fixture("user_reset_password_error_404.json")
+        instance = UserResetPasswordError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserResetPasswordError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_reset_password_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserResetPasswordError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_reset_password_error_422_round_trip(self):
+        data = load_fixture("user_reset_password_error_422.json")
+        instance = UserResetPasswordError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserResetPasswordError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_reset_password_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserResetPasswordError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_get_password_reset_error_404_round_trip(self):
+        data = load_fixture("user_get_password_reset_error_404.json")
+        instance = UserGetPasswordResetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserGetPasswordResetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_get_password_reset_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserGetPasswordResetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_public_radar_challenges_get_error_404_round_trip(self):
+        data = load_fixture("public_radar_challenges_get_error_404.json")
+        instance = PublicRadarChallengesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PublicRadarChallengesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_public_radar_challenges_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = PublicRadarChallengesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_list_error_401_round_trip(self):
+        data = load_fixture("redirect_uris_list_error_401.json")
+        instance = RedirectUrisListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisListError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_list_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisListError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_create_error_400_round_trip(self):
+        data = load_fixture("redirect_uris_create_error_400.json")
+        instance = RedirectUrisCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_create_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_create_error_401_round_trip(self):
+        data = load_fixture("redirect_uris_create_error_401.json")
+        instance = RedirectUrisCreateError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisCreateError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_create_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisCreateError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_create_error_422_round_trip(self):
+        data = load_fixture("redirect_uris_create_error_422.json")
+        instance = RedirectUrisCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_delete_error_401_round_trip(self):
+        data = load_fixture("redirect_uris_delete_error_401.json")
+        instance = RedirectUrisDeleteError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisDeleteError401.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_delete_error_401_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisDeleteError401.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_delete_error_404_round_trip(self):
+        data = load_fixture("redirect_uris_delete_error_404.json")
+        instance = RedirectUrisDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_redirect_uris_delete_error_409_round_trip(self):
+        data = load_fixture("redirect_uris_delete_error_409.json")
+        instance = RedirectUrisDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RedirectUrisDeleteError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_redirect_uris_delete_error_409_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = RedirectUrisDeleteError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_session_logout_error_422_round_trip(self):
+        data = load_fixture("session_logout_error_422.json")
+        instance = SessionLogoutError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionLogoutError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_logout_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SessionLogoutError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_session_revoke_session_error_400_round_trip(self):
+        data = load_fixture("session_revoke_session_error_400.json")
+        instance = SessionRevokeSessionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokeSessionError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoke_session_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = SessionRevokeSessionError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_list_error_422_round_trip(self):
+        data = load_fixture("user_list_error_422.json")
+        instance = UserListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_error_400_round_trip(self):
+        data = load_fixture("user_create_error_400.json")
+        instance = UserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_error_400_minimal_payload(self):
+        data = {
+            "code": "password_strength_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = UserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_create_error_400_error_round_trip(self):
+        data = load_fixture("user_create_error_400_error.json")
+        instance = UserCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_error_400_error_minimal_payload(self):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = UserCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_creation_error_user_create_error_400_round_trip(self):
+        data = load_fixture("user_creation_error_user_create_error_400.json")
+        instance = UserCreationErrorUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreationErrorUserCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_creation_error_user_create_error_400_minimal_payload(self):
+        data = {
+            "code": "user_creation_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = UserCreationErrorUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_creation_error_user_create_error_400_error_round_trip(self):
+        data = load_fixture("user_creation_error_user_create_error_400_error.json")
+        instance = UserCreationErrorUserCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreationErrorUserCreateError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_creation_error_user_create_error_400_error_minimal_payload(self):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = UserCreationErrorUserCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_password_hash_user_create_error_400_round_trip(self):
+        data = load_fixture("invalid_password_hash_user_create_error_400.json")
+        instance = InvalidPasswordHashUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidPasswordHashUserCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_password_hash_user_create_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidPasswordHashUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_provided_user_create_error_400_round_trip(self):
+        data = load_fixture(
+            "password_and_password_hash_provided_user_create_error_400.json"
+        )
+        instance = PasswordAndPasswordHashProvidedUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashProvidedUserCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_provided_user_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_and_password_hash_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashProvidedUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_type_provided_user_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "password_and_password_hash_type_provided_user_create_error_400.json"
+        )
+        instance = PasswordAndPasswordHashTypeProvidedUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashTypeProvidedUserCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_type_provided_user_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_and_password_hash_type_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashTypeProvidedUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_salt_position_requires_password_hash_user_create_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "password_salt_position_requires_password_hash_user_create_error_400.json"
+        )
+        instance = PasswordSaltPositionRequiresPasswordHashUserCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordSaltPositionRequiresPasswordHashUserCreateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_salt_position_requires_password_hash_user_create_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_salt_position_requires_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordSaltPositionRequiresPasswordHashUserCreateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_metadata_user_create_error_400_round_trip(self):
+        data = load_fixture("invalid_metadata_user_create_error_400.json")
+        instance = InvalidMetadataUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidMetadataUserCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_metadata_user_create_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_metadata",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidMetadataUserCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_error_403_round_trip(self):
+        data = load_fixture("user_create_error_403.json")
+        instance = UserCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_error_403_minimal_payload(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = UserCreateError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_error_404_round_trip(self):
+        data = load_fixture("user_create_error_404.json")
+        instance = UserCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_create_error_422_round_trip(self):
+        data = load_fixture("user_create_error_422.json")
+        instance = UserCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_create_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_get_error_404_round_trip(self):
+        data = load_fixture("user_get_error_404.json")
+        instance = UserGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_update_error_400_round_trip(self):
+        data = load_fixture("user_update_error_400.json")
+        instance = UserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "password_strength_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = UserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_update_error_400_error_round_trip(self):
+        data = load_fixture("user_update_error_400_error.json")
+        instance = UserUpdateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdateError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_update_error_400_error_minimal_payload(self):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = UserUpdateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_password_hash_user_update_error_400_round_trip(self):
+        data = load_fixture("invalid_password_hash_user_update_error_400.json")
+        instance = InvalidPasswordHashUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidPasswordHashUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_password_hash_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidPasswordHashUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_provided_user_update_error_400_round_trip(self):
+        data = load_fixture(
+            "password_and_password_hash_provided_user_update_error_400.json"
+        )
+        instance = PasswordAndPasswordHashProvidedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashProvidedUserUpdateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_provided_user_update_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_and_password_hash_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashProvidedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_type_provided_user_update_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "password_and_password_hash_type_provided_user_update_error_400.json"
+        )
+        instance = PasswordAndPasswordHashTypeProvidedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashTypeProvidedUserUpdateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_type_provided_user_update_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_and_password_hash_type_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashTypeProvidedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_salt_position_requires_password_hash_user_update_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "password_salt_position_requires_password_hash_user_update_error_400.json"
+        )
+        instance = PasswordSaltPositionRequiresPasswordHashUserUpdateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordSaltPositionRequiresPasswordHashUserUpdateError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_salt_position_requires_password_hash_user_update_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_salt_position_requires_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordSaltPositionRequiresPasswordHashUserUpdateError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_already_verified_user_update_error_400_round_trip(self):
+        data = load_fixture("email_already_verified_user_update_error_400.json")
+        instance = EmailAlreadyVerifiedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailAlreadyVerifiedUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_already_verified_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "email_already_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailAlreadyVerifiedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_metadata_user_update_error_400_round_trip(self):
+        data = load_fixture("invalid_metadata_user_update_error_400.json")
+        instance = InvalidMetadataUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidMetadataUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_metadata_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "invalid_metadata",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidMetadataUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_id_already_used_user_update_error_400_round_trip(self):
+        data = load_fixture("external_id_already_used_user_update_error_400.json")
+        instance = ExternalIdAlreadyUsedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalIdAlreadyUsedUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_id_already_used_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "external_id_already_used",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalIdAlreadyUsedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_not_allowed_user_update_error_400_round_trip(self):
+        data = load_fixture("email_change_not_allowed_user_update_error_400.json")
+        instance = EmailChangeNotAllowedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeNotAllowedUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_change_not_allowed_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "email_change_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailChangeNotAllowedUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_not_available_user_update_error_400_round_trip(self):
+        data = load_fixture("email_not_available_user_update_error_400.json")
+        instance = EmailNotAvailableUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailNotAvailableUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_not_available_user_update_error_400_minimal_payload(self):
+        data = {
+            "code": "email_not_available",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailNotAvailableUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_email_user_update_error_400_round_trip(self):
+        data = load_fixture("invalid_email_user_update_error_400.json")
+        instance = InvalidEmailUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidEmailUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_email_user_update_error_400_minimal_payload(self):
+        data = {"code": "invalid_email", "message": "Request could not be processed."}
+        instance = InvalidEmailUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_locale_user_update_error_400_round_trip(self):
+        data = load_fixture("invalid_locale_user_update_error_400.json")
+        instance = InvalidLocaleUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidLocaleUserUpdateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_locale_user_update_error_400_minimal_payload(self):
+        data = {"code": "invalid_locale", "message": "Request could not be processed."}
+        instance = InvalidLocaleUserUpdateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_update_error_422_round_trip(self):
+        data = load_fixture("user_update_error_422.json")
+        instance = UserUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_update_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_update_error_503_round_trip(self):
+        data = load_fixture("user_update_error_503.json")
+        instance = UserUpdateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdateError503.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_update_error_503_minimal_payload(self):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = UserUpdateError503.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_delete_error_404_round_trip(self):
+        data = load_fixture("user_delete_error_404.json")
+        instance = UserDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_confirm_email_change_error_400_round_trip(self):
+        data = load_fixture("user_confirm_email_change_error_400.json")
+        instance = UserConfirmEmailChangeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConfirmEmailChangeError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_confirm_email_change_error_400_minimal_payload(self):
+        data = {
+            "code": "email_change_code_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConfirmEmailChangeError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_code_incorrect_user_confirm_email_change_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_change_code_incorrect_user_confirm_email_change_error_400.json"
+        )
+        instance = EmailChangeCodeIncorrectUserConfirmEmailChangeError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeCodeIncorrectUserConfirmEmailChangeError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_change_code_incorrect_user_confirm_email_change_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_change_code_incorrect",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailChangeCodeIncorrectUserConfirmEmailChangeError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_confirm_email_change_error_404_round_trip(self):
+        data = load_fixture("user_confirm_email_change_error_404.json")
+        instance = UserConfirmEmailChangeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConfirmEmailChangeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_confirm_email_change_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserConfirmEmailChangeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_confirm_email_change_error_409_round_trip(self):
+        data = load_fixture("user_confirm_email_change_error_409.json")
+        instance = UserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConfirmEmailChangeError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_confirm_email_change_error_409_minimal_payload(self):
+        data = {
+            "code": "no_pending_email_change",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_code_previously_used_user_confirm_email_change_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_change_code_previously_used_user_confirm_email_change_error_409.json"
+        )
+        instance = (
+            EmailChangeCodePreviouslyUsedUserConfirmEmailChangeError409.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            EmailChangeCodePreviouslyUsedUserConfirmEmailChangeError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_change_code_previously_used_user_confirm_email_change_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_change_code_previously_used",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            EmailChangeCodePreviouslyUsedUserConfirmEmailChangeError409.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_not_available_user_confirm_email_change_error_409_round_trip(self):
+        data = load_fixture(
+            "email_not_available_user_confirm_email_change_error_409.json"
+        )
+        instance = EmailNotAvailableUserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailNotAvailableUserConfirmEmailChangeError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_not_available_user_confirm_email_change_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_not_available",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailNotAvailableUserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_not_allowed_user_confirm_email_change_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_change_not_allowed_user_confirm_email_change_error_409.json"
+        )
+        instance = EmailChangeNotAllowedUserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeNotAllowedUserConfirmEmailChangeError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_change_not_allowed_user_confirm_email_change_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_change_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailChangeNotAllowedUserConfirmEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_confirm_email_change_error_422_round_trip(self):
+        data = load_fixture("user_confirm_email_change_error_422.json")
+        instance = UserConfirmEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConfirmEmailChangeError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_confirm_email_change_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserConfirmEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_email_user_confirm_email_change_error_422_round_trip(self):
+        data = load_fixture("invalid_email_user_confirm_email_change_error_422.json")
+        instance = InvalidEmailUserConfirmEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidEmailUserConfirmEmailChangeError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_email_user_confirm_email_change_error_422_minimal_payload(self):
+        data = {"code": "invalid_email", "message": "Request could not be processed."}
+        instance = InvalidEmailUserConfirmEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_confirm_email_change_error_429_round_trip(self):
+        data = load_fixture("user_confirm_email_change_error_429.json")
+        instance = UserConfirmEmailChangeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConfirmEmailChangeError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_confirm_email_change_error_429_minimal_payload(self):
+        data = {
+            "code": "email_change_too_many_attempts",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConfirmEmailChangeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_email_change_error_404_round_trip(self):
+        data = load_fixture("user_send_email_change_error_404.json")
+        instance = UserSendEmailChangeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendEmailChangeError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_email_change_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserSendEmailChangeError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_email_change_error_409_round_trip(self):
+        data = load_fixture("user_send_email_change_error_409.json")
+        instance = UserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendEmailChangeError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_email_change_error_409_minimal_payload(self):
+        data = {
+            "code": "email_change_not_needed",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_not_available_user_send_email_change_error_409_round_trip(self):
+        data = load_fixture("email_not_available_user_send_email_change_error_409.json")
+        instance = EmailNotAvailableUserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailNotAvailableUserSendEmailChangeError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_not_available_user_send_email_change_error_409_minimal_payload(self):
+        data = {
+            "code": "email_not_available",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailNotAvailableUserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_not_allowed_user_send_email_change_error_409_round_trip(self):
+        data = load_fixture(
+            "email_change_not_allowed_user_send_email_change_error_409.json"
+        )
+        instance = EmailChangeNotAllowedUserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeNotAllowedUserSendEmailChangeError409.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_change_not_allowed_user_send_email_change_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_change_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailChangeNotAllowedUserSendEmailChangeError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_email_change_error_422_round_trip(self):
+        data = load_fixture("user_send_email_change_error_422.json")
+        instance = UserSendEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendEmailChangeError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_email_change_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserSendEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_email_user_send_email_change_error_422_round_trip(self):
+        data = load_fixture("invalid_email_user_send_email_change_error_422.json")
+        instance = InvalidEmailUserSendEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidEmailUserSendEmailChangeError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_email_user_send_email_change_error_422_minimal_payload(self):
+        data = {"code": "invalid_email", "message": "Request could not be processed."}
+        instance = InvalidEmailUserSendEmailChangeError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_email_change_error_429_round_trip(self):
+        data = load_fixture("user_send_email_change_error_429.json")
+        instance = UserSendEmailChangeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendEmailChangeError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_email_change_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSendEmailChangeError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_email_verification_error_400_round_trip(self):
+        data = load_fixture("user_email_verification_error_400.json")
+        instance = UserEmailVerificationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserEmailVerificationError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_email_verification_error_400_minimal_payload(self):
+        data = {
+            "code": "email_previously_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = UserEmailVerificationError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_verification_code_previously_used_user_email_verification_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_verification_code_previously_used_user_email_verification_error_400.json"
+        )
+        instance = (
+            EmailVerificationCodePreviouslyUsedUserEmailVerificationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            EmailVerificationCodePreviouslyUsedUserEmailVerificationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_code_previously_used_user_email_verification_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_verification_code_previously_used",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            EmailVerificationCodePreviouslyUsedUserEmailVerificationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_verification_code_expired_user_email_verification_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_verification_code_expired_user_email_verification_error_400.json"
+        )
+        instance = EmailVerificationCodeExpiredUserEmailVerificationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCodeExpiredUserEmailVerificationError400.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_code_expired_user_email_verification_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_verification_code_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailVerificationCodeExpiredUserEmailVerificationError400.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_verification_code_incorrect_user_email_verification_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_verification_code_incorrect_user_email_verification_error_400.json"
+        )
+        instance = (
+            EmailVerificationCodeIncorrectUserEmailVerificationError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            EmailVerificationCodeIncorrectUserEmailVerificationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_code_incorrect_user_email_verification_error_400_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_verification_code_incorrect",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            EmailVerificationCodeIncorrectUserEmailVerificationError400.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_email_verification_error_404_round_trip(self):
+        data = load_fixture("user_email_verification_error_404.json")
+        instance = UserEmailVerificationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserEmailVerificationError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_email_verification_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserEmailVerificationError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_email_verification_error_422_round_trip(self):
+        data = load_fixture("user_email_verification_error_422.json")
+        instance = UserEmailVerificationError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserEmailVerificationError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_email_verification_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserEmailVerificationError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_verification_email_error_400_round_trip(self):
+        data = load_fixture("user_send_verification_email_error_400.json")
+        instance = UserSendVerificationEmailError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendVerificationEmailError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_verification_email_error_400_minimal_payload(self):
+        data = {
+            "code": "email_already_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSendVerificationEmailError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_verification_email_error_404_round_trip(self):
+        data = load_fixture("user_send_verification_email_error_404.json")
+        instance = UserSendVerificationEmailError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendVerificationEmailError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_verification_email_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserSendVerificationEmailError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_verification_email_error_422_round_trip(self):
+        data = load_fixture("user_send_verification_email_error_422.json")
+        instance = UserSendVerificationEmailError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendVerificationEmailError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_verification_email_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserSendVerificationEmailError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_send_verification_email_error_429_round_trip(self):
+        data = load_fixture("user_send_verification_email_error_429.json")
+        instance = UserSendVerificationEmailError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSendVerificationEmailError429.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_send_verification_email_error_429_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = UserSendVerificationEmailError429.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_identities_get_error_404_round_trip(self):
+        data = load_fixture("user_identities_get_error_404.json")
+        instance = UserIdentitiesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserIdentitiesGetError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_identities_get_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserIdentitiesGetError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_sessions_list_error_404_round_trip(self):
+        data = load_fixture("user_sessions_list_error_404.json")
+        instance = UserSessionsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSessionsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_sessions_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserSessionsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_sessions_list_error_422_round_trip(self):
+        data = load_fixture("user_sessions_list_error_422.json")
+        instance = UserSessionsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserSessionsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_sessions_list_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = UserSessionsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_api_keys_list_error_404_round_trip(self):
+        data = load_fixture("user_api_keys_list_error_404.json")
+        instance = UserApiKeysListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeysListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_keys_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserApiKeysListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_api_keys_create_error_400_round_trip(self):
+        data = load_fixture("user_api_keys_create_error_400.json")
+        instance = UserApiKeysCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeysCreateError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_keys_create_error_400_minimal_payload(self):
+        data = {
+            "message": "Validation failed.",
+            "errors": [{"code": "required", "field": "event.action"}],
+        }
+        instance = UserApiKeysCreateError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_api_keys_create_error_400_error_round_trip(self):
+        data = load_fixture("user_api_keys_create_error_400_error.json")
+        instance = UserApiKeysCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeysCreateError400Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_keys_create_error_400_error_minimal_payload(self):
+        data = {"code": "required", "field": "event.action"}
+        instance = UserApiKeysCreateError400Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_user_api_keys_create_error_404_round_trip(self):
+        data = load_fixture("user_api_keys_create_error_404.json")
+        instance = UserApiKeysCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeysCreateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_keys_create_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserApiKeysCreateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_api_keys_create_error_422_round_trip(self):
+        data = load_fixture("user_api_keys_create_error_422.json")
+        instance = UserApiKeysCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserApiKeysCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_api_keys_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserApiKeysCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_feature_flags_list_error_404_round_trip(self):
+        data = load_fixture("user_feature_flags_list_error_404.json")
+        instance = UserFeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserFeatureFlagsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_feature_flags_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserFeatureFlagsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorized_applications_list_error_404_round_trip(self):
+        data = load_fixture("authorized_applications_list_error_404.json")
+        instance = AuthorizedApplicationsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizedApplicationsListError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorized_applications_list_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizedApplicationsListError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorized_applications_list_error_422_round_trip(self):
+        data = load_fixture("authorized_applications_list_error_422.json")
+        instance = AuthorizedApplicationsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizedApplicationsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorized_applications_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizedApplicationsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorized_applications_delete_error_404_round_trip(self):
+        data = load_fixture("authorized_applications_delete_error_404.json")
+        instance = AuthorizedApplicationsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizedApplicationsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorized_applications_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = AuthorizedApplicationsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_get_user_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_get_user_data_installation_error_400.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementGetUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementGetUserDataInstallationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_get_user_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementGetUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_get_user_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_get_user_data_installation_error_404.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementGetUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementGetUserDataInstallationError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_get_user_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementGetUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_404.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_404_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_user_management_create_user_data_installation_error_404_code",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_user_management_create_user_data_installation_error_4042_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_4042.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4042.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4042.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_4042_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4042.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_409_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_409.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError409.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_409_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError409.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_409_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_user_management_create_user_data_installation_error_409_code",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError409.from_dict(
+                data
+            )
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_user_management_create_user_data_installation_error_4092_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_4092.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4092.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4092.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_4092_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError4092.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_422.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_refresh_token",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_data_integrations_user_management_create_user_data_installation_error_422_code",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError422.from_dict(
+                data
+            )
+        )
+        assert instance.to_dict() == data
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_with_errors_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_422_with_errors.json"
+        )
+        instance = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrors.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrors.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_with_errors_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrors.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_with_errors_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_422_with_errors_error.json"
+        )
+        instance = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrorsError.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrorsError.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_422_with_errors_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = DataIntegrationsUserManagementCreateUserDataInstallationError422WithErrorsError.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_create_user_data_installation_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_create_user_data_installation_error_503.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError503.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_create_user_data_installation_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementCreateUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_update_user_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_update_user_data_installation_error_400.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_update_user_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_update_user_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_update_user_data_installation_error_404.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_update_user_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_update_user_data_installation_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_update_user_data_installation_error_422.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_update_user_data_installation_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_refresh_token",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422.json"
+        )
+        instance = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422_error.json"
+        )
+        instance = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422Error.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422Error.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_data_integrations_user_management_update_user_data_installation_error_422_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = InvalidRequestParametersDataIntegrationsUserManagementUpdateUserDataInstallationError422Error.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_update_user_data_installation_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_update_user_data_installation_error_503.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError503.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_update_user_data_installation_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementUpdateUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_400_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_delete_user_data_installation_error_400.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError400.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_400_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError400.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_delete_user_data_installation_error_404.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_503_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_delete_user_data_installation_error_503.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError503.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_delete_user_data_installation_error_503_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "concurrent_request",
+            "message": "Request could not be processed.",
+        }
+        instance = (
+            DataIntegrationsUserManagementDeleteUserDataInstallationError503.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_user_management_get_user_data_integrations_error_404_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integrations_user_management_get_user_data_integrations_error_404.json"
+        )
+        instance = (
+            DataIntegrationsUserManagementGetUserDataIntegrationsError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationsUserManagementGetUserDataIntegrationsError404.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_user_management_get_user_data_integrations_error_404_minimal_payload(
+        self,
+    ):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = (
+            DataIntegrationsUserManagementGetUserDataIntegrationsError404.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_authentication_factors_list_error_422_round_trip(self):
+        data = load_fixture("user_authentication_factors_list_error_422.json")
+        instance = UserAuthenticationFactorsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserAuthenticationFactorsListError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_authentication_factors_list_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserAuthenticationFactorsListError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_user_authentication_factors_create_error_422_round_trip(self):
+        data = load_fixture("user_authentication_factors_create_error_422.json")
+        instance = UserAuthenticationFactorsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserAuthenticationFactorsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_authentication_factors_create_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = UserAuthenticationFactorsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_entries_delete_error_404_round_trip(self):
+        data = load_fixture("waitlist_entries_delete_error_404.json")
+        instance = WaitlistEntriesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntriesDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entries_delete_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistEntriesDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_entries_approve_error_404_round_trip(self):
+        data = load_fixture("waitlist_entries_approve_error_404.json")
+        instance = WaitlistEntriesApproveError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntriesApproveError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entries_approve_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistEntriesApproveError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_entries_approve_error_422_round_trip(self):
+        data = load_fixture("waitlist_entries_approve_error_422.json")
+        instance = WaitlistEntriesApproveError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntriesApproveError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entries_approve_error_422_minimal_payload(self):
+        data = {"code": "invalid_state", "message": "Request could not be processed."}
+        instance = WaitlistEntriesApproveError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invitation_email_not_sent_waitlist_entries_approve_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invitation_email_not_sent_waitlist_entries_approve_error_422.json"
+        )
+        instance = InvitationEmailNotSentWaitlistEntriesApproveError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationEmailNotSentWaitlistEntriesApproveError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invitation_email_not_sent_waitlist_entries_approve_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invitation_email_not_sent",
+            "message": "Request could not be processed.",
+        }
+        instance = InvitationEmailNotSentWaitlistEntriesApproveError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_entries_deny_error_404_round_trip(self):
+        data = load_fixture("waitlist_entries_deny_error_404.json")
+        instance = WaitlistEntriesDenyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntriesDenyError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entries_deny_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistEntriesDenyError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_entries_deny_error_422_round_trip(self):
+        data = load_fixture("waitlist_entries_deny_error_422.json")
+        instance = WaitlistEntriesDenyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistEntriesDenyError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_entries_deny_error_422_minimal_payload(self):
+        data = {"code": "invalid_state", "message": "Request could not be processed."}
+        instance = WaitlistEntriesDenyError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_find_error_404_round_trip(self):
+        data = load_fixture("waitlist_find_error_404.json")
+        instance = WaitlistFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistFindError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_find_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistFindError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_list_entries_error_404_round_trip(self):
+        data = load_fixture("waitlist_list_entries_error_404.json")
+        instance = WaitlistListEntriesError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistListEntriesError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_list_entries_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistListEntriesError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_list_entries_error_422_round_trip(self):
+        data = load_fixture("waitlist_list_entries_error_422.json")
+        instance = WaitlistListEntriesError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistListEntriesError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_list_entries_error_422_minimal_payload(self):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = WaitlistListEntriesError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_create_entry_error_404_round_trip(self):
+        data = load_fixture("waitlist_create_entry_error_404.json")
+        instance = WaitlistCreateEntryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistCreateEntryError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_create_entry_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WaitlistCreateEntryError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_waitlist_create_entry_error_422_round_trip(self):
+        data = load_fixture("waitlist_create_entry_error_422.json")
+        instance = WaitlistCreateEntryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistCreateEntryError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_create_entry_error_422_minimal_payload(self):
+        data = {
+            "code": "user_already_exists",
+            "message": "Request could not be processed.",
+        }
+        instance = WaitlistCreateEntryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_waitlist_create_entry_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_waitlist_create_entry_error_422.json"
+        )
+        instance = InvalidRequestParametersWaitlistCreateEntryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersWaitlistCreateEntryError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_waitlist_create_entry_error_422_minimal_payload(
+        self,
+    ):
+        data = {"code": "invalid_request_parameters", "message": "Validation failed."}
+        instance = InvalidRequestParametersWaitlistCreateEntryError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_create_error_409_round_trip(self):
+        data = load_fixture("webhook_endpoints_create_error_409.json")
+        instance = WebhookEndpointsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsCreateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_create_error_409_minimal_payload(self):
+        data = {
+            "code": "duplicate_endpoint",
+            "message": "Request could not be processed.",
+        }
+        instance = WebhookEndpointsCreateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_create_error_422_round_trip(self):
+        data = load_fixture("webhook_endpoints_create_error_422.json")
+        instance = WebhookEndpointsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsCreateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_create_error_422_minimal_payload(self):
+        data = {"code": "invalid_url", "message": "Request could not be processed."}
+        instance = WebhookEndpointsCreateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_webhook_endpoints_create_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_webhook_endpoints_create_error_422.json"
+        )
+        instance = InvalidRequestParametersWebhookEndpointsCreateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersWebhookEndpointsCreateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_webhook_endpoints_create_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = InvalidRequestParametersWebhookEndpointsCreateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_invalid_request_parameters_webhook_endpoints_create_error_422_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_webhook_endpoints_create_error_422_error.json"
+        )
+        instance = (
+            InvalidRequestParametersWebhookEndpointsCreateError422Error.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidRequestParametersWebhookEndpointsCreateError422Error.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_webhook_endpoints_create_error_422_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = (
+            InvalidRequestParametersWebhookEndpointsCreateError422Error.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_update_error_404_round_trip(self):
+        data = load_fixture("webhook_endpoints_update_error_404.json")
+        instance = WebhookEndpointsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsUpdateError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_update_error_404_minimal_payload(self):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = WebhookEndpointsUpdateError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_update_error_409_round_trip(self):
+        data = load_fixture("webhook_endpoints_update_error_409.json")
+        instance = WebhookEndpointsUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsUpdateError409.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_update_error_409_minimal_payload(self):
+        data = {
+            "code": "duplicate_endpoint",
+            "message": "Request could not be processed.",
+        }
+        instance = WebhookEndpointsUpdateError409.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_update_error_422_round_trip(self):
+        data = load_fixture("webhook_endpoints_update_error_422.json")
+        instance = WebhookEndpointsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsUpdateError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_update_error_422_minimal_payload(self):
+        data = {"code": "invalid_url", "message": "Request could not be processed."}
+        instance = WebhookEndpointsUpdateError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_webhook_endpoints_update_error_422_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_webhook_endpoints_update_error_422.json"
+        )
+        instance = InvalidRequestParametersWebhookEndpointsUpdateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersWebhookEndpointsUpdateError422.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_webhook_endpoints_update_error_422_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "unknown_event_type", "message": "Invalid enum value."}
+            ],
+        }
+        instance = InvalidRequestParametersWebhookEndpointsUpdateError422.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_invalid_request_parameters_webhook_endpoints_update_error_422_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "invalid_request_parameters_webhook_endpoints_update_error_422_error.json"
+        )
+        instance = (
+            InvalidRequestParametersWebhookEndpointsUpdateError422Error.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            InvalidRequestParametersWebhookEndpointsUpdateError422Error.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_webhook_endpoints_update_error_422_error_minimal_payload(
+        self,
+    ):
+        data = {"code": "unknown_event_type", "message": "Invalid enum value."}
+        instance = (
+            InvalidRequestParametersWebhookEndpointsUpdateError422Error.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_webhook_endpoints_delete_error_404_round_trip(self):
+        data = load_fixture("webhook_endpoints_delete_error_404.json")
+        instance = WebhookEndpointsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WebhookEndpointsDeleteError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_webhook_endpoints_delete_error_404_minimal_payload(self):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = WebhookEndpointsDeleteError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_widget_public_issue_widget_session_token_error_400_round_trip(self):
+        data = load_fixture("widget_public_issue_widget_session_token_error_400.json")
+        instance = WidgetPublicIssueWidgetSessionTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WidgetPublicIssueWidgetSessionTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_widget_public_issue_widget_session_token_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WidgetPublicIssueWidgetSessionTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_widget_public_issue_widget_session_token_error_400_with_error_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "widget_public_issue_widget_session_token_error_400_with_error.json"
+        )
+        instance = WidgetPublicIssueWidgetSessionTokenError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WidgetPublicIssueWidgetSessionTokenError400WithError.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_widget_public_issue_widget_session_token_error_400_with_error_minimal_payload(
+        self,
+    ):
+        data = {"message": ["organization_id must be a string"], "error": "Bad Request"}
+        instance = WidgetPublicIssueWidgetSessionTokenError400WithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["error"] == data["error"]
+
+    def test_widget_public_issue_widget_session_token_error_404_round_trip(self):
+        data = load_fixture("widget_public_issue_widget_session_token_error_404.json")
+        instance = WidgetPublicIssueWidgetSessionTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WidgetPublicIssueWidgetSessionTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_widget_public_issue_widget_session_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WidgetPublicIssueWidgetSessionTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_widget_public_issue_widget_session_token_error_422_round_trip(self):
+        data = load_fixture("widget_public_issue_widget_session_token_error_422.json")
+        instance = WidgetPublicIssueWidgetSessionTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WidgetPublicIssueWidgetSessionTokenError422.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_widget_public_issue_widget_session_token_error_422_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = WidgetPublicIssueWidgetSessionTokenError422.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_user_token_error_400_round_trip(self):
+        data = load_fixture("data_integrations_get_user_token_error_400.json")
+        instance = DataIntegrationsGetUserTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetUserTokenError400.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_user_token_error_400_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetUserTokenError400.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_user_token_error_403_round_trip(self):
+        data = load_fixture("data_integrations_get_user_token_error_403.json")
+        instance = DataIntegrationsGetUserTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetUserTokenError403.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_user_token_error_403_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetUserTokenError403.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_data_integrations_get_user_token_error_404_round_trip(self):
+        data = load_fixture("data_integrations_get_user_token_error_404.json")
+        instance = DataIntegrationsGetUserTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationsGetUserTokenError404.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integrations_get_user_token_error_404_minimal_payload(self):
+        data = {"message": "Organization not found: 'org_01EHQMYV6MBK39QC5PZXHY59C3'."}
+        instance = DataIntegrationsGetUserTokenError404.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]

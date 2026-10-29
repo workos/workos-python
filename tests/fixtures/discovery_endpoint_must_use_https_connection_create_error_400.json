@@ -1,0 +1,4 @@
+{
+  "code": "discovery_endpoint_must_use_https",
+  "message": "Request could not be processed."
+}

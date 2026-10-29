@@ -1,0 +1,4 @@
+{
+  "message": "A pending organization membership cannot be reactivated. The user needs to accept the invitation instead.",
+  "code": "cannot_reactivate_pending_organization_membership"
+}

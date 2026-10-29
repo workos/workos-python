@@ -1,0 +1,4 @@
+{
+  "message": "This organization membership is managed by a directory and cannot be deleted. Remove the user from the directory in the identity provider instead.",
+  "code": "organization_membership_directory_managed"
+}

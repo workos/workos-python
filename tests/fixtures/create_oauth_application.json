@@ -13,6 +13,9 @@
       "default": true
     }
   ],
+  "cors_origins": [
+    "https://app.example.com"
+  ],
   "uses_pkce": true,
   "is_first_party": true,
   "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT"

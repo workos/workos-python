@@ -26,6 +26,8 @@ class CreateOAuthApplication:
     """The OAuth scopes granted to the application."""
     redirect_uris: list[RedirectUriInput] | None = None
     """Redirect URIs for the application."""
+    cors_origins: list[str] | None = None
+    """Origins allowed to call the OAuth token endpoint for this application from a browser."""
     uses_pkce: bool | None = None
     """Whether the application uses PKCE (Proof Key for Code Exchange)."""
     organization_id: str | None = None
@@ -47,6 +49,7 @@ class CreateOAuthApplication:
                 ]
                 if (_v_redirect_uris := data.get("redirect_uris")) is not None
                 else None,
+                cors_origins=data.get("cors_origins"),
                 uses_pkce=data.get("uses_pkce"),
                 organization_id=data.get("organization_id"),
             )
@@ -71,6 +74,10 @@ class CreateOAuthApplication:
             result["redirect_uris"] = [item.to_dict() for item in self.redirect_uris]
         else:
             result["redirect_uris"] = None
+        if self.cors_origins is not None:
+            result["cors_origins"] = self.cors_origins
+        else:
+            result["cors_origins"] = None
         if self.uses_pkce is not None:
             result["uses_pkce"] = self.uses_pkce
         else:

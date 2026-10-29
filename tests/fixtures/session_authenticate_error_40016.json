@@ -1,0 +1,4 @@
+{
+  "error": "invitation_cannot_be_used_for_email",
+  "error_description": "The request failed due to: invitation_cannot_be_used_for_email."
+}

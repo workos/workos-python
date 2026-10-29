@@ -11,5 +11,8 @@
       "uri": "https://example.com/callback",
       "default": true
     }
+  ],
+  "cors_origins": [
+    "https://app.example.com"
   ]
 }

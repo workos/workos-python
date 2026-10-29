@@ -1,0 +1,9 @@
+{
+  "error": "sso_required",
+  "error_description": "The request failed due to: sso_required.",
+  "connection_ids": [
+    "connection_ids_01234"
+  ],
+  "email": "user@example.com",
+  "pending_authentication_token": "pat_01FVYZ..."
+}

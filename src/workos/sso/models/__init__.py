@@ -5,6 +5,9 @@ from .connection_domain import ConnectionDomain as ConnectionDomain
 from .connections_connection_type import (
     ConnectionsConnectionType as ConnectionsConnectionType,
 )
+from .connections_connection_type import (
+    ConnectionsConnectionTypeLiteral as ConnectionsConnectionTypeLiteral,
+)
 from .create_connection import CreateConnection as CreateConnection
 from .create_connection_attribute_maps import (
     CreateConnectionAttributeMaps as CreateConnectionAttributeMaps,
@@ -57,6 +60,7 @@ from .sso_authorize_url_response import (
     SSOAuthorizeUrlResponse as SSOAuthorizeUrlResponse,
 )
 from .sso_grant_type import SSOGrantType as SSOGrantType
+from .sso_grant_type import SSOGrantTypeLiteral as SSOGrantTypeLiteral
 from .sso_logout_authorize_request import (
     SSOLogoutAuthorizeRequest as SSOLogoutAuthorizeRequest,
 )
@@ -64,6 +68,7 @@ from .sso_logout_authorize_response import (
     SSOLogoutAuthorizeResponse as SSOLogoutAuthorizeResponse,
 )
 from .sso_provider import SSOProvider as SSOProvider
+from .sso_provider import SSOProviderLiteral as SSOProviderLiteral
 from .sso_token_response import SSOTokenResponse as SSOTokenResponse
 from .sso_token_response_oauth_token import (
     SSOTokenResponseOAuthToken as SSOTokenResponseOAuthToken,

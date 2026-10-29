@@ -1,0 +1,4 @@
+{
+  "error": "sign_up_not_allowed",
+  "error_description": "The request failed due to: sign_up_not_allowed."
+}

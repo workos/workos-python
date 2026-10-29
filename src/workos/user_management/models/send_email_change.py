@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.send_email_change_locale import SendEmailChangeLocale
 
 
 @dataclass(slots=True)
@@ -14,6 +16,8 @@ class SendEmailChange:
 
     new_email: str
     """The new email address to change to."""
+    locale: SendEmailChangeLocale | None = None
+    """The locale to use when rendering the email change email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization)."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> SendEmailChange:
@@ -21,6 +25,9 @@ class SendEmailChange:
         try:
             return cls(
                 new_email=data["new_email"],
+                locale=SendEmailChangeLocale(_v_locale)
+                if (_v_locale := data.get("locale")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SendEmailChange", e)
@@ -29,4 +36,8 @@ class SendEmailChange:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["new_email"] = self.new_email
+        if self.locale is not None:
+            result["locale"] = (
+                self.locale.value if isinstance(self.locale, Enum) else self.locale
+            )
         return result

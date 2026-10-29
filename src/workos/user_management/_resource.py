@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
@@ -9,6 +10,12 @@ if TYPE_CHECKING:
 
 from dataclasses import dataclass
 
+from workos.common.models.create_magic_code_and_return_locale import (
+    CreateMagicCodeAndReturnLocale,
+)
+from workos.common.models.create_password_reset_token_locale import (
+    CreatePasswordResetTokenLocale,
+)
 from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
 )
@@ -21,6 +28,10 @@ from workos.common.models.create_user_password_salt_position import (
 from workos.common.models.pagination_order import PaginationOrder
 from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
+)
+from workos.common.models.send_email_change_locale import SendEmailChangeLocale
+from workos.common.models.send_verification_email_locale import (
+    SendVerificationEmailLocale,
 )
 from workos.common.models.user import User
 from workos.common.models.user_sessions_list_item import UserSessionsListItem
@@ -75,6 +86,7 @@ from .models import (
     VerifyEmailResponse,
     Waitlist,
     WaitlistEntry,
+    WaitlistListResponse,
 )
 
 
@@ -1045,6 +1057,7 @@ class UserManagement:
         self,
         *,
         email: str,
+        locale: CreatePasswordResetTokenLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Create a password reset token
@@ -1053,6 +1066,7 @@ class UserManagement:
 
         Args:
             email: The email address of the user requesting a password reset.
+            locale: The locale to use when rendering the password reset email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1067,7 +1081,12 @@ class UserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "email": email,
+            k: v
+            for k, v in {
+                "email": email,
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
         }
         return self._client.request(
             method="post",
@@ -1498,6 +1517,7 @@ class UserManagement:
         id: str,
         *,
         new_email: str,
+        locale: SendEmailChangeLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> EmailChange:
         """Send email change code
@@ -1507,6 +1527,7 @@ class UserManagement:
         Args:
             id: The unique ID of the user.
             new_email: The new email address to change to.
+            locale: The locale to use when rendering the email change email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1521,7 +1542,12 @@ class UserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "new_email": new_email,
+            k: v
+            for k, v in {
+                "new_email": new_email,
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
         }
         return self._client.request(
             method="post",
@@ -1573,6 +1599,7 @@ class UserManagement:
         self,
         id: str,
         *,
+        locale: SendVerificationEmailLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SendVerificationEmailResponse:
         """Send verification email
@@ -1581,6 +1608,7 @@ class UserManagement:
 
         Args:
             id: The ID of the user.
+            locale: The locale to use when rendering the verification email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1589,13 +1617,22 @@ class UserManagement:
         Raises:
             BadRequestError: If the request is malformed (400).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
+        }
         return self._client.request(
             method="post",
             path=("user_management", "users", str(id), "email_verification", "send"),
+            body=body,
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -1756,7 +1793,7 @@ class UserManagement:
             role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
             expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
             inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
-            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            locale: The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1894,7 +1931,7 @@ class UserManagement:
 
         Args:
             id: The unique ID of the invitation.
-            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            locale: The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2021,6 +2058,7 @@ class UserManagement:
         user_agent: str | None = None,
         radar_auth_attempt_id: str | None = None,
         signals_id: str | None = None,
+        locale: CreateMagicCodeAndReturnLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
@@ -2034,6 +2072,7 @@ class UserManagement:
             user_agent: The user agent string from the user's request.
             radar_auth_attempt_id: The ID of an existing Radar authentication attempt to associate with this request.
             signals_id: An optional Radar signals ID to correlate client-side signals with this request.
+            locale: The locale to use when rendering the Magic Auth email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2056,6 +2095,7 @@ class UserManagement:
                 "user_agent": user_agent,
                 "radar_auth_attempt_id": radar_auth_attempt_id,
                 "signals_id": signals_id,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }
@@ -2384,46 +2424,24 @@ class UserManagement:
     def list_waitlists(
         self,
         *,
-        limit: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-        order: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> SyncPage[Waitlist]:
+    ) -> WaitlistListResponse:
         """List waitlists
 
         Get a list of the waitlists in the environment. All waitlists are returned in a single response — this endpoint is not paginated, so the `list_metadata` cursors are always `null`.
 
-        Args:
-            limit: The limit.
-            before: The before.
-            after: The after.
-            order: The order.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
         Returns:
-            SyncPage[Waitlist]
+            WaitlistListResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": order,
-            }.items()
-            if v is not None
-        }
-        return self._client.request_page(
+        return self._client.request(
             method="get",
             path=("user_management", "waitlists"),
-            model=Waitlist,
-            params=params,
+            model=WaitlistListResponse,
             request_options=request_options,
         )
 
@@ -2619,7 +2637,7 @@ class UserManagement:
         name: str,
         organization_id: str,
         permissions: list[str] | None = None,
-        expires_at: str | None = None,
+        expires_at: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user
@@ -3799,6 +3817,7 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
+        locale: CreatePasswordResetTokenLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> PasswordReset:
         """Create a password reset token
@@ -3807,6 +3826,7 @@ class AsyncUserManagement:
 
         Args:
             email: The email address of the user requesting a password reset.
+            locale: The locale to use when rendering the password reset email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3821,7 +3841,12 @@ class AsyncUserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "email": email,
+            k: v
+            for k, v in {
+                "email": email,
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
         }
         return await self._client.request(
             method="post",
@@ -4252,6 +4277,7 @@ class AsyncUserManagement:
         id: str,
         *,
         new_email: str,
+        locale: SendEmailChangeLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> EmailChange:
         """Send email change code
@@ -4261,6 +4287,7 @@ class AsyncUserManagement:
         Args:
             id: The unique ID of the user.
             new_email: The new email address to change to.
+            locale: The locale to use when rendering the email change email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4275,7 +4302,12 @@ class AsyncUserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
-            "new_email": new_email,
+            k: v
+            for k, v in {
+                "new_email": new_email,
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
         }
         return await self._client.request(
             method="post",
@@ -4327,6 +4359,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
+        locale: SendVerificationEmailLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SendVerificationEmailResponse:
         """Send verification email
@@ -4335,6 +4368,7 @@ class AsyncUserManagement:
 
         Args:
             id: The ID of the user.
+            locale: The locale to use when rendering the verification email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4343,13 +4377,22 @@ class AsyncUserManagement:
         Raises:
             BadRequestError: If the request is malformed (400).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "locale": enum_value(locale) if locale is not None else None,
+            }.items()
+            if v is not None
+        }
         return await self._client.request(
             method="post",
             path=("user_management", "users", str(id), "email_verification", "send"),
+            body=body,
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -4510,7 +4553,7 @@ class AsyncUserManagement:
             role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
             expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
             inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
-            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            locale: The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4648,7 +4691,7 @@ class AsyncUserManagement:
 
         Args:
             id: The unique ID of the invitation.
-            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            locale: The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4775,6 +4818,7 @@ class AsyncUserManagement:
         user_agent: str | None = None,
         radar_auth_attempt_id: str | None = None,
         signals_id: str | None = None,
+        locale: CreateMagicCodeAndReturnLocale | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> MagicAuthSendMagicAuthCodeAndReturnResponse:
         """Create a Magic Auth code
@@ -4788,6 +4832,7 @@ class AsyncUserManagement:
             user_agent: The user agent string from the user's request.
             radar_auth_attempt_id: The ID of an existing Radar authentication attempt to associate with this request.
             signals_id: An optional Radar signals ID to correlate client-side signals with this request.
+            locale: The locale to use when rendering the Magic Auth email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization).
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4810,6 +4855,7 @@ class AsyncUserManagement:
                 "user_agent": user_agent,
                 "radar_auth_attempt_id": radar_auth_attempt_id,
                 "signals_id": signals_id,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }
@@ -5138,46 +5184,24 @@ class AsyncUserManagement:
     async def list_waitlists(
         self,
         *,
-        limit: int | None = None,
-        before: str | None = None,
-        after: str | None = None,
-        order: str | None = None,
         request_options: RequestOptions | None = None,
-    ) -> AsyncPage[Waitlist]:
+    ) -> WaitlistListResponse:
         """List waitlists
 
         Get a list of the waitlists in the environment. All waitlists are returned in a single response — this endpoint is not paginated, so the `list_metadata` cursors are always `null`.
 
-        Args:
-            limit: The limit.
-            before: The before.
-            after: The after.
-            order: The order.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
         Returns:
-            AsyncPage[Waitlist]
+            WaitlistListResponse
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": order,
-            }.items()
-            if v is not None
-        }
-        return await self._client.request_page(
+        return await self._client.request(
             method="get",
             path=("user_management", "waitlists"),
-            model=Waitlist,
-            params=params,
+            model=WaitlistListResponse,
             request_options=request_options,
         )
 
@@ -5373,7 +5397,7 @@ class AsyncUserManagement:
         name: str,
         organization_id: str,
         permissions: list[str] | None = None,
-        expires_at: str | None = None,
+        expires_at: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user

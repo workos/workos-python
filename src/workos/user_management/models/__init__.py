@@ -104,6 +104,7 @@ from .send_radar_sms_challenge import SendRadarSmsChallenge as SendRadarSmsChall
 from .send_radar_sms_challenge_response import (
     SendRadarSmsChallengeResponse as SendRadarSmsChallengeResponse,
 )
+from .send_verification_email import SendVerificationEmail as SendVerificationEmail
 from .send_verification_email_response import (
     SendVerificationEmailResponse as SendVerificationEmailResponse,
 )
@@ -124,13 +125,26 @@ from .user_invite import UserInvite as UserInvite
 from .user_management_authentication_provider import (
     UserManagementAuthenticationProvider as UserManagementAuthenticationProvider,
 )
+from .user_management_authentication_provider import (
+    UserManagementAuthenticationProviderLiteral as UserManagementAuthenticationProviderLiteral,
+)
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
 )
+from .user_management_authentication_screen_hint import (
+    UserManagementAuthenticationScreenHintLiteral as UserManagementAuthenticationScreenHintLiteral,
+)
 from .user_management_waitlists_state import (
     UserManagementWaitlistsState as UserManagementWaitlistsState,
+)
+from .user_management_waitlists_state import (
+    UserManagementWaitlistsStateLiteral as UserManagementWaitlistsStateLiteral,
 )
 from .verify_email_address import VerifyEmailAddress as VerifyEmailAddress
 from .verify_email_response import VerifyEmailResponse as VerifyEmailResponse
 from .waitlist import Waitlist as Waitlist
 from .waitlist_entry import WaitlistEntry as WaitlistEntry
+from .waitlist_list_response import WaitlistListResponse as WaitlistListResponse
+from .waitlist_list_response_list_metadata import (
+    WaitlistListResponseListMetadata as WaitlistListResponseListMetadata,
+)

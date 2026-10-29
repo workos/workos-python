@@ -17,7 +17,7 @@ class ResendUserInviteOptions:
     """Resend User Invite Options model."""
 
     locale: ResendUserInviteOptionsLocale | None = None
-    """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
+    """The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization)."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ResendUserInviteOptions:

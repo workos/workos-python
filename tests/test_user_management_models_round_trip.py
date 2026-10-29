@@ -40,6 +40,8 @@ from workos.user_management.models import (
     VerifyEmailResponse,
     Waitlist,
     WaitlistEntry,
+    WaitlistListResponse,
+    WaitlistListResponseListMetadata,
 )
 
 
@@ -1115,6 +1117,7 @@ class TestModelRoundTrip:
                 "redirect_uris": [
                     {"uri": "https://example.com/callback", "default": True}
                 ],
+                "cors_origins": ["https://app.example.com"],
                 "uses_pkce": True,
                 "is_first_party": True,
                 "was_dynamically_registered": True,
@@ -1148,6 +1151,7 @@ class TestModelRoundTrip:
                 "redirect_uris": [
                     {"uri": "https://example.com/callback", "default": True}
                 ],
+                "cors_origins": ["https://app.example.com"],
                 "uses_pkce": True,
                 "is_first_party": True,
                 "was_dynamically_registered": True,
@@ -1651,3 +1655,52 @@ class TestModelRoundTrip:
         instance = UserSessionsImpersonator.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["reason"] is None
+
+    def test_waitlist_list_response_round_trip(self):
+        data = load_fixture("waitlist_list_response.json")
+        instance = WaitlistListResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistListResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_list_response_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "waitlist",
+                    "id": "waitlist_01E4ZCR3C56J083X43JQXF3JK5",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"before": None, "after": None},
+        }
+        instance = WaitlistListResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
+        assert serialized["list_metadata"] == data["list_metadata"]
+
+    def test_waitlist_list_response_list_metadata_round_trip(self):
+        data = load_fixture("waitlist_list_response_list_metadata.json")
+        instance = WaitlistListResponseListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistListResponseListMetadata.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_list_response_list_metadata_minimal_payload(self):
+        data = {"before": None, "after": None}
+        instance = WaitlistListResponseListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["before"] == data["before"]
+        assert serialized["after"] == data["after"]
+
+    def test_waitlist_list_response_list_metadata_preserves_nullable_fields(self):
+        data = {"before": None, "after": None}
+        instance = WaitlistListResponseListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["before"] is None
+        assert serialized["after"] is None

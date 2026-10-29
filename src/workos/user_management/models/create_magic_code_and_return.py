@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.create_magic_code_and_return_locale import (
+    CreateMagicCodeAndReturnLocale,
+)
 
 
 @dataclass(slots=True)
@@ -24,6 +28,8 @@ class CreateMagicCodeAndReturn:
     """The ID of an existing Radar authentication attempt to associate with this request."""
     signals_id: str | None = None
     """An optional Radar signals ID to correlate client-side signals with this request."""
+    locale: CreateMagicCodeAndReturnLocale | None = None
+    """The locale to use when rendering the Magic Auth email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization)."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> CreateMagicCodeAndReturn:
@@ -36,6 +42,9 @@ class CreateMagicCodeAndReturn:
                 user_agent=data.get("user_agent"),
                 radar_auth_attempt_id=data.get("radar_auth_attempt_id"),
                 signals_id=data.get("signals_id"),
+                locale=CreateMagicCodeAndReturnLocale(_v_locale)
+                if (_v_locale := data.get("locale")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateMagicCodeAndReturn", e)
@@ -54,4 +63,8 @@ class CreateMagicCodeAndReturn:
             result["radar_auth_attempt_id"] = self.radar_auth_attempt_id
         if self.signals_id is not None:
             result["signals_id"] = self.signals_id
+        if self.locale is not None:
+            result["locale"] = (
+                self.locale.value if isinstance(self.locale, Enum) else self.locale
+            )
         return result

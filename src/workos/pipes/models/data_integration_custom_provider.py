@@ -14,7 +14,7 @@ from workos.common.models.data_integration_custom_provider_authenticate_via impo
 
 @dataclass(slots=True)
 class DataIntegrationCustomProvider:
-    """Data Integration Custom Provider model."""
+    """The OAuth definition when this is a custom provider; `null` for built-in providers."""
 
     name: str
     """A descriptive name for the custom provider."""

@@ -14,7 +14,7 @@ from workos.common.models.data_integration_installation_connection_role import (
 
 @dataclass(slots=True)
 class DataIntegrationInstallation:
-    """Data Integration Installation model."""
+    """The tenant installation created when an API key was supplied at creation time; `null` otherwise. Not populated on list/get responses."""
 
     id: str
     """Unique identifier of the installation."""

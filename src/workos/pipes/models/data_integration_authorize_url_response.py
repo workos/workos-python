@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
 
@@ -14,6 +14,8 @@ class DataIntegrationAuthorizeUrlResponse:
 
     url: str
     """The OAuth authorization URL to redirect the user to."""
+    completion: Literal["finish_required"] | None = None
+    """`finish_required` when the request included `code_challenge`: the connection will be held until your app finishes it. Omitted otherwise. If you sent `code_challenge` and this is missing, don't redirect the user."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationAuthorizeUrlResponse:
@@ -21,6 +23,7 @@ class DataIntegrationAuthorizeUrlResponse:
         try:
             return cls(
                 url=data["url"],
+                completion=data.get("completion"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationAuthorizeUrlResponse", e)
@@ -29,4 +32,6 @@ class DataIntegrationAuthorizeUrlResponse:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["url"] = self.url
+        if self.completion is not None:
+            result["completion"] = self.completion
         return result

@@ -23,7 +23,7 @@ class DataIntegrationsCreateClientCredentialsConnectionRequest:
     client_secret: str
     """The OAuth client secret to store for this integration."""
     connection_intent: Literal["add"]
-    """Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard. Creating an additional connection is not yet available: until it is, `add` succeeds only when the owner has no connection for this integration and otherwise returns 404 `multiple_connections_unavailable`."""
+    """Must be `add`: this endpoint only creates another connection. The first connection for an owner shape fills the compatibility slot; later connections are standard."""
     account_display_name: str | None = None
     """A mutable, non-unique label. Omit to preserve an existing label; null clears it. Labels are never account identifiers."""
     account_identifier: str | None = None

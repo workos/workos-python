@@ -14,7 +14,7 @@ from workos.common.models.data_integration_credential_type import (
 
 @dataclass(slots=True)
 class DataIntegrationCredential:
-    """Data Integration Credential model."""
+    """The integration-level OAuth app credentials. `null` for `api_key` and `client_credentials` integrations, which hold no integration-level credentials (secrets are installed per-tenant)."""
 
     type: DataIntegrationCredentialType
     """The credentials type. `custom` uses your own OAuth app credentials; `organization` has each organization supply its own credentials (so `client_id`/`redacted_client_secret` are null on the integration itself)."""

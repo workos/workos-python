@@ -1,0 +1,4 @@
+{
+  "error": "authentication_method_not_allowed",
+  "error_description": "The request failed due to: authentication_method_not_allowed."
+}

@@ -1,0 +1,10 @@
+{
+  "code": "invalid_request_parameters",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "unknown_event_type",
+      "message": "Invalid enum value."
+    }
+  ]
+}

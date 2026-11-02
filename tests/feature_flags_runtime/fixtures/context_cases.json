@@ -1,0 +1,204 @@
+{
+  "description": "Evaluation context validation. targets is what remains after invalid entries are ignored; warns says whether a warning is logged. Validation never raises.",
+  "format": 1,
+  "flag": {
+    "slug": "flag",
+    "enabled": true,
+    "default_value": false,
+    "off_value": false,
+    "rules": [
+      {
+        "id": "r1",
+        "kind": "conditions",
+        "value": true,
+        "conditions": [
+          {
+            "target_type": "workspace",
+            "operator": "one_of",
+            "values": [
+              "ws_1"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "kind": "conditions",
+        "value": true,
+        "conditions": [
+          {
+            "target_type": "user",
+            "operator": "one_of",
+            "values": [
+              "user_1"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "a valid custom target",
+      "context": {
+        "workspace": "ws_1"
+      },
+      "targets": {
+        "workspace": "ws_1"
+      },
+      "warns": false
+    },
+    {
+      "name": "built-in types are plain keys",
+      "context": {
+        "user": "user_1",
+        "organization": "org_1"
+      },
+      "targets": {
+        "user": "user_1",
+        "organization": "org_1"
+      },
+      "warns": false
+    },
+    {
+      "name": "null IDs are skipped silently",
+      "context": {
+        "user": null,
+        "workspace": "ws_1"
+      },
+      "targets": {
+        "workspace": "ws_1"
+      },
+      "warns": false
+    },
+    {
+      "name": "an uppercase type is ignored",
+      "context": {
+        "Workspace": "ws_1"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a type starting with a digit is ignored",
+      "context": {
+        "1workspace": "ws_1"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a 65-character type is ignored",
+      "context": {
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww": "ws_1"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a 64-character type is accepted",
+      "context": {
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww": "ws_1"
+      },
+      "targets": {
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww": "ws_1"
+      },
+      "warns": false
+    },
+    {
+      "name": "a dot ID is ignored",
+      "context": {
+        "workspace": "."
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a dot-dot ID is ignored",
+      "context": {
+        "workspace": ".."
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "an ID with a space is ignored",
+      "context": {
+        "workspace": "ws 1"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "an ID with a trailing newline is ignored",
+      "context": {
+        "workspace": "ws_1\n"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "an empty ID is ignored",
+      "context": {
+        "workspace": ""
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a 256-character ID is ignored",
+      "context": {
+        "workspace": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "a 255-character ID is accepted",
+      "context": {
+        "workspace": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "targets": {
+        "workspace": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "warns": false
+    },
+    {
+      "name": "a non-string ID is ignored",
+      "context": {
+        "workspace": 1
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "an object ID is ignored",
+      "context": {
+        "workspace": {
+          "id": "ws_1"
+        }
+      },
+      "targets": {},
+      "warns": true
+    },
+    {
+      "name": "invalid entries do not affect valid ones",
+      "context": {
+        "Workspace": "ws_1",
+        "user": "user_1"
+      },
+      "targets": {
+        "user": "user_1"
+      },
+      "warns": true
+    },
+    {
+      "name": "a non-ASCII ID is ignored",
+      "context": {
+        "workspace": "wś_1"
+      },
+      "targets": {},
+      "warns": true
+    }
+  ]
+}

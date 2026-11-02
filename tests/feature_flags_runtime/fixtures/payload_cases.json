@@ -1,0 +1,761 @@
+{
+  "description": "Whole-payload validation. valid=false means the payload is rejected and a runtime client keeps its last good configuration. divergence records where Node 12 or .NET 6.6 answers differently.",
+  "format": 1,
+  "cases": [
+    {
+      "name": "a populated v2 payload",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_org",
+                "kind": "conditions",
+                "value": false,
+                "conditions": [
+                  {
+                    "target_type": "organization",
+                    "operator": "one_of",
+                    "values": [
+                      "org_1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "an empty v2 payload",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {}
+      },
+      "valid": true
+    },
+    {
+      "name": "extra top-level and flag keys are ignored",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_org",
+                "kind": "conditions",
+                "value": false,
+                "conditions": [
+                  {
+                    "target_type": "organization",
+                    "operator": "one_of",
+                    "values": [
+                      "org_1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "future": 1
+          }
+        },
+        "future": {
+          "version": 9
+        }
+      },
+      "valid": true
+    },
+    {
+      "name": "a future version",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 3,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_org",
+                "kind": "conditions",
+                "value": false,
+                "conditions": [
+                  {
+                    "target_type": "organization",
+                    "operator": "one_of",
+                    "values": [
+                      "org_1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a string version",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": "2",
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_org",
+                "kind": "conditions",
+                "value": false,
+                "conditions": [
+                  {
+                    "target_type": "organization",
+                    "operator": "one_of",
+                    "values": [
+                      "org_1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a missing version",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_org",
+                "kind": "conditions",
+                "value": false,
+                "conditions": [
+                  {
+                    "target_type": "organization",
+                    "operator": "one_of",
+                    "values": [
+                      "org_1"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "version 1",
+      "source": "workos-dotnet test/WorkOSTests/FeatureFlags/FeatureFlagsRuntimeClientTest.cs",
+      "payload": {
+        "version": 1,
+        "flags": {}
+      },
+      "valid": false
+    },
+    {
+      "name": "a missing flags map",
+      "source": "workos-dotnet test/WorkOSTests/FeatureFlags/FeatureFlagsRuntimeClientTest.cs",
+      "payload": {
+        "version": 2
+      },
+      "valid": false
+    },
+    {
+      "name": "null flags",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": null
+      },
+      "valid": false
+    },
+    {
+      "name": "null rules",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": null
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "the legacy v1 flat payload",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "flag": {
+          "slug": "flag",
+          "enabled": true,
+          "default_value": true,
+          "targets": {
+            "users": [
+              {
+                "id": "user_1",
+                "enabled": true
+              }
+            ],
+            "organizations": []
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a bare entry map",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "flag": {
+          "slug": "flag",
+          "enabled": true,
+          "default_value": true,
+          "off_value": false,
+          "rules": [
+            {
+              "id": "rule_org",
+              "kind": "conditions",
+              "value": false,
+              "conditions": [
+                {
+                  "target_type": "organization",
+                  "operator": "one_of",
+                  "values": [
+                    "org_1"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "rule_user",
+              "kind": "conditions",
+              "value": true,
+              "conditions": [
+                {
+                  "target_type": "user",
+                  "operator": "one_of",
+                  "values": [
+                    "user_1"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a one_of with a string instead of a list",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": "user_1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a one_of without values",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "null",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": null,
+      "valid": false
+    },
+    {
+      "name": "an array",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": [],
+      "valid": false
+    },
+    {
+      "name": "a scalar",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": false,
+      "valid": false
+    },
+    {
+      "name": "a string enabled",
+      "source": "workos-dotnet test/WorkOSTests/FeatureFlags/FeatureFlagsRuntimeClientTest.cs",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "test": {
+            "slug": "test",
+            "enabled": "true",
+            "default_value": false,
+            "off_value": false,
+            "rules": []
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a slug that differs from its key is accepted",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "test": {
+            "slug": "other",
+            "enabled": true,
+            "default_value": false,
+            "off_value": false,
+            "rules": []
+          }
+        }
+      },
+      "valid": true,
+      "note": "the map key is the flag's identity",
+      "divergence": {
+        "dotnet": "rejects"
+      }
+    },
+    {
+      "name": "a missing slug",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "test": {
+            "enabled": true,
+            "default_value": false,
+            "off_value": false,
+            "rules": []
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "version true",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": true,
+        "flags": {}
+      },
+      "valid": false,
+      "note": "bool is a subclass of int in Python"
+    },
+    {
+      "name": "version 2.0",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2.0,
+        "flags": {}
+      },
+      "valid": false,
+      "note": "2.0 == 2 in Python; .NET also rejects a float token",
+      "divergence": {
+        "node": "accepts (JSON 2.0 parses to 2)"
+      }
+    },
+    {
+      "name": "a rule without an id",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "kind": "conditions",
+                "value": true,
+                "conditions": []
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a condition without an operator in a conditions rule",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": false
+    },
+    {
+      "name": "a missing default_value is accepted",
+      "source": "workos-dotnet test/WorkOSTests/FeatureFlags/FeatureFlagsRuntimeClientTest.cs",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "off_value": false,
+            "rules": []
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "node": "rejects"
+      }
+    },
+    {
+      "name": "a missing off_value is accepted",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": false,
+            "rules": []
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "node": "rejects"
+      }
+    },
+    {
+      "name": "conditions of an unknown kind are not validated",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "r1",
+                "kind": "rollout",
+                "value": true,
+                "conditions": [
+                  {
+                    "attribute": "plan"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "node": "rejects"
+      }
+    },
+    {
+      "name": "a conditions rule without conditions is accepted",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "r1",
+                "kind": "conditions",
+                "value": true
+              }
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "dotnet": "rejects"
+      }
+    },
+    {
+      "name": "a one_of without a target type is accepted",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "r1",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "operator": "one_of",
+                    "values": [
+                      "user_1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "dotnet": "rejects"
+      }
+    },
+    {
+      "name": "non-string one_of IDs are accepted",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "target_type": "user",
+                    "operator": "one_of",
+                    "values": [
+                      1
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "dotnet": "rejects"
+      }
+    },
+    {
+      "name": "operands of an unknown operator are not validated",
+      "source": "workos-python (new)",
+      "payload": {
+        "version": 2,
+        "flags": {
+          "flag": {
+            "slug": "flag",
+            "enabled": true,
+            "default_value": true,
+            "off_value": false,
+            "rules": [
+              {
+                "id": "rule_user",
+                "kind": "conditions",
+                "value": true,
+                "conditions": [
+                  {
+                    "operator": "segment",
+                    "target_type": {
+                      "nested": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "divergence": {
+        "node": "rejects a non-string target_type"
+      }
+    }
+  ]
+}

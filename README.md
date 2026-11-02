@@ -258,11 +258,13 @@ flags.get_all_flags({"organization": "org_123"})  # {"new-checkout": True, ...}
 flags.close()  # on shutdown; or use `with workos.create_feature_flags_runtime_client() as flags:`
 ```
 
+With `AsyncWorkOSClient`, polling runs in an asyncio task: `await flags.start()`, `await flags.wait_until_ready(timeout=5)` and `await flags.close()` (or `async with`). Evaluation stays synchronous.
+
 **Evaluation.** The context maps a target type to the exact, case-sensitive ID being evaluated. `user` and `organization` are target types like any [custom target](https://workos.com/docs/feature-flags/custom-targets) type, and an ID of `None` is skipped. A disabled flag serves its off value. For an enabled flag, the first rule whose conditions all match wins, so a rule serving `False` can exclude a user before a later rule includes their organization; otherwise the flag's default value applies. A missing flag, an unready client, or a flag without a boolean answer returns `default` (`False` unless you pass one), and `get_all_flags` omits flags without an answer. Evaluation never raises: invalid context entries are ignored with a logged warning and the rest is evaluated.
 
 **Failures.** A failed poll keeps the last good configuration and retries with exponential backoff. Transient failures (429, 5xx, timeouts, connection errors) are also retried within one refresh, up to the client's `max_retries` and within `request_timeout`. A 401, from a poll or from `refresh()`, stops polling for good: create a new client with a valid API key. Failures are logged to the `workos.feature_flags.runtime` logger (pass `logger=` to use your own) and reported to error listeners. `flags.status` shows readiness, the last error, refresh counts and timestamps, `polling_stopped`, `flag_count` and `cache_age()`.
 
-**Notifications.** `on_change` (or `add_change_listener`) fires after a refresh installs a different configuration, including the first load, with the previous and current snapshots and the changed slugs. `on_error` fires for failed background polls and `on_status` after every refresh. Listeners run one at a time; their exceptions are logged and never affect polling.
+**Notifications.** `on_change` (or `add_change_listener`) fires after a refresh installs a different configuration, including the first load, with the previous and current snapshots and the changed slugs. `on_error` fires for failed background polls and `on_status` after every refresh. Listeners run one at a time; their exceptions are logged and never affect polling. Async clients also accept coroutine listeners.
 
 **Bootstrap.** Persist the configuration and pass it back to make a new client ready before its first poll:
 

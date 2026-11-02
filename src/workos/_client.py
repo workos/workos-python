@@ -344,4 +344,10 @@ class AsyncWorkOSClient(_AsyncBase):
         """PKCE (Proof Key for Code Exchange) utilities."""
         return PKCE()
 
+    # A plain function bound as a method, so its signature and docs live next
+    # to the runtime client's constructor.
+    from .feature_flags.runtime._factory import (
+        create_async_feature_flags_runtime_client as create_feature_flags_runtime_client,
+    )
+
     # @oagen-ignore-end

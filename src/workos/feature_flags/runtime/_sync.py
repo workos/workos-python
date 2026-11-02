@@ -365,7 +365,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                     _discard_awaitable(result)
                     self._logger.warning(
                         "An async listener was registered on the sync FeatureFlagsRuntimeClient "
-                        "and was not run; register a plain function instead"
+                        "and was not run; use AsyncFeatureFlagsRuntimeClient for async listeners"
                     )
         finally:
             self._delivering = outer

@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 from . import _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
-from ._core import Notification, RuntimeClientCore, utc_now
+from ._core import Notification, RuntimeClientCore, fork_blocked_message, utc_now
 from ._transport import PollTransport
 from ._types import FlagsChangedEvent, RuntimeStatus
 
@@ -43,9 +43,10 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     Polling uses the ``WorkOSClient``'s API key, base URL, headers and retry
     settings. With the SDK's default HTTP client it polls through an HTTP
     client of its own, which a forked child replaces; with an HTTP client you
-    supplied, close this client before closing yours, and create it after
-    forking, since polling does not resume in a forked child. Polling does not
-    resume in a forked child on macOS either.
+    supplied, close this client before closing yours. A client created before
+    a fork can start in the child, and one that was polling resumes there,
+    except through an HTTP client you supplied that it already polled through,
+    and on macOS.
     """
 
     def __init__(
@@ -97,7 +98,6 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         )
         self._client = client
         self._transport = PollTransport(client)
-        self._started = False
         self._thread: Optional[threading.Thread] = None
         self._delivering: Optional[int] = None
         self._fork_restart_pending = False
@@ -138,7 +138,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         polling permanently; the last good configuration stays usable.
 
         Raises:
-            RuntimeError: If the client is closed.
+            RuntimeError: If the client is closed or cannot poll in this forked
+                process.
         """
         self._before_use()
         with self._lifecycle_lock:
@@ -190,7 +191,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
 
         Raises:
             WorkOSError: If the request fails or the payload cannot be read.
-            RuntimeError: If the client is closed.
+            RuntimeError: If the client is closed or cannot poll in this forked
+                process.
         """
         self._before_use()
         if self._closed:
@@ -212,9 +214,11 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     def close(self) -> None:
         """Stop polling and release the background thread. Idempotent.
 
-        Waits up to ``request_timeout`` for an in-flight request to finish,
-        then closes the HTTP client polling used, if the runtime created it.
-        Evaluation keeps serving the last configuration after closing.
+        Waits up to ``request_timeout`` for an in-flight poll to finish, then
+        closes the HTTP client polling used, if the runtime created it. A poll
+        still running after that, such as one reading a stalled response, is
+        abandoned: it ends on its own and changes nothing. Evaluation keeps
+        serving the last configuration after closing.
         """
         with self._lifecycle_lock:
             if self._closed:
@@ -255,8 +259,9 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         Fires on the first load and on the first refresh that differs from a
         bootstrap; never for identical refreshes or failures. Persist
         ``event.current.to_json()`` here to keep a bootstrap cache fresh.
-        Listeners run on the refreshing thread, one at a time in refresh order;
-        their exceptions are logged and never affect polling.
+        Listeners run one at a time in refresh order, on the thread that
+        refreshed or on one already delivering notifications; their exceptions
+        are logged and never affect polling.
         """
         self._add_listener("change", listener)
 
@@ -420,19 +425,13 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         elif self._fork_blocker is not None and not self._fork_warned:
             self._fork_warned = True
             self._logger.warning(
-                "%s Evaluation keeps serving the last configuration.",
-                self._fork_blocked_message(),
+                "%s. Evaluation keeps serving the last configuration.",
+                fork_blocked_message(self._fork_blocker),
             )
 
     def _raise_if_fork_blocked(self) -> None:
         if self._fork_blocker is not None:
-            raise RuntimeError(self._fork_blocked_message())
-
-    def _fork_blocked_message(self) -> str:
-        return (
-            f"Feature flag polling does not run in forked process {os.getpid()}: "
-            f"{self._fork_blocker}. Create the runtime client after forking instead."
-        )
+            raise RuntimeError(fork_blocked_message(self._fork_blocker))
 
     def _restart_after_fork(self) -> None:
         with self._lifecycle_lock:
@@ -451,19 +450,23 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         # threads that no longer exist, the poller thread is gone, and the
         # parent's HTTP connections must not be shared, so rebuild all of it
         # and restart polling, with a new HTTP client, on the next use.
+        self._reinitialize_core_after_fork()
         self._transport.reinitialize_after_fork()
-        self._status_lock = threading.Lock()
-        self._listeners_lock = threading.Lock()
-        self._context_warnings.reinitialize_after_fork()
         self._delivering = None
-        self._pending.clear()
         self._thread = None
         self._init_synchronization()
         polling = (
             self._started and not self._closed and not self._status.polling_stopped
         )
-        self._fork_blocker = None if self._closed else self._transport.fork_blocker()
+        self._fork_blocker = (
+            None
+            if self._closed
+            else self._transport.fork_blocker(self._used_before_fork())
+        )
         self._fork_restart_pending = polling and self._fork_blocker is None
+        # Only a client that was polling warns, on first use, that it no longer
+        # polls; any other raises from start() and refresh() instead.
+        self._fork_warned = not polling
 
 
 def _discard_awaitable(awaitable: object) -> None:

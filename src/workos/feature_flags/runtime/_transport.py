@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-import sys
 import threading
 import time
 from typing import TYPE_CHECKING, Any, Dict, Optional
@@ -22,18 +21,13 @@ from ..._http import (
     TransportTimeout,
     _HttpxFamily,
 )
-from . import _policy
+from . import _core, _policy
 
 if TYPE_CHECKING:
     from ..._base_client import WorkOSClient
 
 _PHASES = ("connect", "read", "write", "pool")
 _MINIMUM_WAIT = 0.001
-
-# On macOS, a forked process that has not exec'd can crash inside system
-# libraries (DNS resolution, proxy settings, the system trust store) as soon
-# as it opens a connection, so polling never resumes there after a fork.
-_FORK_SAFE_PLATFORM = sys.platform != "darwin"
 
 
 class _DeadlineTimeouts(Dict[str, Optional[float]]):
@@ -74,8 +68,8 @@ class PollTransport:
     - With the SDK's default HTTP client, polling uses its own httpx2 client
       with the same settings, so a forked child can replace it instead of
       sharing the parent's connections. A caller-supplied client cannot be
-      rebuilt that way, and macOS cannot open connections safely from a forked
-      process, so in those cases polling does not resume in a forked child.
+      rebuilt that way, so a child does not poll through one the parent polled
+      through. On macOS, a child does not poll at all.
     """
 
     def __init__(self, workos: WorkOSClient) -> None:
@@ -88,19 +82,21 @@ class PollTransport:
             self._family = backend._family
         self._uses_default_client = workos._owns_http_client
         self._owned: Optional[httpx2.Client] = None
+        self._closed = False
         self._lock = threading.Lock()
 
-    def fork_blocker(self) -> Optional[str]:
+    def fork_blocker(self, used_before_fork: bool) -> Optional[str]:
         """Why a forked child cannot poll safely, or ``None`` if it can."""
-        if not self._uses_default_client:
+        if not _core.FORK_SAFE_PLATFORM:
             return (
-                "the WorkOSClient uses a caller-supplied HTTP client, whose "
-                "connections this process would share with its parent"
+                f"{_core.MACOS_FORK_HAZARD}. Create the WorkOSClient and the "
+                "runtime client after forking instead"
             )
-        if not _FORK_SAFE_PLATFORM:
+        if used_before_fork and not self._uses_default_client:
             return (
-                "on macOS, a forked process that has not exec'd cannot safely open "
-                "network connections"
+                "it polled in the parent through a caller-supplied HTTP client, "
+                "whose connections this process would share. Create that HTTP "
+                "client, the WorkOSClient and the runtime client after forking instead"
             )
         return None
 
@@ -113,6 +109,7 @@ class PollTransport:
 
     def close(self) -> None:
         with self._lock:
+            self._closed = True
             owned, self._owned = self._owned, None
         if owned is not None:
             owned.close()
@@ -161,6 +158,10 @@ class PollTransport:
         if not self._uses_default_client:
             return None
         with self._lock:
+            # A poll that close() stopped waiting for must not open a client
+            # that nothing would close.
+            if self._closed:
+                raise RuntimeError("The feature flags runtime client is closed")
             if self._owned is None:
                 # The settings resolve_sync_backend gives the SDK's default client.
                 self._owned = httpx2.Client(

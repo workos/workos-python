@@ -47,6 +47,19 @@ def test_sends_the_sdk_url_and_headers_and_closes_its_client(
     workos.close()
 
 
+def test_a_poll_after_close_opens_no_client(local: LocalHTTPServer) -> None:
+    workos = WorkOSClient(api_key=API_KEY, base_url=local.base_url)
+    runtime = workos.create_feature_flags_runtime_client()
+    runtime.close()
+
+    # As a poll does when close() stopped waiting for it.
+    with pytest.raises(RuntimeError, match="closed"):
+        runtime._transport.get(time.monotonic() + 5)
+    assert runtime._transport._owned is None
+    assert local.requests == []
+    workos.close()
+
+
 def test_uses_a_caller_supplied_httpx_client(local: LocalHTTPServer) -> None:
     http_client = httpx2.Client(headers={"X-Caller-Client": "yes"})
     workos = WorkOSClient(

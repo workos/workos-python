@@ -6,6 +6,7 @@ Each scenario runs in a subprocess so a hang or a fork cannot wedge pytest.
 
 from __future__ import annotations
 
+import logging
 import os
 import subprocess
 import sys
@@ -15,7 +16,7 @@ from pathlib import Path
 import pytest
 
 from workos import WorkOSClient
-from workos.feature_flags.runtime import _transport
+from workos.feature_flags.runtime import _core
 
 from tests.feature_flags_runtime.helpers import LocalHTTPServer, flag, payload
 
@@ -135,7 +136,7 @@ if pid == 0:
             asyncio.run(getattr(runtime, method)())
             os._exit(2)
         except RuntimeError as error:
-            assert "created in the parent process" in str(error), error
+            assert "it polled in the parent" in str(error), error
     time.sleep(0.5)
     os._exit(0)
 _, status = os.waitpid(pid, 0)
@@ -170,14 +171,53 @@ runtime.close()
 assert server.ports("Bearer sk_child") == set(), "the child polled"
 """
 
-# On macOS polling never resumes in a forked child, so to check the
-# connection handling that runs elsewhere, this pretends the platform is
-# fork-safe. NO_PROXY keeps httpx2 from reading macOS proxy settings, which is
-# what crashes there.
-FORCE_FORK_SAFE = """
-from workos.feature_flags.runtime import _transport
+# The parent never polls, as when an app is preloaded and each worker starts
+# the runtime client.
+CALLER_CLIENT_UNUSED = """
+import httpx2
 
-_transport._FORK_SAFE_PLATFORM = True
+workos = WorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=httpx2.Client())
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    runtime.start()
+    runtime.wait_until_ready(timeout=5)
+    runtime.close()
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child"), "the child never polled"
+"""
+
+ASYNC_CLIENT_UNUSED = """
+workos = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url)
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+
+    async def serve():
+        await runtime.start()
+        await runtime.wait_until_ready(timeout=5)
+        await runtime.close()
+        await workos.close()
+
+    asyncio.run(serve())
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child"), "the child never polled"
+"""
+
+# On macOS a forked child never polls, so to check what runs elsewhere, this
+# pretends the platform is fork-safe. The scenarios reach the server by IP over
+# plain HTTP, and NO_PROXY keeps httpx2 from reading macOS proxy settings, so
+# the child opens connections without the system libraries that crash there.
+FORCE_FORK_SAFE = """
+from workos.feature_flags.runtime import _core
+
+_core.FORK_SAFE_PLATFORM = True
 """
 
 
@@ -197,12 +237,7 @@ pytestmark = pytest.mark.skipif(not hasattr(os, "fork"), reason="requires os.for
 
 
 def test_a_child_polls_on_its_own_connections_once_used() -> None:
-    parts = (
-        (FORCE_FORK_SAFE, DEFAULT_CLIENT)
-        if sys.platform == "darwin"
-        else (DEFAULT_CLIENT,)
-    )
-    result = run(*parts)
+    result = run(FORCE_FORK_SAFE, DEFAULT_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
 
 
@@ -214,14 +249,41 @@ def test_on_macos_a_child_does_not_poll() -> None:
 
 
 def test_a_child_does_not_poll_through_a_caller_supplied_client() -> None:
-    result = run(CALLER_CLIENT)
+    result = run(FORCE_FORK_SAFE, CALLER_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "does not run in forked process" in result.stderr
 
 
 def test_an_async_client_stops_polling_in_a_child() -> None:
-    result = run(MAKE_ASYNC_RUNTIME, ASYNC_CLIENT)
+    result = run(FORCE_FORK_SAFE, MAKE_ASYNC_RUNTIME, ASYNC_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [CALLER_CLIENT_UNUSED, ASYNC_CLIENT_UNUSED],
+    ids=["sync-caller-supplied-client", "async"],
+)
+def test_a_client_that_never_polled_starts_in_a_child(scenario: str) -> None:
+    result = run(FORCE_FORK_SAFE, scenario)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_on_macos_a_client_that_never_polled_raises_from_start_without_warning(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", False)
+    workos = WorkOSClient(api_key="sk_test")
+    runtime = workos.create_feature_flags_runtime_client()
+
+    runtime._reinitialize_after_fork()
+    with caplog.at_level(logging.WARNING):
+        assert runtime.is_enabled("f", default=True) is True
+    assert caplog.records == []
+    with pytest.raises(RuntimeError, match="Create the WorkOSClient and the runtime"):
+        runtime.start()
+    runtime.close()
+    workos.close()
 
 
 @pytest.mark.parametrize(
@@ -230,7 +292,7 @@ def test_an_async_client_stops_polling_in_a_child() -> None:
 def test_every_read_resumes_polling_after_a_fork(
     read: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(_transport, "_FORK_SAFE_PLATFORM", True)
+    monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
     server = LocalHTTPServer(payload(f=flag("f", default_value=True)))
     workos = WorkOSClient(api_key="sk_test", base_url=server.base_url)
     runtime = workos.create_feature_flags_runtime_client()

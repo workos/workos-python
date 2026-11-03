@@ -216,6 +216,19 @@ async def test_a_401_from_refresh_stops_polling(
     assert runtime.is_enabled("ordered", {"user": "user_1"}) is True
 
 
+async def test_a_429_retry_after_delays_the_next_poll(
+    server: FlagServer, make_async_runtime: Make, fast_polling: List[int]
+) -> None:
+    server.enqueue((429, {"message": "slow down"}, {"Retry-After": "30"}))
+    server.respond(200, ORDERED)
+    runtime = make_async_runtime(request_timeout=1)
+    await runtime.start()
+    await until(lambda: len(server.requests) == 1)
+    await asyncio.sleep(0.3)
+    assert len(server.requests) == 1
+    assert runtime.status.failed_refresh_count == 1
+
+
 async def test_a_403_keeps_polling(
     server: FlagServer, make_async_runtime: Make, fast_polling: List[int]
 ) -> None:

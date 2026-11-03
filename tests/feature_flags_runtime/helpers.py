@@ -125,7 +125,11 @@ class FlagServer:
     def _response(self, reply: Any, method: str, url: str) -> HTTPResponse:
         if isinstance(reply, Exception):
             raise reply
-        status, body = reply
+        status, body, *extra = reply
+        headers = {
+            "x-request-id": f"req_{len(self.requests)}",
+            **(extra[0] if extra else {}),
+        }
         content = (
             body
             if isinstance(body, bytes)
@@ -135,7 +139,7 @@ class FlagServer:
         )
         return HTTPResponse(
             status_code=status,
-            headers=httpx2.Headers({"x-request-id": f"req_{len(self.requests)}"}),
+            headers=httpx2.Headers(headers),
             content=content,
             request_method=method,
             request_url=url,

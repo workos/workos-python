@@ -11,7 +11,9 @@ from typing import Any, Callable, List
 
 import pytest
 
-from workos import WorkOSClient, create_public_client
+import httpx2
+
+from workos import HTTPResponse, TransportTimeout, WorkOSClient, create_public_client
 from workos._errors import (
     AuthenticationError,
     AuthorizationError,
@@ -405,6 +407,49 @@ class TestFailures:
         assert len(server.requests) == requests
         runtime.close()
         workos.close()
+
+    def test_a_slow_failing_server_surfaces_its_error_not_a_timeout(
+        self, fast_polling: List[int]
+    ) -> None:
+        class SlowFailingBackend:
+            """Answers 503 after 0.3 s, and times out when given less than that."""
+
+            def __init__(self) -> None:
+                self.timeouts: List[float] = []
+
+            def request(self, method: str, url: str, **kwargs: Any) -> HTTPResponse:
+                self.timeouts.append(kwargs["timeout"])
+                if kwargs["timeout"] < 0.3:
+                    threading.Event().wait(kwargs["timeout"])
+                    raise TransportTimeout("read timed out")
+                threading.Event().wait(0.3)
+                return HTTPResponse(503, httpx2.Headers(), b"", method, url)
+
+            def close(self) -> None:
+                pass
+
+        backend = SlowFailingBackend()
+        workos = WorkOSClient(api_key=API_KEY, base_url=BASE_URL, http_client=backend)
+        runtime = workos.create_feature_flags_runtime_client(request_timeout=1.0)
+        with pytest.raises(ServerError):
+            runtime.refresh()
+        assert all(timeout >= 0.3 for timeout in backend.timeouts)
+        runtime.close()
+        workos.close()
+
+    def test_a_429_retry_after_delays_the_next_poll(
+        self, server: FlagServer, make_runtime: Make, fast_polling: List[int]
+    ) -> None:
+        # Retry-After does not fit in the refresh budget, so the refresh fails;
+        # without honoring it the next poll would follow 10 ms later.
+        server.enqueue((429, {"message": "slow down"}, {"Retry-After": "30"}))
+        server.respond(200, ORDERED)
+        runtime = make_runtime(request_timeout=1)
+        runtime.start()
+        server.wait_for_requests(1)
+        threading.Event().wait(0.3)
+        assert len(server.requests) == 1
+        assert runtime.status.failed_refresh_count == 1
 
     def test_errors_that_retrying_cannot_fix_are_not_retried(
         self, server: FlagServer, make_runtime: Make, fast_polling: List[int]

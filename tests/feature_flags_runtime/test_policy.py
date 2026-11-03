@@ -114,8 +114,8 @@ class TestAttemptRetryDelay:
         assert _policy.attempt_retry_delay(error, 0, 10, 3) == 2.0
         assert _policy.attempt_retry_delay(error, 0, 1.5, 3) is None
 
-    @pytest.mark.parametrize("remaining, expected", [(0.6, 0.5), (0.5, None)])
-    def test_a_wait_must_fit_in_the_remaining_budget(
+    @pytest.mark.parametrize("remaining, expected", [(1.0, 0.5), (0.99, None)])
+    def test_a_retry_must_leave_time_for_the_request_itself(
         self, random_value: RandomValue, remaining: float, expected: Optional[float]
     ) -> None:
         assert (
@@ -135,3 +135,20 @@ class TestDurations:
     def test_the_polling_interval_has_a_five_second_minimum(self) -> None:
         assert _policy.polling_interval(0.5) == 5.0
         assert _policy.polling_interval(45) == 45.0
+
+
+class TestRetryAfter:
+    def test_a_429_asks_the_next_poll_to_wait(self) -> None:
+        assert _policy.retry_after(RateLimitExceededError("slow", retry_after=20)) == 20
+
+    def test_the_wait_is_capped_at_sixty_seconds(self) -> None:
+        assert (
+            _policy.retry_after(RateLimitExceededError("slow", retry_after=600)) == 60
+        )
+
+    @pytest.mark.parametrize(
+        "error",
+        [RateLimitExceededError("slow"), ServerError("busy", status_code=503)],
+    )
+    def test_other_failures_ask_for_nothing(self, error: Exception) -> None:
+        assert _policy.retry_after(error) is None

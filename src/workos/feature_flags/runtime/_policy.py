@@ -31,6 +31,11 @@ MAX_COUNTED_FAILURES = 20
 # Retries inside one refresh: at most the client's `max_retries`, like the
 # Node SDK's transport retries, and always within the refresh's request timeout.
 _ATTEMPT_RETRY_BASE = 0.5
+# A retry is only worth sending with at least this much of the budget left
+# for the request itself.
+MINIMUM_ATTEMPT_TIME = 0.5
+# Matches the Node SDK's MAXIMUM_RETRY_AFTER_TIME_IN_MILLISECONDS.
+MAXIMUM_RETRY_AFTER = 60.0
 _ATTEMPT_RETRY_MULTIPLIER = 1.5
 
 POLL_PATH = ("sdk", "feature-flags")
@@ -75,9 +80,11 @@ def attempt_retry_delay(
 ) -> float | None:
     """Seconds to wait before retrying a failed request inside one refresh.
 
-    ``None`` means give up and fail the refresh: the error is not transient,
-    ``max_retries`` retries were already made, or the wait would not fit in the
-    refresh's budget.
+    ``None`` means give up and fail the refresh with ``error``: it is not
+    transient, ``max_retries`` retries were already made, or the wait would not
+    leave ``MINIMUM_ATTEMPT_TIME`` of the budget for the retry itself. A retry
+    sent with almost no time left would only time out and hide the server's
+    real error.
     """
     if attempt >= max_retries or not _is_transient(error):
         return None
@@ -92,7 +99,18 @@ def attempt_retry_delay(
             * _ATTEMPT_RETRY_MULTIPLIER**attempt
             * (0.5 + random.random())
         )
-    return delay if delay < remaining else None
+    return delay if delay + MINIMUM_ATTEMPT_TIME <= remaining else None
+
+
+def retry_after(error: BaseException) -> float | None:
+    """The wait a 429 asked for, capped at ``MAXIMUM_RETRY_AFTER`` seconds.
+
+    A refresh that could not honor it within its budget fails; the next poll
+    then waits at least this long.
+    """
+    if isinstance(error, RateLimitExceededError) and error.retry_after is not None:
+        return min(max(error.retry_after, 0.0), MAXIMUM_RETRY_AFTER)
+    return None
 
 
 def _is_transient(error: BaseException) -> bool:

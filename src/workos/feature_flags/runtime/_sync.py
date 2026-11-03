@@ -274,6 +274,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     def _poll_forever(self) -> None:
         failures = 0
         while not self._stop.is_set() and not self._status.polling_stopped:
+            retry_after: Optional[float] = None
             try:
                 self._refresh(background=True)
                 failures = 0
@@ -286,10 +287,11 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                     self._stop_polling(error)
                     return
                 failures = min(failures + 1, _policy.MAX_COUNTED_FAILURES)
+                retry_after = _policy.retry_after(error)
             delay = _policy.next_delay(
                 self._polling_interval, failures, self._max_retry_delay
             )
-            if self._wake.wait(delay):
+            if self._wake.wait(max(delay, retry_after or 0.0)):
                 return
 
     def _refresh(self, *, background: bool) -> None:

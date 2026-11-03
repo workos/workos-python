@@ -1,9 +1,9 @@
 {
-  "description": "Feature flag evaluation cases shaped for the shared cross-SDK corpus (AUTH-7098). Each case is one v2 flag entry; build the payload {version: 2, flags: {<key>: flag}}, where key defaults to the flag's slug, and evaluate by that key. context maps a target type to an exact ID. expect is true, false, or \"absent\": the flag has no boolean answer, so the caller's default applies. A runner must evaluate every case with both caller defaults and fail on unknown case fields. malformed marks cases that deliberately leave the v2 schema.",
+  "description": "Feature flag evaluation cases shaped for the shared cross-SDK corpus (AUTH-7098). Each case is one v2 flag entry; build the payload {version: 2, flags: {<key>: flag}}, where key defaults to the flag's slug, and evaluate by that key. context maps a target type to an exact ID. An evaluation may carry a name describing what it checks. expect is true, false, or \"absent\": the flag has no boolean answer, so the caller's default applies. A runner must evaluate every case with both caller defaults and fail on unknown case fields. malformed marks cases that deliberately leave the v2 schema.",
   "format": 1,
   "cases": [
     {
-      "name": "requests v2 and evaluates exclusions in payload order",
+      "name": "rules are evaluated in payload order and the first match wins",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
       "flag": {
         "slug": "flag",
@@ -43,6 +43,7 @@
       },
       "evaluations": [
         {
+          "name": "an earlier matching false rule wins and stops evaluation",
           "context": {
             "user": "user_1",
             "organization": "org_1"
@@ -50,9 +51,15 @@
           "expect": false
         },
         {
+          "name": "a later rule matches when earlier rules do not",
           "context": {
             "user": "user_1"
           },
+          "expect": true
+        },
+        {
+          "name": "no match serves the flag default, not the caller default",
+          "context": {},
           "expect": true
         }
       ]
@@ -169,53 +176,7 @@
       ]
     },
     {
-      "name": "no match serves the flag default, not the caller default",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": true,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_org",
-            "kind": "conditions",
-            "value": false,
-            "conditions": [
-              {
-                "target_type": "organization",
-                "operator": "one_of",
-                "values": [
-                  "org_1"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
-        {
-          "context": {},
-          "expect": true
-        }
-      ]
-    },
-    {
-      "name": "a missing context type does not match",
+      "name": "membership matches only the exact ID of the same target type",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
       "flag": {
         "slug": "flag",
@@ -241,55 +202,21 @@
       },
       "evaluations": [
         {
+          "name": "a missing context type does not match",
           "context": {},
           "expect": false
-        }
-      ]
-    },
-    {
-      "name": "a matching false rule stops evaluation",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": true,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_org",
-            "kind": "conditions",
-            "value": false,
-            "conditions": [
-              {
-                "target_type": "organization",
-                "operator": "one_of",
-                "values": [
-                  "org_1"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
+        },
         {
+          "name": "membership uses exact, case-sensitive IDs",
           "context": {
-            "user": "user_1",
-            "organization": "org_1"
+            "user": "USER_1"
+          },
+          "expect": false
+        },
+        {
+          "name": "an ID from another type does not match",
+          "context": {
+            "workspace": "user_1"
           },
           "expect": false
         }
@@ -434,75 +361,7 @@
       ]
     },
     {
-      "name": "membership uses exact, case-sensitive IDs",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": false,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
-        {
-          "context": {
-            "user": "USER_1"
-          },
-          "expect": false
-        }
-      ]
-    },
-    {
-      "name": "an ID from another type does not match",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": false,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
-        {
-          "context": {
-            "workspace": "user_1"
-          },
-          "expect": false
-        }
-      ]
-    },
-    {
-      "name": "all conditions must match",
+      "name": "a rule matches only when every condition matches",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
       "flag": {
         "slug": "flag",
@@ -535,90 +394,23 @@
       },
       "evaluations": [
         {
+          "name": "all conditions must match",
           "context": {
             "user": "user_1",
             "organization": "org_1"
           },
           "expect": true
-        }
-      ]
-    },
-    {
-      "name": "one matching condition cannot override a failed condition",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": false,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              },
-              {
-                "target_type": "organization",
-                "operator": "one_of",
-                "values": [
-                  "org_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
+        },
         {
+          "name": "one matching condition cannot override a failed condition",
           "context": {
             "user": "user_1",
             "organization": "org_other"
           },
           "expect": false
-        }
-      ]
-    },
-    {
-      "name": "one matching condition cannot override a missing context type",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "flag": {
-        "slug": "flag",
-        "enabled": true,
-        "default_value": false,
-        "off_value": false,
-        "rules": [
-          {
-            "id": "rule_user",
-            "kind": "conditions",
-            "value": true,
-            "conditions": [
-              {
-                "target_type": "user",
-                "operator": "one_of",
-                "values": [
-                  "user_1"
-                ]
-              },
-              {
-                "target_type": "organization",
-                "operator": "one_of",
-                "values": [
-                  "org_1"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "evaluations": [
+        },
         {
+          "name": "one matching condition cannot override a missing context type",
           "context": {
             "user": "user_1"
           },

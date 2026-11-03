@@ -1,51 +1,51 @@
 {
-  "description": "Change detection between two valid payloads. changed lists the slugs a change notification reports.",
+  "description": "Change detection between two valid payloads. changed lists the slugs a change notification reports. A case without before starts from the top-level baseline payload.",
   "format": 1,
-  "cases": [
-    {
-      "name": "rule order",
-      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
+  "baseline": {
+    "version": 2,
+    "flags": {
+      "flag": {
+        "slug": "flag",
+        "enabled": true,
+        "default_value": true,
+        "off_value": false,
+        "rules": [
+          {
+            "id": "rule_org",
+            "kind": "conditions",
+            "value": false,
+            "conditions": [
               {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
+                "target_type": "organization",
+                "operator": "one_of",
+                "values": [
+                  "org_1"
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "id": "rule_user",
+            "kind": "conditions",
+            "value": true,
+            "conditions": [
               {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
+                "target_type": "user",
+                "operator": "one_of",
+                "values": [
+                  "user_1"
                 ]
               }
             ]
           }
-        }
-      },
+        ]
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "rule order",
+      "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
       "after": {
         "version": 2,
         "flags": {
@@ -94,47 +94,6 @@
     {
       "name": "rule value",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -183,47 +142,6 @@
     {
       "name": "membership",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -258,47 +176,6 @@
     {
       "name": "off value",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -347,47 +224,6 @@
     {
       "name": "default value",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -436,47 +272,6 @@
     {
       "name": "enabled",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -525,47 +320,6 @@
     {
       "name": "rule kind",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -614,47 +368,6 @@
     {
       "name": "condition operator",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -703,47 +416,6 @@
     {
       "name": "target type",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -792,47 +464,6 @@
     {
       "name": "removed rule",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -942,47 +573,6 @@
     {
       "name": "additions and removals",
       "source": "workos-node src/feature-flags/runtime-client-rules.spec.ts",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -1272,47 +862,6 @@
     {
       "name": "an unknown flag field counts",
       "source": "workos-python (new)",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {
@@ -1362,47 +911,6 @@
     {
       "name": "identical payloads",
       "source": "workos-python (new)",
-      "before": {
-        "version": 2,
-        "flags": {
-          "flag": {
-            "slug": "flag",
-            "enabled": true,
-            "default_value": true,
-            "off_value": false,
-            "rules": [
-              {
-                "id": "rule_org",
-                "kind": "conditions",
-                "value": false,
-                "conditions": [
-                  {
-                    "target_type": "organization",
-                    "operator": "one_of",
-                    "values": [
-                      "org_1"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "rule_user",
-                "kind": "conditions",
-                "value": true,
-                "conditions": [
-                  {
-                    "target_type": "user",
-                    "operator": "one_of",
-                    "values": [
-                      "user_1"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      },
       "after": {
         "version": 2,
         "flags": {

@@ -26,6 +26,8 @@ CONTEXTS = load_fixture("context_cases.json")
 
 _CASE_FIELDS = {"name", "source", "key", "flag", "evaluations", "malformed"}
 _EVALUATION_FIELDS = {"context", "expect"}
+_OPTIONAL_EVALUATION_FIELDS = {"name"}
+_CHANGE_FIELDS = {"name", "source", "before", "after", "changed"}
 
 
 def _runtime(configuration: FeatureFlagsConfiguration) -> FeatureFlagsRuntimeClient:
@@ -54,7 +56,12 @@ def test_evaluation_corpus(case: Dict[str, Any]) -> None:
         FeatureFlagsConfiguration.from_dict({"version": 2, "flags": {key: flag}})
     )
     for evaluation in case["evaluations"]:
-        assert set(evaluation) == _EVALUATION_FIELDS
+        fields = set(evaluation)
+        assert (
+            _EVALUATION_FIELDS
+            <= fields
+            <= _EVALUATION_FIELDS | _OPTIONAL_EVALUATION_FIELDS
+        ), f"unexpected evaluation fields: {fields}"
         assert _observed(runtime, key, evaluation["context"]) == evaluation["expect"], (
             evaluation
         )
@@ -99,7 +106,10 @@ def test_payload_corpus(case: Dict[str, Any]) -> None:
 
 @pytest.mark.parametrize("case", CHANGES["cases"], ids=lambda case: case["name"])
 def test_change_corpus(case: Dict[str, Any]) -> None:
-    before = FeatureFlagsConfiguration(case["before"])
+    assert set(case) <= _CHANGE_FIELDS, (
+        f"unknown case fields: {set(case) - _CHANGE_FIELDS}"
+    )
+    before = FeatureFlagsConfiguration(case.get("before", CHANGES["baseline"]))
     after = FeatureFlagsConfiguration(case["after"])
     assert sorted(changed_flags(before, after)) == case["changed"]
 

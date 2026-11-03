@@ -157,16 +157,19 @@ class RuntimeClientCore:
     @property
     def configuration(self) -> Optional[FeatureFlagsConfiguration]:
         """The current snapshot, suitable for persisting with ``to_json()``."""
+        self._before_use()
         return self._status.configuration
 
     @property
     def is_ready(self) -> bool:
         """Whether a validated configuration is available for local evaluation."""
+        self._before_use()
         return self._status.configuration is not None
 
     @property
     def is_closed(self) -> bool:
         """Whether ``close()`` has been called."""
+        self._before_use()
         return self._closed
 
     # --- Listeners ------------------------------------------------------------

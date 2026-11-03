@@ -1,0 +1,200 @@
+# @oagen-ignore-file
+# This file is hand-maintained. The sync runtime client's poll request, sent
+# with a total time budget and without sharing connections across a fork.
+# pyright: strict, reportPrivateUsage=false
+
+from __future__ import annotations
+
+import sys
+import threading
+import time
+from typing import TYPE_CHECKING, Any, Dict, Optional
+from urllib.parse import urlsplit
+
+import httpx2
+
+from ..._errors import WorkOSConnectionError, WorkOSError, WorkOSTimeoutError
+from ..._http import (
+    HTTPResponse,
+    HttpxBackend,
+    TransportConnectError,
+    TransportError,
+    TransportTimeout,
+    _HttpxFamily,
+)
+from . import _policy
+
+if TYPE_CHECKING:
+    from ..._base_client import WorkOSClient
+
+_PHASES = ("connect", "read", "write", "pool")
+_MINIMUM_WAIT = 0.001
+
+# On macOS, a forked process that has not exec'd can crash inside system
+# libraries (DNS resolution, proxy settings, the system trust store) as soon
+# as it opens a connection, so polling never resumes there after a fork.
+_FORK_SAFE_PLATFORM = sys.platform != "darwin"
+
+
+class _DeadlineTimeouts(Dict[str, Optional[float]]):
+    """httpx timeouts that shrink to the time left before a deadline.
+
+    httpcore reads each phase's timeout when the phase starts, so connecting,
+    sending and waiting for the response each get only what is left of the
+    budget instead of the whole budget every time.
+    """
+
+    def __init__(self, deadline: float) -> None:
+        super().__init__({phase: None for phase in _PHASES})
+        self._deadline = deadline
+
+    def remaining(self) -> float:
+        return max(self._deadline - time.monotonic(), _MINIMUM_WAIT)
+
+    def get(self, key: str, default: Optional[float] = None) -> Optional[float]:  # type: ignore[override]
+        return self.remaining() if key in _PHASES else super().get(key, default)
+
+    def __getitem__(self, key: str) -> Optional[float]:
+        return self.remaining() if key in _PHASES else super().__getitem__(key)
+
+
+class PollTransport:
+    """Sends ``GET /sdk/feature-flags`` for the sync runtime client.
+
+    The request carries the same URL, headers and User-Agent as any other
+    request from the ``WorkOSClient`` and maps responses and failures to the
+    same errors. Two things differ:
+
+    - A refresh has a total budget. The body is streamed, every network wait is
+      limited to the time left, and the response is abandoned once the deadline
+      passes, so a refresh ends within ``request_timeout`` plus at most one read
+      of a stalling response body. A caller-supplied ``HTTPBackend`` that is
+      not an httpx client cannot stream; it gets the remaining budget as its
+      per-request timeout.
+    - With the SDK's default HTTP client, polling uses its own httpx2 client
+      with the same settings, so a forked child can replace it instead of
+      sharing the parent's connections. A caller-supplied client cannot be
+      rebuilt that way, and macOS cannot open connections safely from a forked
+      process, so in those cases polling does not resume in a forked child.
+    """
+
+    def __init__(self, workos: WorkOSClient) -> None:
+        self._workos = workos
+        backend = workos._backend
+        self._shared_httpx: Any = None
+        self._family = _HttpxFamily("httpx2")
+        if isinstance(backend, HttpxBackend) and not workos._owns_http_client:
+            self._shared_httpx = backend._client
+            self._family = backend._family
+        self._uses_default_client = workos._owns_http_client
+        self._owned: Optional[httpx2.Client] = None
+        self._lock = threading.Lock()
+
+    def fork_blocker(self) -> Optional[str]:
+        """Why a forked child cannot poll safely, or ``None`` if it can."""
+        if not self._uses_default_client:
+            return (
+                "the WorkOSClient uses a caller-supplied HTTP client, whose "
+                "connections this process would share with its parent"
+            )
+        if not _FORK_SAFE_PLATFORM:
+            return (
+                "on macOS, a forked process that has not exec'd cannot safely open "
+                "network connections"
+            )
+        return None
+
+    def reinitialize_after_fork(self) -> None:
+        # Abandon, never close, the inherited client: its sockets are the
+        # parent's connections, and closing it could wait on a pool lock that
+        # a thread missing from this process held at fork time.
+        self._owned = None
+        self._lock = threading.Lock()
+
+    def close(self) -> None:
+        with self._lock:
+            owned, self._owned = self._owned, None
+        if owned is not None:
+            owned.close()
+
+    def get(self, deadline: float) -> Any:
+        """Send one poll request and return the decoded body."""
+        workos = self._workos
+        url = workos._build_request_url(_policy.POLL_PATH, _policy.POLL_PARAMS, None)
+        headers = workos._build_headers("get", None, None)
+        try:
+            response = self._send(url, headers, deadline)
+        except TransportTimeout as error:
+            raise WorkOSTimeoutError(f"Request timed out: {error}") from error
+        except TransportConnectError as error:
+            raise WorkOSConnectionError(f"Connection failed: {error}") from error
+        except TransportError as error:
+            raise WorkOSError(f"Network error: {error}") from error
+        if response.status_code >= 400:
+            workos._raise_error(response)
+        return workos._deserialize_response(response, None)
+
+    def _send(self, url: str, headers: Dict[str, str], deadline: float) -> HTTPResponse:
+        if deadline - time.monotonic() <= 0:
+            raise TransportTimeout("no time was left in the request timeout")
+        client = self._httpx_client()
+        if client is None:
+            return self._workos._backend.request(
+                "GET",
+                url,
+                headers=headers,
+                content=None,
+                timeout=max(deadline - time.monotonic(), _MINIMUM_WAIT),
+            )
+        try:
+            return self._stream(client, url, headers, deadline)
+        except self._family.timeout_error as error:
+            raise TransportTimeout(str(error)) from error
+        except self._family.connect_error as error:
+            raise TransportConnectError(str(error)) from error
+        except self._family.http_error as error:
+            raise TransportError(str(error)) from error
+
+    def _httpx_client(self) -> Any:
+        if self._shared_httpx is not None:
+            return self._shared_httpx
+        if not self._uses_default_client:
+            return None
+        with self._lock:
+            if self._owned is None:
+                # The settings resolve_sync_backend gives the SDK's default client.
+                self._owned = httpx2.Client(
+                    timeout=self._workos._request_timeout, follow_redirects=True
+                )
+            return self._owned
+
+    def _stream(
+        self, client: Any, url: str, headers: Dict[str, str], deadline: float
+    ) -> HTTPResponse:
+        request = client.build_request(
+            "GET",
+            url,
+            # Explicit params merge client defaults, as HttpxBackend does.
+            params=urlsplit(url).query or None,
+            headers=headers,
+            extensions={"timeout": _DeadlineTimeouts(deadline)},
+        )
+        response = client.send(request, stream=True)
+        try:
+            chunks: list[bytes] = []
+            for chunk in response.iter_bytes():
+                chunks.append(chunk)
+                if time.monotonic() > deadline:
+                    raise TransportTimeout(
+                        "the response body did not finish within the request timeout"
+                    )
+            content = b"".join(chunks)
+        finally:
+            response.close()
+        return HTTPResponse(
+            status_code=response.status_code,
+            headers=response.headers,
+            content=content,
+            request_method="GET",
+            request_url=str(response.request.url),
+        )

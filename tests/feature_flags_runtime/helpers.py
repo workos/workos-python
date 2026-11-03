@@ -228,3 +228,82 @@ def eventually(predicate: Callable[[], bool], timeout: float = 5.0) -> None:
         if time.monotonic() > deadline:
             raise AssertionError("condition was not met in time")
         time.sleep(0.002)
+
+
+class LocalHTTPServer:
+    """A real HTTP/1.1 server on 127.0.0.1 for transport-level tests.
+
+    ``mode`` selects the next responses: ``"ok"`` serves ``payload``,
+    ``"stall"`` waits ``stall`` seconds before answering, and ``"drip"`` sends
+    the body one byte every ``drip_interval`` seconds. Every request is
+    recorded with its headers and the client's TCP port.
+    """
+
+    def __init__(self, payload: Dict[str, Any]) -> None:
+        import http.server
+
+        self.payload = payload
+        self.mode = "ok"
+        self.stall = 0.0
+        self.drip_interval = 0.1
+        self.requests: List[Dict[str, Any]] = []
+        self._lock = threading.Lock()
+        owner = self
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            protocol_version = "HTTP/1.1"
+
+            def log_message(self, format: str, *args: Any) -> None:
+                pass
+
+            def do_GET(self) -> None:
+                owner._handle(self)
+
+        self._server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self._server.daemon_threads = True
+        self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
+        self._thread.start()
+
+    @property
+    def base_url(self) -> str:
+        return f"http://127.0.0.1:{self._server.server_address[1]}"
+
+    def ports(self, authorization: str) -> set:
+        with self._lock:
+            return {
+                request["port"]
+                for request in self.requests
+                if request["headers"].get("Authorization") == authorization
+            }
+
+    def close(self) -> None:
+        self._server.shutdown()
+        self._server.server_close()
+
+    def _handle(self, handler: Any) -> None:
+        with self._lock:
+            self.requests.append(
+                {
+                    "path": handler.path,
+                    "headers": dict(handler.headers.items()),
+                    "port": handler.client_address[1],
+                }
+            )
+            mode, stall, interval = self.mode, self.stall, self.drip_interval
+        if mode == "stall":
+            time.sleep(stall)
+        body = json.dumps(self.payload).encode()
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.end_headers()
+        try:
+            if mode == "drip":
+                for byte in body:
+                    handler.wfile.write(bytes([byte]))
+                    handler.wfile.flush()
+                    time.sleep(interval)
+            else:
+                handler.wfile.write(body)
+        except OSError:
+            pass

@@ -7,7 +7,9 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import os
 import time
+import weakref
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
@@ -84,6 +86,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         # Set when polling stops after a 401, to end the polling task's sleep.
         self._wake = asyncio.Event()
         self._draining = False
+        # Set in a forked child; see _mark_forked.
+        self._forked = False
+        self._fork_warned = False
         if self._status.ready:
             self._ready.set()
         if on_change is not None:
@@ -92,6 +97,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             self.add_error_listener(on_error)
         if on_status is not None:
             self.add_status_listener(on_status)
+        _clients.add(self)
 
     # --- Lifecycle ------------------------------------------------------------
 
@@ -103,12 +109,14 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         polling permanently; the last good configuration stays usable.
 
         Raises:
-            RuntimeError: If the client is closed or no event loop is running.
+            RuntimeError: If the client is closed, no event loop is running, or
+                this is a forked copy of the client.
         """
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
             )
+        self._raise_if_forked()
         if self._started:
             return
         loop = asyncio.get_running_loop()
@@ -154,12 +162,13 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
         Raises:
             WorkOSError: If the request fails or the payload cannot be read.
-            RuntimeError: If the client is closed.
+            RuntimeError: If the client is closed or is a forked copy.
         """
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
             )
+        self._raise_if_forked()
         try:
             await self._refresh(background=False)
         except _Closed:
@@ -273,7 +282,11 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             await self._drain()
 
     async def _refresh_locked(self, *, background: bool) -> None:
-        if self._closed or (background and self._status.polling_stopped):
+        if (
+            self._closed
+            or self._forked
+            or (background and self._status.polling_stopped)
+        ):
             raise _Closed()
         attempted = utc_now()
         try:
@@ -363,3 +376,42 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
                     await result
             except Exception:
                 self._log_listener_error()
+
+    # --- Fork safety ----------------------------------------------------------
+
+    def _mark_forked(self) -> None:
+        # An event loop, its tasks and the AsyncWorkOSClient's connections all
+        # belong to the parent. The copy in a forked child stops polling, even
+        # if the child keeps running a copy of the loop, and keeps serving its
+        # last configuration.
+        self._forked = True
+
+    def _before_use(self) -> None:
+        if self._forked and not self._fork_warned:
+            self._fork_warned = True
+            self._logger.warning(
+                "%s Evaluation keeps serving the last configuration.",
+                _FORKED_MESSAGE.format(pid=os.getpid()),
+            )
+
+    def _raise_if_forked(self) -> None:
+        if self._forked:
+            raise RuntimeError(_FORKED_MESSAGE.format(pid=os.getpid()))
+
+
+_FORKED_MESSAGE = (
+    "Feature flag polling does not run in forked process {pid}: this "
+    "AsyncFeatureFlagsRuntimeClient was created in the parent process, whose event "
+    "loop and HTTP connections it uses. Create a new one after forking instead."
+)
+
+_clients: weakref.WeakSet[AsyncFeatureFlagsRuntimeClient] = weakref.WeakSet()
+
+
+def _mark_clients_forked() -> None:
+    for client in list(_clients):
+        client._mark_forked()
+
+
+if hasattr(os, "register_at_fork"):
+    os.register_at_fork(after_in_child=_mark_clients_forked)

@@ -324,6 +324,7 @@ class TestFailures:
             runtime.refresh()
         assert len(server.requests) == requests
         runtime.close()
+        workos.close()
 
     def test_errors_that_retrying_cannot_fix_are_not_retried(
         self, server: FlagServer, make_runtime: Make, fast_polling: List[int]
@@ -622,14 +623,14 @@ class TestConfiguration:
         public = create_public_client(client_id="client_123")
         with pytest.raises(ConfigurationError):
             FeatureFlagsRuntimeClient(public)  # type: ignore[arg-type]
+        public.close()
 
     def test_rejects_an_unparsed_bootstrap(self, client: WorkOSClient) -> None:
         with pytest.raises(TypeError, match="from_json"):
             client.create_feature_flags_runtime_client(bootstrap=ORDERED)  # type: ignore[arg-type]
 
-    def test_clamps_the_polling_interval(self, client: WorkOSClient) -> None:
-        runtime = client.create_feature_flags_runtime_client(polling_interval=1)
-        assert runtime._polling_interval == 5.0
+    def test_clamps_the_polling_interval(self, make_runtime: Make) -> None:
+        assert make_runtime(polling_interval=1)._polling_interval == 5.0
 
     @pytest.mark.parametrize("value", [0, -1, float("nan"), float("inf")])
     def test_rejects_unusable_durations(

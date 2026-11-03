@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List
+from contextlib import contextmanager
+from typing import Any, Dict, Iterator, List
 
 import pytest
 
@@ -30,10 +31,17 @@ _OPTIONAL_EVALUATION_FIELDS = {"name"}
 _CHANGE_FIELDS = {"name", "source", "before", "after", "changed"}
 
 
-def _runtime(configuration: FeatureFlagsConfiguration) -> FeatureFlagsRuntimeClient:
-    return FeatureFlagsRuntimeClient(
-        WorkOSClient(api_key=API_KEY), bootstrap=configuration
-    )
+@contextmanager
+def _runtime(
+    configuration: FeatureFlagsConfiguration,
+) -> Iterator[FeatureFlagsRuntimeClient]:
+    workos = WorkOSClient(api_key=API_KEY)
+    runtime = FeatureFlagsRuntimeClient(workos, bootstrap=configuration)
+    try:
+        yield runtime
+    finally:
+        runtime.close()
+        workos.close()
 
 
 def _observed(
@@ -52,19 +60,19 @@ def test_evaluation_corpus(case: Dict[str, Any]) -> None:
     assert set(case) <= _CASE_FIELDS, f"unknown case fields: {set(case) - _CASE_FIELDS}"
     flag = case["flag"]
     key = case.get("key", flag["slug"])
-    runtime = _runtime(
-        FeatureFlagsConfiguration.from_dict({"version": 2, "flags": {key: flag}})
+    configuration = FeatureFlagsConfiguration.from_dict(
+        {"version": 2, "flags": {key: flag}}
     )
-    for evaluation in case["evaluations"]:
-        fields = set(evaluation)
-        assert (
-            _EVALUATION_FIELDS
-            <= fields
-            <= _EVALUATION_FIELDS | _OPTIONAL_EVALUATION_FIELDS
-        ), f"unexpected evaluation fields: {fields}"
-        assert _observed(runtime, key, evaluation["context"]) == evaluation["expect"], (
-            evaluation
-        )
+    with _runtime(configuration) as runtime:
+        for evaluation in case["evaluations"]:
+            fields = set(evaluation)
+            assert (
+                _EVALUATION_FIELDS
+                <= fields
+                <= _EVALUATION_FIELDS | _OPTIONAL_EVALUATION_FIELDS
+            ), f"unexpected evaluation fields: {fields}"
+            observed = _observed(runtime, key, evaluation["context"])
+            assert observed == evaluation["expect"], evaluation
 
 
 def test_get_all_flags_agrees_with_is_enabled_and_omits_flags_without_an_answer() -> (
@@ -77,22 +85,21 @@ def test_get_all_flags_agrees_with_is_enabled_and_omits_flags_without_an_answer(
         }
         for index, case in enumerate(EVALUATION["cases"])
     }
-    runtime = _runtime(
-        FeatureFlagsConfiguration.from_dict({"version": 2, "flags": flags})
-    )
     contexts: List[Dict[str, Any]] = [
         {},
         {"user": "user_1", "organization": "org_1"},
         {"organization": "org_acme"},
     ]
-    for context in contexts:
-        all_flags = runtime.get_all_flags(context)
-        for slug in flags:
-            answer = _observed(runtime, slug, context)
-            if answer == "absent":
-                assert slug not in all_flags
-            else:
-                assert all_flags[slug] is answer
+    configuration = FeatureFlagsConfiguration.from_dict({"version": 2, "flags": flags})
+    with _runtime(configuration) as runtime:
+        for context in contexts:
+            all_flags = runtime.get_all_flags(context)
+            for slug in flags:
+                answer = _observed(runtime, slug, context)
+                if answer == "absent":
+                    assert slug not in all_flags
+                else:
+                    assert all_flags[slug] is answer
 
 
 @pytest.mark.parametrize("case", PAYLOADS["cases"], ids=lambda case: case["name"])
@@ -124,14 +131,14 @@ def test_context_corpus(case: Dict[str, Any], caplog: pytest.LogCaptureFixture) 
 
 
 def test_context_corpus_flag_matches_only_the_surviving_targets() -> None:
-    runtime = _runtime(
-        FeatureFlagsConfiguration.from_dict(
-            {"version": 2, "flags": {"flag": CONTEXTS["flag"]}}
-        )
+    configuration = FeatureFlagsConfiguration.from_dict(
+        {"version": 2, "flags": {"flag": CONTEXTS["flag"]}}
     )
-    for case in CONTEXTS["cases"]:
-        expected = (
-            case["targets"].get("workspace") == "ws_1"
-            or case["targets"].get("user") == "user_1"
-        )
-        assert runtime.is_enabled("flag", case["context"]) is expected, case["name"]
+    with _runtime(configuration) as runtime:
+        for case in CONTEXTS["cases"]:
+            expected = (
+                case["targets"].get("workspace") == "ws_1"
+                or case["targets"].get("user") == "user_1"
+            )
+            observed = runtime.is_enabled("flag", case["context"])
+            assert observed is expected, case["name"]

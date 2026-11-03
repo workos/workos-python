@@ -78,7 +78,6 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         self._client = client
         self._started = False
         self._task: Optional[asyncio.Task[None]] = None
-        self._readiness_error: Optional[Exception] = None
         # Neither primitive binds to an event loop until first awaited.
         self._refresh_lock = asyncio.Lock()
         self._ready = asyncio.Event()
@@ -138,16 +137,10 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         try:
             await asyncio.wait_for(self._ready.wait(), timeout)
         except asyncio.TimeoutError:
-            raise TimeoutError(
-                f"Feature flags were not ready within {timeout} seconds"
-            ) from None
-        if self._status.ready:
-            return
-        if self._readiness_error is not None:
-            raise self._readiness_error
-        raise RuntimeError(
-            "The feature flags runtime client was closed before it became ready"
-        )
+            # The readiness timeout names the last refresh error as its cause.
+            raise self._readiness_timeout(timeout)
+        if not self._status.ready:
+            raise self._readiness_failure()
 
     async def refresh(self) -> None:
         """Fetch the configuration now.

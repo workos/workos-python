@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import logging
 import threading
+import traceback
 from typing import Any, Callable, List
 
 import pytest
@@ -152,6 +153,51 @@ class TestReadiness:
             runtime.wait_until_ready(timeout=5)
         assert runtime.status.polling_stopped
         assert len(server.requests) == 1
+
+    def test_a_wait_timeout_names_the_last_refresh_error(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.respond(404, {"message": "Not Found"})
+        runtime = make_runtime()
+        with pytest.raises(NotFoundError):
+            runtime.refresh()
+        with pytest.raises(
+            TimeoutError, match="the last refresh failed: NotFoundError"
+        ) as raised:
+            runtime.wait_until_ready(timeout=0.01)
+        assert raised.value.__cause__ is runtime.status.last_error
+
+    def test_each_wait_after_a_401_raises_a_fresh_error(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.respond(401, {"message": "Unauthorized"})
+        runtime = make_runtime()
+        with pytest.raises(AuthenticationError):
+            runtime.refresh()
+        errors: List[BaseException] = []
+
+        def wait() -> None:
+            try:
+                runtime.wait_until_ready(timeout=1)
+            except BaseException as error:
+                errors.append(error)
+
+        for _ in range(3):
+            wait()
+        waiters = [threading.Thread(target=wait) for _ in range(3)]
+        for waiter in waiters:
+            waiter.start()
+        for waiter in waiters:
+            waiter.join(5)
+
+        assert len(errors) == 6
+        assert all(isinstance(error, AuthenticationError) for error in errors)
+        assert len({id(error) for error in errors}) == 6
+        stored = errors[0].__cause__
+        assert stored is not None and all(error.__cause__ is stored for error in errors)
+        assert all(error.status_code == 401 for error in errors)  # type: ignore[attr-defined]
+        depths = {len(traceback.extract_tb(error.__traceback__)) for error in errors}
+        assert len(depths) == 1
 
     def test_closing_before_readiness_wakes_waiters(self, make_runtime: Make) -> None:
         runtime = make_runtime()

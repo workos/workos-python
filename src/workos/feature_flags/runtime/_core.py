@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import copy
 import logging
 import threading
 from dataclasses import replace
@@ -81,6 +82,8 @@ class RuntimeClientCore:
             "status": (),
         }
         self._closed = False
+        # The 401 that stopped polling before any configuration was available.
+        self._readiness_error: Optional[Exception] = None
 
     # --- Evaluation -----------------------------------------------------------
 
@@ -260,6 +263,34 @@ class RuntimeClientCore:
                 "Feature flag poll returned a payload this SDK can't read; "
                 f"keeping the last good flags. {error}"
             ) from error
+
+    def _readiness_timeout(self, timeout: Optional[float]) -> TimeoutError:
+        last_error = self._status.last_error
+        message = f"Feature flags were not ready within {timeout} seconds"
+        if last_error is not None:
+            message += f"; the last refresh failed: {describe_error(last_error)}"
+        error = TimeoutError(message)
+        error.__cause__ = last_error
+        error.__suppress_context__ = True
+        return error
+
+    def _readiness_failure(self) -> Exception:
+        """A new exception for each waiter, so no shared traceback keeps growing."""
+        stored = self._readiness_error
+        if stored is None:
+            return RuntimeError(
+                "The feature flags runtime client was closed before it became ready"
+            )
+        try:
+            # Same type and attributes, with an empty traceback.
+            error = copy.copy(stored)
+        except Exception:
+            error = RuntimeError(
+                f"Feature flag polling stopped before it was ready: {describe_error(stored)}"
+            )
+        error.__cause__ = stored
+        error.__suppress_context__ = True
+        return error
 
     def _before_use(self) -> None:
         """Hook run before public calls; the sync client restarts polling after a fork."""

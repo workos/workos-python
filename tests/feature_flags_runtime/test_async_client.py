@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import asyncio
+import traceback
 from typing import Any, Callable, List
 
 import pytest
@@ -89,6 +90,40 @@ async def test_bootstrap_is_ready_without_a_request(
 async def test_wait_times_out_without_a_configuration(make_async_runtime: Make) -> None:
     with pytest.raises(TimeoutError):
         await make_async_runtime().wait_until_ready(timeout=0.01)
+
+
+async def test_a_wait_timeout_names_the_last_refresh_error(
+    server: FlagServer, make_async_runtime: Make
+) -> None:
+    server.respond(404, {"message": "Not Found"})
+    runtime = make_async_runtime()
+    with pytest.raises(NotFoundError):
+        await runtime.refresh()
+    with pytest.raises(
+        TimeoutError, match="the last refresh failed: NotFoundError"
+    ) as raised:
+        await runtime.wait_until_ready(timeout=0.01)
+    assert raised.value.__cause__ is runtime.status.last_error
+
+
+async def test_each_wait_after_a_401_raises_a_fresh_error(
+    server: FlagServer, make_async_runtime: Make
+) -> None:
+    server.respond(401, {"message": "Unauthorized"})
+    runtime = make_async_runtime()
+    with pytest.raises(AuthenticationError):
+        await runtime.refresh()
+    errors: List[BaseException] = []
+    for _ in range(4):
+        try:
+            await runtime.wait_until_ready(timeout=1)
+        except AuthenticationError as error:
+            errors.append(error)
+    assert len({id(error) for error in errors}) == 4
+    stored = errors[0].__cause__
+    assert stored is not None and all(error.__cause__ is stored for error in errors)
+    depths = {len(traceback.extract_tb(error.__traceback__)) for error in errors}
+    assert len(depths) == 1
 
 
 async def test_awaits_coroutine_and_plain_listeners(

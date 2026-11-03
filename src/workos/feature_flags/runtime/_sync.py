@@ -88,7 +88,6 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         self._client = client
         self._started = False
         self._thread: Optional[threading.Thread] = None
-        self._readiness_error: Optional[Exception] = None
         self._delivering: Optional[int] = None
         self._fork_restart_pending = False
         self._init_synchronization()
@@ -161,8 +160,9 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         if self._status.ready:
             return
         if not self._ready.wait(timeout):
-            raise TimeoutError(f"Feature flags were not ready within {timeout} seconds")
-        self._raise_if_unready()
+            raise self._readiness_timeout(timeout)
+        if not self._status.ready:
+            raise self._readiness_failure()
 
     def refresh(self) -> None:
         """Fetch the configuration now, on the calling thread.
@@ -369,15 +369,6 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                     )
         finally:
             self._delivering = outer
-
-    def _raise_if_unready(self) -> None:
-        if self._status.ready:
-            return
-        if self._readiness_error is not None:
-            raise self._readiness_error
-        raise RuntimeError(
-            "The feature flags runtime client was closed before it became ready"
-        )
 
     # --- Fork safety ----------------------------------------------------------
 

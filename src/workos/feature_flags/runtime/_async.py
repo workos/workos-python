@@ -81,6 +81,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         # Neither primitive binds to an event loop until first awaited.
         self._refresh_lock = asyncio.Lock()
         self._ready = asyncio.Event()
+        # Set when polling stops after a 401, to end the polling task's sleep.
+        self._wake = asyncio.Event()
+        self._draining = False
         if self._status.ready:
             self._ready.set()
         if on_change is not None:
@@ -255,40 +258,51 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             delay = _policy.next_delay(
                 self._polling_interval, failures, self._max_retry_delay
             )
-            await asyncio.sleep(max(delay, retry_after or 0.0))
+            try:
+                await asyncio.wait_for(
+                    self._wake.wait(), timeout=max(delay, retry_after or 0.0)
+                )
+            except asyncio.TimeoutError:
+                pass
 
     async def _refresh(self, *, background: bool) -> None:
-        async with self._refresh_lock:
-            if self._closed or (background and self._status.polling_stopped):
-                raise _Closed()
-            attempted = utc_now()
-            try:
-                payload = await asyncio.wait_for(self._fetch(), self._request_timeout)
-                configuration = self._parse(payload)
-            except asyncio.TimeoutError as error:
-                if self._closed:
-                    raise _Closed() from error
-                timeout = WorkOSTimeoutError(
-                    f"Feature flag refresh exceeded its request timeout of {self._request_timeout} seconds"
-                )
-                await self._deliver(
-                    self._record_failure(timeout, attempted, background=background)
-                )
-                raise timeout from error
-            except Exception as error:
-                if self._closed:
-                    raise _Closed() from error
-                await self._deliver(
-                    self._record_failure(error, attempted, background=background)
-                )
-                raise
+        try:
+            async with self._refresh_lock:
+                await self._refresh_locked(background=background)
+        finally:
+            await self._drain()
+
+    async def _refresh_locked(self, *, background: bool) -> None:
+        if self._closed or (background and self._status.polling_stopped):
+            raise _Closed()
+        attempted = utc_now()
+        try:
+            payload = await asyncio.wait_for(self._fetch(), self._request_timeout)
+            configuration = self._parse(payload)
+        except asyncio.TimeoutError as error:
             if self._closed:
-                raise _Closed()
-            notifications = self._record_success(
-                configuration, attempted, background=background
+                raise _Closed() from error
+            timeout = WorkOSTimeoutError(
+                f"Feature flag refresh exceeded its request timeout of {self._request_timeout} seconds"
             )
-            self._ready.set()
-            await self._deliver(notifications)
+            self._pending.append(
+                self._record_failure(timeout, attempted, background=background)
+            )
+            raise timeout from error
+        except Exception as error:
+            if self._closed:
+                raise _Closed() from error
+            self._pending.append(
+                self._record_failure(error, attempted, background=background)
+            )
+            raise
+        if self._closed:
+            raise _Closed()
+        notifications = self._record_success(
+            configuration, attempted, background=background
+        )
+        self._ready.set()
+        self._pending.append(notifications)
 
     async def _fetch(self) -> Any:
         deadline = time.monotonic() + self._request_timeout
@@ -319,14 +333,29 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             if not self._status.ready:
                 self._readiness_error = error
             self._ready.set()
-            task = self._task
-            if task is not None and task is not asyncio.current_task():
-                task.cancel()
-            await self._deliver(notifications)
+            self._wake.set()
+            self._pending.append(notifications)
+        await self._drain()
+
+    async def _drain(self) -> None:
+        """Deliver pending notifications in refresh order, one batch at a time.
+
+        A refresh that finishes while another task is delivering, including a
+        listener calling refresh(), leaves its batch to that task, so batches
+        are never interleaved.
+        """
+        if self._draining:
+            return
+        self._draining = True
+        try:
+            while self._pending:
+                batch = self._pending.popleft()
+                if not self._closed:
+                    await self._deliver(batch)
+        finally:
+            self._draining = False
 
     async def _deliver(self, notifications: list[Notification]) -> None:
-        if self._closed:
-            return
         for listener, argument in notifications:
             try:
                 result = listener(argument)

@@ -152,6 +152,29 @@ async def test_awaits_coroutine_and_plain_listeners(
     )
 
 
+async def test_listeners_can_await_refresh_and_events_stay_in_order(
+    server: FlagServer, make_async_runtime: Make
+) -> None:
+    server.respond(200, ORDERED)
+    log: List[str] = []
+    holder: List[AsyncFeatureFlagsRuntimeClient] = []
+
+    async def on_change(event: FlagsChangedEvent) -> None:
+        label = "first-load" if event.previous is None else "refresh"
+        log.append(f"start {label}")
+        if event.previous is None:
+            server.respond(200, CHANGED)
+            await holder[0].refresh()
+        log.append(f"end {label}")
+
+    runtime = make_async_runtime(on_change=on_change)
+    holder.append(runtime)
+    await asyncio.wait_for(runtime.refresh(), 2)
+
+    assert log == ["start first-load", "end first-load", "start refresh", "end refresh"]
+    assert runtime.is_enabled("added") is True
+
+
 @pytest.mark.parametrize(
     "status, body, error_type",
     [

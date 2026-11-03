@@ -102,6 +102,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     def _init_synchronization(self) -> None:
         self._lifecycle_lock = threading.Lock()
         self._refresh_lock = threading.RLock()
+        self._drain_lock = threading.Lock()
         # `_stop` is set by close(); `_wake` also interrupts the poller's sleep
         # when polling stops after a 401.
         self._stop = threading.Event()
@@ -295,28 +296,34 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                 return
 
     def _refresh(self, *, background: bool) -> None:
-        with self._refresh_lock:
-            if self._closed or (background and self._status.polling_stopped):
-                raise _Closed()
-            attempted = utc_now()
-            try:
-                configuration = self._parse(self._fetch())
-            except _Closed:
-                raise
-            except Exception as error:
-                if self._closed:
-                    raise _Closed() from error
-                self._deliver(
-                    self._record_failure(error, attempted, background=background)
-                )
-                raise
+        try:
+            with self._refresh_lock:
+                self._refresh_locked(background=background)
+        finally:
+            self._drain()
+
+    def _refresh_locked(self, *, background: bool) -> None:
+        if self._closed or (background and self._status.polling_stopped):
+            raise _Closed()
+        attempted = utc_now()
+        try:
+            configuration = self._parse(self._fetch())
+        except _Closed:
+            raise
+        except Exception as error:
             if self._closed:
-                raise _Closed()
-            notifications = self._record_success(
-                configuration, attempted, background=background
+                raise _Closed() from error
+            self._pending.append(
+                self._record_failure(error, attempted, background=background)
             )
-            self._ready.set()
-            self._deliver(notifications)
+            raise
+        if self._closed:
+            raise _Closed()
+        notifications = self._record_success(
+            configuration, attempted, background=background
+        )
+        self._ready.set()
+        self._pending.append(notifications)
 
     def _fetch(self) -> Any:
         deadline = time.monotonic() + self._request_timeout
@@ -349,28 +356,48 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                 self._readiness_error = error
             self._wake.set()
             self._ready.set()
-            self._deliver(notifications)
+            self._pending.append(notifications)
+        self._drain()
+
+    def _drain(self) -> None:
+        """Deliver pending notifications in refresh order, one batch at a time.
+
+        Only one thread delivers at once. A refresh that finishes while
+        another thread is delivering leaves its batch to that thread, which
+        also covers a listener calling refresh(): its batch is delivered after
+        the current one, never interleaved with it.
+        """
+        with self._drain_lock:
+            if self._delivering is not None:
+                return
+            self._delivering = threading.get_ident()
+        try:
+            while True:
+                with self._drain_lock:
+                    if not self._pending:
+                        self._delivering = None
+                        return
+                    batch = self._pending.popleft()
+                if not self._closed:
+                    self._deliver(batch)
+        except BaseException:
+            with self._drain_lock:
+                self._delivering = None
+            raise
 
     def _deliver(self, notifications: list[Notification]) -> None:
-        if self._closed:
-            return
-        outer = self._delivering
-        self._delivering = threading.get_ident()
-        try:
-            for listener, argument in notifications:
-                try:
-                    result = listener(argument)
-                except Exception:
-                    self._log_listener_error()
-                    continue
-                if inspect.isawaitable(result):
-                    _discard_awaitable(result)
-                    self._logger.warning(
-                        "An async listener was registered on the sync FeatureFlagsRuntimeClient "
-                        "and was not run; use AsyncFeatureFlagsRuntimeClient for async listeners"
-                    )
-        finally:
-            self._delivering = outer
+        for listener, argument in notifications:
+            try:
+                result = listener(argument)
+            except Exception:
+                self._log_listener_error()
+                continue
+            if inspect.isawaitable(result):
+                _discard_awaitable(result)
+                self._logger.warning(
+                    "An async listener was registered on the sync FeatureFlagsRuntimeClient "
+                    "and was not run; use AsyncFeatureFlagsRuntimeClient for async listeners"
+                )
 
     # --- Fork safety ----------------------------------------------------------
 
@@ -398,6 +425,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         self._listeners_lock = threading.Lock()
         self._context_warnings.reinitialize_after_fork()
         self._delivering = None
+        self._pending.clear()
         self._thread = None
         self._init_synchronization()
         self._fork_restart_pending = (

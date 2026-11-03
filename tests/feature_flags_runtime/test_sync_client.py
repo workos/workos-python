@@ -316,6 +316,41 @@ class TestChangeNotifications:
         runtime.refresh()
         assert changes.items == []
 
+    def test_listeners_can_refresh_and_events_stay_in_refresh_order(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.respond(200, ORDERED)
+        log: List[str] = []
+        holder: List[FeatureFlagsRuntimeClient] = []
+        refreshed = threading.Event()
+
+        def on_change(event: FlagsChangedEvent) -> None:
+            label = "first-load" if event.previous is None else "refresh"
+            log.append(f"start {label}")
+            if event.previous is None:
+                # Refresh from another thread and wait for it, which needs the
+                # refresh lock to be free while listeners run.
+                server.respond(200, CHANGED)
+                refresher = threading.Thread(target=holder[0].refresh)
+                refresher.start()
+                refresher.join(5)
+                if not refresher.is_alive():
+                    refreshed.set()
+            log.append(f"end {label}")
+
+        runtime = make_runtime(on_change=on_change)
+        holder.append(runtime)
+        runtime.refresh()
+
+        assert refreshed.is_set()
+        eventually(lambda: len(log) == 4)
+        assert log == [
+            "start first-load",
+            "end first-load",
+            "start refresh",
+            "end refresh",
+        ]
+
     def test_listener_failures_are_logged_and_do_not_stop_polling(
         self,
         server: FlagServer,

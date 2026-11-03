@@ -8,9 +8,10 @@ from __future__ import annotations
 import copy
 import logging
 import threading
+from collections import deque
 from dataclasses import replace
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Deque, Optional, Tuple
 
 from ..._errors import APIError
 from . import _policy
@@ -82,6 +83,10 @@ class RuntimeClientCore:
             "status": (),
         }
         self._closed = False
+        # Notification batches, appended in refresh order while the refresh
+        # lock is held and delivered after it is released, so a listener may
+        # call refresh() itself.
+        self._pending: Deque[list[Notification]] = deque()
         # The 401 that stopped polling before any configuration was available.
         self._readiness_error: Optional[Exception] = None
 

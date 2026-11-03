@@ -124,9 +124,12 @@ class FeatureFlagsConfiguration:
     new runtime client usable before its first successful poll.
     """
 
-    __slots__ = ("_json", "_flags")
+    __slots__ = ("_json", "_fingerprint", "_flags")
 
     _json: str
+    # The payload serialized with sorted keys: equal for equal content, so an
+    # unchanged poll can keep this snapshot without parsing it again.
+    _fingerprint: str
     _flags: Mapping[str, _CompiledFlag]
 
     def __init__(self, payload: Mapping[str, Any]) -> None:
@@ -138,14 +141,22 @@ class FeatureFlagsConfiguration:
                 accepted and never match, and a served value that is not a
                 boolean leaves the flag without an answer.
         """
-        try:
-            owned_json = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-        except (TypeError, ValueError) as error:
-            raise FeatureFlagsConfigurationError(
-                f"Feature flags configuration is not JSON-serializable: {error}"
-            ) from error
-        self._json = owned_json
-        self._flags = MappingProxyType(_parse_payload(json.loads(owned_json)))
+        self._initialize(payload, _fingerprint(payload))
+
+    def _initialize(self, payload: object, fingerprint: str) -> None:
+        self._json = _dumps(payload, sort_keys=False)
+        self._fingerprint = fingerprint
+        self._flags = MappingProxyType(_parse_payload(json.loads(self._json)))
+
+    def __reduce__(self) -> tuple[Any, ...]:
+        # MappingProxyType cannot be pickled; the JSON rebuilds an equal snapshot.
+        return (_restore, (self._json,))
+
+    def __copy__(self) -> FeatureFlagsConfiguration:
+        return self
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> FeatureFlagsConfiguration:
+        return self
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> FeatureFlagsConfiguration:
@@ -204,6 +215,22 @@ class FeatureFlagsConfiguration:
         return iter(self._flags.items())
 
 
+def configuration_for(
+    payload: object, current: FeatureFlagsConfiguration | None
+) -> FeatureFlagsConfiguration:
+    """``current`` when ``payload`` has the same content, otherwise a new snapshot.
+
+    Most polls return an unchanged configuration; reusing the snapshot skips
+    validating it again. Key order does not count as a change.
+    """
+    fingerprint = _fingerprint(payload)
+    if current is not None and current._fingerprint == fingerprint:
+        return current
+    configuration = FeatureFlagsConfiguration.__new__(FeatureFlagsConfiguration)
+    configuration._initialize(payload, fingerprint)
+    return configuration
+
+
 def changed_flags(
     previous: FeatureFlagsConfiguration | None, current: FeatureFlagsConfiguration
 ) -> frozenset[str]:
@@ -215,6 +242,8 @@ def changed_flags(
     """
     if previous is None:
         return frozenset(current.slugs)
+    if previous is current:
+        return frozenset()
     changed = {
         slug
         for slug, flag in current._compiled_items()
@@ -225,7 +254,26 @@ def changed_flags(
     return frozenset(changed)
 
 
+def _restore(text: str) -> FeatureFlagsConfiguration:
+    return FeatureFlagsConfiguration.from_json(text)
+
+
 # --- Parsing ------------------------------------------------------------------
+
+
+def _dumps(payload: object, *, sort_keys: bool) -> str:
+    try:
+        return json.dumps(
+            payload, sort_keys=sort_keys, ensure_ascii=False, separators=(",", ":")
+        )
+    except (TypeError, ValueError) as error:
+        raise FeatureFlagsConfigurationError(
+            f"Feature flags configuration is not JSON-serializable: {error}"
+        ) from error
+
+
+def _fingerprint(payload: object) -> str:
+    return _dumps(payload, sort_keys=True)
 
 
 def _invalid(message: str) -> FeatureFlagsConfigurationError:

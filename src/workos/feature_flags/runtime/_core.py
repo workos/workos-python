@@ -9,7 +9,7 @@ import logging
 import threading
 from dataclasses import replace
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple
 
 from ..._errors import APIError
 from . import _policy
@@ -18,6 +18,7 @@ from ._configuration import (
     FeatureFlagsConfigurationError,
     FlagDefinition,
     changed_flags,
+    configuration_for,
 )
 from ._context import ContextWarnings, EvaluationContext, LoggerLike, normalize_context
 from ._types import FlagsChangedEvent, RuntimeStatus
@@ -253,7 +254,7 @@ class RuntimeClientCore:
         # The transport returns None for a body that is not JSON; the
         # configuration rejects that like any other payload it can't read.
         try:
-            return FeatureFlagsConfiguration(cast(Mapping[str, Any], payload))
+            return configuration_for(payload, self._status.configuration)
         except FeatureFlagsConfigurationError as error:
             raise FeatureFlagsConfigurationError(
                 "Feature flag poll returned a payload this SDK can't read; "

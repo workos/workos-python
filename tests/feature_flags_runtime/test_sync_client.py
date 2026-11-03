@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import threading
 from typing import Any, Callable, List
@@ -17,6 +18,7 @@ from workos._errors import (
     NotFoundError,
     ServerError,
 )
+from workos.feature_flags.runtime import _configuration
 from workos.feature_flags.runtime import (
     FeatureFlagsConfiguration,
     FeatureFlagsConfigurationError,
@@ -222,6 +224,38 @@ class TestChangeNotifications:
         runtime.refresh()
         assert len(changes.items) == 1
         assert len(statuses.items) == 2
+
+    def test_an_unchanged_payload_keeps_the_snapshot_without_parsing_it(
+        self, server: FlagServer, make_runtime: Make, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        server.respond(200, ORDERED)
+        changes = Collector()
+        runtime = make_runtime(on_change=changes)
+        runtime.refresh()
+        snapshot = runtime.configuration
+        first_refresh = runtime.status.last_successful_refresh_at
+        parses: List[object] = []
+        original = _configuration._parse_payload
+        monkeypatch.setattr(
+            _configuration,
+            "_parse_payload",
+            lambda payload: parses.append(payload) or original(payload),
+        )
+        # Same content, different key order.
+        server.respond(200, json.loads(json.dumps(ORDERED, sort_keys=True)))
+        runtime.refresh()
+
+        assert runtime.configuration is snapshot
+        assert parses == []
+        assert runtime.status.refresh_count == 2
+        assert runtime.status.last_successful_refresh_at != first_refresh
+        assert len(changes.items) == 1
+
+        server.respond(200, CHANGED)
+        runtime.refresh()
+        assert len(parses) == 1
+        assert runtime.configuration is not snapshot
+        assert len(changes.items) == 2
 
     def test_an_identical_bootstrap_reports_no_change(
         self, server: FlagServer, make_runtime: Make

@@ -19,8 +19,8 @@ class AuditLogEvent:
 
     action: str
     """Identifier of what happened."""
-    occurred_at: datetime
-    """ISO-8601 value of when the action occurred."""
+    occurred_at: datetime | None
+    """ISO-8601 value of when the action occurred. When omitted, defaults to the time WorkOS accepts the event."""
     actor: AuditLogEventActor
     """The entity that performed the action."""
     targets: list[AuditLogEventTarget]
@@ -38,7 +38,9 @@ class AuditLogEvent:
         try:
             return cls(
                 action=data["action"],
-                occurred_at=_parse_datetime(data["occurred_at"]),
+                occurred_at=_parse_datetime(_v_occurred_at)
+                if (_v_occurred_at := data.get("occurred_at")) is not None
+                else None,
                 actor=AuditLogEventActor.from_dict(cast(dict[str, Any], data["actor"])),
                 targets=[
                     AuditLogEventTarget.from_dict(cast(dict[str, Any], item))
@@ -57,7 +59,8 @@ class AuditLogEvent:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["action"] = self.action
-        result["occurred_at"] = _format_datetime(self.occurred_at)
+        if self.occurred_at is not None:
+            result["occurred_at"] = _format_datetime(self.occurred_at)
         result["actor"] = self.actor.to_dict()
         result["targets"] = [item.to_dict() for item in self.targets]
         result["context"] = self.context.to_dict()

@@ -730,6 +730,29 @@ class TestClose:
         assert runtime.is_ready is False
         assert changes.items == []
 
+    def test_returns_only_after_a_manual_refresh_finishes_installing(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.respond(200, ORDERED)
+        runtime = make_runtime()
+        install = runtime._record_success
+        returned_during_install: List[bool] = []
+
+        def install_while_closing(*args: Any, **kwargs: Any) -> Any:
+            # close() from another thread just as the refresh installs.
+            closer = threading.Thread(target=runtime.close)
+            closer.start()
+            closer.join(0.2)
+            returned_during_install.append(not closer.is_alive())
+            return install(*args, **kwargs)
+
+        runtime._record_success = install_while_closing  # type: ignore[method-assign]
+        runtime.refresh()
+
+        assert returned_during_install == [False]
+        eventually(lambda: runtime.is_closed)
+        assert runtime.is_enabled("ordered", {"user": "user_1"}) is True
+
     def test_can_be_called_from_a_listener(
         self, server: FlagServer, make_runtime: Make
     ) -> None:

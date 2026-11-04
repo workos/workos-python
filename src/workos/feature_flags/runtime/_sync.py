@@ -307,22 +307,27 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         if self._closed or (background and self._status.polling_stopped):
             raise _Closed()
         attempted = utc_now()
+        # close() sets `_closed` under the lifecycle lock, so checking it and
+        # recording the outcome under that lock means nothing a refresh does
+        # lands after close() returns.
         try:
             configuration = self._parse(self._fetch())
         except _Closed:
             raise
         except Exception as error:
-            if self._closed:
-                raise _Closed() from error
-            self._pending.append(
-                self._record_failure(error, attempted, background=background)
-            )
+            with self._lifecycle_lock:
+                if self._closed:
+                    raise _Closed() from error
+                self._pending.append(
+                    self._record_failure(error, attempted, background=background)
+                )
             raise
-        if self._closed:
-            raise _Closed()
-        notifications = self._record_success(
-            configuration, attempted, background=background
-        )
+        with self._lifecycle_lock:
+            if self._closed:
+                raise _Closed()
+            notifications = self._record_success(
+                configuration, attempted, background=background
+            )
         self._ready.set()
         self._pending.append(notifications)
 

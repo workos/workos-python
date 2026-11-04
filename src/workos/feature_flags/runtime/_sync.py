@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 from . import _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
-from ._core import Notification, RuntimeClientCore, utc_now
+from ._core import Listener, Notification, RuntimeClientCore, utc_now
 from ._transport import PollTransport
 from ._types import FlagsChangedEvent, RuntimeStatus
 
@@ -81,6 +81,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
 
         Raises:
             ConfigurationError: If ``client`` has no API key.
+            TypeError: If a listener is an async function.
         """
         super().__init__(
             client,
@@ -228,6 +229,15 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
 
     # --- Listeners ------------------------------------------------------------
 
+    def _add_listener(self, kind: str, listener: Listener) -> None:
+        # Nothing awaits what a listener returns, so an async function would
+        # never run.
+        if inspect.iscoroutinefunction(listener):
+            raise TypeError(
+                f"{kind} listener must be a plain function, not an async function"
+            )
+        super()._add_listener(kind, listener)
+
     def add_change_listener(
         self, listener: Callable[[FlagsChangedEvent], None]
     ) -> None:
@@ -238,7 +248,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         ``event.current.to_json()`` here to keep a bootstrap cache fresh.
         Listeners run one at a time in refresh order, on the thread that
         refreshed or on one already delivering notifications; their exceptions
-        are logged and never affect polling.
+        are logged and never affect polling. Listeners must be plain functions:
+        an async function raises ``TypeError``.
         """
         self._add_listener("change", listener)
 
@@ -395,8 +406,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
             if inspect.isawaitable(result):
                 _discard_awaitable(result)
                 self._logger.warning(
-                    "An async listener was registered on FeatureFlagsRuntimeClient and "
-                    "was not run; listeners must be plain functions"
+                    "A FeatureFlagsRuntimeClient listener returned an awaitable, "
+                    "which was not awaited; listeners must be plain functions"
                 )
 
 

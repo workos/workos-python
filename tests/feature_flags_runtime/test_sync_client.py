@@ -397,19 +397,36 @@ class TestChangeNotifications:
         runtime.refresh()
         assert changes.items == []
 
-    def test_async_listeners_are_rejected_with_a_warning(
+    def test_async_listeners_are_rejected_when_registered(
+        self, make_runtime: Make
+    ) -> None:
+        async def listener(event: object) -> None:
+            raise AssertionError("never run")
+
+        runtime = make_runtime()
+        for add in (
+            runtime.add_change_listener,
+            runtime.add_error_listener,
+            runtime.add_status_listener,
+        ):
+            with pytest.raises(TypeError, match="not an async function"):
+                add(listener)  # type: ignore[arg-type]
+        with pytest.raises(TypeError, match="not an async function"):
+            make_runtime(on_change=listener)
+
+    def test_a_listener_that_returns_an_awaitable_is_not_awaited(
         self, server: FlagServer, make_runtime: Make, caplog: pytest.LogCaptureFixture
     ) -> None:
         server.respond(200, ORDERED)
 
-        async def listener(event: FlagsChangedEvent) -> None:
+        async def work(event: FlagsChangedEvent) -> None:
             raise AssertionError("never run")
 
         runtime = make_runtime()
-        runtime.add_change_listener(listener)  # type: ignore[arg-type]
+        runtime.add_change_listener(lambda event: work(event))  # type: ignore[arg-type,return-value]
         with caplog.at_level(logging.WARNING, logger="workos.feature_flags.runtime"):
             runtime.refresh()
-        assert "async listener" in caplog.text
+        assert "returned an awaitable" in caplog.text
 
 
 class TestFailures:

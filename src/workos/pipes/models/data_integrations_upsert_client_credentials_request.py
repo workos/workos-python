@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
 from workos.common.models.data_integrations_upsert_client_credentials_request_connection_owner import (
@@ -34,6 +34,10 @@ class DataIntegrationsUpsertClientCredentialsRequest:
     """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
     config: dict[str, str] | None = None
     """Provider-specific configuration values collected for this installation, keyed by the provider's config field descriptors."""
+    connection_intent: Literal["reauthorize"] | None = None
+    """Send `reauthorize` with `connected_account_id` to reauthorize one exact connection. Omit it to use the compatibility connection; creating another connection lives on the POST route."""
+    connected_account_id: str | None = None
+    """The exact connected account to reauthorize. Required with `connection_intent: reauthorize`; it may also be sent on its own to reauthorize that connection."""
 
     @classmethod
     def from_dict(
@@ -54,6 +58,8 @@ class DataIntegrationsUpsertClientCredentialsRequest:
                 if (_v_connection_owner := data.get("connection_owner")) is not None
                 else None,
                 config=data.get("config"),
+                connection_intent=data.get("connection_intent"),
+                connected_account_id=data.get("connected_account_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
@@ -84,4 +90,8 @@ class DataIntegrationsUpsertClientCredentialsRequest:
             )
         if self.config is not None:
             result["config"] = self.config
+        if self.connection_intent is not None:
+            result["connection_intent"] = self.connection_intent
+        if self.connected_account_id is not None:
+            result["connected_account_id"] = self.connected_account_id
         return result

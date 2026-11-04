@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from workos._types import _raise_deserialize_error
 
@@ -17,11 +17,14 @@ from .data_integrations_list_response_data_connected_account_connection_role imp
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState,
 )
+from .data_integrations_list_response_data_connected_account_warning import (
+    DataIntegrationsListResponseDataConnectedAccountWarning,
+)
 
 
 @dataclass(slots=True)
 class DataIntegrationsListResponseDataConnectedAccount:
-    """Data Integrations List Response Data Connected Account model."""
+    """The user's compatibility [connected account](https://workos.com/docs/reference/pipes/connected-account) for this provider, or `null` when the compatibility slot is empty. This legacy field never selects a standard connection."""
 
     object: Literal["connected_account"]
     """Distinguishes the connected account object."""
@@ -67,6 +70,10 @@ class DataIntegrationsListResponseDataConnectedAccount:
 - `establishing_member_membership_ended`: The member who established this organization-owned connection is no longer an active member of the organization, so its credentials were cleared. An organization admin must provide new credentials.
 
 Additional values may be added; treat an unrecognized value as an unknown reason."""
+    warnings: list[DataIntegrationsListResponseDataConnectedAccountWarning] | None = (
+        None
+    )
+    """Non-blocking warnings about an explicitly supplied label. Only writes return it, and only when another connection already uses the label; reads omit it."""
     userland_user_id: str | None = None
     """Use `user_id` instead.
 
@@ -105,6 +112,14 @@ Additional values may be added; treat an unrecognized value as an unknown reason
                 config=data.get("config"),
                 established_by_user_id=data.get("established_by_user_id"),
                 state_reason=data.get("state_reason"),
+                warnings=[
+                    DataIntegrationsListResponseDataConnectedAccountWarning.from_dict(
+                        cast(dict[str, Any], item)
+                    )
+                    for item in cast(list[Any], _v_warnings)
+                ]
+                if (_v_warnings := data.get("warnings")) is not None
+                else None,
                 userland_user_id=data.get("userlandUserId"),
             )
         except (KeyError, ValueError) as e:
@@ -172,6 +187,8 @@ Additional values may be added; treat an unrecognized value as an unknown reason
             result["state_reason"] = self.state_reason
         else:
             result["state_reason"] = None
+        if self.warnings is not None:
+            result["warnings"] = [item.to_dict() for item in self.warnings]
         if self.userland_user_id is not None:
             result["userlandUserId"] = self.userland_user_id
         else:

@@ -172,6 +172,35 @@ class SyncBackend:
         pass
 
 
+class AsyncBackend:
+    def __init__(self, server: FlagServer) -> None:
+        self.server = server
+
+    async def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        headers: Dict[str, str],
+        content: Optional[bytes],
+        timeout: float,
+    ) -> HTTPResponse:
+        import asyncio
+
+        reply = self.server._next(method, url, headers, timeout)
+        try:
+            if reply is FlagServer.BLOCK:
+                while not self.server._released.is_set():
+                    await asyncio.sleep(0.005)
+                reply = (200, payload())
+            return self.server._response(reply, method, url)
+        finally:
+            self.server._finish()
+
+    async def close(self) -> None:
+        pass
+
+
 class Collector:
     """Thread-safe list of listener calls with a blocking wait."""
 

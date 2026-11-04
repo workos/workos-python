@@ -4,9 +4,11 @@
 
 """Local evaluation of WorkOS feature flags from a polled configuration.
 
-Use :class:`FeatureFlagsRuntimeClient` with :class:`workos.WorkOSClient`.
+Use :class:`FeatureFlagsRuntimeClient` with :class:`workos.WorkOSClient` and
+:class:`AsyncFeatureFlagsRuntimeClient` with :class:`workos.AsyncWorkOSClient`.
 """
 
+from ._async import AsyncFeatureFlagsRuntimeClient
 from ._configuration import (
     ConditionDefinition,
     FeatureFlagsConfiguration,
@@ -19,6 +21,7 @@ from ._sync import FeatureFlagsRuntimeClient
 from ._types import FlagsChangedEvent, RuntimeStatus
 
 __all__ = [
+    "AsyncFeatureFlagsRuntimeClient",
     "ConditionDefinition",
     "EvaluationContext",
     "FeatureFlagsConfiguration",

@@ -1,6 +1,6 @@
 # @oagen-ignore-file
-# This file is hand-maintained. It holds the polling and retry policy of the
-# feature flags runtime client.
+# This file is hand-maintained. It holds the polling and retry policy shared
+# by the sync and async feature flags runtime clients.
 # pyright: strict
 
 from __future__ import annotations

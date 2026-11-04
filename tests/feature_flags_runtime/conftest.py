@@ -3,16 +3,22 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Iterator, List
+from typing import Any, AsyncIterator, Callable, Iterator, List
 
 import pytest
+import pytest_asyncio
 
-from workos import WorkOSClient
-from workos.feature_flags.runtime import FeatureFlagsRuntimeClient, _policy
+from workos import AsyncWorkOSClient, WorkOSClient
+from workos.feature_flags.runtime import (
+    AsyncFeatureFlagsRuntimeClient,
+    FeatureFlagsRuntimeClient,
+    _policy,
+)
 
 from tests.feature_flags_runtime.helpers import (
     API_KEY,
     BASE_URL,
+    AsyncBackend,
     FlagServer,
     SyncBackend,
 )
@@ -30,6 +36,13 @@ def client(server: FlagServer) -> Iterator[WorkOSClient]:
     )
     yield workos
     workos.close()
+
+
+@pytest.fixture
+def async_client(server: FlagServer) -> AsyncWorkOSClient:
+    return AsyncWorkOSClient(
+        api_key=API_KEY, base_url=BASE_URL, http_client=AsyncBackend(server)
+    )
 
 
 @pytest.fixture
@@ -65,3 +78,20 @@ def make_runtime(
     yield make
     for runtime in created:
         runtime.close()
+
+
+@pytest_asyncio.fixture
+async def make_async_runtime(
+    async_client: AsyncWorkOSClient,
+) -> AsyncIterator[Callable[..., AsyncFeatureFlagsRuntimeClient]]:
+    """Create async runtime clients that are always closed at teardown."""
+    created: List[AsyncFeatureFlagsRuntimeClient] = []
+
+    def make(**options: Any) -> AsyncFeatureFlagsRuntimeClient:
+        runtime = async_client.create_feature_flags_runtime_client(**options)
+        created.append(runtime)
+        return runtime
+
+    yield make
+    for runtime in created:
+        await runtime.close()

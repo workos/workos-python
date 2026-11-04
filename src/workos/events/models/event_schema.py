@@ -103,6 +103,24 @@ from workos.common.models.dsync_user_created import DsyncUserCreated
 from workos.common.models.dsync_user_deleted import DsyncUserDeleted
 from workos.common.models.dsync_user_updated import DsyncUserUpdated
 from workos.common.models.email_verification_created import EmailVerificationCreated
+from workos.common.models.feature_flags_flag_created import FeatureFlagsFlagCreated
+from workos.common.models.feature_flags_flag_deleted import FeatureFlagsFlagDeleted
+from workos.common.models.feature_flags_flag_rule_created import (
+    FeatureFlagsFlagRuleCreated,
+)
+from workos.common.models.feature_flags_flag_rule_deleted import (
+    FeatureFlagsFlagRuleDeleted,
+)
+from workos.common.models.feature_flags_flag_rule_updated import (
+    FeatureFlagsFlagRuleUpdated,
+)
+from workos.common.models.feature_flags_flag_target_created import (
+    FeatureFlagsFlagTargetCreated,
+)
+from workos.common.models.feature_flags_flag_target_deleted import (
+    FeatureFlagsFlagTargetDeleted,
+)
+from workos.common.models.feature_flags_flag_updated import FeatureFlagsFlagUpdated
 from workos.common.models.flag_created import FlagCreated
 from workos.common.models.flag_deleted import FlagDeleted
 from workos.common.models.flag_rule_updated import FlagRuleUpdated
@@ -279,6 +297,14 @@ EventSchemaVariant = Union[
     DsyncUserDeleted,
     DsyncUserUpdated,
     EmailVerificationCreated,
+    FeatureFlagsFlagCreated,
+    FeatureFlagsFlagDeleted,
+    FeatureFlagsFlagRuleCreated,
+    FeatureFlagsFlagRuleDeleted,
+    FeatureFlagsFlagRuleUpdated,
+    FeatureFlagsFlagTargetCreated,
+    FeatureFlagsFlagTargetDeleted,
+    FeatureFlagsFlagUpdated,
     FlagCreated,
     FlagDeleted,
     FlagRuleUpdated,
@@ -415,6 +441,14 @@ class EventSchema:
         "dsync.user.deleted": DsyncUserDeleted,
         "dsync.user.updated": DsyncUserUpdated,
         "email_verification.created": EmailVerificationCreated,
+        "feature_flags.flag_rule.created": FeatureFlagsFlagRuleCreated,
+        "feature_flags.flag_rule.deleted": FeatureFlagsFlagRuleDeleted,
+        "feature_flags.flag_rule.updated": FeatureFlagsFlagRuleUpdated,
+        "feature_flags.flag_target.created": FeatureFlagsFlagTargetCreated,
+        "feature_flags.flag_target.deleted": FeatureFlagsFlagTargetDeleted,
+        "feature_flags.flag.created": FeatureFlagsFlagCreated,
+        "feature_flags.flag.deleted": FeatureFlagsFlagDeleted,
+        "feature_flags.flag.updated": FeatureFlagsFlagUpdated,
         "flag.created": FlagCreated,
         "flag.deleted": FlagDeleted,
         "flag.rule_updated": FlagRuleUpdated,

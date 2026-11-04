@@ -3,14 +3,17 @@
 
 from __future__ import annotations
 
+import copy
 import time
-from typing import Iterator
+from types import SimpleNamespace
+from typing import Callable, Dict, Iterator, List, Optional
 
 import httpx2
 import pytest
 
 from workos import WorkOSClient
 from workos._errors import WorkOSTimeoutError
+from workos.feature_flags.runtime import _transport
 
 from tests.feature_flags_runtime.helpers import (
     API_KEY,
@@ -86,3 +89,55 @@ def test_a_refresh_is_bounded_by_its_request_timeout(
     assert elapsed < 1.2
     runtime.close()
     workos.close()
+
+
+Timeouts = Dict[str, Optional[float]]
+
+
+@pytest.fixture
+def clock(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    """The poll transport's monotonic clock, moved by setting ``now``."""
+    clock = SimpleNamespace(now=100.0)
+    monkeypatch.setattr(
+        _transport, "time", SimpleNamespace(monotonic=lambda: clock.now)
+    )
+    return clock
+
+
+def stored(timeouts: Timeouts) -> List[Optional[float]]:
+    # dict.get reads the stored values, bypassing any override.
+    return [dict.get(timeouts, phase) for phase in _transport._PHASES]
+
+
+COPIES: Dict[str, Callable[[Timeouts], List[Optional[float]]]] = {
+    "dict(t)": lambda t: stored(dict(t)),
+    "{**t}": lambda t: stored({**t}),
+    "t.copy()": lambda t: stored(t.copy()),
+    "copy.copy(t)": lambda t: stored(copy.copy(t)),
+    "dict(t.items())": lambda t: stored(dict(t.items())),
+    "list(t.values())": lambda t: list(t.values()),
+}
+
+
+@pytest.mark.parametrize("copy_phases", COPIES.values(), ids=list(COPIES))
+def test_a_copy_of_the_timeouts_gets_the_time_left(
+    clock: SimpleNamespace, copy_phases: Callable[[Timeouts], List[Optional[float]]]
+) -> None:
+    # A custom transport, or a later httpcore, may copy the timeouts instead of
+    # reading each phase as it starts.
+    timeouts = _transport._DeadlineTimeouts(deadline=110.0)
+
+    assert copy_phases(timeouts) == [10.0] * 4
+    clock.now = 106.0
+    assert copy_phases(timeouts) == [4.0] * 4
+    clock.now = 120.0
+    assert copy_phases(timeouts) == [_transport._MINIMUM_WAIT] * 4
+
+
+def test_the_stored_timeouts_are_the_budget_left_when_built(
+    clock: SimpleNamespace,
+) -> None:
+    timeouts = _transport._DeadlineTimeouts(deadline=110.0)
+    clock.now = 106.0
+
+    assert stored(timeouts) == [10.0] * 4

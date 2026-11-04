@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional
 from urllib.parse import urlsplit
 
 from ..._errors import WorkOSConnectionError, WorkOSError, WorkOSTimeoutError
@@ -21,6 +21,8 @@ from ..._http import (
 from . import _policy
 
 if TYPE_CHECKING:
+    from _collections_abc import dict_items, dict_values
+
     from ..._base_client import WorkOSClient
 
 _PHASES = ("connect", "read", "write", "pool")
@@ -32,12 +34,19 @@ class _DeadlineTimeouts(Dict[str, Optional[float]]):
 
     httpcore reads each phase's timeout when the phase starts, so connecting,
     sending and waiting for the response each get only what is left of the
-    budget instead of the whole budget every time.
+    budget instead of the whole budget every time. Those reads are the
+    ``timeouts.get(<phase>, None)`` calls in httpcore's ``connection_pool``
+    (pool), ``connection``, ``http_proxy`` and ``socks_proxy`` (connect), and
+    ``http11`` and ``http2`` (read and write).
+
+    A consumer that copies the dict still gets a bounded wait: a copy holds the
+    time left when it is made.
     """
 
     def __init__(self, deadline: float) -> None:
-        super().__init__({phase: None for phase in _PHASES})
         self._deadline = deadline
+        # Anything that reads the stored values directly gets the whole budget.
+        super().__init__(dict.fromkeys(_PHASES, self.remaining()))
 
     def remaining(self) -> float:
         return max(self._deadline - time.monotonic(), _MINIMUM_WAIT)
@@ -47,6 +56,21 @@ class _DeadlineTimeouts(Dict[str, Optional[float]]):
 
     def __getitem__(self, key: str) -> Optional[float]:
         return self.remaining() if key in _PHASES else super().__getitem__(key)
+
+    # With __iter__ overridden, dict(), {**...} and dict.update() copy through
+    # keys() and __getitem__ instead of reading the stored values, and
+    # copy.copy() rebuilds the dict from items().
+    def __iter__(self) -> Iterator[str]:
+        return super().__iter__()
+
+    def items(self) -> dict_items[str, Optional[float]]:
+        return {key: self[key] for key in self}.items()
+
+    def values(self) -> dict_values[str, Optional[float]]:
+        return {key: self[key] for key in self}.values()
+
+    def copy(self) -> _DeadlineTimeouts:
+        return _DeadlineTimeouts(self._deadline)
 
 
 class PollTransport:

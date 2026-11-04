@@ -227,6 +227,20 @@ def seal_session_from_auth_response(
     return seal_data(session_data, cookie_password)
 
 
+def _is_user_access_token(claims: Dict[str, Any]) -> bool:
+    """Whether verified claims belong to a user session access token.
+
+    Other token types signed by the same environment key (agent and widget
+    tokens) must not authenticate a session cookie.
+    """
+    return (
+        isinstance(claims.get("sid"), str)
+        and isinstance(claims.get("auth_time"), (int, float))
+        and claims.get("sub_profile") in (None, "user")
+        and claims.get("sub_type") is None
+    )
+
+
 # ---------------------------------------------------------------------------
 # Session (sync)
 # ---------------------------------------------------------------------------
@@ -292,6 +306,12 @@ class Session:
                 issuer=self._client._jwt_issuer,
             )
         except jwt.exceptions.InvalidTokenError:
+            return AuthenticateWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+            )
+
+        if not _is_user_access_token(decoded):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
@@ -502,6 +522,12 @@ class AsyncSession:
                 issuer=self._client._jwt_issuer,
             )
         except jwt.exceptions.InvalidTokenError:
+            return AuthenticateWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+            )
+
+        if not _is_user_access_token(decoded):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,

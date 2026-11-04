@@ -52,6 +52,7 @@ def _make_jwt(private_key, claims=None, expired=False):
         "entitlements": ["premium"],
         "feature_flags": ["beta"],
         "iat": int(now),
+        "auth_time": int(now),
         "exp": int(now - 300) if expired else int(now + 3600),
     }
     if claims:
@@ -198,6 +199,35 @@ class TestSession:
         assert result.organization_id == "org_01"
         assert result.role == "admin"
         assert result.permissions == ["read", "write"]
+
+    @pytest.mark.parametrize(
+        "claims",
+        [
+            {"sub_profile": "ai_agent"},
+            {"sub_type": "authkit"},
+            {"auth_time": None},
+        ],
+    )
+    def test_session_authenticate_rejects_non_user_access_token(self, claims):
+        token = _make_jwt(self.private_key, claims=claims)
+        sealed = self._make_sealed_session(access_token=token)
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+        result = session.authenticate()
+        assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+
+    def test_session_authenticate_accepts_user_sub_profile(self):
+        token = _make_jwt(self.private_key, claims={"sub_profile": "user"})
+        sealed = self._make_sealed_session(access_token=token)
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks()
+        result = session.authenticate()
+        assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
 
     def test_session_authenticate_expired_jwt(self):
         token = _make_jwt(self.private_key, expired=True)
@@ -739,6 +769,23 @@ class TestAsyncSession:
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
         assert result.session_id == "session_01"
+
+    async def test_async_session_authenticate_rejects_agent_access_token(
+        self, async_workos
+    ):
+        private_key, public_key = _generate_rsa_key_pair()
+        token = _make_jwt(private_key, claims={"sub_profile": "ai_agent"})
+        sealed = seal_data(
+            {"access_token": token, "refresh_token": "rt", "user": {"id": "u1"}},
+            COOKIE_PASSWORD,
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session.jwks = self._mock_jwks(public_key)
+        result = session.authenticate()
+        assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
+        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
     async def test_async_session_authenticate_rejects_mismatched_issuer(self):
         private_key, public_key = _generate_rsa_key_pair()

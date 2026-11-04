@@ -2,25 +2,120 @@
 
 ## [10.7.0](https://github.com/workos/workos-python/compare/v10.6.0...v10.7.0) (2026-11-04)
 
-
-### Features
-
-* **events:** SDK surface change: Parameter type changed for "order" on "Events.list_events" ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
-* **feature_flags:** Add feature flag API surface ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
-* **pipes:** Change Pipes API surface ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
-* **user_management:** Change user management API surface ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
-* **webhooks:** Add webhook API surface ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
-
-
 ### Bug Fixes
 
-* **events:** Updated model `EventSchema` ([#768](https://github.com/workos/workos-python/issues/768)) ([87d6603](https://github.com/workos/workos-python/commit/87d6603d1798568aaf3590bc57966c7e52c40d70))
 * Serialize datetime values as UTC with a Z suffix ([#754](https://github.com/workos/workos-python/issues/754)) ([b8349d7](https://github.com/workos/workos-python/commit/b8349d727a5c06b9d0bd0ea76050b85afcc2c8a7))
 
 
 ### Documentation
 
 * fix Python SDK build status badge ([#756](https://github.com/workos/workos-python/issues/756)) ([75dee0a](https://github.com/workos/workos-python/commit/75dee0a57492fdaf82a2864490269ab93415e4ed))
+
+* [#768](https://github.com/workos/workos-python/pull/768) feat(generated)!: regenerate from spec (6 changes)
+
+  **⚠️ Breaking**
+  * **[groups](https://workos.com/docs/reference/groups)**:
+    * Removed model `ReplaceGroupMemberships`
+    * Removed endpoint `PUT /organizations/{organizationId}/groups/{groupId}/organization-memberships`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Removed model `ConnectedAccountWriteResponse`
+    * Removed model `ConnectedAccountWriteResponseWarning`
+    * Removed enum `ConnectedAccountWriteResponseConnectionRole`
+    * Removed enum `ConnectedAccountWriteResponseAuthMethod`
+    * Removed enum `ConnectedAccountWriteResponseState`
+    * Removed model `ReauthorizeDataIntegrationsUpsertApiKeyRequest`
+    * Removed model `DataIntegrationsUpsertApiKeyRequest2`
+    * Removed model `AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Removed model `ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Removed model `ReauthorizeDataIntegrationsUpsertClientCredentialsRequest`
+    * Removed model `DataIntegrationsUpsertClientCredentialsRequest2`
+    * Removed enum `ReauthorizeDataIntegrationsUpsertApiKeyRequestConnectionOwner`
+    * Removed enum `DataIntegrationsUpsertApiKeyRequest2ConnectionOwner`
+    * Removed enum `AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner`
+    * Removed enum `ReauthorizeDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner`
+    * Removed enum `ReauthorizeDataIntegrationsUpsertClientCredentialsRequestConnectionOwner`
+    * Removed enum `DataIntegrationsUpsertClientCredentialsRequest2ConnectionOwner`
+
+  **Features**
+  * **[admin_portal](https://workos.com/docs/reference/admin-portal)**:
+    * Added `action_denied` to `ErrorBodyCode`
+    * Added `group_membership_update_overlap` to `ErrorBodyCode`
+  * **[connect](https://workos.com/docs/reference/workos-connect/standalone)**:
+    * Added `cors_origins` to Connect models
+  * **[events](https://workos.com/docs/reference/events)**:
+    * Changed parameter `Events.list.range_start`
+    * Changed parameter `Events.list.range_end`
+  * **[groups](https://workos.com/docs/reference/groups)**:
+    * Added model `PatchGroupMemberships`
+    * Added endpoint `PATCH /organizations/{organizationId}/groups/{groupId}/organization-memberships`
+    * Added model `ReplaceGroupMemberships`
+    * Added endpoint `PUT /organizations/{organizationId}/groups/{groupId}/organization-memberships`
+  * **[organizations](https://workos.com/docs/reference/organization)**:
+    * Changed errors for endpoint `POST /organizations/{organization_id}/it_contacts/{contact_id}/invite`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added model `DataIntegrationFinishConnectionResponse`
+    * Added model `DataIntegrationsFinishConnectionRequest`
+    * Added model `DataIntegrationsFinishConnectionError400`
+    * Added model `DataIntegrationsFinishConnectionError4002`
+    * Added model `DataIntegrationsFinishConnectionError403`
+    * Added model `DataIntegrationsGetDataIntegrationAuthorizeUrlError4002`
+    * Added `completion` to `DataIntegrationAuthorizeUrlResponse`
+    * Added `code_challenge` to `DataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Added `code_challenge_method` to `DataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Added `code` to `DataIntegrationsGetDataIntegrationAuthorizeUrlError400`
+    * Added enum `DataIntegrationsFinishConnectionError400Code`
+    * Added enum `DataIntegrationsGetDataIntegrationAuthorizeUrlError400Code`
+    * Added endpoint `POST /data-integrations/finish`
+    * Added model `ConnectedAccountWarning`
+    * Added model `DataIntegrationsListResponseDataConnectedAccountWarning`
+    * Added `warnings` to `ConnectedAccount`
+    * Added `warnings` to `DataIntegrationsListResponseDataConnectedAccount`
+    * Added `connection_intent` to `DataIntegrationsUpsertApiKeyRequest`
+    * Added `connected_account_id` to `DataIntegrationsUpsertApiKeyRequest`
+    * Added `connection_intent` to `DataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Added `connected_account_id` to `DataIntegrationsGetDataIntegrationAuthorizeUrlRequest`
+    * Added `connection_intent` to `DataIntegrationsUpsertClientCredentialsRequest`
+    * Added `connected_account_id` to `DataIntegrationsUpsertClientCredentialsRequest`
+    * Added enum `DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added model `SendVerificationEmail`
+    * Added `locale` to `CreateMagicCodeAndReturn`
+    * Added `locale` to `CreatePasswordResetToken`
+    * Added `locale` to `SendEmailChange`
+    * Added enum `CreateMagicCodeAndReturnLocale`
+    * Added enum `SendVerificationEmailLocale`
+    * Added enum `CreatePasswordResetTokenLocale`
+    * Added enum `SendEmailChangeLocale`
+  * **[widgets](https://workos.com/docs/reference/widgets)**:
+    * Added `widgets:user-api-keys:manage-self` to `WidgetSessionTokenScopes`
+    * Added `widgets:user-api-keys:manage-all` to `WidgetSessionTokenScopes`
+
+  **Fixes**
+  * **[organizations](https://workos.com/docs/reference/organization)**:
+    * Changed errors for endpoint `POST /organizations/{organization_id}/it_contacts/{contact_id}/invite`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Changed the type of `DataIntegrationsGetDataIntegrationAuthorizeUrlError400.message`
+    * Changed errors for endpoint `POST /data-integrations/{slug}/authorize`
+    * Changed response of `Pipes.createApiKeyConnection` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `Pipes.upsertApiKey` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `Pipes.createClientCredentialsConnection` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `Pipes.upsertClientCredentials` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `OrganizationsDataProviders.createOrganizationDataInstallation` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `OrganizationsDataProviders.updateOrganizationDataInstallation` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `UserManagementDataProviders.createUserDataInstallation` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed response of `UserManagementDataProviders.updateUserDataInstallation` from `ConnectedAccountWriteResponse` to `ConnectedAccount`
+    * Changed request body for `Pipes.upsertApiKey`
+    * Changed request body for `Pipes.getDataIntegrationAuthorizeUrl`
+    * Changed request body for `Pipes.upsertClientCredentials`
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Changed errors for endpoint `POST /sso/logout/authorize`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed errors for endpoint `POST /user_management/authenticate`
+    * Changed request body for `UserManagementUsers.sendVerificationEmail`
+    * Changed errors for endpoint `POST /user_management/users/{id}/email_verification/send`
+    * Changed errors for endpoint `POST /user_management/invitations`
+    * Changed errors for endpoint `POST /user_management/invitations/{id}/resend`
+    * Changed errors for endpoint `POST /user_management/waitlist_entries/{id}/approve`
 
 ## [10.6.0](https://github.com/workos/workos-python/compare/v10.5.0...v10.6.0) (2026-10-19)
 

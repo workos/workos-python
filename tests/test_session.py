@@ -206,6 +206,9 @@ class TestSession:
             {"sub_profile": "ai_agent"},
             {"sub_type": "authkit"},
             {"auth_time": None},
+            {"auth_time": "1700000000"},
+            {"sid": None},
+            {"sid": 123},
         ],
     )
     def test_session_authenticate_rejects_non_user_access_token(self, claims):

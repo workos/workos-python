@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from http import HTTPStatus
 from typing import Any, Dict, List, Mapping, Optional, Type, cast
 
 
@@ -108,14 +109,46 @@ class APIError(WorkOSError):
         self.error_description = error_description
 
     def __str__(self) -> str:
-        exception = f"(message={self.message}, request_id={self.request_id}"
-        if self.response_json is not None:
-            for key, value in self.response_json.items():
-                if key != "message":
-                    exception += f", {key}={value}"
-        elif self.code is not None:
-            exception += f", code={self.code}"
-        return exception + ")"
+        """``HTTP 404: Organization not found (code=entity_not_found, request_id=req_123)``.
+
+        Fields that are not set, and a field that only repeats the summary, are
+        left out. The rest keep the ``key=value`` form earlier versions printed,
+        so text such as ``error=invalid_grant`` still appears. Other response
+        fields stay available on the attributes, such as ``response_json``.
+        """
+        summary = self._summary()
+        head = f"HTTP {self.status_code}: {summary}" if self.status_code else summary
+        details = [
+            f"{label}={value}"
+            for label, value in (
+                ("code", self.code),
+                ("error", self.error),
+                ("error_description", self.error_description),
+                ("param", self.param),
+                ("errors", self.errors),
+                ("request_id", self.request_id),
+            )
+            if value and value != summary
+        ]
+        return f"{head} ({', '.join(details)})" if details else head
+
+    def _summary(self) -> str:
+        # A JSON object without a string `message` leaves the raw body, or
+        # "None" for a null one, in `message`; an OAuth-style body explains
+        # itself in `error_description` or `error`.
+        body = self.response_json
+        message = body.get("message") if isinstance(body, Mapping) else self.message
+        if isinstance(message, str) and message and message != "No message":
+            return message
+        for fallback in (self.error_description, self.error):
+            if isinstance(fallback, str) and fallback:
+                return fallback
+        if self.status_code:
+            try:
+                return HTTPStatus(self.status_code).phrase
+            except ValueError:
+                pass
+        return "The request could not be completed"
 
 
 class BadRequestError(APIError):

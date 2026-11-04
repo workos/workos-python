@@ -316,6 +316,20 @@ class TestChangeNotifications:
         runtime.refresh()
         assert changes.items == []
 
+    def test_a_change_outside_the_flags_is_reported_for_persisted_caches(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.respond(200, ORDERED)
+        changes = Collector()
+        runtime = make_runtime(on_change=changes)
+        runtime.refresh()
+        server.respond(200, {**ORDERED, "served_by": "a newer server"})
+        runtime.refresh()
+
+        event = changes.wait_for(2)[1]
+        assert event.changed_flags == frozenset()
+        assert event.current.to_dict()["served_by"] == "a newer server"
+
     def test_listeners_can_refresh_and_events_stay_in_refresh_order(
         self, server: FlagServer, make_runtime: Make
     ) -> None:

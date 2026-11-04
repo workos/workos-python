@@ -237,8 +237,11 @@ class RuntimeClientCore:
             "Feature flag refresh succeeded (%d flags)", len(configuration)
         )
         notifications = self._notifications("status", current)
-        changed = changed_flags(previous.configuration, configuration)
-        if previous.configuration is None or changed:
+        # An unchanged payload keeps the same snapshot. A new one can differ
+        # only outside its flags, and a cache persisted from change events
+        # still needs it.
+        if configuration is not previous.configuration:
+            changed = changed_flags(previous.configuration, configuration)
             event = FlagsChangedEvent(previous.configuration, configuration, changed)
             notifications += self._notifications("change", event)
         return notifications

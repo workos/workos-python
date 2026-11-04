@@ -24,7 +24,10 @@ class FlagsChangedEvent:
     current: FeatureFlagsConfiguration
     """The newly installed snapshot. Persist ``current.to_json()`` to bootstrap later."""
     changed_flags: frozenset[str]
-    """Slugs that were added, removed or modified. Every slug on a first load."""
+    """Slugs that were added, removed or modified. Every slug on a first load.
+
+    Empty when only fields outside the flags changed.
+    """
 
 
 @dataclass(frozen=True, slots=True)

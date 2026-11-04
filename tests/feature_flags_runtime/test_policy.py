@@ -114,6 +114,12 @@ class TestAttemptRetryDelay:
         assert _policy.attempt_retry_delay(error, 0, 10, 3) == 2.0
         assert _policy.attempt_retry_delay(error, 0, 1.5, 3) is None
 
+    def test_retry_after_is_capped_and_never_negative_inside_a_refresh(self) -> None:
+        long_wait = RateLimitExceededError("slow down", retry_after=120.0)
+        assert _policy.attempt_retry_delay(long_wait, 0, 300, 3) == 60.0
+        negative = RateLimitExceededError("slow down", retry_after=-5.0)
+        assert _policy.attempt_retry_delay(negative, 0, 10, 3) == 0.0
+
     @pytest.mark.parametrize("remaining, expected", [(1.0, 0.5), (0.99, None)])
     def test_a_retry_must_leave_time_for_the_request_itself(
         self, random_value: RandomValue, remaining: float, expected: Optional[float]

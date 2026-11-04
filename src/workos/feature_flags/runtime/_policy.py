@@ -88,11 +88,9 @@ def attempt_retry_delay(
     """
     if attempt >= max_retries or not _is_transient(error):
         return None
-    retry_after = (
-        error.retry_after if isinstance(error, RateLimitExceededError) else None
-    )
-    if retry_after is not None:
-        delay = retry_after
+    requested = retry_after(error)
+    if requested is not None:
+        delay = requested
     else:
         delay = (
             _ATTEMPT_RETRY_BASE
@@ -105,8 +103,8 @@ def attempt_retry_delay(
 def retry_after(error: BaseException) -> float | None:
     """The wait a 429 asked for, capped at ``MAXIMUM_RETRY_AFTER`` seconds.
 
-    A refresh that could not honor it within its budget fails; the next poll
-    then waits at least this long.
+    A retry inside a refresh waits this long. A refresh that could not honor it
+    within its budget fails; the next poll then waits at least this long.
     """
     if isinstance(error, RateLimitExceededError) and error.retry_after is not None:
         return min(max(error.retry_after, 0.0), MAXIMUM_RETRY_AFTER)

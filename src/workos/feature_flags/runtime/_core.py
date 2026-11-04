@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import copy
 import logging
+import os
+import sys
 import threading
 from collections import deque
 from dataclasses import replace
@@ -32,6 +34,23 @@ LOGGER_NAME = "workos.feature_flags.runtime"
 
 Listener = Callable[[Any], object]
 Notification = Tuple[Listener, Any]
+
+# On macOS, once a process has created an HTTP client, a child it forks without
+# exec'ing can crash inside system libraries (DNS resolution, proxy settings,
+# the system trust store) when it opens a network connection. Every
+# WorkOSClient has an HTTP client, so a runtime client created before the fork
+# never polls in the child there.
+FORK_SAFE_PLATFORM = sys.platform != "darwin"
+MACOS_FORK_HAZARD = (
+    "on macOS, a forked process cannot safely open network connections once its "
+    "parent has created an HTTP client"
+)
+
+
+def fork_blocked_message(reason: str) -> str:
+    return (
+        f"Feature flag polling does not run in forked process {os.getpid()}: {reason}"
+    )
 
 
 def utc_now() -> datetime:
@@ -114,6 +133,7 @@ class RuntimeClientCore:
                 "organization": "org_123", "workspace": "ws_1"}``.
             default: Returned when the flag has no answer.
         """
+        self._before_use()
         configuration = self._status.configuration
         flag = configuration._compiled(slug) if configuration is not None else None
         if flag is None:
@@ -130,6 +150,7 @@ class RuntimeClientCore:
         omitted so that ``flags.get(slug, my_default)`` applies your default.
         An unready client returns an empty dict.
         """
+        self._before_use()
         configuration = self._status.configuration
         if configuration is None:
             return {}
@@ -143,27 +164,32 @@ class RuntimeClientCore:
 
     def get_flag(self, slug: str) -> Optional[FlagDefinition]:
         """Return one flag's configuration from the current snapshot, for inspection."""
+        self._before_use()
         configuration = self._status.configuration
         return configuration.get_flag(slug) if configuration is not None else None
 
     @property
     def status(self) -> RuntimeStatus:
         """Readiness, the current snapshot, refresh timestamps, counts and the last error."""
+        self._before_use()
         return self._status
 
     @property
     def configuration(self) -> Optional[FeatureFlagsConfiguration]:
         """The current snapshot, suitable for persisting with ``to_json()``."""
+        self._before_use()
         return self._status.configuration
 
     @property
     def is_ready(self) -> bool:
         """Whether a validated configuration is available for local evaluation."""
+        self._before_use()
         return self._status.configuration is not None
 
     @property
     def is_closed(self) -> bool:
         """Whether ``close()`` has been called."""
+        self._before_use()
         return self._closed
 
     # --- Listeners ------------------------------------------------------------
@@ -296,6 +322,21 @@ class RuntimeClientCore:
         error.__cause__ = stored
         error.__suppress_context__ = True
         return error
+
+    def _before_use(self) -> None:
+        """Hook run before public calls; the sync client restarts polling after a fork."""
+
+    def _used_before_fork(self) -> bool:
+        """Whether this client sent requests, or was polling, in the parent."""
+        return self._started or self._status.refresh_count > 0
+
+    def _reinitialize_core_after_fork(self) -> None:
+        # The child has only the forking thread, so these locks may have been
+        # held by threads that no longer exist.
+        self._status_lock = threading.Lock()
+        self._listeners_lock = threading.Lock()
+        self._context_warnings.reinitialize_after_fork()
+        self._pending.clear()
 
     def _log_listener_error(self) -> None:
         self._logger.exception("A feature flags runtime client listener raised")

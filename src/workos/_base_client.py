@@ -533,6 +533,9 @@ class WorkOSClient(_BaseWorkOSClient):
         self._backend, self._owns_http_client = resolve_sync_backend(
             http_client, self._request_timeout
         )
+        # Whether a request went out through the HTTP client, so a forked
+        # process can tell whether it would share the parent's connections.
+        self._sent_requests = False
 
     def close(self) -> None:
         """Release the HTTP client if the SDK created it.
@@ -592,6 +595,7 @@ class WorkOSClient(_BaseWorkOSClient):
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
+        self._sent_requests = True
         for attempt in range(max_retries + 1):
             try:
                 response = self._backend.request(
@@ -777,6 +781,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         self._backend, self._owns_http_client = resolve_async_backend(
             http_client, self._request_timeout
         )
+        # Whether a request went out through the HTTP client, so a forked
+        # process can tell whether it would share the parent's connections.
+        self._sent_requests = False
 
     async def close(self) -> None:
         """Release the HTTP client if the SDK created it.
@@ -836,6 +843,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
+        self._sent_requests = True
         for attempt in range(max_retries + 1):
             try:
                 response = await self._backend.request(

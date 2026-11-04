@@ -1,13 +1,16 @@
 # @oagen-ignore-file
 # This file is hand-maintained. The sync runtime client's poll request, sent
-# with a total time budget.
+# with a total time budget and without sharing connections across a fork.
 # pyright: strict, reportPrivateUsage=false
 
 from __future__ import annotations
 
+import threading
 import time
 from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional
 from urllib.parse import urlsplit
+
+import httpx2
 
 from ..._errors import WorkOSConnectionError, WorkOSError, WorkOSTimeoutError
 from ..._http import (
@@ -18,7 +21,7 @@ from ..._http import (
     TransportTimeout,
     _HttpxFamily,
 )
-from . import _policy
+from . import _core, _policy
 
 if TYPE_CHECKING:
     from _collections_abc import dict_items, dict_values
@@ -77,13 +80,20 @@ class PollTransport:
     """Sends ``GET /sdk/feature-flags`` for the sync runtime client.
 
     The request carries the same URL, headers and User-Agent as any other
-    request from the ``WorkOSClient``, goes through its HTTP client, and maps
-    responses and failures to the same errors. Unlike other requests, a refresh
-    has a total budget. The body is streamed, every network wait is limited to
-    the time left, and the response is abandoned once the deadline passes, so a
-    refresh ends within ``request_timeout`` plus at most one read of a stalling
-    response body. A caller-supplied ``HTTPBackend`` that is not an httpx client
-    cannot stream; it gets the remaining budget as its per-request timeout.
+    request from the ``WorkOSClient`` and maps responses and failures to the
+    same errors. Two things differ:
+
+    - A refresh has a total budget. The body is streamed, every network wait is
+      limited to the time left, and the response is abandoned once the deadline
+      passes, so a refresh ends within ``request_timeout`` plus at most one read
+      of a stalling response body. A caller-supplied ``HTTPBackend`` that is
+      not an httpx client cannot stream; it gets the remaining budget as its
+      per-request timeout.
+    - With the SDK's default HTTP client, polling uses its own httpx2 client
+      with the same settings, so a forked child can replace it instead of
+      sharing the parent's connections. A caller-supplied client cannot be
+      rebuilt that way, so a child does not poll through one the parent sent
+      requests through. On macOS, a child does not poll at all.
     """
 
     def __init__(self, workos: WorkOSClient) -> None:
@@ -91,9 +101,46 @@ class PollTransport:
         backend = workos._backend
         self._shared_httpx: Any = None
         self._family = _HttpxFamily("httpx2")
-        if isinstance(backend, HttpxBackend):
+        if isinstance(backend, HttpxBackend) and not workos._owns_http_client:
             self._shared_httpx = backend._client
             self._family = backend._family
+        self._uses_default_client = workos._owns_http_client
+        self._owned: Optional[httpx2.Client] = None
+        self._closed = False
+        self._lock = threading.Lock()
+
+    def fork_blocker(self, used_before_fork: bool) -> Optional[str]:
+        """Why a forked child cannot poll safely, or ``None`` if it can."""
+        if not _core.FORK_SAFE_PLATFORM:
+            return (
+                f"{_core.MACOS_FORK_HAZARD}. Create the WorkOSClient and the "
+                "runtime client after forking instead"
+            )
+        # The WorkOSClient's other requests count too: they open the same
+        # HTTP client's connections.
+        if (
+            used_before_fork or self._workos._sent_requests
+        ) and not self._uses_default_client:
+            return (
+                "the parent used its caller-supplied HTTP client, whose "
+                "connections this process would share. Create that HTTP client, "
+                "the WorkOSClient and the runtime client after forking instead"
+            )
+        return None
+
+    def reinitialize_after_fork(self) -> None:
+        # Abandon, never close, the inherited client: its sockets are the
+        # parent's connections, and closing it could wait on a pool lock that
+        # a thread missing from this process held at fork time.
+        self._owned = None
+        self._lock = threading.Lock()
+
+    def close(self) -> None:
+        with self._lock:
+            self._closed = True
+            owned, self._owned = self._owned, None
+        if owned is not None:
+            owned.close()
 
     def get(self, deadline: float) -> Any:
         """Send one poll request and return the decoded body."""
@@ -115,7 +162,9 @@ class PollTransport:
     def _send(self, url: str, headers: Dict[str, str], deadline: float) -> HTTPResponse:
         if deadline - time.monotonic() <= 0:
             raise TransportTimeout("no time was left in the request timeout")
-        client = self._shared_httpx
+        if not self._uses_default_client:
+            self._workos._sent_requests = True
+        client = self._httpx_client()
         if client is None:
             return self._workos._backend.request(
                 "GET",
@@ -132,6 +181,23 @@ class PollTransport:
             raise TransportConnectError(str(error)) from error
         except self._family.http_error as error:
             raise TransportError(str(error)) from error
+
+    def _httpx_client(self) -> Any:
+        if self._shared_httpx is not None:
+            return self._shared_httpx
+        if not self._uses_default_client:
+            return None
+        with self._lock:
+            # A poll that close() stopped waiting for must not open a client
+            # that nothing would close.
+            if self._closed:
+                raise RuntimeError("The feature flags runtime client is closed")
+            if self._owned is None:
+                # The settings resolve_sync_backend gives the SDK's default client.
+                self._owned = httpx2.Client(
+                    timeout=self._workos._request_timeout, follow_redirects=True
+                )
+            return self._owned
 
     def _stream(
         self, client: Any, url: str, headers: Dict[str, str], deadline: float

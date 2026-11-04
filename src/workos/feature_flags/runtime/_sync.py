@@ -13,7 +13,7 @@ import weakref
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 
-from . import _policy
+from . import _core, _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
 from ._core import (
@@ -108,8 +108,10 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         self._thread: Optional[threading.Thread] = None
         self._delivering: Optional[int] = None
         self._fork_restart_pending = False
-        # Why polling cannot run in this forked child, if it cannot.
+        # Why polling cannot run in this forked child, if it cannot, and
+        # whether the platform is why.
         self._fork_blocker: Optional[str] = None
+        self._fork_blocked_by_platform = False
         self._fork_warned = False
         self._init_synchronization()
         if on_change is not None:
@@ -142,11 +144,14 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
 
         The first poll is sent right away, then every ``polling_interval``
         seconds. Failed polls retry with exponential backoff. A 401 stops
-        polling permanently; the last good configuration stays usable.
+        polling permanently; the last good configuration stays usable. In a
+        forked child on macOS, a client created before the fork does not
+        poll: this logs a warning and returns.
 
         Raises:
-            RuntimeError: If the client is closed or cannot poll in this forked
-                process.
+            RuntimeError: If the client is closed, or cannot poll in this forked
+                process because the parent sent requests through the HTTP
+                client you supplied.
         """
         self._before_use()
         with self._lifecycle_lock:
@@ -154,6 +159,9 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                 raise RuntimeError(
                     "This feature flags runtime client is closed; create a new one"
                 )
+            if self._fork_blocked_by_platform:
+                self._skip_start_after_fork()
+                return
             self._raise_if_fork_blocked()
             if self._started:
                 return
@@ -179,11 +187,14 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
             TimeoutError: If flags are not available within ``timeout``.
             AuthenticationError: If polling stopped after a 401 before any
                 configuration was available.
-            RuntimeError: If the client was closed before it became ready.
+            RuntimeError: If the client was closed before it became ready, or
+                has no configuration and cannot poll in this forked process.
         """
         self._before_use()
         if self._status.ready:
             return
+        # Nothing can make the client ready in a forked child that cannot poll.
+        self._raise_if_fork_blocked()
         if not self._ready.wait(timeout):
             raise self._readiness_timeout(timeout)
         if not self._status.ready:
@@ -446,7 +457,11 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     def _before_use(self) -> None:
         if self._fork_restart_pending:
             self._restart_after_fork()
-        elif self._fork_blocker is not None and not self._fork_warned:
+        else:
+            self._warn_if_fork_blocked()
+
+    def _warn_if_fork_blocked(self) -> None:
+        if self._fork_blocker is not None and not self._fork_warned:
             self._fork_warned = True
             self._logger.warning(
                 "%s. Evaluation keeps serving the last configuration.",
@@ -456,6 +471,14 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     def _raise_if_fork_blocked(self) -> None:
         if self._fork_blocker is not None:
             raise RuntimeError(fork_blocked_message(self._fork_blocker))
+
+    def _skip_start_after_fork(self) -> None:
+        # A client that was polling warns once, on first use. Starting one
+        # that was not makes it such a client, which has not warned yet.
+        if not self._started:
+            self._started = True
+            self._fork_warned = False
+        self._warn_if_fork_blocked()
 
     def _restart_after_fork(self) -> None:
         with self._lifecycle_lock:
@@ -487,9 +510,15 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
             if self._closed
             else self._transport.fork_blocker(self._used_before_fork())
         )
+        # On macOS every client created before the fork is blocked, however
+        # the parent used it, so start() warns instead of raising there.
+        self._fork_blocked_by_platform = (
+            self._fork_blocker is not None and not _core.FORK_SAFE_PLATFORM
+        )
         self._fork_restart_pending = polling and self._fork_blocker is None
         # Only a client that was polling warns, on first use, that it no longer
-        # polls; any other raises from start() and refresh() instead.
+        # polls. On macOS any other warns once started; elsewhere start()
+        # raises instead.
         self._fork_warned = not polling
 
 

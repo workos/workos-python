@@ -116,7 +116,8 @@ class PollTransport:
         if not _core.FORK_SAFE_PLATFORM:
             return (
                 f"{_core.MACOS_FORK_HAZARD}. Create the WorkOSClient and the "
-                "runtime client after forking instead"
+                "runtime client after forking instead, for example in gunicorn's "
+                "post_fork hook"
             )
         # The WorkOSClient's other requests count too, and so do those of any
         # other WorkOSClient given the same HTTP client: they open the same

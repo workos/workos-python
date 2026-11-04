@@ -34,7 +34,7 @@ class CreateUser:
     external_id: str | None = None
     """The external ID of the user."""
     ip_address: str | None = None
-    """The IP address of the user's request."""
+    """The IP address of the user's request. Required when Radar is in Decision mode."""
     user_agent: str | None = None
     """The user agent string from the user's request."""
     signals_id: str | None = None

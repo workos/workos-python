@@ -24,7 +24,7 @@ class AuthorizationCodeSessionAuthenticateRequest:
     invitation_token: str | None = None
     """An invitation token to accept during authentication."""
     ip_address: str | None = None
-    """The IP address of the user's request."""
+    """The IP address of the user's request. Required when Radar is in Decision mode."""
     device_id: str | None = None
     """A unique identifier for the device."""
     user_agent: str | None = None

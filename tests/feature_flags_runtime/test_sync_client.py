@@ -730,6 +730,27 @@ class TestClose:
         assert runtime.is_ready is False
         assert changes.items == []
 
+    def test_every_caller_waits_for_the_poller_to_stop(
+        self, server: FlagServer, make_runtime: Make
+    ) -> None:
+        server.enqueue(FlagServer.BLOCK)
+        runtime = make_runtime()
+        runtime.start()
+        server.wait_for_requests(1)
+        first = threading.Thread(target=runtime.close)
+        first.start()
+        eventually(lambda: runtime.is_closed)
+        second = threading.Thread(target=runtime.close)
+        second.start()
+        second.join(0.2)
+
+        assert second.is_alive()
+        server.release()
+        first.join(5)
+        second.join(5)
+        assert not second.is_alive()
+        assert runtime._thread is not None and not runtime._thread.is_alive()
+
     def test_returns_only_after_a_manual_refresh_finishes_installing(
         self, server: FlagServer, make_runtime: Make
     ) -> None:

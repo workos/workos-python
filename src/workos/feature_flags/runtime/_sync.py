@@ -195,16 +195,16 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
 
         Waits up to ``request_timeout`` for an in-flight poll to finish. A poll
         still running after that, such as one reading a stalled response, is
-        abandoned: it ends on its own and changes nothing. Evaluation keeps
-        serving the last configuration after closing.
+        abandoned: it ends on its own and changes nothing. Every caller waits,
+        including one that calls while another close() is still waiting.
+        Evaluation keeps serving the last configuration after closing.
         """
         with self._lifecycle_lock:
-            if self._closed:
-                return
-            self._closed = True
-            self._stop.set()
-            self._wake.set()
-            self._ready.set()
+            if not self._closed:
+                self._closed = True
+                self._stop.set()
+                self._wake.set()
+                self._ready.set()
             thread = self._thread
         if (
             thread is not None

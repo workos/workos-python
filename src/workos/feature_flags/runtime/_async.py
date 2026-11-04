@@ -46,8 +46,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
     The client polls through its ``AsyncWorkOSClient``, so use it on that
     client's event loop, and close it before closing the ``AsyncWorkOSClient``.
-    A client created before a fork can start in the child unless it already
-    polled in the parent, or the platform is macOS.
+    A client created before a fork can start in the child unless the
+    ``AsyncWorkOSClient`` already sent requests in the parent, or the platform
+    is macOS.
     """
 
     def __init__(
@@ -385,15 +386,20 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
     # --- Fork safety ----------------------------------------------------------
 
     def _reinitialize_after_fork(self) -> None:
-        # A client that polled in the parent used the parent's event loop and
-        # the AsyncWorkOSClient's connections. Its copy here stops polling, even
-        # if the child keeps running a copy of the loop, and keeps serving its
-        # last configuration. A client that never polled starts over on the
-        # child's own event loop.
+        # Once the AsyncWorkOSClient has sent requests, its connections belong
+        # to the parent's event loop, so a copy of a client that polled, or of
+        # one whose AsyncWorkOSClient made other calls, stops polling here (even
+        # if the child keeps running a copy of the loop) and keeps serving its
+        # last configuration. Otherwise it starts over on the child's own loop.
         self._reinitialize_core_after_fork()
         polling = (
             self._started and not self._closed and not self._status.polling_stopped
         )
+        # The polling task and anything waiting on these primitives belong to
+        # the parent's event loop, which may not run here: close() must not
+        # wait for that task.
+        self._task = None
+        self._init_synchronization()
         if self._closed:
             self._fork_blocker = None
         elif not _core.FORK_SAFE_PLATFORM:
@@ -401,15 +407,14 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
                 f"{_core.MACOS_FORK_HAZARD}. Create the AsyncWorkOSClient and the "
                 "runtime client after forking instead"
             )
-        elif self._used_before_fork():
+        elif self._used_before_fork() or self._client._sent_requests:
             self._fork_blocker = (
-                "it polled in the parent, on the parent's event loop and the "
-                "AsyncWorkOSClient's connections. Create the AsyncWorkOSClient and "
-                "the runtime client after forking instead"
+                "the AsyncWorkOSClient was used in the parent, on the parent's "
+                "event loop and connections. Create the AsyncWorkOSClient and the "
+                "runtime client after forking instead"
             )
         else:
             self._fork_blocker = None
-            self._init_synchronization()
         # Only a client that was polling warns, on first use, that it no longer
         # polls; any other raises from start() and refresh() instead.
         self._fork_warned = not polling

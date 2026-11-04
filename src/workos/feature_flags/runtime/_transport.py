@@ -68,8 +68,8 @@ class PollTransport:
     - With the SDK's default HTTP client, polling uses its own httpx2 client
       with the same settings, so a forked child can replace it instead of
       sharing the parent's connections. A caller-supplied client cannot be
-      rebuilt that way, so a child does not poll through one the parent polled
-      through. On macOS, a child does not poll at all.
+      rebuilt that way, so a child does not poll through one the parent sent
+      requests through. On macOS, a child does not poll at all.
     """
 
     def __init__(self, workos: WorkOSClient) -> None:
@@ -92,11 +92,15 @@ class PollTransport:
                 f"{_core.MACOS_FORK_HAZARD}. Create the WorkOSClient and the "
                 "runtime client after forking instead"
             )
-        if used_before_fork and not self._uses_default_client:
+        # The WorkOSClient's other requests count too: they open the same
+        # HTTP client's connections.
+        if (
+            used_before_fork or self._workos._sent_requests
+        ) and not self._uses_default_client:
             return (
-                "it polled in the parent through a caller-supplied HTTP client, "
-                "whose connections this process would share. Create that HTTP "
-                "client, the WorkOSClient and the runtime client after forking instead"
+                "the parent used its caller-supplied HTTP client, whose "
+                "connections this process would share. Create that HTTP client, "
+                "the WorkOSClient and the runtime client after forking instead"
             )
         return None
 
@@ -134,6 +138,8 @@ class PollTransport:
     def _send(self, url: str, headers: Dict[str, str], deadline: float) -> HTTPResponse:
         if deadline - time.monotonic() <= 0:
             raise TransportTimeout("no time was left in the request timeout")
+        if not self._uses_default_client:
+            self._workos._sent_requests = True
         client = self._httpx_client()
         if client is None:
             return self._workos._backend.request(

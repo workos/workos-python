@@ -45,8 +45,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     client of its own, which a forked child replaces; with an HTTP client you
     supplied, close this client before closing yours. A client created before
     a fork can start in the child, and one that was polling resumes there,
-    except through an HTTP client you supplied that it already polled through,
-    and on macOS.
+    except through an HTTP client you supplied that the parent already sent
+    requests through, and on macOS.
     """
 
     def __init__(

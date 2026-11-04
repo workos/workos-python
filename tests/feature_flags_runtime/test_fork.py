@@ -113,6 +113,7 @@ assert server.ports("Bearer sk_child") == set(), "the child polled"
 # loop on a thread (which the child does not inherit) and forks from the main
 # thread, as a pre-fork server would.
 ASYNC_CLIENT = """
+import signal
 import threading
 
 loop = asyncio.new_event_loop()
@@ -136,7 +137,13 @@ if pid == 0:
             asyncio.run(getattr(runtime, method)())
             os._exit(2)
         except RuntimeError as error:
-            assert "it polled in the parent" in str(error), error
+            assert "was used in the parent" in str(error), error
+    # The parent's polling task is on a loop that does not run here, so
+    # close() must not wait for it.
+    signal.signal(signal.SIGALRM, lambda *args: os._exit(3))
+    signal.alarm(5)
+    asyncio.run(runtime.close())
+    signal.alarm(0)
     time.sleep(0.5)
     os._exit(0)
 _, status = os.waitpid(pid, 0)
@@ -210,6 +217,60 @@ assert os.waitstatus_to_exitcode(status) == 0
 assert server.ports("Bearer sk_child"), "the child never polled"
 """
 
+# The runtime client never polls in the parent, but another SDK call does, on
+# the HTTP client the runtime client would poll through.
+CALLER_CLIENT_SDK_USED = """
+import httpx2
+
+workos = WorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=httpx2.Client())
+try:
+    workos.organizations.list_organizations()
+except Exception:
+    pass
+assert server.ports("Bearer sk_parent"), "the parent sent no request"
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    try:
+        runtime.start()
+        os._exit(2)
+    except RuntimeError as error:
+        assert "caller-supplied HTTP client" in str(error), error
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child") == set(), "the child polled"
+"""
+
+ASYNC_CLIENT_SDK_USED = """
+workos = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url)
+
+
+async def call_api():
+    try:
+        await workos.organizations.list_organizations()
+    except Exception:
+        pass
+
+
+asyncio.run(call_api())
+assert server.ports("Bearer sk_parent"), "the parent sent no request"
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    try:
+        asyncio.run(runtime.start())
+        os._exit(2)
+    except RuntimeError as error:
+        assert "was used in the parent" in str(error), error
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child") == set(), "the child polled"
+"""
+
 # On macOS a forked child never polls, so to check what runs elsewhere, this
 # pretends the platform is fork-safe. The scenarios reach the server by IP over
 # plain HTTP, and NO_PROXY keeps httpx2 from reading macOS proxy settings, so
@@ -265,6 +326,18 @@ def test_an_async_client_stops_polling_in_a_child() -> None:
     ids=["sync-caller-supplied-client", "async"],
 )
 def test_a_client_that_never_polled_starts_in_a_child(scenario: str) -> None:
+    result = run(FORCE_FORK_SAFE, scenario)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [CALLER_CLIENT_SDK_USED, ASYNC_CLIENT_SDK_USED],
+    ids=["sync-caller-supplied-client", "async"],
+)
+def test_a_child_does_not_poll_once_another_call_used_the_http_client(
+    scenario: str,
+) -> None:
     result = run(FORCE_FORK_SAFE, scenario)
     assert result.returncode == 0, result.stdout + result.stderr
 

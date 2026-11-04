@@ -82,6 +82,14 @@ class CreateWebhookEndpointEvents(str, Enum):
     FLAG_DELETED = "flag.deleted"
     FLAG_UPDATED = "flag.updated"
     FLAG_RULE_UPDATED = "flag.rule_updated"
+    FEATURE_FLAGS_FLAG_CREATED = "feature_flags.flag.created"
+    FEATURE_FLAGS_FLAG_UPDATED = "feature_flags.flag.updated"
+    FEATURE_FLAGS_FLAG_DELETED = "feature_flags.flag.deleted"
+    FEATURE_FLAGS_FLAG_RULE_CREATED = "feature_flags.flag_rule.created"
+    FEATURE_FLAGS_FLAG_RULE_UPDATED = "feature_flags.flag_rule.updated"
+    FEATURE_FLAGS_FLAG_TARGET_CREATED = "feature_flags.flag_target.created"
+    FEATURE_FLAGS_FLAG_RULE_DELETED = "feature_flags.flag_rule.deleted"
+    FEATURE_FLAGS_FLAG_TARGET_DELETED = "feature_flags.flag_target.deleted"
     INVITATION_ACCEPTED = "invitation.accepted"
     INVITATION_CREATED = "invitation.created"
     INVITATION_RESENT = "invitation.resent"
@@ -207,6 +215,14 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "flag.deleted",
     "flag.updated",
     "flag.rule_updated",
+    "feature_flags.flag.created",
+    "feature_flags.flag.updated",
+    "feature_flags.flag.deleted",
+    "feature_flags.flag_rule.created",
+    "feature_flags.flag_rule.updated",
+    "feature_flags.flag_target.created",
+    "feature_flags.flag_rule.deleted",
+    "feature_flags.flag_target.deleted",
     "invitation.accepted",
     "invitation.created",
     "invitation.resent",

@@ -104,6 +104,15 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert "role_assignments" in body
 
+    def test_patch_group_role_assignments(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.authorization.patch_group_role_assignments("test_group_id")
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
     def test_delete_group_role_assignments(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = workos.authorization.delete_group_role_assignments(
@@ -1161,6 +1170,16 @@ class TestAsyncAuthorization:
         assert result.object == "list"
         request = httpx_mock.get_request()
         assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/authorization/groups/test_group_id/role_assignments"
+        )
+
+    @pytest.mark.asyncio
+    async def test_patch_group_role_assignments(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        await async_workos.authorization.patch_group_role_assignments("test_group_id")
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
         assert request.url.path.endswith(
             "/authorization/groups/test_group_id/role_assignments"
         )

@@ -12,6 +12,8 @@ class WidgetSessionTokenScopes(str, Enum):
     """Known values for WidgetSessionTokenScopes."""
 
     WIDGETS_USERS_TABLE_MANAGE = "widgets:users-table:manage"
+    WIDGETS_USER_API_KEYS_MANAGE_SELF = "widgets:user-api-keys:manage-self"
+    WIDGETS_USER_API_KEYS_MANAGE_ALL = "widgets:user-api-keys:manage-all"
     WIDGETS_DOMAIN_VERIFICATION_MANAGE = "widgets:domain-verification:manage"
     WIDGETS_SSO_MANAGE = "widgets:sso:manage"
     WIDGETS_API_KEYS_MANAGE = "widgets:api-keys:manage"
@@ -31,6 +33,8 @@ class WidgetSessionTokenScopes(str, Enum):
 
 WidgetSessionTokenScopesLiteral: TypeAlias = Literal[
     "widgets:users-table:manage",
+    "widgets:user-api-keys:manage-self",
+    "widgets:user-api-keys:manage-all",
     "widgets:domain-verification:manage",
     "widgets:sso:manage",
     "widgets:api-keys:manage",

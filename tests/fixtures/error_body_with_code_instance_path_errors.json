@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "instancePath": "/targets"
+    }
+  ],
+  "message": "Invalid Audit Log event.",
+  "code": "invalid_audit_log_event"
+}

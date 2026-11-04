@@ -1,0 +1,10 @@
+{
+  "code": "account_selection_required",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "action_denied",
+      "message": "Request could not be processed."
+    }
+  ]
+}

@@ -222,6 +222,50 @@ class Authorization:
             request_options=request_options,
         )
 
+    def patch_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        add: list[ReplaceGroupRoleAssignmentEntry] | None = None,
+        remove: list[ReplaceGroupRoleAssignmentEntry] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update role assignments for a group
+
+        Add and remove role assignments for a group in a single atomic operation. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            group_id: The ID of the group.
+            add: Role assignments to add to the group. Assignments that already exist are skipped.
+            remove: Role assignments to remove from the group. Entries that match no assignment are skipped.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": [item.to_dict() for item in add] if add is not None else None,
+                "remove": [item.to_dict() for item in remove]
+                if remove is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        self._client.request(
+            method="patch",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
+            request_options=request_options,
+        )
+
     def delete_group_role_assignments(
         self,
         group_id: str,
@@ -2390,6 +2434,50 @@ class AsyncAuthorization:
             path=("authorization", "groups", str(group_id), "role_assignments"),
             body=body,
             model=GroupRoleAssignmentList,
+            request_options=request_options,
+        )
+
+    async def patch_group_role_assignments(
+        self,
+        group_id: str,
+        *,
+        add: list[ReplaceGroupRoleAssignmentEntry] | None = None,
+        remove: list[ReplaceGroupRoleAssignmentEntry] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update role assignments for a group
+
+        Add and remove role assignments for a group in a single atomic operation. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            group_id: The ID of the group.
+            add: Role assignments to add to the group. Assignments that already exist are skipped.
+            remove: Role assignments to remove from the group. Entries that match no assignment are skipped.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": [item.to_dict() for item in add] if add is not None else None,
+                "remove": [item.to_dict() for item in remove]
+                if remove is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        await self._client.request(
+            method="patch",
+            path=("authorization", "groups", str(group_id), "role_assignments"),
+            body=body,
             request_options=request_options,
         )
 

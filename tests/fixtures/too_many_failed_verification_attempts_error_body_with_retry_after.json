@@ -1,0 +1,5 @@
+{
+  "code": "too_many_failed_verification_attempts",
+  "message": "Request could not be processed.",
+  "retry_after": 900
+}

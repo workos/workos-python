@@ -1,0 +1,5 @@
+{
+  "message": "Invalid resource id",
+  "code": "invalid_resource_id_format",
+  "statusCode": 400
+}

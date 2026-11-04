@@ -335,6 +335,56 @@ class Groups:
             request_options=request_options,
         )
 
+    def update_group_organization_memberships(
+        self,
+        organization_id: str,
+        group_id: str,
+        *,
+        add: list[str] | None = None,
+        remove: list[str] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update Group members
+
+        Adds and removes organization memberships for a group in a single atomic operation. Organization memberships not listed in `add` or `remove` are left unchanged. Adding a member that is already in the group or removing a member that isn't in the group has no effect. A membership listed in both `add` and `remove` is rejected. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            organization_id: Unique identifier of the Organization.
+            group_id: Unique identifier of the Group.
+            add: The IDs of the organization memberships to add to the group. Adding a membership that's already in the group has no effect.
+            remove: The IDs of the organization memberships to remove from the group. Removing a membership that isn't in the group has no effect.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": add,
+                "remove": remove,
+            }.items()
+            if v is not None
+        }
+        self._client.request(
+            method="patch",
+            path=(
+                "organizations",
+                str(organization_id),
+                "groups",
+                str(group_id),
+                "organization-memberships",
+            ),
+            body=body,
+            request_options=request_options,
+        )
+
     def delete_group_organization_membership(
         self,
         organization_id: str,
@@ -689,6 +739,56 @@ class AsyncGroups:
             ),
             body=body,
             model=Group,
+            request_options=request_options,
+        )
+
+    async def update_group_organization_memberships(
+        self,
+        organization_id: str,
+        group_id: str,
+        *,
+        add: list[str] | None = None,
+        remove: list[str] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update Group members
+
+        Adds and removes organization memberships for a group in a single atomic operation. Organization memberships not listed in `add` or `remove` are left unchanged. Adding a member that is already in the group or removing a member that isn't in the group has no effect. A membership listed in both `add` and `remove` is rejected. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            organization_id: Unique identifier of the Organization.
+            group_id: Unique identifier of the Group.
+            add: The IDs of the organization memberships to add to the group. Adding a membership that's already in the group has no effect.
+            remove: The IDs of the organization memberships to remove from the group. Removing a membership that isn't in the group has no effect.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": add,
+                "remove": remove,
+            }.items()
+            if v is not None
+        }
+        await self._client.request(
+            method="patch",
+            path=(
+                "organizations",
+                str(organization_id),
+                "groups",
+                str(group_id),
+                "organization-memberships",
+            ),
+            body=body,
             request_options=request_options,
         )
 

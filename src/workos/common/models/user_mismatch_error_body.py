@@ -9,23 +9,24 @@ from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
-class ConnectedAccountWriteResponseWarning:
-    """Connected Account Write Response Warning model."""
+class UserMismatchErrorBody:
+    """User Mismatch Error Body model."""
 
-    code: Literal["duplicate_account_display_name"]
+    code: Literal["user_mismatch"]
+    """The error code identifying the type of error."""
     message: str
-    """A human-readable explanation of the non-blocking warning."""
+    """A human-readable description of the error."""
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> ConnectedAccountWriteResponseWarning:
+    def from_dict(cls, data: dict[str, Any]) -> UserMismatchErrorBody:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                code=data.get("code", "duplicate_account_display_name"),
+                code=data.get("code", "user_mismatch"),
                 message=data["message"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("ConnectedAccountWriteResponseWarning", e)
+            _raise_deserialize_error("UserMismatchErrorBody", e)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize to a dictionary."""

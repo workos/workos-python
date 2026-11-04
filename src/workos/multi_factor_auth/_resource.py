@@ -54,8 +54,8 @@ class MultiFactorAuth:
             BadRequestError: If the request is malformed (400).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {
@@ -344,8 +344,8 @@ class AsyncMultiFactorAuth:
             BadRequestError: If the request is malformed (400).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
         body: dict[str, Any] = {

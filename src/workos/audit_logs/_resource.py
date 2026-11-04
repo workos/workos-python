@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -226,7 +227,7 @@ class AuditLogs:
     ) -> AuditLogSchema:
         """Create Schema
 
-        Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
+        Creates an Audit Log schema used to validate incoming Audit Log events, or returns the latest version if the submitted schema matches it. If the schema differs from the latest version, creates and returns a new version. If the action does not exist, creates the action and its first schema version.
 
         Args:
             action_name: The name of the Audit Log action.
@@ -311,8 +312,8 @@ class AuditLogs:
         self,
         *,
         organization_id: str,
-        range_start: str,
-        range_end: str,
+        range_start: datetime | str,
+        range_end: datetime | str,
         actions: list[str] | None = None,
         actors: list[str] | None = None,
         actor_names: list[str] | None = None,
@@ -581,7 +582,7 @@ class AsyncAuditLogs:
     ) -> AuditLogSchema:
         """Create Schema
 
-        Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
+        Creates an Audit Log schema used to validate incoming Audit Log events, or returns the latest version if the submitted schema matches it. If the schema differs from the latest version, creates and returns a new version. If the action does not exist, creates the action and its first schema version.
 
         Args:
             action_name: The name of the Audit Log action.
@@ -666,8 +667,8 @@ class AsyncAuditLogs:
         self,
         *,
         organization_id: str,
-        range_start: str,
-        range_end: str,
+        range_start: datetime | str,
+        range_end: datetime | str,
         actions: list[str] | None = None,
         actors: list[str] | None = None,
         actor_names: list[str] | None = None,

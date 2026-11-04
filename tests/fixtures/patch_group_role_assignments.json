@@ -1,0 +1,24 @@
+{
+  "add": [
+    {
+      "role_slug": "admin",
+      "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH",
+      "resource_external_id": "proj-456",
+      "resource_type_slug": "project"
+    },
+    {
+      "role_slug": "member",
+      "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH",
+      "resource_external_id": "proj-456",
+      "resource_type_slug": "project"
+    }
+  ],
+  "remove": [
+    {
+      "role_slug": "editor",
+      "resource_id": "authz_resource_01HXYZ123456789ABCDEFGH",
+      "resource_external_id": "proj-789",
+      "resource_type_slug": "project"
+    }
+  ]
+}

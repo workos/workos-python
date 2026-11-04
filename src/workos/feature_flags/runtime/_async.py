@@ -77,7 +77,10 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         )
         self._client = client
         self._task: Optional[asyncio.Task[None]] = None
-        self._draining = False
+        # The task delivering notifications, and the coroutine listener it is
+        # waiting for, if any.
+        self._drainer: Optional[asyncio.Task[Any]] = None
+        self._listener_task: Optional[asyncio.Future[Any]] = None
         self._init_synchronization()
         if on_change is not None:
             self.add_change_listener(on_change)
@@ -183,9 +186,15 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         self._closed = True
         self._ready.set()
         task = self._task
-        if task is None or task.done() or task is asyncio.current_task():
-            # Called from a listener inside the polling task: the task exits on
-            # its own once the listener returns.
+        current = asyncio.current_task()
+        if (
+            task is None
+            or task.done()
+            or task is current
+            or (current is self._listener_task and self._drainer is task)
+        ):
+            # Called from a listener the polling task is delivering to: the
+            # task exits on its own once the listener returns.
             return
         task.cancel()
         # `wait` never raises the task's own cancellation, but still
@@ -346,22 +355,42 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         listener calling refresh(), leaves its batch to that task, so batches
         are never interleaved.
         """
-        if self._draining:
+        if self._drainer is not None:
             return
-        self._draining = True
+        self._drainer = asyncio.current_task()
         try:
             while self._pending:
                 batch = self._pending.popleft()
                 if not self._closed:
                     await self._deliver(batch)
         finally:
-            self._draining = False
+            self._drainer = None
 
     async def _deliver(self, notifications: list[Notification]) -> None:
         for listener, argument in notifications:
             try:
                 result = listener(argument)
                 if inspect.isawaitable(result):
-                    await result
+                    await self._await_listener(result)
             except Exception:
                 self._log_listener_error()
+
+    async def _await_listener(self, awaitable: Awaitable[Any]) -> None:
+        # The listener runs in a task of its own, so a CancelledError raised
+        # inside it, such as from awaiting work something else cancelled, ends
+        # only that listener. Cancelling the delivering task, as close() does,
+        # cancels the listener with it.
+        listener_task = asyncio.ensure_future(awaitable)
+        self._listener_task = listener_task
+        try:
+            await asyncio.wait({listener_task})
+        except asyncio.CancelledError:
+            listener_task.cancel()
+            await asyncio.wait({listener_task})
+            raise
+        finally:
+            self._listener_task = None
+        if listener_task.cancelled():
+            self._logger.error("A feature flags runtime client listener was cancelled")
+        else:
+            listener_task.result()

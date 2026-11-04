@@ -152,6 +152,54 @@ async def test_awaits_coroutine_and_plain_listeners(
     )
 
 
+async def test_a_listener_cancelled_from_within_does_not_stop_polling(
+    server: FlagServer, make_async_runtime: Make, fast_polling: List[int]
+) -> None:
+    server.respond(200, ORDERED)
+    changes: List[FlagsChangedEvent] = []
+
+    async def awaits_cancelled_work(event: FlagsChangedEvent) -> None:
+        if event.previous is None:
+            # Work someone else cancelled raises CancelledError in the listener.
+            cancelled = asyncio.get_running_loop().create_future()
+            cancelled.cancel()
+            await cancelled
+
+    runtime = make_async_runtime(on_change=awaits_cancelled_work)
+    runtime.add_change_listener(changes.append)
+    await runtime.start()
+    await until(lambda: len(changes) == 1)
+
+    server.respond(200, CHANGED)
+    await until(lambda: runtime.is_enabled("added"))
+    await until(lambda: len(changes) == 2)
+    assert runtime._task is not None and not runtime._task.done()
+
+
+async def test_close_cancels_a_running_listener(
+    server: FlagServer, make_async_runtime: Make
+) -> None:
+    server.respond(200, ORDERED)
+    started = asyncio.Event()
+    cancelled = asyncio.Event()
+
+    async def slow_listener(event: FlagsChangedEvent) -> None:
+        started.set()
+        try:
+            await asyncio.sleep(10)
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
+
+    runtime = make_async_runtime(on_change=slow_listener)
+    await runtime.start()
+    await asyncio.wait_for(started.wait(), 5)
+    await asyncio.wait_for(runtime.close(), 1)
+
+    assert cancelled.is_set()
+    assert runtime._task is not None and runtime._task.done()
+
+
 async def test_listeners_can_await_refresh_and_events_stay_in_order(
     server: FlagServer, make_async_runtime: Make
 ) -> None:

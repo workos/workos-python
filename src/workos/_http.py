@@ -12,6 +12,7 @@ from __future__ import annotations
 import importlib
 import inspect
 import json
+import weakref
 from dataclasses import dataclass
 from typing import (
     Any,
@@ -238,6 +239,37 @@ class AsyncHttpxBackend:
 
     async def close(self) -> None:
         await self._client.aclose()
+
+
+# --- connection tracking --------------------------------------------------------
+
+# The HTTP clients requests have gone out through. Several WorkOS clients can be
+# given the same HTTP client, so a forked process looks here to tell whether it
+# would share the parent's connections.
+_clients_with_requests: weakref.WeakSet[object] = weakref.WeakSet()
+
+
+def _connection_owner(backend: object) -> object:
+    # WorkOS clients given the same httpx client each wrap it in a backend of
+    # their own; the httpx client holds the connections.
+    if isinstance(backend, (HttpxBackend, AsyncHttpxBackend)):
+        return backend._client
+    return backend
+
+
+def record_request(backend: object) -> None:
+    """Note that a request is going out through ``backend``'s connections."""
+    try:
+        _clients_with_requests.add(_connection_owner(backend))
+    except TypeError:
+        # It can't be weakly referenced. Each WorkOS client still tracks its
+        # own requests.
+        pass
+
+
+def sent_requests(backend: object) -> bool:
+    """Whether any WorkOS client sent a request through ``backend``'s connections."""
+    return _connection_owner(backend) in _clients_with_requests
 
 
 # --- resolution -----------------------------------------------------------------

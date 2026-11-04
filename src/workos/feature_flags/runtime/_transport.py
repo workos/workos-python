@@ -20,6 +20,8 @@ from ..._http import (
     TransportError,
     TransportTimeout,
     _HttpxFamily,
+    record_request,
+    sent_requests,
 )
 from . import _core, _policy
 
@@ -116,10 +118,13 @@ class PollTransport:
                 f"{_core.MACOS_FORK_HAZARD}. Create the WorkOSClient and the "
                 "runtime client after forking instead"
             )
-        # The WorkOSClient's other requests count too: they open the same
-        # HTTP client's connections.
+        # The WorkOSClient's other requests count too, and so do those of any
+        # other WorkOSClient given the same HTTP client: they open the same
+        # connections.
         if (
-            used_before_fork or self._workos._sent_requests
+            used_before_fork
+            or self._workos._sent_requests
+            or sent_requests(self._workos._backend)
         ) and not self._uses_default_client:
             return (
                 "the parent used its caller-supplied HTTP client, whose "
@@ -164,6 +169,7 @@ class PollTransport:
             raise TransportTimeout("no time was left in the request timeout")
         if not self._uses_default_client:
             self._workos._sent_requests = True
+            record_request(self._workos._backend)
         client = self._httpx_client()
         if client is None:
             return self._workos._backend.request(

@@ -33,6 +33,7 @@ from ._http import (
     TransportConnectError,
     TransportError,
     TransportTimeout,
+    record_request,
     resolve_async_backend,
     resolve_sync_backend,
 )
@@ -596,6 +597,7 @@ class WorkOSClient(_BaseWorkOSClient):
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
         self._sent_requests = True
+        record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:
                 response = self._backend.request(
@@ -844,6 +846,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
         self._sent_requests = True
+        record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:
                 response = await self._backend.request(

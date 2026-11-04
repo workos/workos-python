@@ -271,6 +271,66 @@ assert os.waitstatus_to_exitcode(status) == 0
 assert server.ports("Bearer sk_child") == set(), "the child polled"
 """
 
+# Another WorkOS client sends the request, through an HTTP client it shares
+# with the one the runtime client would poll through.
+CALLER_CLIENT_SHARED_SDK_USED = """
+import httpx2
+
+shared = httpx2.Client()
+other = WorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=shared)
+try:
+    other.organizations.list_organizations()
+except Exception:
+    pass
+assert server.ports("Bearer sk_parent"), "the parent sent no request"
+workos = WorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=shared)
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    try:
+        runtime.start()
+        os._exit(2)
+    except RuntimeError as error:
+        assert "caller-supplied HTTP client" in str(error), error
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child") == set(), "the child polled"
+"""
+
+ASYNC_CLIENT_SHARED_SDK_USED = """
+import httpx2
+
+shared = httpx2.AsyncClient()
+other = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=shared)
+
+
+async def call_api():
+    try:
+        await other.organizations.list_organizations()
+    except Exception:
+        pass
+
+
+asyncio.run(call_api())
+assert server.ports("Bearer sk_parent"), "the parent sent no request"
+workos = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=shared)
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    try:
+        asyncio.run(runtime.start())
+        os._exit(2)
+    except RuntimeError as error:
+        assert "was used in the parent" in str(error), error
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+assert server.ports("Bearer sk_child") == set(), "the child polled"
+"""
+
 # On macOS a forked child never polls, so to check what runs elsewhere, this
 # pretends the platform is fork-safe. The scenarios reach the server by IP over
 # plain HTTP, and NO_PROXY keeps httpx2 from reading macOS proxy settings, so
@@ -332,8 +392,18 @@ def test_a_client_that_never_polled_starts_in_a_child(scenario: str) -> None:
 
 @pytest.mark.parametrize(
     "scenario",
-    [CALLER_CLIENT_SDK_USED, ASYNC_CLIENT_SDK_USED],
-    ids=["sync-caller-supplied-client", "async"],
+    [
+        CALLER_CLIENT_SDK_USED,
+        ASYNC_CLIENT_SDK_USED,
+        CALLER_CLIENT_SHARED_SDK_USED,
+        ASYNC_CLIENT_SHARED_SDK_USED,
+    ],
+    ids=[
+        "sync-caller-supplied-client",
+        "async",
+        "sync-client-shared-with-another-workos-client",
+        "async-client-shared-with-another-workos-client",
+    ],
 )
 def test_a_child_does_not_poll_once_another_call_used_the_http_client(
     scenario: str,

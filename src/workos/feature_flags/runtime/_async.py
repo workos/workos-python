@@ -14,6 +14,7 @@ from types import TracebackType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 from ..._errors import WorkOSTimeoutError
+from ..._http import sent_requests
 from . import _core, _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
@@ -417,11 +418,12 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
     # --- Fork safety ----------------------------------------------------------
 
     def _reinitialize_after_fork(self) -> None:
-        # Once the AsyncWorkOSClient has sent requests, its connections belong
-        # to the parent's event loop, so a copy of a client that polled, or of
-        # one whose AsyncWorkOSClient made other calls, stops polling here (even
-        # if the child keeps running a copy of the loop) and keeps serving its
-        # last configuration. Otherwise it starts over on the child's own loop.
+        # Once the AsyncWorkOSClient's HTTP client has sent requests, its
+        # connections belong to the parent's event loop, so a copy of a client
+        # that polled, or whose HTTP client carried other calls (from this or
+        # another AsyncWorkOSClient), stops polling here (even if the child
+        # keeps running a copy of the loop) and keeps serving its last
+        # configuration. Otherwise it starts over on the child's own loop.
         self._reinitialize_core_after_fork()
         polling = (
             self._started and not self._closed and not self._status.polling_stopped
@@ -440,11 +442,15 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
                 f"{_core.MACOS_FORK_HAZARD}. Create the AsyncWorkOSClient and the "
                 "runtime client after forking instead"
             )
-        elif self._used_before_fork() or self._client._sent_requests:
+        elif (
+            self._used_before_fork()
+            or self._client._sent_requests
+            or sent_requests(self._client._backend)
+        ):
             self._fork_blocker = (
-                "the AsyncWorkOSClient was used in the parent, on the parent's "
-                "event loop and connections. Create the AsyncWorkOSClient and the "
-                "runtime client after forking instead"
+                "the AsyncWorkOSClient or its HTTP client was used in the parent, "
+                "on the parent's event loop and connections. Create the "
+                "AsyncWorkOSClient and the runtime client after forking instead"
             )
         else:
             self._fork_blocker = None

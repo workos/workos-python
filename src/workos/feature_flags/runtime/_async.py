@@ -179,10 +179,11 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
     async def close(self) -> None:
         """Stop polling and wait for the polling task to finish. Idempotent.
 
-        Evaluation keeps serving the last configuration after closing.
+        Every caller waits, including one that calls while another close() is
+        still waiting. Evaluation keeps serving the last configuration after
+        closing.
         """
-        if self._closed:
-            return
+        first = not self._closed
         self._closed = True
         self._ready.set()
         task = self._task
@@ -196,7 +197,8 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             # Called from a listener the polling task is delivering to: the
             # task exits on its own once the listener returns.
             return
-        task.cancel()
+        if first:
+            task.cancel()
         # `wait` never raises the task's own cancellation, but still
         # propagates a cancellation of the caller.
         await asyncio.wait({task})

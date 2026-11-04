@@ -364,6 +364,32 @@ async def test_close_cancels_a_refresh_in_flight(
     assert runtime.is_ready is False
 
 
+async def test_every_close_waits_for_the_polling_task_to_finish(
+    server: FlagServer, make_async_runtime: Make
+) -> None:
+    server.respond(200, ORDERED)
+    started = asyncio.Event()
+    cleaned_up = asyncio.Event()
+
+    async def slow_listener(event: FlagsChangedEvent) -> None:
+        started.set()
+        try:
+            await asyncio.sleep(10)
+        finally:
+            await asyncio.sleep(0.05)
+            cleaned_up.set()
+
+    runtime = make_async_runtime(on_change=slow_listener)
+    await runtime.start()
+    await asyncio.wait_for(started.wait(), 5)
+    first = asyncio.ensure_future(runtime.close())
+    await asyncio.sleep(0)
+    await asyncio.wait_for(runtime.close(), 1)
+
+    assert cleaned_up.is_set()
+    await first
+
+
 async def test_close_can_be_called_from_a_listener(
     server: FlagServer, make_async_runtime: Make
 ) -> None:

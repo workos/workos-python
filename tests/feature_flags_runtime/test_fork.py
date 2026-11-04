@@ -11,14 +11,23 @@ import os
 import subprocess
 import sys
 import textwrap
+import weakref
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+import httpx2
 import pytest
 
-from workos import WorkOSClient
-from workos.feature_flags.runtime import _core
+from workos import AsyncWorkOSClient, HTTPResponse, WorkOSClient
+from workos.feature_flags.runtime import _async, _core, _sync
 
-from tests.feature_flags_runtime.helpers import LocalHTTPServer, flag, payload
+from tests.feature_flags_runtime.helpers import (
+    API_KEY,
+    LocalHTTPServer,
+    flag,
+    payload,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -455,3 +464,79 @@ def test_every_read_resumes_polling_after_a_fork(
     runtime.close()
     workos.close()
     server.close()
+
+
+@dataclass
+class UnhashableBackend:
+    """An HTTPBackend that, like any dataclass with eq=True, can't be hashed."""
+
+    requests: List[str] = field(default_factory=list)
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        headers: Dict[str, str],
+        content: Optional[bytes],
+        timeout: float,
+    ) -> HTTPResponse:
+        self.requests.append(url)
+        return HTTPResponse(
+            status_code=200,
+            headers=httpx2.Headers(),
+            content=b'{"version": 2, "flags": {}}',
+            request_method=method,
+            request_url=url,
+        )
+
+    def close(self) -> None:
+        pass
+
+
+def test_an_unhashable_custom_backend_survives_the_fork_hook(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
+    backend = UnhashableBackend()
+    workos = WorkOSClient(api_key=API_KEY, http_client=backend)
+    unused = workos.create_feature_flags_runtime_client()
+
+    # What the at-fork hook runs in a child, without forking pytest.
+    unused._reinitialize_after_fork()
+    unused.refresh()
+    assert backend.requests
+
+    # Another WorkOSClient on the same backend sees that request too.
+    sharing = WorkOSClient(api_key=API_KEY, http_client=backend)
+    blocked = sharing.create_feature_flags_runtime_client()
+    blocked._reinitialize_after_fork()
+    with pytest.raises(RuntimeError, match="caller-supplied HTTP client"):
+        blocked.start()
+    unused.close()
+    blocked.close()
+
+
+@pytest.mark.parametrize("module", [_sync, _async], ids=["sync", "async"])
+def test_one_client_failing_to_reinitialize_does_not_stop_the_others(
+    module: Any, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    workos = WorkOSClient if module is _sync else AsyncWorkOSClient
+    runtimes = [
+        workos(api_key=API_KEY).create_feature_flags_runtime_client() for _ in range(2)
+    ]
+    attempts: List[int] = []
+
+    def fail() -> None:
+        attempts.append(1)
+        raise RuntimeError("could not rebuild")
+
+    for runtime in runtimes:
+        monkeypatch.setattr(runtime, "_reinitialize_after_fork", fail)
+    monkeypatch.setattr(module, "_clients", weakref.WeakSet(runtimes))
+
+    with caplog.at_level(logging.ERROR):
+        module._reinitialize_clients_after_fork()
+
+    assert len(attempts) == 2
+    assert len([r for r in caplog.records if r.levelno == logging.ERROR]) == 2

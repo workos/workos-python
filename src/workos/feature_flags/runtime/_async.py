@@ -476,7 +476,15 @@ _clients: weakref.WeakSet[AsyncFeatureFlagsRuntimeClient] = weakref.WeakSet()
 
 def _reinitialize_clients_after_fork() -> None:
     for client in list(_clients):
-        client._reinitialize_after_fork()
+        # One client that fails must not leave the others unprepared.
+        try:
+            client._reinitialize_after_fork()
+        except Exception:
+            client._logger.exception(
+                "Could not prepare a feature flags runtime client for forked "
+                "process %d",
+                os.getpid(),
+            )
 
 
 if hasattr(os, "register_at_fork"):

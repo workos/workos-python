@@ -6,6 +6,8 @@ from __future__ import annotations
 import copy
 import json
 import pickle
+from collections import UserDict
+from types import MappingProxyType
 
 import pytest
 
@@ -126,6 +128,14 @@ def test_values_that_are_not_json_are_rejected() -> None:
         FeatureFlagsConfiguration.from_dict(
             {"version": 2, "flags": {}, "when": object()}
         )
+
+
+def test_accepts_any_mapping_type() -> None:
+    read_only = MappingProxyType({**PAYLOAD, "flags": UserDict(PAYLOAD["flags"])})
+    configuration = FeatureFlagsConfiguration.from_dict(read_only)
+
+    assert configuration.to_dict() == PAYLOAD
+    assert configuration.get_flag("checkout") is not None
 
 
 def test_snapshots_pickle_and_copy() -> None:

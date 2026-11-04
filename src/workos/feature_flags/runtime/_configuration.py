@@ -264,12 +264,24 @@ def _restore(text: str) -> FeatureFlagsConfiguration:
 def _dumps(payload: object, *, sort_keys: bool) -> str:
     try:
         return json.dumps(
-            payload, sort_keys=sort_keys, ensure_ascii=False, separators=(",", ":")
+            payload,
+            sort_keys=sort_keys,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            default=_mapping_as_dict,
         )
     except (TypeError, ValueError) as error:
         raise FeatureFlagsConfigurationError(
             f"Feature flags configuration is not JSON-serializable: {error}"
         ) from error
+
+
+def _mapping_as_dict(value: object) -> object:
+    # json only serializes dicts, but the payload may be any mapping, such as a
+    # read-only MappingProxyType of a cached configuration.
+    if isinstance(value, Mapping):
+        return dict(cast(Mapping[object, object], value))
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
 
 
 def _fingerprint(payload: object) -> str:

@@ -1,0 +1,5 @@
+{
+  "code": "rate_limit_exceeded",
+  "message": "Request could not be processed.",
+  "retry_after": 60
+}

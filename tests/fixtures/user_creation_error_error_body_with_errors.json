@@ -1,0 +1,10 @@
+{
+  "code": "user_creation_error",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "action_denied",
+      "message": "Request could not be processed."
+    }
+  ]
+}

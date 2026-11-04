@@ -10,7 +10,7 @@ from workos._types import _raise_deserialize_error
 
 @dataclass(slots=True)
 class FeatureFlagOwner:
-    """Feature Flag Owner model."""
+    """The owner of the Feature Flag."""
 
     email: str
     """The email address of the flag owner."""

@@ -1,0 +1,4 @@
+{
+  "code": "auth_method_mismatch",
+  "message": "This installation uses oauth authentication. Use the POST /:slug/token endpoint instead."
+}

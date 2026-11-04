@@ -172,6 +172,17 @@ class TestGroups:
         body = json.loads(request.content)
         assert body["organization_membership_id"] == "test_organization_membership_id"
 
+    def test_update_group_organization_memberships(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.groups.update_group_organization_memberships(
+            "test_organizationId", "test_groupId"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
+        assert request.url.path.endswith(
+            "/organizations/test_organizationId/groups/test_groupId/organization-memberships"
+        )
+
     def test_delete_group_organization_membership(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = workos.groups.delete_group_organization_membership(
@@ -408,6 +419,20 @@ class TestAsyncGroups:
         assert result.id == "group_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
         assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/organizations/test_organizationId/groups/test_groupId/organization-memberships"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_group_organization_memberships(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={})
+        await async_workos.groups.update_group_organization_memberships(
+            "test_organizationId", "test_groupId"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
         assert request.url.path.endswith(
             "/organizations/test_organizationId/groups/test_groupId/organization-memberships"
         )

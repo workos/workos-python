@@ -22,7 +22,7 @@ class EmailCompletionSessionAuthenticateRequest:
     email: str
     """The email address the user supplied for a profile the identity provider left without one."""
     ip_address: str | None = None
-    """The IP address of the user's request."""
+    """The IP address of the user's request. Required when Radar is in Decision mode."""
     device_id: str | None = None
     """A unique identifier for the device."""
     user_agent: str | None = None

@@ -20,7 +20,7 @@ from .agent_blueprints_update_request_session_setting import (
 
 @dataclass(slots=True)
 class AgentBlueprintsUpdateRequest:
-    """Agent Blueprints Update Request model."""
+    """Fields to update on the agent blueprint. Omitted fields are left unchanged; provided lists replace the existing configuration."""
 
     name: str | None = None
     """Human-readable name of the agent blueprint."""

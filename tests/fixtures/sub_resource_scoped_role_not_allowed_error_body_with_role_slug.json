@@ -1,0 +1,5 @@
+{
+  "message": "Sub-resource scoped roles are not allowed for this operation.",
+  "code": "sub_resource_scoped_role_not_allowed",
+  "role_slug": "admin"
+}

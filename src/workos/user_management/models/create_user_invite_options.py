@@ -27,7 +27,7 @@ class CreateUserInviteOptions:
     inviter_user_id: str | None = None
     """The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user."""
     locale: CreateUserInviteOptionsLocale | None = None
-    """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
+    """The locale to use when rendering the invitation email. Defaults to the environment's default locale. See [supported locales](https://workos.com/docs/authkit/hosted-ui#localization)."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> CreateUserInviteOptions:

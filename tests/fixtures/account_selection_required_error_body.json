@@ -1,0 +1,4 @@
+{
+  "code": "account_selection_required",
+  "message": "Several connected accounts match this user for this provider. Name one with a connected account id."
+}

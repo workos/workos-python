@@ -4,10 +4,13 @@
 
 from tests.generated_helpers import load_fixture
 from workos.common.models import (
+    AccessDeniedOAuthErrorBody,
     AccessTokenAgentRegistrationCredentialIssuedDataDetail,
     AccountSelectionRequiredError,
+    AccountSelectionRequiredErrorBody,
     ActionAuthenticationDenied,
     ActionAuthenticationDeniedData,
+    ActionDeniedErrorBody,
     ActionUserRegistrationDenied,
     ActionUserRegistrationDeniedData,
     AgentBlueprintCreated,
@@ -51,9 +54,11 @@ from workos.common.models import (
     AgentRegistrationRefreshedData,
     AgentRegistrationRevoked,
     AgentRegistrationRevokedData,
+    AlreadyClaimedErrorBody,
     ApiKeyCreated,
     ApiKeyCreatedData,
     ApiKeyCreatedDataOwner,
+    ApiKeyDataIntegrationVendedCredential,
     ApiKeyRevoked,
     ApiKeyRevokedData,
     ApiKeyRevokedDataOwner,
@@ -61,6 +66,7 @@ from workos.common.models import (
     ApiKeyUpdatedData,
     ApiKeyUpdatedDataOwner,
     ApiKeyUpdatedDataPreviousAttribute,
+    ApplicationConsentRequiredErrorBody,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
@@ -71,6 +77,8 @@ from workos.common.models import (
     AuthenticationMagicAuthFailedDataError,
     AuthenticationMagicAuthSucceeded,
     AuthenticationMagicAuthSucceededData,
+    AuthenticationMethodNotAllowedErrorBody,
+    AuthenticationMethodNotAllowedOAuthErrorBody,
     AuthenticationMFAFailed,
     AuthenticationMFAFailedData,
     AuthenticationMFAFailedDataError,
@@ -110,17 +118,28 @@ from workos.common.models import (
     AuthenticationSSOTimedOutDataError,
     AuthenticationSSOTimedOutDataSSO,
     AuthMethodMismatchError,
+    AuthMethodMismatchErrorBody,
+    AuthorizationPendingOAuthErrorBody,
+    AuthorizationUrlNotFoundErrorBody,
+    AuthorizationUrlRequestErrorBody,
+    ClientCredentialsDataIntegrationVendedCredential,
+    CodeChallengeNotFoundErrorBody,
     ConnectApplicationM2M,
     ConnectApplicationOAuth,
     ConnectApplicationOAuthRedirectUris,
+    ConnectedAccountLimitReachedErrorBody,
     ConnectionActivated,
     ConnectionActivatedData,
     ConnectionActivatedDataDomain,
+    ConnectionCouldNotBeVerifiedErrorBody,
+    ConnectionCreationConflictErrorBody,
+    ConnectionCreationNotFoundErrorBody,
     ConnectionDeactivated,
     ConnectionDeactivatedData,
     ConnectionDeactivatedDataDomain,
     ConnectionDeleted,
     ConnectionDeletedData,
+    ConnectionFinishErrorBody,
     ConnectionSAMLCertificateRenewalRequired,
     ConnectionSAMLCertificateRenewalRequiredData,
     ConnectionSAMLCertificateRenewalRequiredDataCertificate,
@@ -129,6 +148,13 @@ from workos.common.models import (
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    ConnectionTypeNotUpdatableErrorBody,
+    DailyQuotaExceededErrorBody,
+    DataIntegrationAccessTokenResponseWithAccessToken,
+    DataIntegrationAccessTokenResponseWithAccessTokenAccessToken,
+    DataIntegrationAccessTokenResponseWithError,
+    DataIntegrationCredentialsResponseWithCredential,
+    DataIntegrationCredentialsResponseWithError,
     DirectorySyncRateLimitError,
     DirectoryUser,
     DirectoryUserEmail,
@@ -154,12 +180,73 @@ from workos.common.models import (
     DsyncUserUpdated,
     DsyncUserUpdatedData,
     DsyncUserUpdatedDataEmail,
+    EmailAlreadyInUseErrorBody,
+    EmailAlreadyVerifiedErrorBody,
+    EmailChangeNotAllowedErrorBody,
+    EmailCompletionRequiredErrorBodyWithEmailCompletionToken,
+    EmailDomainNotDeliverableErrorBody,
+    EmailNotAvailableErrorBody,
+    EmailPasswordAuthDisabledErrorBody,
     EmailVerificationCreated,
     EmailVerificationCreatedData,
+    EmailVerificationRequiredErrorBody,
+    EntityNotFoundErrorBody,
+    ErrorBody,
+    ErrorBodyWithCode,
+    ErrorBodyWithCodeErrors,
+    ErrorBodyWithCodeFieldError,
+    ErrorBodyWithCodeFieldErrors,
+    ErrorBodyWithCodeInstancePathError,
+    ErrorBodyWithCodeInstancePathErrors,
+    ErrorBodyWithCodeStatusCode,
+    ErrorBodyWithConstraintsPropertyError,
+    ErrorBodyWithConstraintsPropertyErrors,
+    ErrorBodyWithError,
+    ErrorBodyWithErrorMessageList,
+    ErrorBodyWithMessageOrMessageList,
     ErrorResponse,
     EventContext,
     EventContextActor,
     EventContextGoogleAnalyticsSession,
+    ExpiredTokenOAuthErrorBody,
+    ExternalAuthSessionAlreadyCompletedErrorBody,
+    ExternalIdAlreadyUsedErrorBody,
+    ExtraAttributesRequiredOAuthErrorBody,
+    FeatureFlagsFlagCreated,
+    FeatureFlagsFlagCreatedContext,
+    FeatureFlagsFlagCreatedContextActor,
+    FeatureFlagsFlagCreatedData,
+    FeatureFlagsFlagCreatedDataOwner,
+    FeatureFlagsFlagDeleted,
+    FeatureFlagsFlagDeletedContext,
+    FeatureFlagsFlagDeletedContextActor,
+    FeatureFlagsFlagDeletedData,
+    FeatureFlagsFlagDeletedDataOwner,
+    FeatureFlagsFlagRuleCreated,
+    FeatureFlagsFlagRuleCreatedContext,
+    FeatureFlagsFlagRuleCreatedContextActor,
+    FeatureFlagsFlagRuleDeleted,
+    FeatureFlagsFlagRuleDeletedContext,
+    FeatureFlagsFlagRuleDeletedContextActor,
+    FeatureFlagsFlagRuleUpdated,
+    FeatureFlagsFlagRuleUpdatedContext,
+    FeatureFlagsFlagRuleUpdatedContextActor,
+    FeatureFlagsFlagRuleUpdatedContextPreviousAttribute,
+    FeatureFlagsFlagRuleUpdatedContextPreviousAttributeData,
+    FeatureFlagsFlagTargetCreated,
+    FeatureFlagsFlagTargetCreatedContext,
+    FeatureFlagsFlagTargetCreatedContextActor,
+    FeatureFlagsFlagTargetDeleted,
+    FeatureFlagsFlagTargetDeletedContext,
+    FeatureFlagsFlagTargetDeletedContextActor,
+    FeatureFlagsFlagUpdated,
+    FeatureFlagsFlagUpdatedContext,
+    FeatureFlagsFlagUpdatedContextActor,
+    FeatureFlagsFlagUpdatedContextPreviousAttribute,
+    FeatureFlagsFlagUpdatedContextPreviousAttributeData,
+    FeatureFlagsFlagUpdatedContextPreviousAttributeDataOwner,
+    FeatureFlagsFlagUpdatedData,
+    FeatureFlagsFlagUpdatedDataOwner,
     FlagCreated,
     FlagCreatedContext,
     FlagCreatedContextActor,
@@ -170,6 +257,7 @@ from workos.common.models import (
     FlagDeletedContextActor,
     FlagDeletedData,
     FlagDeletedDataOwner,
+    FlagRule,
     FlagRuleUpdated,
     FlagRuleUpdatedContext,
     FlagRuleUpdatedContextActor,
@@ -184,6 +272,9 @@ from workos.common.models import (
     FlagRuleUpdatedContextPreviousAttributeData,
     FlagRuleUpdatedData,
     FlagRuleUpdatedDataOwner,
+    FlagTarget,
+    FlagTargetWithRuleId,
+    FlagTargetWithValueType,
     FlagUpdated,
     FlagUpdatedContext,
     FlagUpdatedContextActor,
@@ -199,16 +290,51 @@ from workos.common.models import (
     GroupMemberRemoved,
     GroupMemberRemovedData,
     GroupUpdated,
+    IdpMetadataFetchFailedErrorBody,
+    InvalidClientOAuthErrorBody,
+    InvalidConnectionOAuthErrorBody,
+    InvalidCredentialsErrorBody,
+    InvalidEmailErrorBody,
+    InvalidGrantOAuthErrorBody,
+    InvalidIdpSSOUrlErrorBody,
+    InvalidLinkAuthorizationCodeOAuthErrorBody,
+    InvalidLocaleErrorBody,
+    InvalidMetadataErrorBody,
+    InvalidOneTimeCodeErrorBody,
+    InvalidOrganizationIdErrorBody,
+    InvalidPasswordHashErrorBody,
+    InvalidPendingAuthenticationTokenErrorBody,
+    InvalidProfileOAuthErrorBody,
+    InvalidRefreshTokenErrorBody,
+    InvalidRequestOAuthErrorBody,
+    InvalidRequestParametersErrorBody,
+    InvalidRequestParametersErrorBodyWithErrors,
+    InvalidRoleErrorBody,
+    InvalidUrlErrorBody,
     InvitationAccepted,
     InvitationAcceptedData,
+    InvitationCannotBeUsedForEmailOAuthErrorBody,
     InvitationCreated,
     InvitationCreatedData,
+    InvitationInvalidOAuthErrorBody,
     InvitationResent,
     InvitationResentData,
     InvitationRevoked,
     InvitationRevokedData,
     MagicAuthCreated,
     MagicAuthCreatedData,
+    MFAChallengeErrorBody,
+    MFAEnrollmentErrorBody,
+    MFAEnrollmentOAuthErrorBody,
+    MultipleRolesNotEnabledErrorBody,
+    MustUseSSOForSelectedOrganizationMessageErrorBody,
+    OAuthDataIntegrationVendedCredential,
+    OAuthErrorBody,
+    OneTimeCodeExpiredErrorBody,
+    OneTimeCodePreviouslyUsedErrorBody,
+    OneTimeCodeTooManyAttemptsErrorBody,
+    OrganizationAuthenticationMethodsRequiredOAuthErrorBody,
+    OrganizationConnectedAccountImportErrorBody,
     OrganizationCreated,
     OrganizationCreatedData,
     OrganizationCreatedDataDomain,
@@ -230,27 +356,38 @@ from workos.common.models import (
     OrganizationMembershipCreatedData,
     OrganizationMembershipDeleted,
     OrganizationMembershipDeletedData,
+    OrganizationMembershipNotFoundOAuthErrorBody,
     OrganizationMembershipUpdated,
     OrganizationMembershipUpdatedData,
+    OrganizationNotFoundOAuthErrorBody,
     OrganizationRoleCreated,
     OrganizationRoleCreatedData,
     OrganizationRoleDeleted,
     OrganizationRoleDeletedData,
     OrganizationRoleUpdated,
     OrganizationRoleUpdatedData,
+    OrganizationSelectionRequiredErrorBody,
+    OrganizationSelectionRequiredErrorBodyWithOrganization,
+    OrganizationSelectionRequiredErrorBodyWithOrganizations,
     OrganizationUpdated,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
+    PasskeyProgressiveEnrollmentErrorBody,
+    PasswordAndPasswordHashProvidedErrorBody,
+    PasswordAndPasswordHashTypeProvidedErrorBody,
     PasswordResetCreated,
     PasswordResetCreatedData,
     PasswordResetSucceeded,
     PasswordResetSucceededData,
+    PasswordSaltPositionRequiresPasswordHashErrorBody,
+    PasswordStrengthErrorErrorBodyWithErrors,
     PermissionCreated,
     PermissionCreatedData,
     PermissionDeleted,
     PermissionDeletedData,
     PermissionUpdated,
     PermissionUpdatedData,
+    PhoneNumberRequiredErrorBody,
     PipeConnectedAccount,
     PipesAccountConnectionAddFailed,
     PipesAccountConnectionAddFailedData,
@@ -264,8 +401,14 @@ from workos.common.models import (
     PipesConnectedAccountConnectionFailedData,
     PipesConnectedAccountDisconnected,
     PipesConnectedAccountReauthorizationNeeded,
+    PkceNotSupportedOAuthErrorBody,
+    PolicyDeniedErrorBody,
     RadarChallengeCreated,
     RadarChallengeCreatedData,
+    RadarChallengeErrorBody,
+    RadarSignUpChallengeErrorBody,
+    RadarSmsSignInChallengeErrorBody,
+    RateLimitExceededErrorBodyWithRetryAfter,
     ResourceExportCompleted,
     ResourceExportCompletedData,
     ResourceExportCreated,
@@ -286,11 +429,30 @@ from workos.common.models import (
     SessionRevoked,
     SessionRevokedData,
     SessionRevokedDataImpersonator,
+    SignUpNotAllowedOAuthErrorBody,
+    SlowDownOAuthErrorBody,
+    SmsChallengeQuotaReachedErrorBody,
+    SmsChallengeRateLimitedErrorBody,
+    SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken,
+    SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,
+    TokenTooBigOAuthErrorBody,
+    TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter,
+    TooManyRequestsOAuthErrorBody,
+    UnauthorizedClientOAuthErrorBody,
+    UnauthorizedErrorBody,
+    UpdateAuditLogsRetentionWithRetentionPeriod,
+    UpdateAuditLogsRetentionWithRetentionPeriodInDays,
+    UpdateUserOrganizationMembershipWithRoleSlug,
+    UpdateUserOrganizationMembershipWithRoleSlugs,
     UserApiKeyCreatedDataOwner,
     UserApiKeyRevokedDataOwner,
     UserApiKeyUpdatedDataOwner,
+    UserConnectedAccountImportErrorBody,
+    UserConsentOptionsNotSupportedErrorBody,
     UserCreated,
+    UserCreationErrorErrorBodyWithErrors,
     UserDeleted,
+    UserMismatchErrorBody,
     UserUpdated,
     VaultByokKeyDeleted,
     VaultByokKeyDeletedData,
@@ -318,6 +480,7 @@ from workos.common.models import (
     VaultMetadataReadData,
     VaultNamesListed,
     VaultNamesListedData,
+    VerificationIdRequiredErrorBody,
     WaitlistUser,
     WaitlistUserApproved,
     WaitlistUserCreated,
@@ -326,6 +489,2212 @@ from workos.common.models import (
 
 
 class TestModelRoundTrip:
+    def test_update_audit_logs_retention_with_retention_period_round_trip(self):
+        data = load_fixture("update_audit_logs_retention_with_retention_period.json")
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_audit_logs_retention_with_retention_period_minimal_payload(self):
+        data = {"retention_period": "1_MONTH"}
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["retention_period"] == data["retention_period"]
+
+    def test_update_audit_logs_retention_with_retention_period_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "retention_period": "unexpected_update_audit_logs_retention_with_retention_period_retention_period"
+        }
+        instance = UpdateAuditLogsRetentionWithRetentionPeriod.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_update_audit_logs_retention_with_retention_period_in_days_round_trip(self):
+        data = load_fixture(
+            "update_audit_logs_retention_with_retention_period_in_days.json"
+        )
+        instance = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_update_audit_logs_retention_with_retention_period_in_days_minimal_payload(
+        self,
+    ):
+        data = {"retention_period_in_days": 30}
+        instance = UpdateAuditLogsRetentionWithRetentionPeriodInDays.from_dict(data)
+        serialized = instance.to_dict()
+        assert (
+            serialized["retention_period_in_days"] == data["retention_period_in_days"]
+        )
+
+    def test_update_user_organization_membership_with_role_slug_round_trip(self):
+        data = load_fixture("update_user_organization_membership_with_role_slug.json")
+        instance = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_user_organization_membership_with_role_slug_minimal_payload(self):
+        data = {"role_slug": "admin"}
+        instance = UpdateUserOrganizationMembershipWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_update_user_organization_membership_with_role_slugs_round_trip(self):
+        data = load_fixture("update_user_organization_membership_with_role_slugs.json")
+        instance = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_update_user_organization_membership_with_role_slugs_minimal_payload(self):
+        data = {"role_slugs": ["admin"]}
+        instance = UpdateUserOrganizationMembershipWithRoleSlugs.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slugs"] == data["role_slugs"]
+
+    def test_error_body_with_code_round_trip(self):
+        data = load_fixture("error_body_with_code.json")
+        instance = ErrorBodyWithCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCode.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_minimal_payload(self):
+        data = {"code": "action_denied", "message": "Request could not be processed."}
+        instance = ErrorBodyWithCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_error_body_with_error_round_trip(self):
+        data = load_fixture("error_body_with_error.json")
+        instance = ErrorBodyWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_error_minimal_payload(self):
+        data = {
+            "error": "Bad Request",
+            "message": 'Claim "sub" is reserved and cannot be used.',
+        }
+        instance = ErrorBodyWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["message"] == data["message"]
+
+    def test_error_body_round_trip(self):
+        data = load_fixture("error_body.json")
+        instance = ErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_minimal_payload(self):
+        data = {"message": "Request could not be processed."}
+        instance = ErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_organization_selection_required_error_body_with_organizations_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_selection_required_error_body_with_organizations.json"
+        )
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_error_body_with_organizations_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_selection_required",
+            "message": "Request could not be processed.",
+            "organizations": [
+                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+            ],
+        }
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["organizations"] == data["organizations"]
+
+    def test_organization_selection_required_error_body_with_organization_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_selection_required_error_body_with_organization.json"
+        )
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_error_body_with_organization_minimal_payload(
+        self,
+    ):
+        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_error_body_with_code_field_errors_round_trip(self):
+        data = load_fixture("error_body_with_code_field_errors.json")
+        instance = ErrorBodyWithCodeFieldErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeFieldErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_field_errors_minimal_payload(self):
+        data = {
+            "message": "Validation failed.",
+            "errors": [{"code": "required", "field": "event.action"}],
+        }
+        instance = ErrorBodyWithCodeFieldErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_error_body_with_code_field_error_round_trip(self):
+        data = load_fixture("error_body_with_code_field_error.json")
+        instance = ErrorBodyWithCodeFieldError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeFieldError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_field_error_minimal_payload(self):
+        data = {"code": "required", "field": "event.action"}
+        instance = ErrorBodyWithCodeFieldError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["field"] == data["field"]
+
+    def test_error_body_with_code_instance_path_errors_round_trip(self):
+        data = load_fixture("error_body_with_code_instance_path_errors.json")
+        instance = ErrorBodyWithCodeInstancePathErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeInstancePathErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_instance_path_errors_minimal_payload(self):
+        data = {
+            "errors": [{"instancePath": "/targets"}],
+            "message": "Invalid Audit Log event.",
+            "code": "invalid_audit_log_event",
+        }
+        instance = ErrorBodyWithCodeInstancePathErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["errors"] == data["errors"]
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+
+    def test_error_body_with_code_instance_path_error_round_trip(self):
+        data = load_fixture("error_body_with_code_instance_path_error.json")
+        instance = ErrorBodyWithCodeInstancePathError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeInstancePathError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_instance_path_error_minimal_payload(self):
+        data = {"instancePath": "/targets"}
+        instance = ErrorBodyWithCodeInstancePathError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["instancePath"] == data["instancePath"]
+
+    def test_error_body_with_error_message_list_round_trip(self):
+        data = load_fixture("error_body_with_error_message_list.json")
+        instance = ErrorBodyWithErrorMessageList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithErrorMessageList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_error_message_list_minimal_payload(self):
+        data = {"message": ["Invalid date range"], "error": "Bad Request"}
+        instance = ErrorBodyWithErrorMessageList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["error"] == data["error"]
+
+    def test_too_many_failed_verification_attempts_error_body_with_retry_after_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "too_many_failed_verification_attempts_error_body_with_retry_after.json"
+        )
+        instance = TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_too_many_failed_verification_attempts_error_body_with_retry_after_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "too_many_failed_verification_attempts",
+            "message": "Request could not be processed.",
+            "retry_after": 900,
+        }
+        instance = TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["retry_after"] == data["retry_after"]
+
+    def test_rate_limit_exceeded_error_body_with_retry_after_round_trip(self):
+        data = load_fixture("rate_limit_exceeded_error_body_with_retry_after.json")
+        instance = RateLimitExceededErrorBodyWithRetryAfter.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RateLimitExceededErrorBodyWithRetryAfter.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_rate_limit_exceeded_error_body_with_retry_after_minimal_payload(self):
+        data = {
+            "code": "rate_limit_exceeded",
+            "message": "Request could not be processed.",
+            "retry_after": 60,
+        }
+        instance = RateLimitExceededErrorBodyWithRetryAfter.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["retry_after"] == data["retry_after"]
+
+    def test_error_body_with_constraints_property_errors_round_trip(self):
+        data = load_fixture("error_body_with_constraints_property_errors.json")
+        instance = ErrorBodyWithConstraintsPropertyErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithConstraintsPropertyErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_constraints_property_errors_minimal_payload(self):
+        data = {}
+        instance = ErrorBodyWithConstraintsPropertyErrors.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_error_body_with_constraints_property_errors_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ErrorBodyWithConstraintsPropertyErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert "message" not in serialized
+        assert "errors" not in serialized
+
+    def test_error_body_with_constraints_property_error_round_trip(self):
+        data = load_fixture("error_body_with_constraints_property_error.json")
+        instance = ErrorBodyWithConstraintsPropertyError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithConstraintsPropertyError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_constraints_property_error_minimal_payload(self):
+        data = {}
+        instance = ErrorBodyWithConstraintsPropertyError.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_error_body_with_constraints_property_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ErrorBodyWithConstraintsPropertyError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "property" not in serialized
+        assert "constraints" not in serialized
+
+    def test_error_body_with_code_status_code_round_trip(self):
+        data = load_fixture("error_body_with_code_status_code.json")
+        instance = ErrorBodyWithCodeStatusCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeStatusCode.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_status_code_minimal_payload(self):
+        data = {}
+        instance = ErrorBodyWithCodeStatusCode.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_error_body_with_code_status_code_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ErrorBodyWithCodeStatusCode.from_dict(data)
+        serialized = instance.to_dict()
+        assert "message" not in serialized
+        assert "code" not in serialized
+        assert "statusCode" not in serialized
+
+    def test_connection_finish_error_body_round_trip(self):
+        data = load_fixture("connection_finish_error_body.json")
+        instance = ConnectionFinishErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionFinishErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_finish_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_connect_code",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionFinishErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_finish_error_body_round_trips_unknown_enum_values(self):
+        data = {
+            "code": "unexpected_connection_finish_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionFinishErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_error_body_with_message_or_message_list_round_trip(self):
+        data = load_fixture("error_body_with_message_or_message_list.json")
+        instance = ErrorBodyWithMessageOrMessageList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithMessageOrMessageList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_message_or_message_list_minimal_payload(self):
+        data = {"message": "test_message"}
+        instance = ErrorBodyWithMessageOrMessageList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_url_request_error_body_round_trip(self):
+        data = load_fixture("authorization_url_request_error_body.json")
+        instance = AuthorizationUrlRequestErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationUrlRequestErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_url_request_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_return_to",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationUrlRequestErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_url_request_error_body_round_trips_unknown_enum_values(self):
+        data = {
+            "code": "unexpected_authorization_url_request_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationUrlRequestErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authorization_url_not_found_error_body_round_trip(self):
+        data = load_fixture("authorization_url_not_found_error_body.json")
+        instance = AuthorizationUrlNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationUrlNotFoundErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_url_not_found_error_body_minimal_payload(self):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationUrlNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authorization_url_not_found_error_body_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_authorization_url_not_found_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthorizationUrlNotFoundErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_auth_method_mismatch_error_body_round_trip(self):
+        data = load_fixture("auth_method_mismatch_error_body.json")
+        instance = AuthMethodMismatchErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthMethodMismatchErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_auth_method_mismatch_error_body_minimal_payload(self):
+        data = {
+            "code": "auth_method_mismatch",
+            "message": "This installation uses oauth authentication. Use the POST /:slug/token endpoint instead.",
+        }
+        instance = AuthMethodMismatchErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_account_selection_required_error_body_round_trip(self):
+        data = load_fixture("account_selection_required_error_body.json")
+        instance = AccountSelectionRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AccountSelectionRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_account_selection_required_error_body_minimal_payload(self):
+        data = {
+            "code": "account_selection_required",
+            "message": "Several connected accounts match this user for this provider. Name one with a connected account id.",
+        }
+        instance = AccountSelectionRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_creation_not_found_error_body_round_trip(self):
+        data = load_fixture("connection_creation_not_found_error_body.json")
+        instance = ConnectionCreationNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreationNotFoundErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_creation_not_found_error_body_minimal_payload(self):
+        data = {
+            "code": "multiple_connections_unavailable",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreationNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_creation_not_found_error_body_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_connection_creation_not_found_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreationNotFoundErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_creation_conflict_error_body_round_trip(self):
+        data = load_fixture("connection_creation_conflict_error_body.json")
+        instance = ConnectionCreationConflictErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCreationConflictErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_creation_conflict_error_body_minimal_payload(self):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreationConflictErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_creation_conflict_error_body_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_connection_creation_conflict_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCreationConflictErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_error_body_with_code_errors_round_trip(self):
+        data = load_fixture("error_body_with_code_errors.json")
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_errors_minimal_payload(self):
+        data = {
+            "code": "account_selection_required",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_error_body_with_code_errors_round_trips_unknown_enum_values(self):
+        data = {
+            "code": "unexpected_error_body_with_code_errors_code",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_connected_account_import_error_body_round_trip(self):
+        data = load_fixture("organization_connected_account_import_error_body.json")
+        instance = OrganizationConnectedAccountImportErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationConnectedAccountImportErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_connected_account_import_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_token_combination",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationConnectedAccountImportErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_connected_account_import_error_body_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_organization_connected_account_import_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationConnectedAccountImportErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_connected_account_import_error_body_round_trip(self):
+        data = load_fixture("user_connected_account_import_error_body.json")
+        instance = UserConnectedAccountImportErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConnectedAccountImportErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_connected_account_import_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_refresh_token",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConnectedAccountImportErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_connected_account_import_error_body_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "code": "unexpected_user_connected_account_import_error_body_code",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConnectedAccountImportErrorBody.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_oauth_error_body_round_trip(self):
+        data = load_fixture("oauth_error_body.json")
+        instance = OAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "access_denied",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = OAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_sub_resource_scoped_role_not_allowed_error_body_with_role_slug_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sub_resource_scoped_role_not_allowed_error_body_with_role_slug.json"
+        )
+        instance = SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sub_resource_scoped_role_not_allowed_error_body_with_role_slug_minimal_payload(
+        self,
+    ):
+        data = {
+            "message": "Sub-resource scoped roles are not allowed for this operation.",
+            "code": "sub_resource_scoped_role_not_allowed",
+            "role_slug": "admin",
+        }
+        instance = SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+        assert serialized["code"] == data["code"]
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_email_completion_required_error_body_with_email_completion_token_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_completion_required_error_body_with_email_completion_token.json"
+        )
+        instance = EmailCompletionRequiredErrorBodyWithEmailCompletionToken.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailCompletionRequiredErrorBodyWithEmailCompletionToken.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_completion_required_error_body_with_email_completion_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "email_completion_required",
+            "message": "Request could not be processed.",
+            "email_completion_token": "JZ8kQ2mR5vT7wX1yA3bC6dE9f",
+        }
+        instance = EmailCompletionRequiredErrorBodyWithEmailCompletionToken.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["email_completion_token"] == data["email_completion_token"]
+
+    def test_unauthorized_error_body_round_trip(self):
+        data = load_fixture("unauthorized_error_body.json")
+        instance = UnauthorizedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UnauthorizedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_unauthorized_error_body_minimal_payload(self):
+        data = {"error": "Unauthorized"}
+        instance = UnauthorizedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+
+    def test_external_auth_session_already_completed_error_body_round_trip(self):
+        data = load_fixture("external_auth_session_already_completed_error_body.json")
+        instance = ExternalAuthSessionAlreadyCompletedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalAuthSessionAlreadyCompletedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_auth_session_already_completed_error_body_minimal_payload(self):
+        data = {
+            "code": "external_auth_session_already_completed",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalAuthSessionAlreadyCompletedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_consent_options_not_supported_error_body_round_trip(self):
+        data = load_fixture("user_consent_options_not_supported_error_body.json")
+        instance = UserConsentOptionsNotSupportedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserConsentOptionsNotSupportedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_consent_options_not_supported_error_body_minimal_payload(self):
+        data = {
+            "code": "user_consent_options_not_supported",
+            "message": "Request could not be processed.",
+        }
+        instance = UserConsentOptionsNotSupportedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_change_not_allowed_error_body_round_trip(self):
+        data = load_fixture("email_change_not_allowed_error_body.json")
+        instance = EmailChangeNotAllowedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeNotAllowedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_change_not_allowed_error_body_minimal_payload(self):
+        data = {
+            "code": "email_change_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailChangeNotAllowedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_not_available_error_body_round_trip(self):
+        data = load_fixture("email_not_available_error_body.json")
+        instance = EmailNotAvailableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailNotAvailableErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_not_available_error_body_minimal_payload(self):
+        data = {
+            "code": "email_not_available",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailNotAvailableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_email_error_body_round_trip(self):
+        data = load_fixture("invalid_email_error_body.json")
+        instance = InvalidEmailErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidEmailErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_email_error_body_minimal_payload(self):
+        data = {"code": "invalid_email", "message": "Request could not be processed."}
+        instance = InvalidEmailErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_already_in_use_error_body_round_trip(self):
+        data = load_fixture("email_already_in_use_error_body.json")
+        instance = EmailAlreadyInUseErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailAlreadyInUseErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_already_in_use_error_body_minimal_payload(self):
+        data = {
+            "code": "email_already_in_use",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailAlreadyInUseErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_already_claimed_error_body_round_trip(self):
+        data = load_fixture("already_claimed_error_body.json")
+        instance = AlreadyClaimedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AlreadyClaimedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_already_claimed_error_body_minimal_payload(self):
+        data = {"code": "already_claimed", "message": "Request could not be processed."}
+        instance = AlreadyClaimedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_sms_challenge_rate_limited_error_body_round_trip(self):
+        data = load_fixture("sms_challenge_rate_limited_error_body.json")
+        instance = SmsChallengeRateLimitedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SmsChallengeRateLimitedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sms_challenge_rate_limited_error_body_minimal_payload(self):
+        data = {
+            "code": "sms_challenge_rate_limited",
+            "message": "Request could not be processed.",
+        }
+        instance = SmsChallengeRateLimitedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_sms_challenge_quota_reached_error_body_round_trip(self):
+        data = load_fixture("sms_challenge_quota_reached_error_body.json")
+        instance = SmsChallengeQuotaReachedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SmsChallengeQuotaReachedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sms_challenge_quota_reached_error_body_minimal_payload(self):
+        data = {
+            "code": "sms_challenge_quota_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = SmsChallengeQuotaReachedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_idp_metadata_fetch_failed_error_body_round_trip(self):
+        data = load_fixture("idp_metadata_fetch_failed_error_body.json")
+        instance = IdpMetadataFetchFailedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = IdpMetadataFetchFailedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_idp_metadata_fetch_failed_error_body_minimal_payload(self):
+        data = {
+            "code": "idp_metadata_fetch_failed",
+            "message": "Request could not be processed.",
+        }
+        instance = IdpMetadataFetchFailedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_could_not_be_verified_error_body_round_trip(self):
+        data = load_fixture("connection_could_not_be_verified_error_body.json")
+        instance = ConnectionCouldNotBeVerifiedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionCouldNotBeVerifiedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_could_not_be_verified_error_body_minimal_payload(self):
+        data = {
+            "code": "connection_could_not_be_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionCouldNotBeVerifiedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_idp_sso_url_error_body_round_trip(self):
+        data = load_fixture("invalid_idp_sso_url_error_body.json")
+        instance = InvalidIdpSSOUrlErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidIdpSSOUrlErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_idp_sso_url_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_idp_sso_url",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidIdpSSOUrlErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connection_type_not_updatable_error_body_round_trip(self):
+        data = load_fixture("connection_type_not_updatable_error_body.json")
+        instance = ConnectionTypeNotUpdatableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionTypeNotUpdatableErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_type_not_updatable_error_body_minimal_payload(self):
+        data = {
+            "code": "connection_type_not_updatable",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectionTypeNotUpdatableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_connected_account_limit_reached_error_body_round_trip(self):
+        data = load_fixture("connected_account_limit_reached_error_body.json")
+        instance = ConnectedAccountLimitReachedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectedAccountLimitReachedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connected_account_limit_reached_error_body_minimal_payload(self):
+        data = {
+            "code": "connected_account_limit_reached",
+            "message": "Request could not be processed.",
+        }
+        instance = ConnectedAccountLimitReachedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_entity_not_found_error_body_round_trip(self):
+        data = load_fixture("entity_not_found_error_body.json")
+        instance = EntityNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EntityNotFoundErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_entity_not_found_error_body_minimal_payload(self):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = EntityNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_error_body_with_errors_round_trip(self):
+        data = load_fixture("invalid_request_parameters_error_body_with_errors.json")
+        instance = InvalidRequestParametersErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersErrorBodyWithErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_error_body_with_errors_minimal_payload(self):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = InvalidRequestParametersErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_invalid_refresh_token_error_body_round_trip(self):
+        data = load_fixture("invalid_refresh_token_error_body.json")
+        instance = InvalidRefreshTokenErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRefreshTokenErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_refresh_token_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_refresh_token",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidRefreshTokenErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invitation_invalid_oauth_error_body_round_trip(self):
+        data = load_fixture("invitation_invalid_oauth_error_body.json")
+        instance = InvitationInvalidOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationInvalidOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_invalid_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invitation_invalid",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvitationInvalidOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_authentication_method_not_allowed_oauth_error_body_round_trip(self):
+        data = load_fixture("authentication_method_not_allowed_oauth_error_body.json")
+        instance = AuthenticationMethodNotAllowedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMethodNotAllowedOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_method_not_allowed_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "authentication_method_not_allowed",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = AuthenticationMethodNotAllowedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_sign_up_not_allowed_oauth_error_body_round_trip(self):
+        data = load_fixture("sign_up_not_allowed_oauth_error_body.json")
+        instance = SignUpNotAllowedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SignUpNotAllowedOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sign_up_not_allowed_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "sign_up_not_allowed",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = SignUpNotAllowedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_email_domain_not_deliverable_error_body_round_trip(self):
+        data = load_fixture("email_domain_not_deliverable_error_body.json")
+        instance = EmailDomainNotDeliverableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailDomainNotDeliverableErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_domain_not_deliverable_error_body_minimal_payload(self):
+        data = {
+            "code": "email_domain_not_deliverable",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailDomainNotDeliverableErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_request_parameters_error_body_round_trip(self):
+        data = load_fixture("invalid_request_parameters_error_body.json")
+        instance = InvalidRequestParametersErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestParametersErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_parameters_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_request_parameters",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidRequestParametersErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_role_error_body_round_trip(self):
+        data = load_fixture("invalid_role_error_body.json")
+        instance = InvalidRoleErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRoleErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_role_error_body_minimal_payload(self):
+        data = {"code": "invalid_role", "message": "Request could not be processed."}
+        instance = InvalidRoleErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_multiple_roles_not_enabled_error_body_round_trip(self):
+        data = load_fixture("multiple_roles_not_enabled_error_body.json")
+        instance = MultipleRolesNotEnabledErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MultipleRolesNotEnabledErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_multiple_roles_not_enabled_error_body_minimal_payload(self):
+        data = {
+            "code": "multiple_roles_not_enabled",
+            "message": "Request could not be processed.",
+        }
+        instance = MultipleRolesNotEnabledErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_strength_error_error_body_with_errors_round_trip(self):
+        data = load_fixture("password_strength_error_error_body_with_errors.json")
+        instance = PasswordStrengthErrorErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordStrengthErrorErrorBodyWithErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_strength_error_error_body_with_errors_minimal_payload(self):
+        data = {
+            "code": "password_strength_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = PasswordStrengthErrorErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_user_creation_error_error_body_with_errors_round_trip(self):
+        data = load_fixture("user_creation_error_error_body_with_errors.json")
+        instance = UserCreationErrorErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreationErrorErrorBodyWithErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_creation_error_error_body_with_errors_minimal_payload(self):
+        data = {
+            "code": "user_creation_error",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = UserCreationErrorErrorBodyWithErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_invalid_password_hash_error_body_round_trip(self):
+        data = load_fixture("invalid_password_hash_error_body.json")
+        instance = InvalidPasswordHashErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidPasswordHashErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_password_hash_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidPasswordHashErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_provided_error_body_round_trip(self):
+        data = load_fixture("password_and_password_hash_provided_error_body.json")
+        instance = PasswordAndPasswordHashProvidedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashProvidedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_provided_error_body_minimal_payload(self):
+        data = {
+            "code": "password_and_password_hash_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashProvidedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_and_password_hash_type_provided_error_body_round_trip(self):
+        data = load_fixture("password_and_password_hash_type_provided_error_body.json")
+        instance = PasswordAndPasswordHashTypeProvidedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordAndPasswordHashTypeProvidedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_and_password_hash_type_provided_error_body_minimal_payload(self):
+        data = {
+            "code": "password_and_password_hash_type_provided",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordAndPasswordHashTypeProvidedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_password_salt_position_requires_password_hash_error_body_round_trip(self):
+        data = load_fixture(
+            "password_salt_position_requires_password_hash_error_body.json"
+        )
+        instance = PasswordSaltPositionRequiresPasswordHashErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordSaltPositionRequiresPasswordHashErrorBody.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_salt_position_requires_password_hash_error_body_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "password_salt_position_requires_password_hash",
+            "message": "Request could not be processed.",
+        }
+        instance = PasswordSaltPositionRequiresPasswordHashErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_metadata_error_body_round_trip(self):
+        data = load_fixture("invalid_metadata_error_body.json")
+        instance = InvalidMetadataErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidMetadataErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_metadata_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_metadata",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidMetadataErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_already_verified_error_body_round_trip(self):
+        data = load_fixture("email_already_verified_error_body.json")
+        instance = EmailAlreadyVerifiedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailAlreadyVerifiedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_already_verified_error_body_minimal_payload(self):
+        data = {
+            "code": "email_already_verified",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailAlreadyVerifiedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_external_id_already_used_error_body_round_trip(self):
+        data = load_fixture("external_id_already_used_error_body.json")
+        instance = ExternalIdAlreadyUsedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExternalIdAlreadyUsedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_external_id_already_used_error_body_minimal_payload(self):
+        data = {
+            "code": "external_id_already_used",
+            "message": "Request could not be processed.",
+        }
+        instance = ExternalIdAlreadyUsedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_locale_error_body_round_trip(self):
+        data = load_fixture("invalid_locale_error_body.json")
+        instance = InvalidLocaleErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidLocaleErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_locale_error_body_minimal_payload(self):
+        data = {"code": "invalid_locale", "message": "Request could not be processed."}
+        instance = InvalidLocaleErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_organization_id_error_body_round_trip(self):
+        data = load_fixture("invalid_organization_id_error_body.json")
+        instance = InvalidOrganizationIdErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidOrganizationIdErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_organization_id_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_organization_id",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidOrganizationIdErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_code_challenge_not_found_error_body_round_trip(self):
+        data = load_fixture("code_challenge_not_found_error_body.json")
+        instance = CodeChallengeNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CodeChallengeNotFoundErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_code_challenge_not_found_error_body_minimal_payload(self):
+        data = {
+            "code": "code_challenge_not_found",
+            "message": "Request could not be processed.",
+        }
+        instance = CodeChallengeNotFoundErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_credentials_error_body_round_trip(self):
+        data = load_fixture("invalid_credentials_error_body.json")
+        instance = InvalidCredentialsErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidCredentialsErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_credentials_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_credentials",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidCredentialsErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_one_time_code_error_body_round_trip(self):
+        data = load_fixture("invalid_one_time_code_error_body.json")
+        instance = InvalidOneTimeCodeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidOneTimeCodeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_one_time_code_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_one_time_code",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidOneTimeCodeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_one_time_code_previously_used_error_body_round_trip(self):
+        data = load_fixture("one_time_code_previously_used_error_body.json")
+        instance = OneTimeCodePreviouslyUsedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OneTimeCodePreviouslyUsedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_one_time_code_previously_used_error_body_minimal_payload(self):
+        data = {
+            "code": "one_time_code_previously_used",
+            "message": "Request could not be processed.",
+        }
+        instance = OneTimeCodePreviouslyUsedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_one_time_code_expired_error_body_round_trip(self):
+        data = load_fixture("one_time_code_expired_error_body.json")
+        instance = OneTimeCodeExpiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OneTimeCodeExpiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_one_time_code_expired_error_body_minimal_payload(self):
+        data = {
+            "code": "one_time_code_expired",
+            "message": "Request could not be processed.",
+        }
+        instance = OneTimeCodeExpiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_one_time_code_too_many_attempts_error_body_round_trip(self):
+        data = load_fixture("one_time_code_too_many_attempts_error_body.json")
+        instance = OneTimeCodeTooManyAttemptsErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OneTimeCodeTooManyAttemptsErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_one_time_code_too_many_attempts_error_body_minimal_payload(self):
+        data = {
+            "code": "one_time_code_too_many_attempts",
+            "message": "Request could not be processed.",
+        }
+        instance = OneTimeCodeTooManyAttemptsErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_pending_authentication_token_error_body_round_trip(self):
+        data = load_fixture("invalid_pending_authentication_token_error_body.json")
+        instance = InvalidPendingAuthenticationTokenErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidPendingAuthenticationTokenErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_pending_authentication_token_error_body_minimal_payload(self):
+        data = {
+            "code": "invalid_pending_authentication_token",
+            "message": "Request could not be processed.",
+        }
+        instance = InvalidPendingAuthenticationTokenErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_user_mismatch_error_body_round_trip(self):
+        data = load_fixture("user_mismatch_error_body.json")
+        instance = UserMismatchErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserMismatchErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_mismatch_error_body_minimal_payload(self):
+        data = {"code": "user_mismatch", "message": "Request could not be processed."}
+        instance = UserMismatchErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_phone_number_required_error_body_round_trip(self):
+        data = load_fixture("phone_number_required_error_body.json")
+        instance = PhoneNumberRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PhoneNumberRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_phone_number_required_error_body_minimal_payload(self):
+        data = {
+            "code": "phone_number_required",
+            "message": "Request could not be processed.",
+        }
+        instance = PhoneNumberRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_verification_id_required_error_body_round_trip(self):
+        data = load_fixture("verification_id_required_error_body.json")
+        instance = VerificationIdRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VerificationIdRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_verification_id_required_error_body_minimal_payload(self):
+        data = {
+            "code": "verification_id_required",
+            "message": "Request could not be processed.",
+        }
+        instance = VerificationIdRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_client_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_client_oauth_error_body.json")
+        instance = InvalidClientOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidClientOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_client_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_client",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidClientOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_unauthorized_client_oauth_error_body_round_trip(self):
+        data = load_fixture("unauthorized_client_oauth_error_body.json")
+        instance = UnauthorizedClientOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UnauthorizedClientOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_unauthorized_client_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "unauthorized_client",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = UnauthorizedClientOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_profile_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_profile_oauth_error_body.json")
+        instance = InvalidProfileOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidProfileOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_profile_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_profile",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidProfileOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invitation_cannot_be_used_for_email_oauth_error_body_round_trip(self):
+        data = load_fixture("invitation_cannot_be_used_for_email_oauth_error_body.json")
+        instance = InvitationCannotBeUsedForEmailOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCannotBeUsedForEmailOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_cannot_be_used_for_email_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invitation_cannot_be_used_for_email",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvitationCannotBeUsedForEmailOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_connection_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_connection_oauth_error_body.json")
+        instance = InvalidConnectionOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidConnectionOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_connection_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_connection",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidConnectionOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_organization_authentication_methods_required_oauth_error_body_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_authentication_methods_required_oauth_error_body.json"
+        )
+        instance = OrganizationAuthenticationMethodsRequiredOAuthErrorBody.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationAuthenticationMethodsRequiredOAuthErrorBody.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_authentication_methods_required_oauth_error_body_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "organization_authentication_methods_required",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = OrganizationAuthenticationMethodsRequiredOAuthErrorBody.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_link_authorization_code_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_link_authorization_code_oauth_error_body.json")
+        instance = InvalidLinkAuthorizationCodeOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidLinkAuthorizationCodeOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_link_authorization_code_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_link_authorization_code",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidLinkAuthorizationCodeOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_extra_attributes_required_oauth_error_body_round_trip(self):
+        data = load_fixture("extra_attributes_required_oauth_error_body.json")
+        instance = ExtraAttributesRequiredOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExtraAttributesRequiredOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_extra_attributes_required_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "extra_attributes_required",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = ExtraAttributesRequiredOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_pkce_not_supported_oauth_error_body_round_trip(self):
+        data = load_fixture("pkce_not_supported_oauth_error_body.json")
+        instance = PkceNotSupportedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PkceNotSupportedOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pkce_not_supported_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "pkce_not_supported",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = PkceNotSupportedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_expired_token_oauth_error_body_round_trip(self):
+        data = load_fixture("expired_token_oauth_error_body.json")
+        instance = ExpiredTokenOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ExpiredTokenOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_expired_token_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "expired_token",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = ExpiredTokenOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_authorization_pending_oauth_error_body_round_trip(self):
+        data = load_fixture("authorization_pending_oauth_error_body.json")
+        instance = AuthorizationPendingOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPendingOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_pending_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "authorization_pending",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = AuthorizationPendingOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_access_denied_oauth_error_body_round_trip(self):
+        data = load_fixture("access_denied_oauth_error_body.json")
+        instance = AccessDeniedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AccessDeniedOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_access_denied_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "access_denied",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = AccessDeniedOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_slow_down_oauth_error_body_round_trip(self):
+        data = load_fixture("slow_down_oauth_error_body.json")
+        instance = SlowDownOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SlowDownOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_slow_down_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "slow_down",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = SlowDownOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_must_use_sso_for_selected_organization_message_error_body_round_trip(self):
+        data = load_fixture(
+            "must_use_sso_for_selected_organization_message_error_body.json"
+        )
+        instance = MustUseSSOForSelectedOrganizationMessageErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MustUseSSOForSelectedOrganizationMessageErrorBody.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_must_use_sso_for_selected_organization_message_error_body_minimal_payload(
+        self,
+    ):
+        data = {"message": "Must use SSO for selected organization"}
+        instance = MustUseSSOForSelectedOrganizationMessageErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["message"] == data["message"]
+
+    def test_invalid_grant_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_grant_oauth_error_body.json")
+        instance = InvalidGrantOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidGrantOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_grant_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_grant",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidGrantOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_request_oauth_error_body_round_trip(self):
+        data = load_fixture("invalid_request_oauth_error_body.json")
+        instance = InvalidRequestOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidRequestOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_request_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "invalid_request",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = InvalidRequestOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_organization_not_found_oauth_error_body_round_trip(self):
+        data = load_fixture("organization_not_found_oauth_error_body.json")
+        instance = OrganizationNotFoundOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationNotFoundOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_not_found_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "organization_not_found",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = OrganizationNotFoundOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_organization_membership_not_found_oauth_error_body_round_trip(self):
+        data = load_fixture("organization_membership_not_found_oauth_error_body.json")
+        instance = OrganizationMembershipNotFoundOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipNotFoundOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_not_found_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "organization_membership_not_found",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = OrganizationMembershipNotFoundOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_mfa_enrollment_oauth_error_body_round_trip(self):
+        data = load_fixture("mfa_enrollment_oauth_error_body.json")
+        instance = MFAEnrollmentOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MFAEnrollmentOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_mfa_enrollment_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "mfa_enrollment",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = MFAEnrollmentOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_token_too_big_oauth_error_body_round_trip(self):
+        data = load_fixture("token_too_big_oauth_error_body.json")
+        instance = TokenTooBigOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TokenTooBigOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_token_too_big_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "token_too_big",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = TokenTooBigOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_mfa_enrollment_error_body_round_trip(self):
+        data = load_fixture("mfa_enrollment_error_body.json")
+        instance = MFAEnrollmentErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MFAEnrollmentErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_mfa_enrollment_error_body_minimal_payload(self):
+        data = {"code": "mfa_enrollment", "message": "Request could not be processed."}
+        instance = MFAEnrollmentErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_mfa_challenge_error_body_round_trip(self):
+        data = load_fixture("mfa_challenge_error_body.json")
+        instance = MFAChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MFAChallengeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_mfa_challenge_error_body_minimal_payload(self):
+        data = {"code": "mfa_challenge", "message": "Request could not be processed."}
+        instance = MFAChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_method_not_allowed_error_body_round_trip(self):
+        data = load_fixture("authentication_method_not_allowed_error_body.json")
+        instance = AuthenticationMethodNotAllowedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMethodNotAllowedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_method_not_allowed_error_body_minimal_payload(self):
+        data = {
+            "code": "authentication_method_not_allowed",
+            "message": "Request could not be processed.",
+        }
+        instance = AuthenticationMethodNotAllowedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_verification_required_error_body_round_trip(self):
+        data = load_fixture("email_verification_required_error_body.json")
+        instance = EmailVerificationRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_required_error_body_minimal_payload(self):
+        data = {
+            "code": "email_verification_required",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailVerificationRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_email_password_auth_disabled_error_body_round_trip(self):
+        data = load_fixture("email_password_auth_disabled_error_body.json")
+        instance = EmailPasswordAuthDisabledErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailPasswordAuthDisabledErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_password_auth_disabled_error_body_minimal_payload(self):
+        data = {
+            "code": "email_password_auth_disabled",
+            "message": "Request could not be processed.",
+        }
+        instance = EmailPasswordAuthDisabledErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_organization_selection_required_error_body_round_trip(self):
+        data = load_fixture("organization_selection_required_error_body.json")
+        instance = OrganizationSelectionRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_error_body_minimal_payload(self):
+        data = {
+            "code": "organization_selection_required",
+            "message": "Request could not be processed.",
+        }
+        instance = OrganizationSelectionRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_passkey_progressive_enrollment_error_body_round_trip(self):
+        data = load_fixture("passkey_progressive_enrollment_error_body.json")
+        instance = PasskeyProgressiveEnrollmentErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasskeyProgressiveEnrollmentErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_passkey_progressive_enrollment_error_body_minimal_payload(self):
+        data = {
+            "code": "passkey_progressive_enrollment",
+            "message": "Request could not be processed.",
+        }
+        instance = PasskeyProgressiveEnrollmentErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_challenge_error_body_round_trip(self):
+        data = load_fixture("radar_challenge_error_body.json")
+        instance = RadarChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarChallengeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_challenge_error_body_minimal_payload(self):
+        data = {"code": "radar_challenge", "message": "Request could not be processed."}
+        instance = RadarChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_sign_up_challenge_error_body_round_trip(self):
+        data = load_fixture("radar_sign_up_challenge_error_body.json")
+        instance = RadarSignUpChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarSignUpChallengeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_sign_up_challenge_error_body_minimal_payload(self):
+        data = {
+            "code": "radar_sign_up_challenge",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarSignUpChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_radar_sms_sign_in_challenge_error_body_round_trip(self):
+        data = load_fixture("radar_sms_sign_in_challenge_error_body.json")
+        instance = RadarSmsSignInChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarSmsSignInChallengeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_sms_sign_in_challenge_error_body_minimal_payload(self):
+        data = {
+            "code": "radar_sms_sign_in_challenge",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarSmsSignInChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_application_consent_required_error_body_round_trip(self):
+        data = load_fixture("application_consent_required_error_body.json")
+        instance = ApplicationConsentRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationConsentRequiredErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_consent_required_error_body_minimal_payload(self):
+        data = {
+            "code": "application_consent_required",
+            "message": "Request could not be processed.",
+        }
+        instance = ApplicationConsentRequiredErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_policy_denied_error_body_round_trip(self):
+        data = load_fixture("policy_denied_error_body.json")
+        instance = PolicyDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PolicyDeniedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_policy_denied_error_body_minimal_payload(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = PolicyDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_action_denied_error_body_round_trip(self):
+        data = load_fixture("action_denied_error_body.json")
+        instance = ActionDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionDeniedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_denied_error_body_minimal_payload(self):
+        data = {"code": "action_denied", "message": "Request could not be processed."}
+        instance = ActionDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_daily_quota_exceeded_error_body_round_trip(self):
+        data = load_fixture("daily_quota_exceeded_error_body.json")
+        instance = DailyQuotaExceededErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DailyQuotaExceededErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_daily_quota_exceeded_error_body_minimal_payload(self):
+        data = {
+            "code": "daily_quota_exceeded",
+            "message": "Request could not be processed.",
+        }
+        instance = DailyQuotaExceededErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_too_many_requests_oauth_error_body_round_trip(self):
+        data = load_fixture("too_many_requests_oauth_error_body.json")
+        instance = TooManyRequestsOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = TooManyRequestsOAuthErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_too_many_requests_oauth_error_body_minimal_payload(self):
+        data = {
+            "error": "too_many_requests",
+            "error_description": "The request failed due to: invitation_invalid.",
+        }
+        instance = TooManyRequestsOAuthErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+
+    def test_invalid_url_error_body_round_trip(self):
+        data = load_fixture("invalid_url_error_body.json")
+        instance = InvalidUrlErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvalidUrlErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invalid_url_error_body_minimal_payload(self):
+        data = {"code": "invalid_url", "message": "Request could not be processed."}
+        instance = InvalidUrlErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
     def test_error_response_round_trip(self):
         data = load_fixture("error_response.json")
         instance = ErrorResponse.from_dict(data)
@@ -360,6 +2729,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
         }
@@ -375,6 +2745,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["application_type"] == data["application_type"]
         assert serialized["redirect_uris"] == data["redirect_uris"]
+        assert serialized["cors_origins"] == data["cors_origins"]
         assert serialized["uses_pkce"] == data["uses_pkce"]
         assert serialized["is_first_party"] == data["is_first_party"]
 
@@ -390,6 +2761,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
         }
@@ -410,6 +2782,7 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
             "application_type": "oauth",
             "redirect_uris": [{"uri": "https://example.com/callback", "default": True}],
+            "cors_origins": ["https://app.example.com"],
             "uses_pkce": True,
             "is_first_party": True,
             "was_dynamically_registered": True,
@@ -700,6 +3073,160 @@ class TestModelRoundTrip:
         }
         instance = DirectoryUser.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_flag_rule_round_trip(self):
+        data = load_fixture("flag_rule.json")
+        instance = FlagRule.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRule.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_minimal_payload(self):
+        data = {
+            "object": "flag_rule",
+            "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_slug": "new-checkout",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "target_type": None,
+            "position": 0,
+            "value_type": "boolean",
+            "value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagRule.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["flag_id"] == data["flag_id"]
+        assert serialized["flag_slug"] == data["flag_slug"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["target_type"] == data["target_type"]
+        assert serialized["position"] == data["position"]
+        assert serialized["value_type"] == data["value_type"]
+        assert serialized["value"] == data["value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_flag_rule_preserves_nullable_fields(self):
+        data = {
+            "object": "flag_rule",
+            "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_slug": "new-checkout",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "target_type": None,
+            "position": 0,
+            "value_type": "boolean",
+            "value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagRule.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["target_type"] is None
+
+    def test_flag_target_round_trip(self):
+        data = load_fixture("flag_target.json")
+        instance = FlagTarget.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTarget.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_target_minimal_payload(self):
+        data = {}
+        instance = FlagTarget.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_target_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = FlagTarget.from_dict(data)
+        serialized = instance.to_dict()
+        assert "object" not in serialized
+        assert "id" not in serialized
+        assert "flag_id" not in serialized
+        assert "flag_slug" not in serialized
+        assert "environment_id" not in serialized
+        assert "target_type" not in serialized
+        assert "target_id" not in serialized
+        assert "created_at" not in serialized
+        assert "updated_at" not in serialized
+        assert "rule_id" not in serialized
+        assert "value_type" not in serialized
+        assert "value" not in serialized
+
+    def test_flag_target_with_rule_id_round_trip(self):
+        data = load_fixture("flag_target_with_rule_id.json")
+        instance = FlagTargetWithRuleId.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetWithRuleId.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_target_with_rule_id_minimal_payload(self):
+        data = {
+            "object": "flag_target",
+            "id": "flag_target_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_slug": "new-checkout",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "target_type": "organization",
+            "target_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "rule_id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+        }
+        instance = FlagTargetWithRuleId.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["flag_id"] == data["flag_id"]
+        assert serialized["flag_slug"] == data["flag_slug"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["target_type"] == data["target_type"]
+        assert serialized["target_id"] == data["target_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["rule_id"] == data["rule_id"]
+
+    def test_flag_target_with_value_type_round_trip(self):
+        data = load_fixture("flag_target_with_value_type.json")
+        instance = FlagTargetWithValueType.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagTargetWithValueType.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_target_with_value_type_minimal_payload(self):
+        data = {
+            "object": "flag_target",
+            "id": "flag_target_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "flag_slug": "new-checkout",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "target_type": "organization",
+            "target_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "value_type": "boolean",
+            "value": True,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagTargetWithValueType.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["flag_id"] == data["flag_id"]
+        assert serialized["flag_slug"] == data["flag_slug"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["target_type"] == data["target_type"]
+        assert serialized["target_id"] == data["target_id"]
+        assert serialized["value_type"] == data["value_type"]
+        assert serialized["value"] == data["value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
 
     def test_pipe_connected_account_round_trip(self):
         data = load_fixture("pipe_connected_account.json")
@@ -7754,6 +10281,1084 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
+    def test_feature_flags_flag_created_round_trip(self):
+        data = load_fixture("feature_flags_flag_created.json")
+        instance = FeatureFlagsFlagCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag.created",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_created_data_round_trip(self):
+        data = load_fixture("feature_flags_flag_created_data.json")
+        instance = FeatureFlagsFlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_created_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_feature_flags_flag_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_feature_flags_flag_created_data_owner_round_trip(self):
+        data = load_fixture("feature_flags_flag_created_data_owner.json")
+        instance = FeatureFlagsFlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagCreatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_created_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_feature_flags_flag_created_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_feature_flags_flag_created_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_created_context.json")
+        instance = FeatureFlagsFlagCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_created_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_feature_flags_flag_created_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_created_context_actor.json")
+        instance = FeatureFlagsFlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_deleted_round_trip(self):
+        data = load_fixture("feature_flags_flag_deleted.json")
+        instance = FeatureFlagsFlagDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag.deleted",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_deleted_data_round_trip(self):
+        data = load_fixture("feature_flags_flag_deleted_data.json")
+        instance = FeatureFlagsFlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_deleted_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_feature_flags_flag_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_feature_flags_flag_deleted_data_owner_round_trip(self):
+        data = load_fixture("feature_flags_flag_deleted_data_owner.json")
+        instance = FeatureFlagsFlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagDeletedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_deleted_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_feature_flags_flag_deleted_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_feature_flags_flag_deleted_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_deleted_context.json")
+        instance = FeatureFlagsFlagDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_deleted_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_feature_flags_flag_deleted_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_deleted_context_actor.json")
+        instance = FeatureFlagsFlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_rule_created_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_created.json")
+        instance = FeatureFlagsFlagRuleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag_rule.created",
+            "data": {
+                "object": "flag_rule",
+                "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_slug": "new-checkout",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "target_type": "organization",
+                "position": 0,
+                "value_type": "boolean",
+                "value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagRuleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_rule_created_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_created_context.json")
+        instance = FeatureFlagsFlagRuleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_created_context_minimal_payload(self):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+
+    def test_feature_flags_flag_rule_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "actor" not in serialized
+
+    def test_feature_flags_flag_rule_created_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_created_context_actor.json")
+        instance = FeatureFlagsFlagRuleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_rule_created_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_rule_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_rule_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagRuleCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_rule_deleted_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_deleted.json")
+        instance = FeatureFlagsFlagRuleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag_rule.deleted",
+            "data": {
+                "object": "flag_rule",
+                "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_slug": "new-checkout",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "target_type": "organization",
+                "position": 0,
+                "value_type": "boolean",
+                "value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagRuleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_rule_deleted_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_deleted_context.json")
+        instance = FeatureFlagsFlagRuleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_deleted_context_minimal_payload(self):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+
+    def test_feature_flags_flag_rule_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "actor" not in serialized
+
+    def test_feature_flags_flag_rule_deleted_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_deleted_context_actor.json")
+        instance = FeatureFlagsFlagRuleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_rule_deleted_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_rule_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_rule_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagRuleDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_rule_updated_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_updated.json")
+        instance = FeatureFlagsFlagRuleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_updated_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag_rule.updated",
+            "data": {
+                "object": "flag_rule",
+                "id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_slug": "new-checkout",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "target_type": "organization",
+                "position": 0,
+                "value_type": "boolean",
+                "value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+                "previous_attributes": {"data": {"value": True}},
+            },
+        }
+        instance = FeatureFlagsFlagRuleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_rule_updated_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_updated_context.json")
+        instance = FeatureFlagsFlagRuleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_updated_context_minimal_payload(self):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+
+    def test_feature_flags_flag_rule_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = FeatureFlagsFlagRuleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_feature_flags_flag_rule_updated_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_rule_updated_context_actor.json")
+        instance = FeatureFlagsFlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_rule_updated_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_rule_updated_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_rule_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagRuleUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "feature_flags_flag_rule_updated_context_previous_attribute.json"
+        )
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleUpdatedContextPreviousAttribute.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_minimal_payload(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert "data" not in serialized
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_data_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "feature_flags_flag_rule_updated_context_previous_attribute_data.json"
+        )
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttributeData.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagRuleUpdatedContextPreviousAttributeData.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_data_minimal_payload(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttributeData.from_dict(
+            data
+        )
+        assert instance.to_dict() is not None
+
+    def test_feature_flags_flag_rule_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagRuleUpdatedContextPreviousAttributeData.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "value" not in serialized
+
+    def test_feature_flags_flag_updated_round_trip(self):
+        data = load_fixture("feature_flags_flag_updated.json")
+        instance = FeatureFlagsFlagUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag.updated",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+                "previous_attributes": {
+                    "data": {
+                        "name": "My Feature Flag",
+                        "description": "Enables the new feature.",
+                        "tags": ["beta", "release"],
+                        "owner": {
+                            "email": "jane@example.com",
+                            "first_name": "Jane",
+                            "last_name": "Doe",
+                        },
+                        "enabled": True,
+                        "default_value": False,
+                    }
+                },
+            },
+        }
+        instance = FeatureFlagsFlagUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_updated_data_round_trip(self):
+        data = load_fixture("feature_flags_flag_updated_data.json")
+        instance = FeatureFlagsFlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_feature_flags_flag_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FeatureFlagsFlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_feature_flags_flag_updated_data_owner_round_trip(self):
+        data = load_fixture("feature_flags_flag_updated_data_owner.json")
+        instance = FeatureFlagsFlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_feature_flags_flag_updated_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_feature_flags_flag_updated_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_updated_context.json")
+        instance = FeatureFlagsFlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_feature_flags_flag_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "previous_attributes" not in serialized
+
+    def test_feature_flags_flag_updated_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_updated_context_actor.json")
+        instance = FeatureFlagsFlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_updated_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_updated_context_previous_attribute_round_trip(self):
+        data = load_fixture(
+            "feature_flags_flag_updated_context_previous_attribute.json"
+        )
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedContextPreviousAttribute.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_context_previous_attribute_minimal_payload(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttribute.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_feature_flags_flag_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert "data" not in serialized
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "feature_flags_flag_updated_context_previous_attribute_data.json"
+        )
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedContextPreviousAttributeData.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_minimal_payload(
+        self,
+    ):
+        data = {}
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeData.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "description": "Enables the new feature.",
+            "owner": {
+                "email": "jane@example.com",
+                "first_name": "Jane",
+                "last_name": "Doe",
+            },
+        }
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "name" not in serialized
+        assert "tags" not in serialized
+        assert "enabled" not in serialized
+        assert "default_value" not in serialized
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "name": "My Feature Flag",
+            "description": None,
+            "tags": ["beta", "release"],
+            "owner": None,
+            "enabled": True,
+            "default_value": False,
+        }
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_owner_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "feature_flags_flag_updated_context_previous_attribute_data_owner.json"
+        )
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeDataOwner.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagUpdatedContextPreviousAttributeDataOwner.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_owner_minimal_payload(
+        self,
+    ):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeDataOwner.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_feature_flags_flag_updated_context_previous_attribute_data_owner_preserves_nullable_fields(
+        self,
+    ):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FeatureFlagsFlagUpdatedContextPreviousAttributeDataOwner.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
     def test_flag_created_round_trip(self):
         data = load_fixture("flag_created.json")
         instance = FlagCreated.from_dict(data)
@@ -8654,6 +12259,212 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
         assert serialized["email"] == data["email"]
+
+    def test_feature_flags_flag_target_created_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_created.json")
+        instance = FeatureFlagsFlagTargetCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag_target.created",
+            "data": {
+                "object": "flag_target",
+                "id": "flag_target_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_slug": "new-checkout",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "target_type": "organization",
+                "target_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "rule_id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+                "value_type": "boolean",
+                "value": True,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagTargetCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_target_created_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_created_context.json")
+        instance = FeatureFlagsFlagTargetCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_created_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagTargetCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_feature_flags_flag_target_created_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_created_context_actor.json")
+        instance = FeatureFlagsFlagTargetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagTargetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_target_created_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagTargetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_target_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_target_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagTargetCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_feature_flags_flag_target_deleted_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_deleted.json")
+        instance = FeatureFlagsFlagTargetDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "feature_flags.flag_target.deleted",
+            "data": {
+                "object": "flag_target",
+                "id": "flag_target_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "flag_slug": "new-checkout",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "target_type": "organization",
+                "target_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "rule_id": "flag_rule_01EHZNVPK3SFK441A1RGBFSHRT",
+                "value_type": "boolean",
+                "value": True,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+        }
+        instance = FeatureFlagsFlagTargetDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+
+    def test_feature_flags_flag_target_deleted_context_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_deleted_context.json")
+        instance = FeatureFlagsFlagTargetDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_deleted_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FeatureFlagsFlagTargetDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_feature_flags_flag_target_deleted_context_actor_round_trip(self):
+        data = load_fixture("feature_flags_flag_target_deleted_context_actor.json")
+        instance = FeatureFlagsFlagTargetDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FeatureFlagsFlagTargetDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_feature_flags_flag_target_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagTargetDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_feature_flags_flag_target_deleted_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FeatureFlagsFlagTargetDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_feature_flags_flag_target_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_feature_flags_flag_target_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FeatureFlagsFlagTargetDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_flag_updated_round_trip(self):
         data = load_fixture("flag_updated.json")
@@ -15710,6 +19521,115 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
+    def test_data_integration_access_token_response_with_access_token_round_trip(self):
+        data = load_fixture(
+            "data_integration_access_token_response_with_access_token.json"
+        )
+        instance = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_access_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "active": True,
+            "access_token": {
+                "object": "access_token",
+                "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+            },
+        }
+        instance = DataIntegrationAccessTokenResponseWithAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["access_token"] == data["access_token"]
+
+    def test_data_integration_access_token_response_with_access_token_access_token_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "data_integration_access_token_response_with_access_token_access_token.json"
+        )
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_access_token_access_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["access_token"] == data["access_token"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+
+    def test_data_integration_access_token_response_with_access_token_access_token_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = (
+            DataIntegrationAccessTokenResponseWithAccessTokenAccessToken.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_data_integration_access_token_response_with_error_round_trip(self):
+        data = load_fixture("data_integration_access_token_response_with_error.json")
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponseWithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_with_error_minimal_payload(self):
+        data = {"active": False, "error": "not_installed"}
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["error"] == data["error"]
+
+    def test_data_integration_access_token_response_with_error_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": False,
+            "error": "unexpected_data_integration_access_token_response_with_error_error",
+        }
+        instance = DataIntegrationAccessTokenResponseWithError.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_account_selection_required_error_round_trip(self):
         data = load_fixture("account_selection_required_error.json")
         instance = AccountSelectionRequiredError.from_dict(data)
@@ -15727,6 +19647,184 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_oauth_data_integration_vended_credential_round_trip(self):
+        data = load_fixture("oauth_data_integration_vended_credential.json")
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OAuthDataIntegrationVendedCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_oauth_data_integration_vended_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["config"] == data["config"]
+
+    def test_oauth_data_integration_vended_credential_preserves_nullable_fields(self):
+        data = {
+            "object": "credential",
+            "auth_method": "oauth",
+            "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = OAuthDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_api_key_data_integration_vended_credential_round_trip(self):
+        data = load_fixture("api_key_data_integration_vended_credential.json")
+        instance = ApiKeyDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyDataIntegrationVendedCredential.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_data_integration_vended_credential_minimal_payload(self):
+        data = {
+            "object": "credential",
+            "auth_method": "api_key",
+            "value": "sk-1234567890abcdef",
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ApiKeyDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["config"] == data["config"]
+
+    def test_client_credentials_data_integration_vended_credential_round_trip(self):
+        data = load_fixture(
+            "client_credentials_data_integration_vended_credential.json"
+        )
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ClientCredentialsDataIntegrationVendedCredential.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_client_credentials_data_integration_vended_credential_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "client_credentials",
+            "value": "00D5g000000XXXX!AQEAQ...",
+            "expires_at": None,
+            "scopes": ["api"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["value"] == data["value"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["config"] == data["config"]
+
+    def test_client_credentials_data_integration_vended_credential_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "credential",
+            "auth_method": "client_credentials",
+            "value": "00D5g000000XXXX!AQEAQ...",
+            "expires_at": None,
+            "scopes": ["api"],
+            "missing_scopes": [],
+            "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+            "config": {"account": "myorg-myaccount"},
+        }
+        instance = ClientCredentialsDataIntegrationVendedCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
+    def test_data_integration_credentials_response_with_credential_round_trip(self):
+        data = load_fixture(
+            "data_integration_credentials_response_with_credential.json"
+        )
+        instance = DataIntegrationCredentialsResponseWithCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseWithCredential.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_with_credential_minimal_payload(
+        self,
+    ):
+        data = {
+            "active": True,
+            "credential": {
+                "object": "credential",
+                "auth_method": "oauth",
+                "value": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+                "metadata": {"instance_url": "https://acme.my.salesforce.com"},
+                "config": {"account": "myorg-myaccount"},
+            },
+        }
+        instance = DataIntegrationCredentialsResponseWithCredential.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["credential"] == data["credential"]
+
+    def test_data_integration_credentials_response_with_error_round_trip(self):
+        data = load_fixture("data_integration_credentials_response_with_error.json")
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationCredentialsResponseWithError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_credentials_response_with_error_minimal_payload(self):
+        data = {"active": False, "error": "not_installed"}
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["active"] == data["active"]
+        assert serialized["error"] == data["error"]
+
+    def test_data_integration_credentials_response_with_error_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": False,
+            "error": "unexpected_data_integration_credentials_response_with_error_error",
+        }
+        instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_directory_user_email_round_trip(self):
         data = load_fixture("directory_user_email.json")
@@ -15776,3 +19874,52 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "sessionId" not in serialized
         assert "sessionNumber" not in serialized
+
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token.json"
+        )
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_minimal_payload(
+        self,
+    ):
+        data = {
+            "error": "sso_required",
+            "error_description": "The request failed due to: sso_required.",
+            "connection_ids": ["connection_ids_01234"],
+            "email": "user@example.com",
+        }
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+        assert serialized["error_description"] == data["error_description"]
+        assert serialized["connection_ids"] == data["connection_ids"]
+        assert serialized["email"] == data["email"]
+
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "error": "sso_required",
+            "error_description": "The request failed due to: sso_required.",
+            "connection_ids": ["connection_ids_01234"],
+            "email": "user@example.com",
+        }
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "pending_authentication_token" not in serialized

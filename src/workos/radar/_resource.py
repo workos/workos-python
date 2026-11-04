@@ -7,6 +7,9 @@ from typing import TYPE_CHECKING, Any, Literal
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from workos.common.models.radar_list_entry_already_present_response import (
+    RadarListEntryAlreadyPresentResponse,
+)
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
 )
@@ -17,7 +20,6 @@ from workos.common.models.radar_standalone_assess_request_auth_method import (
 from .._types import RequestOptions, enum_value
 from .models import (
     RadarListAction,
-    RadarListEntryAlreadyPresentResponse,
     RadarListType,
     RadarStandaloneResponse,
 )

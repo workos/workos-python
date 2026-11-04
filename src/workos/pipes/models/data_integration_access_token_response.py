@@ -7,12 +7,11 @@ from enum import Enum
 from typing import Any, Literal, cast
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integration_access_token_response_access_token import (
+    DataIntegrationAccessTokenResponseAccessToken,
+)
 from workos.common.models.data_integration_access_token_response_error import (
     DataIntegrationAccessTokenResponseError,
-)
-
-from .data_integration_access_token_response_access_token import (
-    DataIntegrationAccessTokenResponseAccessToken,
 )
 
 

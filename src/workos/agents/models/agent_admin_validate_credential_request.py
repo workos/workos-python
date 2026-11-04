@@ -14,7 +14,7 @@ from workos.common.models.agent_admin_validate_credential_request_type import (
 
 @dataclass(slots=True)
 class AgentAdminValidateCredentialRequest:
-    """Agent Admin Validate Credential Request model."""
+    """The agent credential to validate. Either an `api_key` or an `access_token`, discriminated by `type`."""
 
     type: AgentAdminValidateCredentialRequestType
     """The kind of credential being validated — an agent API key or an agent access token."""

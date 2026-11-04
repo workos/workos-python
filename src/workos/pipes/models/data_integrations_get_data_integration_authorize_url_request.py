@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
+from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_intent import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent,
+)
 from workos.common.models.data_integrations_get_data_integration_authorize_url_request_connection_owner import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
 )
@@ -27,9 +30,19 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
     ) = None
     """Who will own the connected account. `user` (the default) connects the user's own account. `organization` connects the organization's shared account and requires `organization_id`."""
     return_to: str | None = None
-    """The URL to redirect the user to after authorization."""
+    """The URL to redirect the user to after authorization. Required with `code_challenge`, and must then exactly match a redirect URI registered on one of the environment's applications. Loopback URLs match on any port; wildcard redirect URIs are not honored, and a `return_to` with a query string or fragment never matches."""
+    code_challenge: str | None = None
+    """A PKCE-style code challenge: the base64url-encoded SHA-256 of a `code_verifier` your app keeps. When set, the connection isn't saved when the user finishes authorizing. Instead, the user is redirected to `return_to` with a `connect_code` and `state`, and your app must call [Finish connection](https://workos.com/docs/reference/pipes/connected-account/finish-connection) with the `connect_code` and `code_verifier` within 90 seconds to save it."""
+    code_challenge_method: Literal["S256"] | None = None
+    """The method used to derive `code_challenge`. Only `S256` is supported, and it is the default. Requires `code_challenge`."""
     config: dict[str, str] | None = None
     """Connect-time config values for the provider-declared `installation`-scope fields (e.g. a Zendesk `subdomain`), keyed by the config field. Only fields the provider declares may be supplied, and required fields must be provided unless already pinned on the integration."""
+    connection_intent: (
+        DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent | None
+    ) = None
+    """Which connection the request targets. Omit it to use the compatibility connection. Send `add` to create another connection: the first connection for an owner shape fills the compatibility slot, and later connections are standard. Send `reauthorize` with `connected_account_id` to reauthorize one exact connection."""
+    connected_account_id: str | None = None
+    """The exact connected account to reauthorize. Required with `connection_intent: reauthorize` and not accepted otherwise."""
 
     @classmethod
     def from_dict(
@@ -47,7 +60,15 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
                 if (_v_connection_owner := data.get("connection_owner")) is not None
                 else None,
                 return_to=data.get("return_to"),
+                code_challenge=data.get("code_challenge"),
+                code_challenge_method=data.get("code_challenge_method"),
                 config=data.get("config"),
+                connection_intent=DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent(
+                    _v_connection_intent
+                )
+                if (_v_connection_intent := data.get("connection_intent")) is not None
+                else None,
+                connected_account_id=data.get("connected_account_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
@@ -72,6 +93,18 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
             )
         if self.return_to is not None:
             result["return_to"] = self.return_to
+        if self.code_challenge is not None:
+            result["code_challenge"] = self.code_challenge
+        if self.code_challenge_method is not None:
+            result["code_challenge_method"] = self.code_challenge_method
         if self.config is not None:
             result["config"] = self.config
+        if self.connection_intent is not None:
+            result["connection_intent"] = (
+                self.connection_intent.value
+                if isinstance(self.connection_intent, Enum)
+                else self.connection_intent
+            )
+        if self.connected_account_id is not None:
+            result["connected_account_id"] = self.connected_account_id
         return result

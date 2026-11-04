@@ -1,0 +1,15 @@
+{
+  "name": "My Feature Flag",
+  "description": "Enables the new feature.",
+  "tags": [
+    "beta",
+    "release"
+  ],
+  "owner": {
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe"
+  },
+  "enabled": true,
+  "default_value": false
+}

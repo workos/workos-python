@@ -14,7 +14,7 @@ from workos.common.models.agent_blueprints_token_mint_token_request_type import 
 
 @dataclass(slots=True)
 class AgentBlueprintsTokenMintTokenRequest:
-    """Agent Blueprints Token Mint Token Request model."""
+    """How to mint the agent session, discriminated by `type`. `intent` is optional on every variant."""
 
     type: AgentBlueprintsTokenMintTokenRequestType
     """How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`."""

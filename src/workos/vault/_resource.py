@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -237,7 +238,7 @@ class Vault:
         after: str | None = None,
         order: VaultOrder | str | None = None,
         search: str | None = None,
-        updated_after: str | None = None,
+        updated_after: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SyncPage[ObjectSummary]:
         """List objects
@@ -698,7 +699,7 @@ class AsyncVault:
         after: str | None = None,
         order: VaultOrder | str | None = None,
         search: str | None = None,
-        updated_after: str | None = None,
+        updated_after: datetime | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> AsyncPage[ObjectSummary]:
         """List objects

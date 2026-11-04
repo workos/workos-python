@@ -7,4 +7,5 @@ from workos.common.models.user_organization_membership_base_list_data import (
 
 from .create_group import CreateGroup as CreateGroup
 from .create_group_membership import CreateGroupMembership as CreateGroupMembership
+from .patch_group_memberships import PatchGroupMemberships as PatchGroupMemberships
 from .update_group import UpdateGroup as UpdateGroup

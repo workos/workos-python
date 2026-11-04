@@ -11,7 +11,7 @@ from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_
 
 @dataclass(slots=True)
 class AgentRegistrationClaimClaimCompletion:
-    """Agent Registration Claim Claim Completion model."""
+    """The completion record for the claim, or `null` if the claim has not been completed."""
 
     id: str
     """Unique identifier of the claim completion."""

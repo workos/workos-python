@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 from workos._types import _raise_deserialize_error
 from workos.common.models.data_integrations_upsert_api_key_request_connection_owner import (
@@ -28,6 +28,10 @@ class DataIntegrationsUpsertApiKeyRequest:
     """An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to scope the connection to a specific organization. Required when `connection_owner` is `organization`."""
     connection_owner: DataIntegrationsUpsertApiKeyRequestConnectionOwner | None = None
     """Whose connection to create or rotate. `user` (the default) addresses the connection owned by `user_id`. `organization` addresses the connection shared by every member of `organization_id`; `user_id` then identifies the member performing the request and must be an active member of the organization."""
+    connection_intent: Literal["reauthorize"] | None = None
+    """Send `reauthorize` with `connected_account_id` to reauthorize one exact connection. Omit it to use the compatibility connection; creating another connection lives on the POST route."""
+    connected_account_id: str | None = None
+    """The exact connected account to reauthorize. Required with `connection_intent: reauthorize`; it may also be sent on its own to reauthorize that connection."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DataIntegrationsUpsertApiKeyRequest:
@@ -44,6 +48,8 @@ class DataIntegrationsUpsertApiKeyRequest:
                 )
                 if (_v_connection_owner := data.get("connection_owner")) is not None
                 else None,
+                connection_intent=data.get("connection_intent"),
+                connected_account_id=data.get("connected_account_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsUpsertApiKeyRequest", e)
@@ -69,4 +75,8 @@ class DataIntegrationsUpsertApiKeyRequest:
                 if isinstance(self.connection_owner, Enum)
                 else self.connection_owner
             )
+        if self.connection_intent is not None:
+            result["connection_intent"] = self.connection_intent
+        if self.connected_account_id is not None:
+            result["connected_account_id"] = self.connected_account_id
         return result

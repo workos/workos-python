@@ -33,15 +33,19 @@
     "api_key_last_4": null,
     "client_id": "3MVG9dZJodJWxft2VoStSCVwPFsx0eDcpVc",
     "client_secret_last_4": "cdef",
-    "config": {
-      "instance_url": "https://example.my.salesforce.com"
-    },
+    "config": {},
     "state": "connected",
     "established_by_user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
     "state_reason": null,
     "created_at": "2024-01-16T14:20:00.000Z",
     "updated_at": "2024-01-16T14:20:00.000Z",
-    "userlandUserId": "test_userlandUserId"
+    "warnings": [
+      {
+        "code": "duplicate_account_display_name",
+        "message": "Another connection for this provider and owner has the same label."
+      }
+    ],
+    "userlandUserId": "user_01EHZNVPK3SFK441A1RGBFSHRT"
   },
   "connected_accounts": [
     {
@@ -68,6 +72,12 @@
       "state_reason": null,
       "created_at": "2024-01-16T14:20:00.000Z",
       "updated_at": "2024-01-16T14:20:00.000Z",
+      "warnings": [
+        {
+          "code": "duplicate_account_display_name",
+          "message": "Another connection for this provider and owner has the same label."
+        }
+      ],
       "userlandUserId": "test_userlandUserId"
     }
   ]

@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import os
 import threading
 import time
 from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional
@@ -21,7 +22,6 @@ from ..._http import (
     TransportTimeout,
     _HttpxFamily,
     record_request,
-    sent_requests,
 )
 from . import _core, _policy
 
@@ -123,9 +123,7 @@ class PollTransport:
         # other WorkOSClient given the same HTTP client: they open the same
         # connections.
         if (
-            used_before_fork
-            or self._workos._sent_requests
-            or sent_requests(self._workos._backend)
+            used_before_fork or _core.used_by_another_process(self._workos)
         ) and not self._uses_default_client:
             return (
                 "the parent used its caller-supplied HTTP client, whose "
@@ -169,7 +167,8 @@ class PollTransport:
         if deadline - time.monotonic() <= 0:
             raise TransportTimeout("no time was left in the request timeout")
         if not self._uses_default_client:
-            self._workos._sent_requests = True
+            if self._workos._first_request_pid is None:
+                self._workos._first_request_pid = os.getpid()
             record_request(self._workos._backend)
         client = self._httpx_client()
         if client is None:

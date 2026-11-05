@@ -52,7 +52,9 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     supplied, close this client before closing yours. A client created before
     a fork can start in the child, and one that was polling resumes there,
     except through an HTTP client you supplied that the parent already sent
-    requests through, and on macOS.
+    requests through, and on macOS. That includes a fork that skips Python's
+    fork hooks, as uWSGI's does by default: the client checks for a new
+    process each time it is used.
     """
 
     def __init__(
@@ -239,6 +241,7 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         including one that calls while another close() is still waiting.
         Evaluation keeps serving the last configuration after closing.
         """
+        self._reinitialize_if_forked()
         with self._lifecycle_lock:
             if not self._closed:
                 self._closed = True
@@ -455,6 +458,9 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
     # --- Fork safety ----------------------------------------------------------
 
     def _before_use(self) -> None:
+        # Evaluation runs this on every call, so the common case is one compare.
+        if self._pid != os.getpid():
+            self._reinitialize_after_unhooked_fork()
         if self._fork_restart_pending:
             self._restart_after_fork()
         else:
@@ -493,10 +499,10 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
             self._spawn_poller()
 
     def _reinitialize_after_fork(self) -> None:
-        # The child has only the forking thread. Locks may have been held by
-        # threads that no longer exist, the poller thread is gone, and the
-        # parent's HTTP connections must not be shared, so rebuild all of it
-        # and restart polling, with a new HTTP client, on the next use.
+        # The parent's other threads don't exist in the child. Locks may have
+        # been held by them, the poller thread is gone, and the parent's HTTP
+        # connections must not be shared, so rebuild all of it and restart
+        # polling, with a new HTTP client, on the next use.
         self._reinitialize_core_after_fork()
         self._transport.reinitialize_after_fork()
         self._delivering = None
@@ -535,7 +541,7 @@ def _reinitialize_clients_after_fork() -> None:
     for client in list(_clients):
         # One client that fails must not leave the others unprepared.
         try:
-            client._reinitialize_after_fork()
+            client._after_fork_in_child()
         except Exception:
             client._logger.exception(
                 "Could not prepare a feature flags runtime client for forked "

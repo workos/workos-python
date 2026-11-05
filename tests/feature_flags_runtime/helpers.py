@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import socket
 import threading
 import time
 from dataclasses import dataclass
@@ -261,7 +262,12 @@ class LocalHTTPServer:
 
         self._server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         self._server.daemon_threads = True
-        self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
+        # Without a poll interval the server thread sleeps until a connection
+        # arrives, so it can't be waiting for the GIL when a test forks without
+        # Python's fork hooks.
+        self._thread = threading.Thread(
+            target=self._server.serve_forever, args=(None,), daemon=True
+        )
         self._thread.start()
 
     @property
@@ -277,7 +283,16 @@ class LocalHTTPServer:
             }
 
     def close(self) -> None:
-        self._server.shutdown()
+        # The server thread only sees the shutdown once a connection wakes it.
+        stopper = threading.Thread(target=self._server.shutdown)
+        stopper.start()
+        while stopper.is_alive():
+            try:
+                address = ("127.0.0.1", self._server.server_address[1])
+                socket.create_connection(address, timeout=1).close()
+            except OSError:
+                pass
+            stopper.join(0.05)
         self._server.server_close()
 
     def _handle(self, handler: Any) -> None:

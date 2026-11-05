@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import gc
 import json
 import subprocess
 import sys
@@ -26,7 +27,8 @@ from workos import (
 from workos import _base_client as base_client_module
 from workos._base_client import _BaseWorkOSClient
 from workos._errors import WorkOSConnectionError, WorkOSTimeoutError
-from workos._http import AsyncHttpxBackend, HttpxBackend
+from workos import _http
+from workos._http import AsyncHttpxBackend, HttpxBackend, record_request
 from tests.generated_helpers import load_fixture
 
 API_KEY = "sk_test_123"
@@ -412,6 +414,20 @@ class TestHttpxAdapter:
             await backend.request(
                 "GET", "https://x/p", headers={}, content=None, timeout=1.0
             )
+
+
+class TestConnectionTracking:
+    def test_forgets_an_http_client_once_it_is_collected(self) -> None:
+        http_client = httpx2.Client()
+        record_request(HttpxBackend(http_client))
+        key = id(http_client)
+        assert key in _http._first_requests
+
+        http_client.close()
+        del http_client
+        gc.collect()
+
+        assert key not in _http._first_requests
 
 
 class TestResolution:

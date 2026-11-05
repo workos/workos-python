@@ -2,16 +2,21 @@
 """What runtime clients do in a forked child process.
 
 Each scenario runs in a subprocess so a hang or a fork cannot wedge pytest.
+Most run with both kinds of fork: ``os.fork()``, which runs Python's fork
+hooks, and libc's ``fork()``, which skips them, as uWSGI forks its workers by
+default.
 """
 
 from __future__ import annotations
 
 import asyncio
+import itertools
 import logging
 import os
 import subprocess
 import sys
 import textwrap
+import threading
 import time
 import weakref
 from dataclasses import dataclass, field
@@ -416,6 +421,138 @@ from workos.feature_flags.runtime import _core
 _core.FORK_SAFE_PLATFORM = True
 """
 
+# Replaces fork() with libc's fork(), which skips the hooks Python runs around
+# os.fork(), as uWSGI does when it forks workers without
+# --py-call-uwsgi-fork-hooks. PyDLL keeps the GIL across the call. Without the
+# hooks, CPython doesn't rebuild the GIL's own locks in the child, so a parent
+# thread waiting for the GIL at the fork can leave the child unable to switch
+# threads; the parent's pollers are idled first. A child that fails exits
+# without finalizing the interpreter, which would wait for threads that exist
+# only in the parent.
+WITHOUT_FORK_HOOKS = """
+import ctypes
+import sys
+import traceback
+
+_libc_fork = ctypes.PyDLL(None).fork
+
+
+def _exit_on_error(*exc_info):
+    traceback.print_exception(*exc_info)
+    sys.stderr.flush()
+    os._exit(1)
+
+
+def fork():
+    next_delay = _policy.next_delay
+    _policy.next_delay = lambda interval, failures, max_retry_delay: 60.0
+    time.sleep(0.3)
+    pid = _libc_fork()
+    _policy.next_delay = next_delay
+    if pid == 0:
+        sys.excepthook = _exit_on_error
+    return pid
+"""
+
+FORKS = pytest.mark.parametrize(
+    "fork", ["", WITHOUT_FORK_HOOKS], ids=["os-fork", "fork-without-hooks"]
+)
+
+# The parent never uses the HTTP client, and the child sends another SDK call
+# through it before starting the runtime client.
+CALLER_CLIENT_USED_IN_CHILD = """
+import httpx2
+
+workos = WorkOSClient(api_key="sk_parent", base_url=server.base_url, http_client=httpx2.Client())
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    try:
+        workos.organizations.list_organizations()
+    except Exception:
+        pass
+    runtime.start()
+    runtime.wait_until_ready(timeout=5)
+    runtime.close()
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+paths = [r["path"] for r in server.requests if r["headers"].get("Authorization") == "Bearer sk_child"]
+assert paths[0].startswith("/organizations"), paths
+assert any(path.startswith("/sdk/feature-flags") for path in paths), paths
+"""
+
+ASYNC_CLIENT_USED_IN_CHILD = """
+workos = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url)
+runtime = workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+
+    async def serve():
+        try:
+            await workos.organizations.list_organizations()
+        except Exception:
+            pass
+        await runtime.start()
+        await runtime.wait_until_ready(timeout=5)
+        await runtime.close()
+        await workos.close()
+
+    asyncio.run(serve())
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+paths = [r["path"] for r in server.requests if r["headers"].get("Authorization") == "Bearer sk_child"]
+assert paths[0].startswith("/organizations"), paths
+assert any(path.startswith("/sdk/feature-flags") for path in paths), paths
+"""
+
+# Counts how often each client is prepared for the child, however many times
+# the child uses it.
+PREPARED_ONCE = """
+from workos.feature_flags.runtime import AsyncFeatureFlagsRuntimeClient, FeatureFlagsRuntimeClient
+
+prepared = []
+
+
+def count_preparations(cls):
+    reinitialize = cls._reinitialize_after_fork
+
+    def counted(self):
+        prepared.append(cls.__name__)
+        reinitialize(self)
+
+    cls._reinitialize_after_fork = counted
+
+
+count_preparations(FeatureFlagsRuntimeClient)
+count_preparations(AsyncFeatureFlagsRuntimeClient)
+workos = WorkOSClient(api_key="sk_parent", base_url=server.base_url)
+runtime = workos.create_feature_flags_runtime_client()
+runtime.start()
+runtime.wait_until_ready(timeout=5)
+async_workos = AsyncWorkOSClient(api_key="sk_parent", base_url=server.base_url)
+async_runtime = async_workos.create_feature_flags_runtime_client()
+pid = fork()
+if pid == 0:
+    workos._api_key = "sk_child"
+    for _ in range(3):
+        assert runtime.is_enabled("f") is True
+        runtime.start()
+        runtime.refresh()
+        async_runtime.is_enabled("f")
+    asyncio.run(async_runtime.close())
+    runtime.close()
+    assert sorted(prepared) == ["AsyncFeatureFlagsRuntimeClient", "FeatureFlagsRuntimeClient"], prepared
+    os._exit(0)
+_, status = os.waitpid(pid, 0)
+assert os.waitstatus_to_exitcode(status) == 0
+runtime.close()
+assert server.ports("Bearer sk_child"), "the child never polled"
+"""
+
 
 def run(*scenario: str) -> subprocess.CompletedProcess:
     script = "".join(textwrap.dedent(part) for part in (PRELUDE, *scenario))
@@ -432,48 +569,70 @@ def run(*scenario: str) -> subprocess.CompletedProcess:
 pytestmark = pytest.mark.skipif(not hasattr(os, "fork"), reason="requires os.fork")
 
 
-def test_a_child_polls_on_its_own_connections_once_used() -> None:
-    result = run(FORCE_FORK_SAFE, DEFAULT_CLIENT)
+@FORKS
+def test_a_child_polls_on_its_own_connections_once_used(fork: str) -> None:
+    result = run(FORCE_FORK_SAFE, fork, DEFAULT_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
 
 
 @pytest.mark.skipif(sys.platform != "darwin", reason="macOS behavior")
-def test_on_macos_a_child_does_not_poll() -> None:
-    result = run(MACOS_DEFAULT_CLIENT)
+@FORKS
+def test_on_macos_a_child_does_not_poll(fork: str) -> None:
+    result = run(fork, MACOS_DEFAULT_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "cannot safely open network connections" in result.stderr
     assert result.stderr.count(FORK_BLOCKED) == 1, result.stderr
 
 
 @pytest.mark.skipif(sys.platform != "darwin", reason="macOS behavior")
-def test_on_macos_a_preloaded_client_serves_its_bootstrap_in_a_child() -> None:
-    result = run(MACOS_PRELOADED)
+@FORKS
+def test_on_macos_a_preloaded_client_serves_its_bootstrap_in_a_child(
+    fork: str,
+) -> None:
+    result = run(fork, MACOS_PRELOADED)
     assert result.returncode == 0, result.stdout + result.stderr
     # One warning from each start().
     assert result.stderr.count(FORK_BLOCKED) == 3, result.stderr
 
 
-def test_a_child_does_not_poll_through_a_caller_supplied_client() -> None:
-    result = run(FORCE_FORK_SAFE, CALLER_CLIENT)
+@FORKS
+def test_a_child_does_not_poll_through_a_caller_supplied_client(fork: str) -> None:
+    result = run(FORCE_FORK_SAFE, fork, CALLER_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "does not run in forked process" in result.stderr
 
 
-def test_an_async_client_stops_polling_in_a_child() -> None:
-    result = run(FORCE_FORK_SAFE, MAKE_ASYNC_RUNTIME, ASYNC_CLIENT)
+@FORKS
+def test_an_async_client_stops_polling_in_a_child(fork: str) -> None:
+    result = run(FORCE_FORK_SAFE, fork, MAKE_ASYNC_RUNTIME, ASYNC_CLIENT)
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+@FORKS
 @pytest.mark.parametrize(
     "scenario",
     [CALLER_CLIENT_UNUSED, ASYNC_CLIENT_UNUSED],
     ids=["sync-caller-supplied-client", "async"],
 )
-def test_a_client_that_never_polled_starts_in_a_child(scenario: str) -> None:
-    result = run(FORCE_FORK_SAFE, scenario)
+def test_a_client_that_never_polled_starts_in_a_child(fork: str, scenario: str) -> None:
+    result = run(FORCE_FORK_SAFE, fork, scenario)
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+@FORKS
+@pytest.mark.parametrize(
+    "scenario",
+    [CALLER_CLIENT_USED_IN_CHILD, ASYNC_CLIENT_USED_IN_CHILD],
+    ids=["sync-caller-supplied-client", "async"],
+)
+def test_requests_the_child_sent_itself_do_not_stop_it_polling(
+    fork: str, scenario: str
+) -> None:
+    result = run(FORCE_FORK_SAFE, fork, scenario)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+@FORKS
 @pytest.mark.parametrize(
     "scenario",
     [
@@ -490,9 +649,15 @@ def test_a_client_that_never_polled_starts_in_a_child(scenario: str) -> None:
     ],
 )
 def test_a_child_does_not_poll_once_another_call_used_the_http_client(
-    scenario: str,
+    fork: str, scenario: str
 ) -> None:
-    result = run(FORCE_FORK_SAFE, scenario)
+    result = run(FORCE_FORK_SAFE, fork, scenario)
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+@FORKS
+def test_a_child_prepares_each_client_once(fork: str) -> None:
+    result = run(FORCE_FORK_SAFE, fork, PREPARED_ONCE)
     assert result.returncode == 0, result.stdout + result.stderr
 
 
@@ -500,11 +665,49 @@ def fork_warnings(caplog: pytest.LogCaptureFixture) -> List[str]:
     return [r.getMessage() for r in caplog.records if FORK_BLOCKED in r.getMessage()]
 
 
+ForkInPlace = Callable[..., None]
+
+HOOKS = pytest.mark.parametrize(
+    "hooks", [True, False], ids=["at-fork-hook", "without-fork-hooks"]
+)
+
+
+@pytest.fixture
+def fork_in_place(monkeypatch: pytest.MonkeyPatch) -> ForkInPlace:
+    """Continue the test as a forked child, without forking pytest.
+
+    Each call gives the test a new process ID, as a fork does. With
+    ``hooks=True`` the at-fork hook then runs for ``runtimes``, as after
+    ``os.fork()``; with ``hooks=False`` nothing runs, as when uWSGI forks a
+    worker. Request this fixture before the ones that create runtime clients,
+    so those are closed while the test is still the child.
+    """
+    pids = itertools.count(os.getpid() + 1)
+
+    def fork(*runtimes: Any, hooks: bool) -> None:
+        pid = next(pids)
+        monkeypatch.setattr(os, "getpid", lambda: pid)
+        if not hooks:
+            return
+        for module, kind in (
+            (_sync, FeatureFlagsRuntimeClient),
+            (_async, AsyncFeatureFlagsRuntimeClient),
+        ):
+            mine = [runtime for runtime in runtimes if isinstance(runtime, kind)]
+            monkeypatch.setattr(module, "_clients", weakref.WeakSet(mine))
+            module._reinitialize_clients_after_fork()
+
+    return fork
+
+
+@HOOKS
 @pytest.mark.parametrize(
     "was_polling", [False, True], ids=["never-polled", "was-polling"]
 )
 def test_on_macos_start_warns_once_and_does_not_poll(
     was_polling: bool,
+    hooks: bool,
+    fork_in_place: ForkInPlace,
     server: FlagServer,
     make_runtime: Make,
     monkeypatch: pytest.MonkeyPatch,
@@ -517,8 +720,7 @@ def test_on_macos_start_warns_once_and_does_not_poll(
         runtime.wait_until_ready(timeout=5)
     sent = len(server.requests)
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    runtime._reinitialize_after_fork()
+    fork_in_place(runtime, hooks=hooks)
     with caplog.at_level(logging.WARNING):
         if not was_polling:
             runtime.is_enabled("f")
@@ -534,16 +736,21 @@ def test_on_macos_start_warns_once_and_does_not_poll(
     assert len(server.requests) == sent
 
 
+@HOOKS
 def test_on_macos_a_child_serves_its_bootstrap_and_cannot_refresh(
-    server: FlagServer, make_runtime: Make, monkeypatch: pytest.MonkeyPatch
+    hooks: bool,
+    fork_in_place: ForkInPlace,
+    server: FlagServer,
+    make_runtime: Make,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", False)
     bootstrapped = make_runtime(
         bootstrap=FeatureFlagsConfiguration.from_dict(BOOTSTRAP)
     )
     empty = make_runtime()
+    fork_in_place(bootstrapped, empty, hooks=hooks)
     for runtime in (bootstrapped, empty):
-        runtime._reinitialize_after_fork()
         runtime.start()
         with pytest.raises(RuntimeError, match=FORK_BLOCKED):
             runtime.refresh()
@@ -559,11 +766,14 @@ def test_on_macos_a_child_serves_its_bootstrap_and_cannot_refresh(
 
 
 @pytest.mark.asyncio
+@HOOKS
 @pytest.mark.parametrize(
     "was_polling", [False, True], ids=["never-polled", "was-polling"]
 )
 async def test_on_macos_async_start_warns_once_and_does_not_poll(
     was_polling: bool,
+    hooks: bool,
+    fork_in_place: ForkInPlace,
     server: FlagServer,
     make_async_runtime: MakeAsync,
     monkeypatch: pytest.MonkeyPatch,
@@ -577,8 +787,7 @@ async def test_on_macos_async_start_warns_once_and_does_not_poll(
     parent_task = runtime._task
     sent = len(server.requests)
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    runtime._reinitialize_after_fork()
+    fork_in_place(runtime, hooks=hooks)
     with caplog.at_level(logging.WARNING):
         if not was_polling:
             runtime.is_enabled("f")
@@ -601,16 +810,21 @@ async def test_on_macos_async_start_warns_once_and_does_not_poll(
 
 
 @pytest.mark.asyncio
+@HOOKS
 async def test_on_macos_an_async_child_serves_its_bootstrap_and_cannot_refresh(
-    server: FlagServer, make_async_runtime: MakeAsync, monkeypatch: pytest.MonkeyPatch
+    hooks: bool,
+    fork_in_place: ForkInPlace,
+    server: FlagServer,
+    make_async_runtime: MakeAsync,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", False)
     bootstrapped = make_async_runtime(
         bootstrap=FeatureFlagsConfiguration.from_dict(BOOTSTRAP)
     )
     empty = make_async_runtime()
+    fork_in_place(bootstrapped, empty, hooks=hooks)
     for runtime in (bootstrapped, empty):
-        runtime._reinitialize_after_fork()
         await runtime.start()
         with pytest.raises(RuntimeError, match=FORK_BLOCKED):
             await runtime.refresh()
@@ -623,16 +837,19 @@ async def test_on_macos_an_async_child_serves_its_bootstrap_and_cannot_refresh(
     assert server.requests == []
 
 
+@HOOKS
 def test_a_child_raises_from_start_and_wait_once_the_parent_used_the_http_client(
-    make_runtime: Make, monkeypatch: pytest.MonkeyPatch
+    hooks: bool,
+    fork_in_place: ForkInPlace,
+    make_runtime: Make,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
     # Another runtime client polls through the caller-supplied HTTP client.
     make_runtime().refresh()
     runtime = make_runtime()
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    runtime._reinitialize_after_fork()
+    fork_in_place(runtime, hooks=hooks)
     with pytest.raises(RuntimeError, match="caller-supplied HTTP client"):
         runtime.start()
     started = time.monotonic()
@@ -642,26 +859,67 @@ def test_a_child_raises_from_start_and_wait_once_the_parent_used_the_http_client
 
 
 @pytest.mark.asyncio
+@HOOKS
 async def test_an_async_child_raises_from_start_and_wait_once_the_parent_used_it(
-    make_async_runtime: MakeAsync, monkeypatch: pytest.MonkeyPatch
+    hooks: bool,
+    fork_in_place: ForkInPlace,
+    make_async_runtime: MakeAsync,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
     await make_async_runtime().refresh()
     runtime = make_async_runtime()
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    runtime._reinitialize_after_fork()
+    fork_in_place(runtime, hooks=hooks)
     with pytest.raises(RuntimeError, match="was used in the parent"):
         await runtime.start()
     with pytest.raises(RuntimeError, match="was used in the parent"):
         await asyncio.wait_for(runtime.wait_until_ready(), 1)
 
 
+@dataclass
+class ParentPoller:
+    """What a client polling before an in-place fork leaves in this process.
+
+    A forked child wouldn't have the parent's poller thread or HTTP client;
+    a test that forks in place stops them once the child is done.
+    """
+
+    thread: threading.Thread
+    stop_event: threading.Event
+    wake: threading.Event
+    http_client: Optional[httpx2.Client]
+
+    @classmethod
+    def of(cls, runtime: FeatureFlagsRuntimeClient) -> ParentPoller:
+        assert runtime._thread is not None
+        return cls(
+            runtime._thread, runtime._stop, runtime._wake, runtime._transport._owned
+        )
+
+    def stop(self) -> None:
+        self.stop_event.set()
+        self.wake.set()
+        self.thread.join(5)
+        if self.http_client is not None:
+            self.http_client.close()
+
+
+@HOOKS
 @pytest.mark.parametrize(
-    "read", ["is_ready", "configuration", "is_closed", "status", "get_all_flags"]
+    "read",
+    [
+        "is_ready",
+        "configuration",
+        "is_closed",
+        "status",
+        "get_all_flags",
+        "is_enabled",
+        "get_flag",
+    ],
 )
 def test_every_read_resumes_polling_after_a_fork(
-    read: str, monkeypatch: pytest.MonkeyPatch
+    read: str, hooks: bool, fork_in_place: ForkInPlace, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
     server = LocalHTTPServer(payload(f=flag("f", default_value=True)))
@@ -669,20 +927,120 @@ def test_every_read_resumes_polling_after_a_fork(
     runtime = workos.create_feature_flags_runtime_client()
     runtime.start()
     runtime.wait_until_ready(timeout=5)
-    first_poller = runtime._thread
+    parent = ParentPoller.of(runtime)
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    runtime._reinitialize_after_fork()
-    assert runtime._fork_restart_pending
+    fork_in_place(runtime, hooks=hooks)
     value = getattr(runtime, read)
-    if callable(value):
+    if read in ("is_enabled", "get_flag"):
+        value("f")
+    elif callable(value):
         value()
 
-    assert runtime._thread is not None and runtime._thread is not first_poller
+    assert runtime._thread is not None and runtime._thread is not parent.thread
     assert runtime._thread.is_alive()
     runtime.close()
+    parent.stop()
     workos.close()
     server.close()
+
+
+@HOOKS
+def test_closing_in_a_child_leaves_the_parents_poller_and_http_client_alone(
+    hooks: bool, fork_in_place: ForkInPlace, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
+    server = LocalHTTPServer(payload(f=flag("f", default_value=True)))
+    workos = WorkOSClient(api_key="sk_test", base_url=server.base_url)
+    runtime = workos.create_feature_flags_runtime_client()
+    runtime.start()
+    runtime.wait_until_ready(timeout=5)
+    parent = ParentPoller.of(runtime)
+    assert parent.http_client is not None
+
+    fork_in_place(runtime, hooks=hooks)
+    runtime.close()
+
+    assert not parent.stop_event.is_set()
+    assert not parent.http_client.is_closed
+    parent.stop()
+    workos.close()
+    server.close()
+
+
+def test_threads_racing_to_first_use_after_a_fork_without_hooks_prepare_it_once(
+    fork_in_place: ForkInPlace, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
+    server = LocalHTTPServer(payload(f=flag("f", default_value=True)))
+    workos = WorkOSClient(api_key="sk_test", base_url=server.base_url)
+    runtime = workos.create_feature_flags_runtime_client()
+    runtime.start()
+    runtime.wait_until_ready(timeout=5)
+    parent = ParentPoller.of(runtime)
+    prepared: List[int] = []
+    spawned: List[int] = []
+    reinitialize = runtime._reinitialize_after_fork
+    spawn_poller = runtime._spawn_poller
+
+    def slow_reinitialize() -> None:
+        prepared.append(1)
+        # Long enough for the other threads to arrive while it runs.
+        time.sleep(0.2)
+        reinitialize()
+
+    def counted_spawn_poller() -> None:
+        spawned.append(1)
+        spawn_poller()
+
+    monkeypatch.setattr(runtime, "_reinitialize_after_fork", slow_reinitialize)
+    monkeypatch.setattr(runtime, "_spawn_poller", counted_spawn_poller)
+
+    fork_in_place(runtime, hooks=False)
+    barrier = threading.Barrier(8)
+    answers: List[bool] = []
+
+    def first_use() -> None:
+        barrier.wait()
+        answers.append(runtime.is_enabled("f"))
+
+    threads = [threading.Thread(target=first_use) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(5)
+
+    assert answers == [True] * 8
+    assert prepared == [1]
+    assert spawned == [1]
+    runtime.close()
+    parent.stop()
+    workos.close()
+    server.close()
+
+
+def test_a_client_that_cannot_be_prepared_after_a_fork_without_hooks_keeps_evaluating(
+    fork_in_place: ForkInPlace,
+    make_runtime: Make,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    runtime = make_runtime(bootstrap=FeatureFlagsConfiguration.from_dict(BOOTSTRAP))
+    attempts: List[int] = []
+
+    def fail() -> None:
+        attempts.append(1)
+        raise RuntimeError("could not rebuild")
+
+    monkeypatch.setattr(runtime, "_reinitialize_after_fork", fail)
+
+    fork_in_place(runtime, hooks=False)
+    with caplog.at_level(logging.ERROR):
+        assert runtime.is_enabled("f") is True
+        assert runtime.is_enabled("f") is True
+
+    assert attempts == [1]
+    [error] = [r for r in caplog.records if r.levelno == logging.ERROR]
+    assert "Could not prepare a feature flags runtime client" in error.getMessage()
 
 
 @dataclass
@@ -713,23 +1071,24 @@ class UnhashableBackend:
         pass
 
 
+@HOOKS
 def test_an_unhashable_custom_backend_survives_the_fork_hook(
-    monkeypatch: pytest.MonkeyPatch,
+    hooks: bool, fork_in_place: ForkInPlace, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(_core, "FORK_SAFE_PLATFORM", True)
     backend = UnhashableBackend()
     workos = WorkOSClient(api_key=API_KEY, http_client=backend)
     unused = workos.create_feature_flags_runtime_client()
 
-    # What the at-fork hook runs in a child, without forking pytest.
-    unused._reinitialize_after_fork()
+    fork_in_place(unused, hooks=hooks)
     unused.refresh()
     assert backend.requests
 
-    # Another WorkOSClient on the same backend sees that request too.
+    # Another WorkOSClient on the same backend sees that request too, in a
+    # process forked after it.
     sharing = WorkOSClient(api_key=API_KEY, http_client=backend)
     blocked = sharing.create_feature_flags_runtime_client()
-    blocked._reinitialize_after_fork()
+    fork_in_place(blocked, hooks=hooks)
     with pytest.raises(RuntimeError, match="caller-supplied HTTP client"):
         blocked.start()
     unused.close()

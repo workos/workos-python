@@ -14,7 +14,6 @@ from types import TracebackType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 from ..._errors import WorkOSTimeoutError
-from ..._http import sent_requests
 from . import _core, _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
@@ -47,9 +46,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
     The client polls through its ``AsyncWorkOSClient``, so use it on that
     client's event loop, and close it before closing the ``AsyncWorkOSClient``.
-    A client created before a fork can start in the child unless the
-    ``AsyncWorkOSClient`` already sent requests in the parent, or the platform
-    is macOS.
+    A client created before a fork, including one that skips Python's fork
+    hooks, can start in the child unless the ``AsyncWorkOSClient`` already
+    sent requests in the parent, or the platform is macOS.
     """
 
     def __init__(
@@ -126,6 +125,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
                 the client cannot poll in this forked process because the
                 parent used the ``AsyncWorkOSClient`` or its HTTP client.
         """
+        self._reinitialize_if_forked()
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
@@ -161,6 +161,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             RuntimeError: If the client was closed before it became ready, or
                 has no configuration and cannot poll in this forked process.
         """
+        self._reinitialize_if_forked()
         if self._status.ready:
             return
         # Nothing can make the client ready in a forked child that cannot poll.
@@ -185,6 +186,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             RuntimeError: If the client is closed or cannot poll in this forked
                 process.
         """
+        self._reinitialize_if_forked()
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
@@ -208,6 +210,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         still waiting. Evaluation keeps serving the last configuration after
         closing.
         """
+        self._reinitialize_if_forked()
         first = not self._closed
         self._closed = True
         self._ready.set()
@@ -454,11 +457,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
                 "runtime client after forking instead, for example in gunicorn's "
                 "post_fork hook"
             )
-        elif (
-            self._used_before_fork()
-            or self._client._sent_requests
-            or sent_requests(self._client._backend)
-        ):
+        elif self._used_before_fork() or _core.used_by_another_process(self._client):
             self._fork_blocker = (
                 "the AsyncWorkOSClient or its HTTP client was used in the parent, "
                 "on the parent's event loop and connections. Create the "
@@ -477,6 +476,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         self._fork_warned = not polling
 
     def _before_use(self) -> None:
+        # Evaluation runs this on every call, so the common case is one compare.
+        if self._pid != os.getpid():
+            self._reinitialize_after_unhooked_fork()
         self._warn_if_fork_blocked()
 
     def _warn_if_fork_blocked(self) -> None:
@@ -507,7 +509,7 @@ def _reinitialize_clients_after_fork() -> None:
     for client in list(_clients):
         # One client that fails must not leave the others unprepared.
         try:
-            client._reinitialize_after_fork()
+            client._after_fork_in_child()
         except Exception:
             client._logger.exception(
                 "Could not prepare a feature flags runtime client for forked "

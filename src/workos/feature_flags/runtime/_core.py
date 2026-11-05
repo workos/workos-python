@@ -13,9 +13,10 @@ import threading
 from collections import deque
 from dataclasses import replace
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Callable, Deque, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Deque, Optional, Tuple, Union
 
 from ..._errors import APIError
+from ..._http import sent_requests_from_another_process
 from . import _policy
 from ._configuration import (
     FeatureFlagsConfiguration,
@@ -28,7 +29,7 @@ from ._context import ContextWarnings, EvaluationContext, LoggerLike, normalize_
 from ._types import FlagsChangedEvent, RuntimeStatus
 
 if TYPE_CHECKING:
-    from ..._base_client import _BaseWorkOSClient
+    from ..._base_client import AsyncWorkOSClient, WorkOSClient, _BaseWorkOSClient
 
 LOGGER_NAME = "workos.feature_flags.runtime"
 
@@ -55,6 +56,18 @@ def fork_blocked_message(reason: str) -> str:
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
+
+
+def used_by_another_process(client: Union[WorkOSClient, AsyncWorkOSClient]) -> bool:
+    """Whether another process sent requests through ``client`` or its HTTP client.
+
+    In a forked process, those are the parent's requests from before the
+    fork, so the answer doesn't change when the child sends its own.
+    """
+    first_request_pid = client._first_request_pid
+    return (
+        first_request_pid is not None and first_request_pid != os.getpid()
+    ) or sent_requests_from_another_process(client._backend)
 
 
 class RuntimeClientCore:
@@ -109,6 +122,12 @@ class RuntimeClientCore:
         self._pending: Deque[list[Notification]] = deque()
         # The 401 that stopped polling before any configuration was available.
         self._readiness_error: Optional[Exception] = None
+        # The process this client was created in or last prepared for. A
+        # different one means a fork that skipped Python's fork hooks.
+        self._pid = os.getpid()
+        # The threads preparing this client for a process, by process ID; see
+        # _reinitialize_after_unhooked_fork.
+        self._fork_claims: dict[int, threading.Event] = {}
 
     # --- Evaluation -----------------------------------------------------------
 
@@ -197,10 +216,12 @@ class RuntimeClientCore:
     def _add_listener(self, kind: str, listener: Listener) -> None:
         if not callable(listener):
             raise TypeError(f"{kind} listener must be callable")
+        self._reinitialize_if_forked()
         with self._listeners_lock:
             self._listeners[kind] = (*self._listeners[kind], listener)
 
     def _remove_listener(self, kind: str, listener: Listener) -> None:
+        self._reinitialize_if_forked()
         with self._listeners_lock:
             self._listeners[kind] = tuple(
                 registered
@@ -330,9 +351,58 @@ class RuntimeClientCore:
         """Whether this client sent requests, or was polling, in the parent."""
         return self._started or self._status.refresh_count > 0
 
+    # --- Fork safety ----------------------------------------------------------
+
+    def _after_fork_in_child(self) -> None:
+        """What the at-fork hook runs in a forked child, which has only one thread."""
+        # Recorded first, so a client that fails to rebuild isn't retried on use.
+        self._pid = os.getpid()
+        self._fork_claims = {}
+        self._reinitialize_after_fork()
+
+    def _reinitialize_if_forked(self) -> None:
+        if self._pid != os.getpid():
+            self._reinitialize_after_unhooked_fork()
+
+    def _reinitialize_after_unhooked_fork(self) -> None:
+        """Run the at-fork rebuild in a process forked without Python's fork hooks.
+
+        uWSGI, for one, forks its workers that way unless told otherwise.
+        Public calls check the process ID first and come here once it has
+        changed, so a client is rebuilt on its first use in the new process,
+        with the rules the at-fork hook applies. Any of this process's threads
+        may get here, and possibly at once: the first claims the process and
+        rebuilds the client, and the others wait for it.
+        """
+        pid = os.getpid()
+        claim = threading.Event()
+        claimed = self._fork_claims.setdefault(pid, claim)
+        if claimed is not claim:
+            claimed.wait()
+            return
+        try:
+            # A thread that read the old process ID can claim the process after
+            # another thread finished rebuilding the client.
+            if self._pid != pid:
+                self._reinitialize_after_fork()
+        except Exception:
+            self._logger.exception(
+                "Could not prepare a feature flags runtime client for forked "
+                "process %d",
+                pid,
+            )
+        finally:
+            self._pid = pid
+            self._fork_claims.pop(pid, None)
+            claim.set()
+
+    def _reinitialize_after_fork(self) -> None:
+        """Rebuild what a forked child can't use from the parent."""
+        raise NotImplementedError
+
     def _reinitialize_core_after_fork(self) -> None:
-        # The child has only the forking thread, so these locks may have been
-        # held by threads that no longer exist.
+        # The parent's other threads don't exist in the child, and any of them
+        # may have held these locks.
         self._status_lock = threading.Lock()
         self._listeners_lock = threading.Lock()
         self._context_warnings.reinitialize_after_fork()

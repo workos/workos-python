@@ -534,9 +534,10 @@ class WorkOSClient(_BaseWorkOSClient):
         self._backend, self._owns_http_client = resolve_sync_backend(
             http_client, self._request_timeout
         )
-        # Whether a request went out through the HTTP client, so a forked
-        # process can tell whether it would share the parent's connections.
-        self._sent_requests = False
+        # The process that sent the first request through the HTTP client, so
+        # a forked process can tell whether it would share an earlier
+        # process's connections.
+        self._first_request_pid: Optional[int] = None
 
     def close(self) -> None:
         """Release the HTTP client if the SDK created it.
@@ -596,7 +597,8 @@ class WorkOSClient(_BaseWorkOSClient):
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
-        self._sent_requests = True
+        if self._first_request_pid is None:
+            self._first_request_pid = os.getpid()
         record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:
@@ -783,9 +785,10 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         self._backend, self._owns_http_client = resolve_async_backend(
             http_client, self._request_timeout
         )
-        # Whether a request went out through the HTTP client, so a forked
-        # process can tell whether it would share the parent's connections.
-        self._sent_requests = False
+        # The process that sent the first request through the HTTP client, so
+        # a forked process can tell whether it would share an earlier
+        # process's connections.
+        self._first_request_pid: Optional[int] = None
 
     async def close(self) -> None:
         """Release the HTTP client if the SDK created it.
@@ -845,7 +848,8 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
         last_error: Optional[Exception] = None
-        self._sent_requests = True
+        if self._first_request_pid is None:
+            self._first_request_pid = os.getpid()
         record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:

@@ -244,16 +244,20 @@ class AsyncHttpxBackend:
 
 # --- connection tracking --------------------------------------------------------
 
-# The HTTP clients requests have gone out through, and the process that sent
-# the first request through each. Several WorkOS clients can be given the same
-# HTTP client, so a forked process looks here to tell whether it would share
-# an earlier process's connections. Keyed by id, since a caller's own backend
-# need not be hashable; an entry goes away with its client, and a process ID
-# left behind is replaced when another client gets that id.
-_clients_with_requests: weakref.WeakValueDictionary[int, Any] = (
-    weakref.WeakValueDictionary()
-)
-_first_request_pids: Dict[int, int] = {}
+# The HTTP clients requests have gone out through, each held weakly with the
+# ID of the process that sent its first request. Several WorkOS clients can be
+# given the same HTTP client, so a forked process looks here to tell whether it
+# would share an earlier process's connections. Keyed by id, since a caller's
+# own backend need not be hashable; an entry goes away with its client.
+_first_requests: Dict[int, Tuple[weakref.ref[Any], int]] = {}
+
+
+def _forget(key: int, ref: weakref.ref[Any]) -> None:
+    entry = _first_requests.get(key)
+    # Another thread's first request through the same client may have
+    # replaced this entry; that one goes when its own reference dies.
+    if entry is not None and entry[0] is ref:
+        _first_requests.pop(key, None)
 
 
 def _connection_owner(backend: object) -> object:
@@ -268,15 +272,16 @@ def record_request(backend: object) -> None:
     """Note that a request is going out through ``backend``'s connections."""
     owner = _connection_owner(backend)
     key = id(owner)
-    if _clients_with_requests.get(key) is owner:
+    entry = _first_requests.get(key)
+    if entry is not None and entry[0]() is owner:
         return
     try:
-        _clients_with_requests[key] = owner
+        ref = weakref.ref(owner, lambda ref: _forget(key, ref))
     except TypeError:
         # It can't be weakly referenced. Each WorkOS client still tracks its
         # own requests.
         return
-    _first_request_pids[key] = os.getpid()
+    _first_requests[key] = (ref, os.getpid())
 
 
 def sent_requests_from_another_process(backend: object) -> bool:
@@ -286,11 +291,8 @@ def sent_requests_from_another_process(backend: object) -> bool:
     ancestor) sent before the fork. Requests this process sent don't count.
     """
     owner = _connection_owner(backend)
-    key = id(owner)
-    return (
-        _clients_with_requests.get(key) is owner
-        and _first_request_pids.get(key) != os.getpid()
-    )
+    entry = _first_requests.get(id(owner))
+    return entry is not None and entry[0]() is owner and entry[1] != os.getpid()
 
 
 # --- resolution -----------------------------------------------------------------

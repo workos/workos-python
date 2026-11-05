@@ -1,5 +1,5 @@
 # @oagen-ignore-file
-"""Polling delays and retry decisions of the runtime client."""
+"""Polling delays and retry decisions shared by both runtime clients."""
 
 from __future__ import annotations
 

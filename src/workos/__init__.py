@@ -24,6 +24,7 @@ from ._http import (
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from .feature_flags.runtime import (
+    AsyncFeatureFlagsRuntimeClient,
     FeatureFlagsConfiguration,
     FeatureFlagsRuntimeClient,
 )
@@ -56,5 +57,6 @@ __all__ = [
     "TransportTimeout",
     "TransportConnectError",
     "FeatureFlagsRuntimeClient",
+    "AsyncFeatureFlagsRuntimeClient",
     "FeatureFlagsConfiguration",
 ]

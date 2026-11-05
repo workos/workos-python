@@ -1,6 +1,6 @@
 # @oagen-ignore-file
-# This file is hand-maintained. State and local evaluation for the feature
-# flags runtime client.
+# This file is hand-maintained. State and local evaluation shared by the sync
+# and async feature flags runtime clients.
 # pyright: strict, reportPrivateUsage=false
 
 from __future__ import annotations

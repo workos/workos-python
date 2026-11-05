@@ -199,8 +199,10 @@ def test_pagination_importable() -> None:
 
 
 def test_feature_flags_runtime_client_importable() -> None:
-    """Verify the runtime client constructs without making a request."""
+    """Verify both runtime clients construct without making a request."""
     from workos import (
+        AsyncFeatureFlagsRuntimeClient,
+        AsyncWorkOSClient,
         FeatureFlagsConfiguration,
         FeatureFlagsRuntimeClient,
         WorkOSClient,
@@ -210,10 +212,14 @@ def test_feature_flags_runtime_client_importable() -> None:
     sync_runtime = WorkOSClient(
         api_key="sk_test_smoke"
     ).create_feature_flags_runtime_client(bootstrap=configuration)
+    async_runtime = AsyncWorkOSClient(
+        api_key="sk_test_smoke"
+    ).create_feature_flags_runtime_client(bootstrap=configuration)
     assert isinstance(sync_runtime, FeatureFlagsRuntimeClient)
+    assert isinstance(async_runtime, AsyncFeatureFlagsRuntimeClient)
     assert sync_runtime.is_enabled("missing", default=True) is True
     sync_runtime.close()
-    print("✓ Feature flags runtime client importable")
+    print("✓ Feature flags runtime clients importable")
 
 
 def test_dependencies_available() -> None:

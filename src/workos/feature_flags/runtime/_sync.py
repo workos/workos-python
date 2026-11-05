@@ -234,7 +234,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
         # never run.
         if inspect.iscoroutinefunction(listener):
             raise TypeError(
-                f"{kind} listener must be a plain function, not an async function"
+                f"{kind} listener must be a plain function, not an async function; "
+                "use AsyncFeatureFlagsRuntimeClient for async listeners"
             )
         super()._add_listener(kind, listener)
 
@@ -407,7 +408,8 @@ class FeatureFlagsRuntimeClient(RuntimeClientCore):
                 _discard_awaitable(result)
                 self._logger.warning(
                     "A FeatureFlagsRuntimeClient listener returned an awaitable, "
-                    "which was not awaited; listeners must be plain functions"
+                    "which was not awaited; use AsyncFeatureFlagsRuntimeClient for "
+                    "async listeners"
                 )
 
 

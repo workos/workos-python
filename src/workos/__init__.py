@@ -23,6 +23,10 @@ from ._http import (
     TransportTimeout,
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
+from .feature_flags.runtime import (
+    FeatureFlagsConfiguration,
+    FeatureFlagsRuntimeClient,
+)
 from .public_client import create_public_client
 from ._types import NOT_GIVEN, NotGiven, RequestOptions
 
@@ -51,4 +55,6 @@ __all__ = [
     "TransportError",
     "TransportTimeout",
     "TransportConnectError",
+    "FeatureFlagsRuntimeClient",
+    "FeatureFlagsConfiguration",
 ]

@@ -198,6 +198,24 @@ def test_pagination_importable() -> None:
     print("✓ Pagination and RequestOptions importable")
 
 
+def test_feature_flags_runtime_client_importable() -> None:
+    """Verify the runtime client constructs without making a request."""
+    from workos import (
+        FeatureFlagsConfiguration,
+        FeatureFlagsRuntimeClient,
+        WorkOSClient,
+    )
+
+    configuration = FeatureFlagsConfiguration.from_dict({"version": 2, "flags": {}})
+    sync_runtime = WorkOSClient(
+        api_key="sk_test_smoke"
+    ).create_feature_flags_runtime_client(bootstrap=configuration)
+    assert isinstance(sync_runtime, FeatureFlagsRuntimeClient)
+    assert sync_runtime.is_enabled("missing", default=True) is True
+    sync_runtime.close()
+    print("✓ Feature flags runtime client importable")
+
+
 def test_dependencies_available() -> None:
     """Verify core runtime dependencies are installed and importable."""
     import cryptography
@@ -225,6 +243,7 @@ def main() -> int:
         test_core_types_importable,
         test_errors_importable,
         test_pagination_importable,
+        test_feature_flags_runtime_client_importable,
         test_dependencies_available,
     ]
 

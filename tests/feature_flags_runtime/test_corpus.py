@@ -4,18 +4,21 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from contextlib import contextmanager
+from typing import Any, Dict, Iterator, List
 
 import pytest
 
-from workos.feature_flags.runtime._configuration import (
+from workos import WorkOSClient
+from workos.feature_flags.runtime import (
     FeatureFlagsConfiguration,
     FeatureFlagsConfigurationError,
-    changed_flags,
+    FeatureFlagsRuntimeClient,
 )
+from workos.feature_flags.runtime._configuration import changed_flags
 from workos.feature_flags.runtime._context import ContextWarnings, normalize_context
 
-from tests.feature_flags_runtime.helpers import load_fixture
+from tests.feature_flags_runtime.helpers import API_KEY, load_fixture
 
 EVALUATION = load_fixture("evaluation_cases.json")
 PAYLOADS = load_fixture("payload_cases.json")
@@ -26,29 +29,26 @@ _CASE_FIELDS = {"name", "source", "key", "flag", "evaluations", "malformed"}
 _EVALUATION_FIELDS = {"context", "expect"}
 _OPTIONAL_EVALUATION_FIELDS = {"name"}
 _CHANGE_FIELDS = {"name", "source", "before", "after", "changed"}
-_WARNINGS = ContextWarnings(logging.getLogger("tests.feature_flags_runtime.corpus"))
 
 
-def _is_enabled(
+@contextmanager
+def _runtime(
     configuration: FeatureFlagsConfiguration,
-    slug: str,
-    context: Dict[str, Any],
-    *,
-    default: bool,
-) -> bool:
-    # `default` answers for a missing flag and for one without a boolean answer.
-    flag = configuration._compiled(slug)
-    if flag is None:
-        return default
-    answer = flag.evaluate(normalize_context(context, _WARNINGS))
-    return default if answer is None else answer
+) -> Iterator[FeatureFlagsRuntimeClient]:
+    workos = WorkOSClient(api_key=API_KEY)
+    runtime = FeatureFlagsRuntimeClient(workos, bootstrap=configuration)
+    try:
+        yield runtime
+    finally:
+        runtime.close()
+        workos.close()
 
 
 def _observed(
-    configuration: FeatureFlagsConfiguration, slug: str, context: Dict[str, Any]
+    runtime: FeatureFlagsRuntimeClient, slug: str, context: Dict[str, Any]
 ) -> Any:
-    with_false = _is_enabled(configuration, slug, context, default=False)
-    with_true = _is_enabled(configuration, slug, context, default=True)
+    with_false = runtime.is_enabled(slug, context, default=False)
+    with_true = runtime.is_enabled(slug, context, default=True)
     if with_false == with_true:
         return with_false
     return "absent" if (with_false, with_true) == (False, True) else "inverted"
@@ -63,15 +63,43 @@ def test_evaluation_corpus(case: Dict[str, Any]) -> None:
     configuration = FeatureFlagsConfiguration.from_dict(
         {"version": 2, "flags": {key: flag}}
     )
-    for evaluation in case["evaluations"]:
-        fields = set(evaluation)
-        assert (
-            _EVALUATION_FIELDS
-            <= fields
-            <= _EVALUATION_FIELDS | _OPTIONAL_EVALUATION_FIELDS
-        ), f"unexpected evaluation fields: {fields}"
-        observed = _observed(configuration, key, evaluation["context"])
-        assert observed == evaluation["expect"], evaluation
+    with _runtime(configuration) as runtime:
+        for evaluation in case["evaluations"]:
+            fields = set(evaluation)
+            assert (
+                _EVALUATION_FIELDS
+                <= fields
+                <= _EVALUATION_FIELDS | _OPTIONAL_EVALUATION_FIELDS
+            ), f"unexpected evaluation fields: {fields}"
+            observed = _observed(runtime, key, evaluation["context"])
+            assert observed == evaluation["expect"], evaluation
+
+
+def test_get_all_flags_agrees_with_is_enabled_and_omits_flags_without_an_answer() -> (
+    None
+):
+    flags = {
+        case.get("key", case["flag"]["slug"]) + str(index): {
+            **case["flag"],
+            "slug": case.get("key", case["flag"]["slug"]) + str(index),
+        }
+        for index, case in enumerate(EVALUATION["cases"])
+    }
+    contexts: List[Dict[str, Any]] = [
+        {},
+        {"user": "user_1", "organization": "org_1"},
+        {"organization": "org_acme"},
+    ]
+    configuration = FeatureFlagsConfiguration.from_dict({"version": 2, "flags": flags})
+    with _runtime(configuration) as runtime:
+        for context in contexts:
+            all_flags = runtime.get_all_flags(context)
+            for slug in flags:
+                answer = _observed(runtime, slug, context)
+                if answer == "absent":
+                    assert slug not in all_flags
+                else:
+                    assert all_flags[slug] is answer
 
 
 @pytest.mark.parametrize("case", PAYLOADS["cases"], ids=lambda case: case["name"])
@@ -106,10 +134,11 @@ def test_context_corpus_flag_matches_only_the_surviving_targets() -> None:
     configuration = FeatureFlagsConfiguration.from_dict(
         {"version": 2, "flags": {"flag": CONTEXTS["flag"]}}
     )
-    for case in CONTEXTS["cases"]:
-        expected = (
-            case["targets"].get("workspace") == "ws_1"
-            or case["targets"].get("user") == "user_1"
-        )
-        observed = _is_enabled(configuration, "flag", case["context"], default=False)
-        assert observed is expected, case["name"]
+    with _runtime(configuration) as runtime:
+        for case in CONTEXTS["cases"]:
+            expected = (
+                case["targets"].get("workspace") == "ws_1"
+                or case["targets"].get("user") == "user_1"
+            )
+            observed = runtime.is_enabled("flag", case["context"])
+            assert observed is expected, case["name"]

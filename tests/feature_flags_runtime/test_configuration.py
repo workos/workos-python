@@ -7,16 +7,20 @@ import copy
 import json
 import pickle
 from collections import UserDict
+from datetime import datetime, timezone
 from types import MappingProxyType
 
 import pytest
 
-from workos.feature_flags.runtime._configuration import (
+from workos._errors import AuthenticationError
+from workos.feature_flags.runtime import (
     ConditionDefinition,
     FeatureFlagsConfiguration,
     FeatureFlagsConfigurationError,
     FlagDefinition,
+    FlagsChangedEvent,
     RuleDefinition,
+    RuntimeStatus,
 )
 
 from tests.feature_flags_runtime.helpers import flag, payload, rule
@@ -148,3 +152,29 @@ def test_snapshots_pickle_and_copy() -> None:
     # Immutable, so copies can share the instance.
     assert copy.copy(configuration) is configuration
     assert copy.deepcopy(configuration) is configuration
+
+
+def test_status_and_change_events_pickle_and_copy() -> None:
+    configuration = FeatureFlagsConfiguration.from_dict(PAYLOAD)
+    error = AuthenticationError(
+        "Invalid API key", request_id="req_1", response_json={"message": "x"}
+    )
+    status = RuntimeStatus(
+        configuration=configuration,
+        last_successful_refresh_at=datetime(2026, 11, 2, tzinfo=timezone.utc),
+        last_error=error,
+        refresh_count=3,
+        failed_refresh_count=1,
+    )
+    event = FlagsChangedEvent(None, configuration, frozenset({"checkout"}))
+
+    for clone in (pickle.loads(pickle.dumps(status)), copy.deepcopy(status)):
+        assert clone.refresh_count == 3
+        assert clone.flag_count == 1
+        assert clone.configuration is not None
+        assert clone.configuration.to_json() == configuration.to_json()
+        assert isinstance(clone.last_error, AuthenticationError)
+        assert clone.last_error.request_id == "req_1"
+    for clone_event in (pickle.loads(pickle.dumps(event)), copy.deepcopy(event)):
+        assert clone_event.changed_flags == {"checkout"}
+        assert clone_event.current.slugs == ("checkout",)

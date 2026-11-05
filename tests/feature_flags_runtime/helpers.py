@@ -236,7 +236,7 @@ class LocalHTTPServer:
     ``mode`` selects the next responses: ``"ok"`` serves ``payload``,
     ``"stall"`` waits ``stall`` seconds before answering, and ``"drip"`` sends
     the body one byte every ``drip_interval`` seconds. Every request is
-    recorded with its headers.
+    recorded with its headers and the client's TCP port.
     """
 
     def __init__(self, payload: Dict[str, Any]) -> None:
@@ -268,6 +268,14 @@ class LocalHTTPServer:
     def base_url(self) -> str:
         return f"http://127.0.0.1:{self._server.server_address[1]}"
 
+    def ports(self, authorization: str) -> set:
+        with self._lock:
+            return {
+                request["port"]
+                for request in self.requests
+                if request["headers"].get("Authorization") == authorization
+            }
+
     def close(self) -> None:
         self._server.shutdown()
         self._server.server_close()
@@ -278,6 +286,7 @@ class LocalHTTPServer:
                 {
                     "path": handler.path,
                     "headers": dict(handler.headers.items()),
+                    "port": handler.client_address[1],
                 }
             )
             mode, stall, interval = self.mode, self.stall, self.drip_interval

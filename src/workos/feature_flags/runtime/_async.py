@@ -7,15 +7,18 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import os
 import time
+import weakref
 from types import TracebackType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 from ..._errors import WorkOSTimeoutError
-from . import _policy
+from ..._http import sent_requests
+from . import _core, _policy
 from ._configuration import FeatureFlagsConfiguration
 from ._context import LoggerLike
-from ._core import Notification, RuntimeClientCore, utc_now
+from ._core import Notification, RuntimeClientCore, fork_blocked_message, utc_now
 from ._types import FlagsChangedEvent, RuntimeStatus
 
 if TYPE_CHECKING:
@@ -44,6 +47,9 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
     The client polls through its ``AsyncWorkOSClient``, so use it on that
     client's event loop, and close it before closing the ``AsyncWorkOSClient``.
+    A client created before a fork can start in the child unless the
+    ``AsyncWorkOSClient`` already sent requests in the parent, or the platform
+    is macOS.
     """
 
     def __init__(
@@ -81,6 +87,11 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         # waiting for, if any.
         self._drainer: Optional[asyncio.Task[Any]] = None
         self._listener_task: Optional[asyncio.Future[Any]] = None
+        # Why polling cannot run in this forked child, if it cannot, and
+        # whether the platform is why.
+        self._fork_blocker: Optional[str] = None
+        self._fork_blocked_by_platform = False
+        self._fork_warned = False
         self._init_synchronization()
         if on_change is not None:
             self.add_change_listener(on_change)
@@ -88,6 +99,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             self.add_error_listener(on_error)
         if on_status is not None:
             self.add_status_listener(on_status)
+        _clients.add(self)
 
     def _init_synchronization(self) -> None:
         # None of these binds to an event loop until first awaited.
@@ -95,7 +107,7 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
         self._ready = asyncio.Event()
         # Set when polling stops after a 401, to end the polling task's sleep.
         self._wake = asyncio.Event()
-        if self._status.ready:
+        if self._closed or self._status.ready or self._readiness_error is not None:
             self._ready.set()
 
     # --- Lifecycle ------------------------------------------------------------
@@ -105,15 +117,23 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
         The first poll is sent right away, then every ``polling_interval``
         seconds. Failed polls retry with exponential backoff. A 401 stops
-        polling permanently; the last good configuration stays usable.
+        polling permanently; the last good configuration stays usable. In a
+        forked child on macOS, a client created before the fork does not
+        poll: this logs a warning and returns.
 
         Raises:
-            RuntimeError: If the client is closed or no event loop is running.
+            RuntimeError: If the client is closed, no event loop is running, or
+                the client cannot poll in this forked process because the
+                parent used the ``AsyncWorkOSClient`` or its HTTP client.
         """
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
             )
+        if self._fork_blocked_by_platform:
+            self._skip_start_after_fork()
+            return
+        self._raise_if_fork_blocked()
         if self._started:
             return
         loop = asyncio.get_running_loop()
@@ -138,10 +158,13 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             TimeoutError: If flags are not available within ``timeout``.
             AuthenticationError: If polling stopped after a 401 before any
                 configuration was available.
-            RuntimeError: If the client was closed before it became ready.
+            RuntimeError: If the client was closed before it became ready, or
+                has no configuration and cannot poll in this forked process.
         """
         if self._status.ready:
             return
+        # Nothing can make the client ready in a forked child that cannot poll.
+        self._raise_if_fork_blocked()
         try:
             await asyncio.wait_for(self._ready.wait(), timeout)
         except asyncio.TimeoutError:
@@ -159,12 +182,14 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
 
         Raises:
             WorkOSError: If the request fails or the payload cannot be read.
-            RuntimeError: If the client is closed.
+            RuntimeError: If the client is closed or cannot poll in this forked
+                process.
         """
         if self._closed:
             raise RuntimeError(
                 "This feature flags runtime client is closed; create a new one"
             )
+        self._raise_if_fork_blocked()
         try:
             await self._refresh(background=False)
         except _Closed:
@@ -286,7 +311,11 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             await self._drain()
 
     async def _refresh_locked(self, *, background: bool) -> None:
-        if self._closed or (background and self._status.polling_stopped):
+        if (
+            self._closed
+            or self._fork_blocker is not None
+            or (background and self._status.polling_stopped)
+        ):
             raise _Closed()
         attempted = utc_now()
         try:
@@ -396,3 +425,96 @@ class AsyncFeatureFlagsRuntimeClient(RuntimeClientCore):
             self._logger.error("A feature flags runtime client listener was cancelled")
         else:
             listener_task.result()
+
+    # --- Fork safety ----------------------------------------------------------
+
+    def _reinitialize_after_fork(self) -> None:
+        # Once the AsyncWorkOSClient's HTTP client has sent requests, its
+        # connections belong to the parent's event loop, so a copy of a client
+        # that polled, or whose HTTP client carried other calls (from this or
+        # another AsyncWorkOSClient), stops polling here (even if the child
+        # keeps running a copy of the loop) and keeps serving its last
+        # configuration. Otherwise it starts over on the child's own loop.
+        self._reinitialize_core_after_fork()
+        polling = (
+            self._started and not self._closed and not self._status.polling_stopped
+        )
+        # The polling task and anything waiting on these primitives belong to
+        # the parent's event loop, which may not run here: close() must not
+        # wait for that task.
+        self._task = None
+        self._drainer = None
+        self._listener_task = None
+        self._init_synchronization()
+        if self._closed:
+            self._fork_blocker = None
+        elif not _core.FORK_SAFE_PLATFORM:
+            self._fork_blocker = (
+                f"{_core.MACOS_FORK_HAZARD}. Create the AsyncWorkOSClient and the "
+                "runtime client after forking instead, for example in gunicorn's "
+                "post_fork hook"
+            )
+        elif (
+            self._used_before_fork()
+            or self._client._sent_requests
+            or sent_requests(self._client._backend)
+        ):
+            self._fork_blocker = (
+                "the AsyncWorkOSClient or its HTTP client was used in the parent, "
+                "on the parent's event loop and connections. Create the "
+                "AsyncWorkOSClient and the runtime client after forking instead"
+            )
+        else:
+            self._fork_blocker = None
+        # On macOS every client created before the fork is blocked, however
+        # the parent used it, so start() warns instead of raising there.
+        self._fork_blocked_by_platform = (
+            self._fork_blocker is not None and not _core.FORK_SAFE_PLATFORM
+        )
+        # Only a client that was polling warns, on first use, that it no longer
+        # polls. On macOS any other warns once started; elsewhere start()
+        # raises instead.
+        self._fork_warned = not polling
+
+    def _before_use(self) -> None:
+        self._warn_if_fork_blocked()
+
+    def _warn_if_fork_blocked(self) -> None:
+        if self._fork_blocker is not None and not self._fork_warned:
+            self._fork_warned = True
+            self._logger.warning(
+                "%s. Evaluation keeps serving the last configuration.",
+                fork_blocked_message(self._fork_blocker),
+            )
+
+    def _raise_if_fork_blocked(self) -> None:
+        if self._fork_blocker is not None:
+            raise RuntimeError(fork_blocked_message(self._fork_blocker))
+
+    def _skip_start_after_fork(self) -> None:
+        # A client that was polling warns once, on first use. Starting one
+        # that was not makes it such a client, which has not warned yet.
+        if not self._started:
+            self._started = True
+            self._fork_warned = False
+        self._warn_if_fork_blocked()
+
+
+_clients: weakref.WeakSet[AsyncFeatureFlagsRuntimeClient] = weakref.WeakSet()
+
+
+def _reinitialize_clients_after_fork() -> None:
+    for client in list(_clients):
+        # One client that fails must not leave the others unprepared.
+        try:
+            client._reinitialize_after_fork()
+        except Exception:
+            client._logger.exception(
+                "Could not prepare a feature flags runtime client for forked "
+                "process %d",
+                os.getpid(),
+            )
+
+
+if hasattr(os, "register_at_fork"):
+    os.register_at_fork(after_in_child=_reinitialize_clients_after_fork)

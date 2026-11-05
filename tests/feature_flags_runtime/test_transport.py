@@ -32,7 +32,9 @@ def local() -> Iterator[LocalHTTPServer]:
     server.close()
 
 
-def test_sends_the_sdk_url_and_headers(local: LocalHTTPServer) -> None:
+def test_sends_the_sdk_url_and_headers_and_closes_its_client(
+    local: LocalHTTPServer,
+) -> None:
     workos = WorkOSClient(api_key=API_KEY, base_url=local.base_url)
     runtime = workos.create_feature_flags_runtime_client()
     runtime.refresh()
@@ -44,6 +46,20 @@ def test_sends_the_sdk_url_and_headers(local: LocalHTTPServer) -> None:
     assert runtime.is_enabled("checkout") is True
 
     runtime.close()
+    assert runtime._transport._owned is None
+    workos.close()
+
+
+def test_a_poll_after_close_opens_no_client(local: LocalHTTPServer) -> None:
+    workos = WorkOSClient(api_key=API_KEY, base_url=local.base_url)
+    runtime = workos.create_feature_flags_runtime_client()
+    runtime.close()
+
+    # As a poll does when close() stopped waiting for it.
+    with pytest.raises(RuntimeError, match="closed"):
+        runtime._transport.get(time.monotonic() + 5)
+    assert runtime._transport._owned is None
+    assert local.requests == []
     workos.close()
 
 

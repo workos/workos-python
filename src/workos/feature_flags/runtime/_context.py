@@ -66,6 +66,9 @@ class ContextWarnings:
                 self._seen.add((reason, key))
         self._logger.warning(message)
 
+    def reinitialize_after_fork(self) -> None:
+        self._lock = threading.Lock()
+
 
 def normalize_context(context: object, warnings: ContextWarnings) -> dict[str, str]:
     """Reduce an evaluation context to valid target type to ID pairs.

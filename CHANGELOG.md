@@ -1,5 +1,21 @@
 # Changelog
 
+## [10.8.0](https://github.com/workos/workos-python/compare/v10.7.0...v10.8.0) (2026-11-05)
+
+
+### Features
+
+* **feature-flags:** Add an async feature flags runtime client ([#766](https://github.com/workos/workos-python/issues/766)) ([ed5c3a5](https://github.com/workos/workos-python/commit/ed5c3a53336419be2d5a1f6a2f447dd211c1aa70))
+* **feature-flags:** Evaluate feature flags locally with a polling runtime client ([#765](https://github.com/workos/workos-python/issues/765)) ([e641a53](https://github.com/workos/workos-python/commit/e641a5364418c92bc3b376d154e461d9cac8ee8d))
+
+
+### Bug Fixes
+
+* **client:** Keep the public client's type in `with WorkOSClient() as workos` ([#771](https://github.com/workos/workos-python/issues/771)) ([623a29c](https://github.com/workos/workos-python/commit/623a29c8f8cf7cb562912bc04487935acfc31b60))
+* **errors:** Print API errors with their HTTP status and only the fields that are set ([#761](https://github.com/workos/workos-python/issues/761)) ([1288dbe](https://github.com/workos/workos-python/commit/1288dbe7c12d85967291ade7ad6e2b9e287d9239))
+* **feature-flags:** Poll in uWSGI workers forked without Python's fork hooks ([#772](https://github.com/workos/workos-python/issues/772)) ([4d4fb82](https://github.com/workos/workos-python/commit/4d4fb82d1b6316e5cc19426016e3e90c5f1f21a6))
+* **session:** Reject non-user access tokens in session cookies ([#770](https://github.com/workos/workos-python/issues/770)) ([60cd09a](https://github.com/workos/workos-python/commit/60cd09a67ced94986ced8b1f1391d8f0536791e5))
+
 ## [10.7.0](https://github.com/workos/workos-python/compare/v10.6.0...v10.7.0) (2026-11-04)
 
 ### Bug Fixes

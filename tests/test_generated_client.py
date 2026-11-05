@@ -64,6 +64,14 @@ class TestWorkOSClient:
         with WorkOSClient(api_key="sk_test_123", client_id="client_test") as client:
             assert client._api_key == "sk_test_123"
 
+    def test_context_manager_yields_the_client_with_its_resources(self):
+        # pyright checks this file, so this also checks that `with` gives the
+        # public client's type, which has the resources and helpers.
+        with WorkOSClient(api_key="sk_test_123") as client:
+            assert client.organizations is not None
+            runtime = client.create_feature_flags_runtime_client()
+            runtime.close()
+
     def test_api_key_only_initializes(self):
         client = WorkOSClient(api_key="sk_test_123")
         assert client._api_key == "sk_test_123"
@@ -631,6 +639,14 @@ class TestAsyncWorkOSClient:
         assert client.webhooks is not None
         assert client.widgets is not None
         await client.close()
+
+    async def test_context_manager_yields_the_client_with_its_resources(self):
+        # pyright checks this file, so this also checks that `async with` gives
+        # the public client's type, which has the resources and helpers.
+        async with AsyncWorkOSClient(api_key="sk_test_123") as client:
+            assert client.organizations is not None
+            runtime = client.create_feature_flags_runtime_client()
+            await runtime.close()
 
     async def test_request_raw_preserves_json_dict_response(self, httpx_mock):
         httpx_mock.add_response(json={"ok": True})

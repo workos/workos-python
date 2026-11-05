@@ -6,6 +6,7 @@ import json
 import math
 import os
 import platform
+import sys
 import time
 import uuid
 import random
@@ -13,6 +14,11 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any, Dict, List, Optional, Sequence, Type, Union, cast, overload
 from urllib.parse import quote, urlencode
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 from ._types import _format_datetime
 from ._errors import (
@@ -546,7 +552,7 @@ class WorkOSClient(_BaseWorkOSClient):
         if self._owns_http_client:
             self._backend.close()
 
-    def __enter__(self) -> "WorkOSClient":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -795,7 +801,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         if self._owns_http_client:
             await self._backend.close()
 
-    async def __aenter__(self) -> "AsyncWorkOSClient":
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:

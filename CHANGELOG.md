@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.8.1](https://github.com/workos/workos-python/compare/v10.8.0...v10.8.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* **sdk:** webhooks-django × codex-baseline — The agent hand-rolled HMAC signature verification (parsing a… ([#736](https://github.com/workos/workos-python/issues/736)) ([6e6d782](https://github.com/workos/workos-python/commit/6e6d782b0efb41fd21033b121ca6480c23da1f68))
+
 ## [10.8.0](https://github.com/workos/workos-python/compare/v10.7.0...v10.8.0) (2026-11-05)
 
 

@@ -4,7 +4,7 @@
 # are sent by WorkOS to the customer's endpoint and are not described by the
 # OpenAPI spec, so both the crypto and the payload models live here.
 #
-# The payload models mirror the `@workos-inc/actions-types` contract in the
+# The payload models mirror the Actions payload contract enforced by the
 # WorkOS API. Fields that contract guarantees are required; fields WorkOS adds
 # on a real sign-in (for example `user.external_id`) are optional, because a
 # test request sent from the dashboard omits them. The generated REST models

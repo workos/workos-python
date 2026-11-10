@@ -121,7 +121,7 @@ AUTHENTICATION_PAYLOAD: dict[str, Any] = {
 }
 
 # What the dashboard's "send test request" sends: the API strips it down to the
-# fields the actions-types contract guarantees, so the REST extras are absent.
+# fields the Actions payload contract guarantees, so the REST extras are absent.
 AUTHENTICATION_TEST_PAYLOAD: dict[str, Any] = {
     "object": "authentication_action_context",
     "id": "actions_execution_01JATCMZJY26PQ59XT9BNT0FNM",

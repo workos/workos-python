@@ -88,7 +88,7 @@ The client exposes the WorkOS API through typed namespace properties:
 | `client.radar` | Radar risk scoring |
 | `client.passwordless` | Passwordless authentication sessions |
 | `client.vault` | Encrypted data vault |
-| `client.actions` | AuthKit Actions signature verification and response signing |
+| `client.actions` | AuthKit Actions request verification, typed deserialization, and response signing |
 | `client.pkce` | PKCE code verifier/challenge helpers |
 
 ## Webhook Signature Verification
@@ -120,6 +120,51 @@ def workos_webhook(request):
 `verify_header()` does the same check without deserializing, for payloads you want to handle yourself.
 
 The `WorkOS-Signature` header is formatted `t=<unix-timestamp-ms>, v1=<hex-sha256>` — note the `, ` separator — and `v1` is the HMAC-SHA256 of `"{timestamp}.{raw body}"` keyed with the endpoint secret. Events older (or newer) than `tolerance` seconds are rejected; it defaults to 180. Verification is local and synchronous, so it works the same on `AsyncWorkOSClient`.
+
+## AuthKit Actions
+
+[Actions](https://workos.com/docs/authkit/actions) call your endpoint during sign-in or sign-up and wait for a signed verdict. `client.actions.verify_action()` checks the `WorkOS-Signature` header and returns a typed context, and `client.actions.sign_response()` builds the signed reply:
+
+```python
+from django.http import HttpResponse, JsonResponse
+
+from workos import WorkOSClient
+from workos.actions import ActionType, AuthenticationActionContext
+
+client = WorkOSClient(api_key="sk_1234", client_id="client_1234")
+ACTIONS_SECRET = "actions_secret_1234"  # from the Actions page in the WorkOS dashboard
+
+def workos_action(request):
+    try:
+        action = client.actions.verify_action(
+            payload=request.body,  # raw bytes, never a re-serialized dict
+            sig_header=request.headers["WorkOS-Signature"],
+            secret=ACTIONS_SECRET,
+        )
+    except ValueError:
+        return HttpResponse(status=400)  # invalid signature or stale timestamp
+
+    action_type: ActionType
+    if isinstance(action, AuthenticationActionContext):
+        action_type = "authentication"
+        allowed = action.user.email_verified
+    else:  # UserRegistrationActionContext
+        action_type = "user_registration"
+        allowed = action.user_data.email.endswith("@example.com")
+
+    return JsonResponse(
+        client.actions.sign_response(
+            action_type=action_type,
+            verdict="Allow" if allowed else "Deny",
+            error_message=None if allowed else "Not allowed",
+            secret=ACTIONS_SECRET,
+        )
+    )
+```
+
+`AuthenticationActionContext` carries the `user`, and the `organization` and `organization_membership` when the sign-in targets one. `UserRegistrationActionContext` carries the submitted `user_data` and the `invitation` being accepted, if any. Both have the `id` of the action execution, the `authentication_method`, and the request's `ip_address`, `user_agent`, `device_fingerprint` and `client_id` where WorkOS has them.
+
+`construct_action()` does the same verification but returns the raw payload as a `dict`, and `verify_header()` only checks the signature. Actions requests older (or newer) than `tolerance` seconds are rejected; it defaults to 30.
 
 ## Pagination
 

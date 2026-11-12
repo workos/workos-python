@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# Run every CI check: format, lint, type check and tests for the SDK, then
+# lint, type check and tests for each provider distribution under packages/.
+# Both live in the nox "ci" session.
 
 set -e
 

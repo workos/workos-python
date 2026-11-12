@@ -9,6 +9,7 @@
     },
     "packages/workos-workload-identity-github-actions": {
       "release-type": "python",
+      "initial-version": "0.1.0",
       "component": "workos-workload-identity-github-actions",
       "package-name": "workos-workload-identity-github-actions",
       "include-component-in-tag": true,
@@ -16,6 +17,7 @@
     },
     "packages/workos-workload-identity-gcp": {
       "release-type": "python",
+      "initial-version": "0.1.0",
       "component": "workos-workload-identity-gcp",
       "package-name": "workos-workload-identity-gcp",
       "include-component-in-tag": true,
@@ -23,6 +25,7 @@
     },
     "packages/workos-workload-identity-aws": {
       "release-type": "python",
+      "initial-version": "0.1.0",
       "component": "workos-workload-identity-aws",
       "package-name": "workos-workload-identity-aws",
       "include-component-in-tag": true,

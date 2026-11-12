@@ -3,6 +3,7 @@
 """WorkOS Python SDK."""
 
 from ._client import AsyncWorkOSClient, WorkOSClient
+from ._credentials import Credentials, CredentialSnapshot
 from ._errors import (
     WorkOSError,
     AuthenticationError,
@@ -30,6 +31,13 @@ from .feature_flags.runtime import (
 )
 from .public_client import create_public_client
 from ._types import NOT_GIVEN, NotGiven, RequestOptions
+from .workload_identity import (
+    IdentityTokenProvider,
+    WorkloadIdentityCredentials,
+    WorkloadIdentityError,
+    token_env,
+    token_file,
+)
 
 __all__ = [
     "WorkOSClient",
@@ -59,4 +67,11 @@ __all__ = [
     "FeatureFlagsRuntimeClient",
     "AsyncFeatureFlagsRuntimeClient",
     "FeatureFlagsConfiguration",
+    "Credentials",
+    "CredentialSnapshot",
+    "WorkloadIdentityCredentials",
+    "IdentityTokenProvider",
+    "WorkloadIdentityError",
+    "token_file",
+    "token_env",
 ]

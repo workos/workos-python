@@ -21,6 +21,12 @@ else:
     from typing_extensions import Self
 
 from ._types import _format_datetime
+from ._credentials import (
+    NO_CREDENTIALS,
+    Credentials,
+    StaticKeyCredentials,
+    apply_snapshot,
+)
 from ._errors import (
     APIError,
     WorkOSError,
@@ -68,6 +74,11 @@ MAX_RETRY_AFTER = 60
 _INVALID_PATH_SEGMENTS = frozenset({"", ".", ".."})
 
 
+def _user_agent() -> str:
+    """The ``User-Agent`` every request from this SDK carries."""
+    return f"WorkOS Python/{platform.python_version()} Python SDK/{VERSION}"
+
+
 def _parse_issuer_env(value: str) -> Optional[Union[str, List[str]]]:
     issuers = [issuer.strip() for issuer in value.split(",")]
     issuers = [issuer for issuer in issuers if issuer]
@@ -90,16 +101,32 @@ class _BaseWorkOSClient:
         jwt_issuer: Optional[Union[str, Sequence[str]]] = None,
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
+        credentials: Optional[Credentials] = None,
     ) -> None:
+        if credentials is not None:
+            if api_key:
+                raise ValueError(
+                    "WorkOS accepts either api_key or credentials, not both. "
+                    "Remove api_key to authenticate with the credentials object."
+                )
+            if is_public:
+                raise ValueError(
+                    "A public client sends no credentials. "
+                    "Remove credentials, or do not set is_public."
+                )
         self._is_public = is_public
+        self._credentials = credentials
         # Public clients (PKCE / browser / mobile / CLI) must never attach
         # an API key, even if WORKOS_API_KEY is present in the environment.
-        if is_public:
+        # Neither must a client built with credentials: explicit credentials
+        # win over the environment, and a failing credentials object never
+        # falls back to a key.
+        if is_public or credentials is not None:
             self._api_key: Optional[str] = None
         else:
             self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
         self.client_id = client_id or os.environ.get("WORKOS_CLIENT_ID")
-        if not self._api_key and not self.client_id:
+        if not self._api_key and not self.client_id and credentials is None:
             raise ValueError(
                 "WorkOS requires either an API key or a client ID. "
                 "Provide api_key / WORKOS_API_KEY for authenticated server-side usage, "
@@ -325,6 +352,28 @@ class _BaseWorkOSClient:
             )
         return self.client_id
 
+    def _request_credentials(
+        self, request_options: Optional[RequestOptions]
+    ) -> Credentials:
+        """The credentials that authenticate one logical request.
+
+        A credentials object passed to the client always applies: its headers
+        overwrite any ``Authorization`` header on the request. With a static
+        API key, an ``Authorization`` header passed in ``extra_headers`` has
+        always won over the key, and still does.
+        """
+        if self._credentials is not None:
+            return self._credentials
+        if request_options:
+            extra = request_options.get("extra_headers")
+            if isinstance(extra, dict) and any(
+                str(name).lower() == "authorization"
+                for name in cast(Dict[str, str], extra)
+            ):
+                return NO_CREDENTIALS
+        # Built per request so it follows the client's current API key.
+        return StaticKeyCredentials(self._api_key)
+
     def _build_headers(
         self,
         method: str,
@@ -333,7 +382,7 @@ class _BaseWorkOSClient:
     ) -> Dict[str, str]:
         headers: Dict[str, str] = {
             "Content-Type": "application/json",
-            "User-Agent": f"WorkOS Python/{platform.python_version()} Python SDK/{VERSION}",
+            "User-Agent": _user_agent(),
         }
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
@@ -500,6 +549,7 @@ class WorkOSClient(_BaseWorkOSClient):
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
         http_client: Optional[SyncHTTPClient] = None,
+        credentials: Optional[Credentials] = None,
     ) -> None:
         """Initialize the WorkOS client.
 
@@ -522,9 +572,15 @@ class WorkOSClient(_BaseWorkOSClient):
                 :class:`workos.HTTPBackend`. Defaults to a new ``httpx2.Client``
                 that this instance owns and closes. A client you pass in is
                 never closed by the SDK.
+            credentials: Credentials to authenticate with instead of an API key,
+                such as :class:`workos.WorkloadIdentityCredentials`. They are
+                resolved before every HTTP attempt. ``WORKOS_API_KEY`` is
+                ignored when credentials are passed.
 
         Raises:
-            ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
+            ValueError: If neither api_key, client_id nor credentials is provided,
+                directly or via environment variables; or if credentials are
+                passed together with api_key or is_public.
             TypeError: If ``http_client`` is not a supported client type.
         """
         super().__init__(
@@ -536,6 +592,7 @@ class WorkOSClient(_BaseWorkOSClient):
             jwt_issuer=jwt_issuer,
             max_retries=max_retries,
             is_public=is_public,
+            credentials=credentials,
         )
         self._backend, self._owns_http_client = resolve_sync_backend(
             http_client, self._request_timeout
@@ -602,19 +659,44 @@ class WorkOSClient(_BaseWorkOSClient):
         content = self._encode_body(body)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
+        credentials = self._request_credentials(request_options)
+        # One 401 recovery per logical request. Set once, never cleared, however
+        # many transport retries follow.
+        recovery_used = False
         last_error: Optional[Exception] = None
         if self._first_request_pid is None:
             self._first_request_pid = os.getpid()
         record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:
+                # Resolved before every attempt, so a retry never sends a token
+                # that expired while the request was backing off.
+                snapshot = credentials.resolve(timeout=timeout)
                 response = self._backend.request(
                     method.upper(),
                     url,
-                    headers=headers,
+                    headers=apply_snapshot(headers, snapshot),
                     content=content,
                     timeout=timeout,
                 )
+                if (
+                    response.status_code == 401
+                    and snapshot.recoverable
+                    and not recovery_used
+                ):
+                    # The API rejected this token. Discard that generation and
+                    # resend once, with the same body and idempotency key and
+                    # no backoff. Whatever comes back is handled as usual.
+                    recovery_used = True
+                    credentials.invalidate(snapshot.generation)
+                    snapshot = credentials.resolve(timeout=timeout)
+                    response = self._backend.request(
+                        method.upper(),
+                        url,
+                        headers=apply_snapshot(headers, snapshot),
+                        content=content,
+                        timeout=timeout,
+                    )
                 if response.status_code in RETRY_STATUS_CODES and attempt < max_retries:
                     delay = self._calculate_retry_delay(
                         attempt, response.headers.get("Retry-After")
@@ -755,6 +837,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         max_retries: int = MAX_RETRIES,
         is_public: bool = False,
         http_client: Optional[AsyncHTTPClient] = None,
+        credentials: Optional[Credentials] = None,
     ) -> None:
         """Initialize the async WorkOS client.
 
@@ -773,9 +856,15 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
                 implementing :class:`workos.AsyncHTTPBackend`. Defaults to a new
                 ``httpx2.AsyncClient`` that this instance owns and closes. A
                 client you pass in is never closed by the SDK.
+            credentials: Credentials to authenticate with instead of an API key,
+                such as :class:`workos.WorkloadIdentityCredentials`. They are
+                resolved before every HTTP attempt. ``WORKOS_API_KEY`` is
+                ignored when credentials are passed.
 
         Raises:
-            ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
+            ValueError: If neither api_key, client_id nor credentials is provided,
+                directly or via environment variables; or if credentials are
+                passed together with api_key or is_public.
             TypeError: If ``http_client`` is not a supported client type.
         """
         super().__init__(
@@ -787,6 +876,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             jwt_issuer=jwt_issuer,
             max_retries=max_retries,
             is_public=is_public,
+            credentials=credentials,
         )
         self._backend, self._owns_http_client = resolve_async_backend(
             http_client, self._request_timeout
@@ -853,19 +943,44 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         content = self._encode_body(body)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
+        credentials = self._request_credentials(request_options)
+        # One 401 recovery per logical request. Set once, never cleared, however
+        # many transport retries follow.
+        recovery_used = False
         last_error: Optional[Exception] = None
         if self._first_request_pid is None:
             self._first_request_pid = os.getpid()
         record_request(self._backend)
         for attempt in range(max_retries + 1):
             try:
+                # Resolved before every attempt, so a retry never sends a token
+                # that expired while the request was backing off.
+                snapshot = await credentials.aresolve(timeout=timeout)
                 response = await self._backend.request(
                     method.upper(),
                     url,
-                    headers=headers,
+                    headers=apply_snapshot(headers, snapshot),
                     content=content,
                     timeout=timeout,
                 )
+                if (
+                    response.status_code == 401
+                    and snapshot.recoverable
+                    and not recovery_used
+                ):
+                    # The API rejected this token. Discard that generation and
+                    # resend once, with the same body and idempotency key and
+                    # no backoff. Whatever comes back is handled as usual.
+                    recovery_used = True
+                    credentials.invalidate(snapshot.generation)
+                    snapshot = await credentials.aresolve(timeout=timeout)
+                    response = await self._backend.request(
+                        method.upper(),
+                        url,
+                        headers=apply_snapshot(headers, snapshot),
+                        content=content,
+                        timeout=timeout,
+                    )
                 if response.status_code in RETRY_STATUS_CODES and attempt < max_retries:
                     delay = self._calculate_retry_delay(
                         attempt, response.headers.get("Retry-After")

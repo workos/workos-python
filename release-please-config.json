@@ -5,7 +5,8 @@
       "release-type": "python",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "exclude-paths": ["packages"]
     },
     "packages/workos-workload-identity-github-actions": {
       "release-type": "python",

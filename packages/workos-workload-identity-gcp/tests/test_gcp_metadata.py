@@ -1,6 +1,6 @@
 # @oagen-ignore-file
 
-"""Conformance cases WIF-GCP-01 and WIF-GCP-02, against a local mock server."""
+"""Conformance cases WIF-GCP-01 to WIF-GCP-03, against a local mock server."""
 
 from __future__ import annotations
 
@@ -153,7 +153,7 @@ def test_connection_failure_is_a_provider_error(
         gcp_metadata(AUDIENCE)()
 
 
-def test_the_request_does_not_go_through_an_environment_proxy(
+def test_WIF_GCP_03_the_request_does_not_go_through_an_environment_proxy(
     mock: MockServer, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Nothing listens on the proxy's port: the call works only if it is direct.

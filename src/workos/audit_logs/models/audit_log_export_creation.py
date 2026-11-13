@@ -16,9 +16,9 @@ class AuditLogExportCreation:
     organization_id: str
     """The unique ID of the Organization."""
     range_start: datetime
-    """ISO-8601 value for start of the export range."""
+    """ISO-8601 value for start of the export range. The range must span no more than 31 days."""
     range_end: datetime
-    """ISO-8601 value for end of the export range."""
+    """ISO-8601 value for end of the export range. Must be no more than 31 days after the start."""
     actions: list[str] | None = None
     """List of actions to filter against."""
     actors: list[str] | None = None

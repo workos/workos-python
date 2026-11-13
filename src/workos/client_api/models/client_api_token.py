@@ -13,9 +13,9 @@ class ClientApiToken:
     """Client Api Token model."""
 
     organization_id: str
-    """The ID of the organization to scope the Client API token to."""
+    """The ID of the organization to scope the Widgets API token to."""
     user_id: str
-    """The ID of the user to issue the Client API token for."""
+    """The ID of the user to issue the Widgets API token for."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ClientApiToken:

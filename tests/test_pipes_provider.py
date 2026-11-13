@@ -16,6 +16,7 @@ from workos._errors import (
 from workos.pipes_provider.models import (
     DataIntegrationConfigurationListResponse,
     DataIntegrationConfigurationResponse,
+    PipesProviderOwnership,
 )
 
 
@@ -39,6 +40,18 @@ class TestPipesProvider:
             "/organizations/test_organizationId/data_integration_configurations"
         )
 
+    def test_list_organization_data_integration_configurations_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_configuration_list_response.json")
+        )
+        workos.pipes_provider.list_organization_data_integration_configurations(
+            "test_organizationId", ownership=PipesProviderOwnership("user")
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["ownership"] == "user"
+
     def test_update_organization_data_integration_configuration(
         self, workos, httpx_mock
     ):
@@ -58,6 +71,18 @@ class TestPipesProvider:
         assert request.url.path.endswith(
             "/organizations/test_organizationId/data_integration_configurations/test_slug"
         )
+
+    def test_update_organization_data_integration_configuration_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_configuration_response.json")
+        )
+        workos.pipes_provider.update_organization_data_integration_configuration(
+            "test_organizationId", "test_slug", ownership=PipesProviderOwnership("user")
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["ownership"] == "user"
 
     def test_list_organization_data_integration_configurations_with_request_options(
         self, workos, httpx_mock
@@ -184,6 +209,19 @@ class TestAsyncPipesProvider:
         )
 
     @pytest.mark.asyncio
+    async def test_list_organization_data_integration_configurations_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_configuration_list_response.json")
+        )
+        await async_workos.pipes_provider.list_organization_data_integration_configurations(
+            "test_organizationId", ownership=PipesProviderOwnership("user")
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["ownership"] == "user"
+
+    @pytest.mark.asyncio
     async def test_update_organization_data_integration_configuration(
         self, async_workos, httpx_mock
     ):
@@ -201,6 +239,19 @@ class TestAsyncPipesProvider:
         assert request.url.path.endswith(
             "/organizations/test_organizationId/data_integration_configurations/test_slug"
         )
+
+    @pytest.mark.asyncio
+    async def test_update_organization_data_integration_configuration_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_configuration_response.json")
+        )
+        await async_workos.pipes_provider.update_organization_data_integration_configuration(
+            "test_organizationId", "test_slug", ownership=PipesProviderOwnership("user")
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["ownership"] == "user"
 
     @pytest.mark.asyncio
     async def test_list_organization_data_integration_configurations_with_request_options(

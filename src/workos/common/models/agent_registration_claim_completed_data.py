@@ -32,6 +32,8 @@ class AgentRegistrationClaimCompletedData:
     """The timestamp when the claim was created."""
     updated_at: str
     """The timestamp when the claim was last updated."""
+    organization_id: str | None = None
+    """The ID of the organization the registration belongs to."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AgentRegistrationClaimCompletedData:
@@ -48,6 +50,7 @@ class AgentRegistrationClaimCompletedData:
                 completed_at=data["completed_at"],
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
+                organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentRegistrationClaimCompletedData", e)
@@ -63,4 +66,6 @@ class AgentRegistrationClaimCompletedData:
         result["completed_at"] = self.completed_at
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
+        if self.organization_id is not None:
+            result["organization_id"] = self.organization_id
         return result

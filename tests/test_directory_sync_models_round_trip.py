@@ -9,6 +9,8 @@ from workos.directory_sync.models import (
     DirectoryMetadata,
     DirectoryMetadataUser,
     DirectorySyncResponse,
+    DirectoryUser,
+    DirectoryUserEmail,
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
@@ -139,6 +141,147 @@ class TestModelRoundTrip:
         instance = DirectoryGroup.from_dict(data)
         serialized = instance.to_dict()
         assert "raw_attributes" not in serialized
+
+    def test_directory_user_round_trip(self):
+        data = load_fixture("directory_user.json")
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_user_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_directory_user_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "name": "Marcelina Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_directory_user_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_directory_user_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "name": "Marcelina Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_directory_user_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_directory_user_with_groups_round_trip(self):
         data = load_fixture("directory_user_with_groups.json")
@@ -359,6 +502,32 @@ class TestModelRoundTrip:
     def test_directory_user_with_groups_email_preserves_nullable_fields(self):
         data = {"primary": True, "type": "work", "value": None}
         instance = DirectoryUserWithGroupsEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_directory_user_email_round_trip(self):
+        data = load_fixture("directory_user_email.json")
+        instance = DirectoryUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUserEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_user_email_minimal_payload(self):
+        data = {}
+        instance = DirectoryUserEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_directory_user_email_omits_absent_optional_non_nullable_fields(self):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DirectoryUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_directory_user_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DirectoryUserEmail.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["value"] is None
 

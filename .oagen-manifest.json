@@ -351,6 +351,7 @@
     "src/workos/common/models/data_integration_ownership.py",
     "src/workos/common/models/data_integration_state.py",
     "src/workos/common/models/data_integration_vended_credential.py",
+    "src/workos/common/models/data_integration_vended_credential_auth_method.py",
     "src/workos/common/models/data_integrations_create_api_key_connection_request_connection_owner.py",
     "src/workos/common/models/data_integrations_create_client_credentials_connection_request_connection_owner.py",
     "src/workos/common/models/data_integrations_get_data_integration_authorize_url_request_connection_intent.py",
@@ -739,7 +740,7 @@
     "src/workos/common/models/slow_down_oauth_error_body.py",
     "src/workos/common/models/sms_challenge_quota_reached_error_body.py",
     "src/workos/common/models/sms_challenge_rate_limited_error_body.py",
-    "src/workos/common/models/sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token.py",
+    "src/workos/common/models/sso_required_oauth_error_body_with_connection_ids_list_email.py",
     "src/workos/common/models/sub_resource_scoped_role_not_allowed_error_body_with_role_slug.py",
     "src/workos/common/models/team_production_state.py",
     "src/workos/common/models/token_query_grant_type.py",
@@ -911,7 +912,6 @@
     "src/workos/pipes/__init__.py",
     "src/workos/pipes/_resource.py",
     "src/workos/pipes/models/__init__.py",
-    "src/workos/pipes/models/add_data_integrations_get_data_integration_authorize_url_request_connection_owner_literal.py",
     "src/workos/pipes/models/api_key_installation.py",
     "src/workos/pipes/models/connected_account_input.py",
     "src/workos/pipes/models/create_connected_account.py",
@@ -946,6 +946,7 @@
     "src/workos/pipes_provider/models/data_integration_configuration_list_response.py",
     "src/workos/pipes_provider/models/data_integration_configuration_response.py",
     "src/workos/pipes_provider/models/data_integration_credentials.py",
+    "src/workos/pipes_provider/models/pipes_provider_ownership.py",
     "src/workos/platform_teams/__init__.py",
     "src/workos/platform_teams/_resource.py",
     "src/workos/platform_teams/models/__init__.py",
@@ -1643,6 +1644,7 @@
     "tests/fixtures/list_data_integration.json",
     "tests/fixtures/list_directory.json",
     "tests/fixtures/list_directory_group.json",
+    "tests/fixtures/list_directory_user.json",
     "tests/fixtures/list_directory_user_with_groups.json",
     "tests/fixtures/list_event_schema.json",
     "tests/fixtures/list_flag.json",
@@ -1846,7 +1848,7 @@
     "tests/fixtures/sso_device_authorization_request.json",
     "tests/fixtures/sso_logout_authorize_request.json",
     "tests/fixtures/sso_logout_authorize_response.json",
-    "tests/fixtures/sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token.json",
+    "tests/fixtures/sso_required_oauth_error_body_with_connection_ids_list_email.json",
     "tests/fixtures/sso_token_response.json",
     "tests/fixtures/sso_token_response_oauth_token.json",
     "tests/fixtures/sub_resource_scoped_role_not_allowed_error_body_with_role_slug.json",
@@ -2449,20 +2451,20 @@
       "sdkMethod": "create_directory_sync",
       "service": "directory_sync"
     },
-    "GET /directory_groups": {
-      "sdkMethod": "list_groups",
+    "GET /directories/{directoryId}/groups": {
+      "sdkMethod": "list_directory_groups",
       "service": "directory_sync"
     },
-    "GET /directory_groups/{id}": {
-      "sdkMethod": "get_group",
+    "GET /directories/{directoryId}/groups/{groupId}": {
+      "sdkMethod": "get_directory_group",
       "service": "directory_sync"
     },
-    "GET /directory_users": {
-      "sdkMethod": "list_users",
+    "GET /directories/{directoryId}/users": {
+      "sdkMethod": "list_directory_users",
       "service": "directory_sync"
     },
-    "GET /directory_users/{id}": {
-      "sdkMethod": "get_user",
+    "GET /directories/{directoryId}/users/{userId}": {
+      "sdkMethod": "get_directory_user",
       "service": "directory_sync"
     },
     "GET /events": {
@@ -3076,6 +3078,22 @@
     "GET /audit_logs/exports/{auditLogExportId}": {
       "sdkMethod": "get_export",
       "service": "audit_logs"
+    },
+    "GET /directory_groups": {
+      "sdkMethod": "list_groups",
+      "service": "directory_sync"
+    },
+    "GET /directory_groups/{id}": {
+      "sdkMethod": "get_group",
+      "service": "directory_sync"
+    },
+    "GET /directory_users": {
+      "sdkMethod": "list_users",
+      "service": "directory_sync"
+    },
+    "GET /directory_users/{id}": {
+      "sdkMethod": "get_user",
+      "service": "directory_sync"
     }
   }
 }

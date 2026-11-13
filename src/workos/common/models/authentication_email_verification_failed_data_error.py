@@ -16,6 +16,8 @@ class AuthenticationEmailVerificationFailedDataError:
     """The error code."""
     message: str
     """A human-readable error message."""
+    radar_detection_id: str | None = None
+    """The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors."""
 
     @classmethod
     def from_dict(
@@ -26,6 +28,7 @@ class AuthenticationEmailVerificationFailedDataError:
             return cls(
                 code=data["code"],
                 message=data["message"],
+                radar_detection_id=data.get("radar_detection_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
@@ -37,4 +40,6 @@ class AuthenticationEmailVerificationFailedDataError:
         result: dict[str, Any] = {}
         result["code"] = self.code
         result["message"] = self.message
+        if self.radar_detection_id is not None:
+            result["radar_detection_id"] = self.radar_detection_id
         return result

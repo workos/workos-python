@@ -24,13 +24,13 @@ class ClientApi:
         user_id: str,
         request_options: RequestOptions | None = None,
     ) -> ClientApiTokenResponse:
-        """Generate a Client API token
+        """Generate a Widgets API token
 
-        Generate a short-lived, session-bound token for the Client GraphQL API, scoped to an organization and user.
+        Generate a short-lived, session-bound token for the Widgets API, scoped to an organization and user.
 
         Args:
-            organization_id: The ID of the organization to scope the Client API token to.
-            user_id: The ID of the user to issue the Client API token for.
+            organization_id: The ID of the organization to scope the Widgets API token to.
+            user_id: The ID of the user to issue the Widgets API token for.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -70,13 +70,13 @@ class AsyncClientApi:
         user_id: str,
         request_options: RequestOptions | None = None,
     ) -> ClientApiTokenResponse:
-        """Generate a Client API token
+        """Generate a Widgets API token
 
-        Generate a short-lived, session-bound token for the Client GraphQL API, scoped to an organization and user.
+        Generate a short-lived, session-bound token for the Widgets API, scoped to an organization and user.
 
         Args:
-            organization_id: The ID of the organization to scope the Client API token to.
-            user_id: The ID of the user to issue the Client API token for.
+            organization_id: The ID of the organization to scope the Widgets API token to.
+            user_id: The ID of the user to issue the Widgets API token for.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

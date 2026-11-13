@@ -7,7 +7,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+import warnings
+
 from workos.common.models.directory_group import DirectoryGroup
+from workos.common.models.directory_user import DirectoryUser
 from workos.common.models.pagination_order import PaginationOrder
 
 from .._pagination import AsyncPage, SyncPage
@@ -168,6 +171,186 @@ class DirectorySync:
             request_options=request_options,
         )
 
+    def list_directory_groups(
+        self,
+        directory_id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        user: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[DirectoryGroup]:
+        """List Groups for a Directory
+
+        Get a list of the Directory Groups in a Directory, optionally filtered to the groups a Directory User belongs to.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            user: Filter Directory Groups to those this Directory User belongs to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[DirectoryGroup]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "user": user,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("directories", str(directory_id), "groups"),
+            model=DirectoryGroup,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_directory_group(
+        self,
+        directory_id: str,
+        group_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectoryGroup:
+        """Get a Group for a Directory
+
+        Get the details of a Directory Group in a Directory.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            group_id: Unique identifier for the Directory Group.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectoryGroup
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("directories", str(directory_id), "groups", str(group_id)),
+            model=DirectoryGroup,
+            request_options=request_options,
+        )
+
+    def list_directory_users(
+        self,
+        directory_id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        group: str | None = None,
+        idp_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> SyncPage[DirectoryUser]:
+        """List Users for a Directory
+
+        Get a list of the Directory Users in a Directory, optionally filtered to the members of a Directory Group.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            group: Filter Directory Users to the members of this Directory Group.
+            idp_id: Filter Directory Users by the identity provider's unique identifier (`idp_id`).
+            email: Filter Directory Users by their primary email address.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[DirectoryUser]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "group": group,
+                "idp_id": idp_id,
+                "email": email,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=("directories", str(directory_id), "users"),
+            model=DirectoryUser,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_directory_user(
+        self,
+        directory_id: str,
+        user_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectoryUser:
+        """Get a User for a Directory
+
+        Get the details of a Directory User in a Directory.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            user_id: Unique identifier for the Directory User.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectoryUser
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("directories", str(directory_id), "users", str(user_id)),
+            model=DirectoryUser,
+            request_options=request_options,
+        )
+
     def list_groups(
         self,
         *,
@@ -181,7 +364,7 @@ class DirectorySync:
     ) -> SyncPage[DirectoryGroup]:
         """List Directory Groups
 
-        Get a list of all of existing directory groups matching the criteria specified.
+        Get a list of all of existing directory groups matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/groups` instead.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -202,7 +385,11 @@ class DirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("list is deprecated", DeprecationWarning, stacklevel=2)
         params = {
             k: v
             for k, v in {
@@ -231,7 +418,7 @@ class DirectorySync:
     ) -> DirectoryGroup:
         """Get a Directory Group
 
-        Get the details of an existing Directory Group.
+        Get the details of an existing Directory Group. Deprecated: use `GET /directories/{directoryId}/groups/{groupId}` instead.
 
         Args:
             id: Unique identifier for the Directory Group.
@@ -246,7 +433,11 @@ class DirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("find is deprecated", DeprecationWarning, stacklevel=2)
         return self._client.request(
             method="get",
             path=("directory_groups", str(id)),
@@ -269,7 +460,7 @@ class DirectorySync:
     ) -> SyncPage[DirectoryUserWithGroups]:
         """List Directory Users
 
-        Get a list of all of existing Directory Users matching the criteria specified.
+        Get a list of all of existing Directory Users matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/users` instead.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -292,7 +483,11 @@ class DirectorySync:
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("list is deprecated", DeprecationWarning, stacklevel=2)
         params = {
             k: v
             for k, v in {
@@ -323,7 +518,7 @@ class DirectorySync:
     ) -> DirectoryUserWithGroups:
         """Get a Directory User
 
-        Get the details of an existing Directory User.
+        Get the details of an existing Directory User. Deprecated: use `GET /directories/{directoryId}/users/{userId}` instead.
 
         Args:
             id: Unique identifier for the Directory User.
@@ -338,7 +533,11 @@ class DirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("find is deprecated", DeprecationWarning, stacklevel=2)
         return self._client.request(
             method="get",
             path=("directory_users", str(id)),
@@ -500,6 +699,186 @@ class AsyncDirectorySync:
             request_options=request_options,
         )
 
+    async def list_directory_groups(
+        self,
+        directory_id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        user: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[DirectoryGroup]:
+        """List Groups for a Directory
+
+        Get a list of the Directory Groups in a Directory, optionally filtered to the groups a Directory User belongs to.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            user: Filter Directory Groups to those this Directory User belongs to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[DirectoryGroup]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "user": user,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("directories", str(directory_id), "groups"),
+            model=DirectoryGroup,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def get_directory_group(
+        self,
+        directory_id: str,
+        group_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectoryGroup:
+        """Get a Group for a Directory
+
+        Get the details of a Directory Group in a Directory.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            group_id: Unique identifier for the Directory Group.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectoryGroup
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("directories", str(directory_id), "groups", str(group_id)),
+            model=DirectoryGroup,
+            request_options=request_options,
+        )
+
+    async def list_directory_users(
+        self,
+        directory_id: str,
+        *,
+        limit: int | None = None,
+        before: str | None = None,
+        after: str | None = None,
+        order: PaginationOrder | str | None = "desc",
+        group: str | None = None,
+        idp_id: str | None = None,
+        email: str | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> AsyncPage[DirectoryUser]:
+        """List Users for a Directory
+
+        Get a list of the Directory Users in a Directory, optionally filtered to the members of a Directory Group.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `before=\"obj_123\"` to fetch a new batch of objects before `\"obj_123\"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `\"obj_123\"`, your subsequent call can include `after=\"obj_123\"` to fetch a new batch of objects after `\"obj_123\"`.
+            order: Order the results by the creation time. Supported values are `\"asc\"` (ascending), `\"desc\"` (descending), and `\"normal\"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to `desc`.
+            group: Filter Directory Users to the members of this Directory Group.
+            idp_id: Filter Directory Users by the identity provider's unique identifier (`idp_id`).
+            email: Filter Directory Users by their primary email address.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[DirectoryUser]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "group": group,
+                "idp_id": idp_id,
+                "email": email,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=("directories", str(directory_id), "users"),
+            model=DirectoryUser,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def get_directory_user(
+        self,
+        directory_id: str,
+        user_id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> DirectoryUser:
+        """Get a User for a Directory
+
+        Get the details of a Directory User in a Directory.
+
+        Args:
+            directory_id: Unique identifier of the Directory.
+            user_id: Unique identifier for the Directory User.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            DirectoryUser
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("directories", str(directory_id), "users", str(user_id)),
+            model=DirectoryUser,
+            request_options=request_options,
+        )
+
     async def list_groups(
         self,
         *,
@@ -513,7 +892,7 @@ class AsyncDirectorySync:
     ) -> AsyncPage[DirectoryGroup]:
         """List Directory Groups
 
-        Get a list of all of existing directory groups matching the criteria specified.
+        Get a list of all of existing directory groups matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/groups` instead.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -534,7 +913,11 @@ class AsyncDirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("list is deprecated", DeprecationWarning, stacklevel=2)
         params = {
             k: v
             for k, v in {
@@ -563,7 +946,7 @@ class AsyncDirectorySync:
     ) -> DirectoryGroup:
         """Get a Directory Group
 
-        Get the details of an existing Directory Group.
+        Get the details of an existing Directory Group. Deprecated: use `GET /directories/{directoryId}/groups/{groupId}` instead.
 
         Args:
             id: Unique identifier for the Directory Group.
@@ -578,7 +961,11 @@ class AsyncDirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("find is deprecated", DeprecationWarning, stacklevel=2)
         return await self._client.request(
             method="get",
             path=("directory_groups", str(id)),
@@ -601,7 +988,7 @@ class AsyncDirectorySync:
     ) -> AsyncPage[DirectoryUserWithGroups]:
         """List Directory Users
 
-        Get a list of all of existing Directory Users matching the criteria specified.
+        Get a list of all of existing Directory Users matching the criteria specified. Deprecated: use `GET /directories/{directoryId}/users` instead.
 
         Args:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
@@ -624,7 +1011,11 @@ class AsyncDirectorySync:
             RateLimitExceededError: If rate limited (429).
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("list is deprecated", DeprecationWarning, stacklevel=2)
         params = {
             k: v
             for k, v in {
@@ -655,7 +1046,7 @@ class AsyncDirectorySync:
     ) -> DirectoryUserWithGroups:
         """Get a Directory User
 
-        Get the details of an existing Directory User.
+        Get the details of an existing Directory User. Deprecated: use `GET /directories/{directoryId}/users/{userId}` instead.
 
         Args:
             id: Unique identifier for the Directory User.
@@ -670,7 +1061,11 @@ class AsyncDirectorySync:
             AuthenticationError: If the API key is invalid (401).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
+
+        .. deprecated::
+            This operation is deprecated. See the migration guide for alternatives.
         """
+        warnings.warn("find is deprecated", DeprecationWarning, stacklevel=2)
         return await self._client.request(
             method="get",
             path=("directory_users", str(id)),

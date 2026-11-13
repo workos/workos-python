@@ -726,6 +726,12 @@ from .models import (
 )
 from .models import DataIntegrationVendedCredential as DataIntegrationVendedCredential
 from .models import (
+    DataIntegrationVendedCredentialAuthMethod as DataIntegrationVendedCredentialAuthMethod,
+)
+from .models import (
+    DataIntegrationVendedCredentialAuthMethodLiteral as DataIntegrationVendedCredentialAuthMethodLiteral,
+)
+from .models import (
     DataIntegrationVendedCredentialUnknown as DataIntegrationVendedCredentialUnknown,
 )
 from .models import (
@@ -1552,7 +1558,7 @@ from .models import (
 )
 from .models import SmsChallengeRateLimitedErrorBody as SmsChallengeRateLimitedErrorBody
 from .models import (
-    SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken as SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken,
+    SSORequiredOAuthErrorBodyWithConnectionIdsListEmail as SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
 )
 from .models import (
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug as SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,

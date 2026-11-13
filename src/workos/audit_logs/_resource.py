@@ -327,8 +327,8 @@ class AuditLogs:
 
         Args:
             organization_id: The unique ID of the Organization.
-            range_start: ISO-8601 value for start of the export range.
-            range_end: ISO-8601 value for end of the export range.
+            range_start: ISO-8601 value for start of the export range. The range must span no more than 31 days.
+            range_end: ISO-8601 value for end of the export range. Must be no more than 31 days after the start.
             actions: List of actions to filter against.
             actors: (deprecated) Deprecated. Use `actor_names` instead.
             actor_names: List of actor names to filter against.
@@ -682,8 +682,8 @@ class AsyncAuditLogs:
 
         Args:
             organization_id: The unique ID of the Organization.
-            range_start: ISO-8601 value for start of the export range.
-            range_end: ISO-8601 value for end of the export range.
+            range_start: ISO-8601 value for start of the export range. The range must span no more than 31 days.
+            range_end: ISO-8601 value for end of the export range. Must be no more than 31 days after the start.
             actions: List of actions to filter against.
             actors: (deprecated) Deprecated. Use `actor_names` instead.
             actor_names: List of actor names to filter against.

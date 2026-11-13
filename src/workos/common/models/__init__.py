@@ -869,6 +869,12 @@ from .data_integration_vended_credential import (
 from .data_integration_vended_credential import (
     DataIntegrationVendedCredentialVariant as DataIntegrationVendedCredentialVariant,
 )
+from .data_integration_vended_credential_auth_method import (
+    DataIntegrationVendedCredentialAuthMethod as DataIntegrationVendedCredentialAuthMethod,
+)
+from .data_integration_vended_credential_auth_method import (
+    DataIntegrationVendedCredentialAuthMethodLiteral as DataIntegrationVendedCredentialAuthMethodLiteral,
+)
 from .data_integrations_create_api_key_connection_request_connection_owner import (
     DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
 )
@@ -2069,8 +2075,8 @@ from .sms_challenge_quota_reached_error_body import (
 from .sms_challenge_rate_limited_error_body import (
     SmsChallengeRateLimitedErrorBody as SmsChallengeRateLimitedErrorBody,
 )
-from .sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token import (
-    SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken as SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken,
+from .sso_required_oauth_error_body_with_connection_ids_list_email import (
+    SSORequiredOAuthErrorBodyWithConnectionIdsListEmail as SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
 )
 from .sub_resource_scoped_role_not_allowed_error_body_with_role_slug import (
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug as SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,

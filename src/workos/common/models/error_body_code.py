@@ -163,7 +163,6 @@ class ErrorBodyCode(str, Enum):
     PERMISSION_NOT_FOUND = "permission_not_found"
     PERMISSION_SLUG_CONFLICT = "permission_slug_conflict"
     PHONE_NUMBER_REQUIRED = "phone_number_required"
-    POLICY_DENIED = "policy_denied"
     PRODUCTION_FEATURE_REQUIRES_BILLING = "production_feature_requires_billing"
     RADAR_CHALLENGE = "radar_challenge"
     RADAR_SIGN_UP_CHALLENGE = "radar_sign_up_challenge"
@@ -349,7 +348,6 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "permission_not_found",
     "permission_slug_conflict",
     "phone_number_required",
-    "policy_denied",
     "production_feature_requires_billing",
     "radar_challenge",
     "radar_sign_up_challenge",

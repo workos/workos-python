@@ -1,4 +1,5 @@
 {
   "code": "policy_denied",
-  "message": "Request could not be processed."
+  "message": "Request could not be processed.",
+  "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X"
 }

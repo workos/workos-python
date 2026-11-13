@@ -2,17 +2,92 @@
 
 ## [10.9.0](https://github.com/workos/workos-python/compare/v10.8.0...v10.9.0) (2026-11-13)
 
-
 ### Features
 
 * **actions:** Add verify_action returning a typed action context ([#776](https://github.com/workos/workos-python/issues/776)) ([043aa34](https://github.com/workos/workos-python/commit/043aa3410d99949f5550af6446441f01997fb1f9))
-* **pipes:** Update Pipes API surface ([#777](https://github.com/workos/workos-python/issues/777)) ([2cb5d5e](https://github.com/workos/workos-python/commit/2cb5d5e976351b48ca107ed9778b1e4a0e0e3a00))
-* **sso:** Update SSO API surface ([#778](https://github.com/workos/workos-python/issues/778)) ([ef3fa56](https://github.com/workos/workos-python/commit/ef3fa56a31e9aae1832b0f68b1470656e71665e9))
 
 
 ### Bug Fixes
 
 * **sdk:** webhooks-django × codex-baseline — The agent hand-rolled HMAC signature verification (parsing a… ([#736](https://github.com/workos/workos-python/issues/736)) ([6e6d782](https://github.com/workos/workos-python/commit/6e6d782b0efb41fd21033b121ca6480c23da1f68))
+
+* [#777](https://github.com/workos/workos-python/pull/777) feat(generated): regenerate from spec (1 change)
+
+  **⚠️ Breaking**
+  * **[directory_sync](https://workos.com/docs/reference/directory-sync)**:
+    * Added parameter `Directories.find.directoryId`
+    * Added parameter `Directories.find.groupId`
+    * Removed parameter `Directories.find.id`
+    * Changed path for endpoint `GET /directories/{directoryId}/groups/{groupId}`
+    * Changed server default for parameter `DirectoryGroups.list`
+    * Changed server default for parameter `DirectoryGroups.find`
+    * Changed server default for parameter `DirectoryUsers.list`
+    * Changed server default for parameter `DirectoryUsers.find`
+
+  **Features**
+  * **[directory_sync](https://workos.com/docs/reference/directory-sync)**:
+    * Added endpoint `GET /directories/{id}`
+    * Added endpoint `GET /directories/{directoryId}/groups`
+    * Added endpoint `GET /directories/{directoryId}/users`
+    * Added endpoint `GET /directories/{directoryId}/users/{userId}`
+  * **[multi_factor_auth](https://workos.com/docs/reference/authkit/mfa)**:
+    * Added model `TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter`
+    * Changed errors for endpoint `POST /auth/challenges/{id}/verify`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Added `config` to `CreateOrganizationConnectedAccount`
+    * Added `metadata` to `CreateOrganizationConnectedAccount`
+    * Added `config` to `OrganizationConnectedAccount`
+    * Added `config` to `CreateConnectedAccount`
+    * Added `metadata` to `CreateConnectedAccount`
+    * Added `config` to `ConnectedAccountInput`
+    * Added `too_many_failed_verification_attempts` to `ErrorBodyCode`
+    * Added `ip_address_required` to `ErrorBodyCode`
+    * Added enum `PipesProviderOwnership`
+    * Added parameter `PipesProvider.listForOrganization.ownership`
+    * Changed errors for endpoint `GET /organizations/{organizationId}/data_integration_configurations`
+    * Added parameter `PipesProvider.configure.ownership`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Added `radar_detection_id` to `PolicyDeniedErrorBody`
+  * **[webhooks](https://workos.com/docs/reference/webhooks)**:
+    * Added `feature_flags.flag.created` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag.updated` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag.deleted` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.created` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.updated` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag_target.created` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.deleted` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag_target.deleted` to `CreateWebhookEndpointEvents`
+    * Added `feature_flags.flag.created` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag.updated` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.created` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.updated` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag_target.created` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag_rule.deleted` to `UpdateWebhookEndpointEvents`
+    * Added `feature_flags.flag_target.deleted` to `UpdateWebhookEndpointEvents`
+
+  **Fixes**
+  * **[directory_sync](https://workos.com/docs/reference/directory-sync)**:
+    * Changed response of `Directories.find` from `Directory` to `DirectoryGroup`
+    * Updated endpoint `GET /directory_groups`
+    * Updated endpoint `GET /directory_groups/{id}`
+    * Updated endpoint `GET /directory_users`
+    * Updated endpoint `GET /directory_users/{id}`
+  * **[events](https://workos.com/docs/reference/events)**:
+    * Updated model `EventSchema`
+  * **[pipes](https://workos.com/docs/reference/pipes)**:
+    * Removed `policy_denied` from `ErrorBodyCode`
+  * **[user_management](https://workos.com/docs/reference/authkit/user)**:
+    * Changed errors for endpoint `POST /user_management/users`
+    * Changed errors for endpoint `POST /user_management/magic_auth`
+    * Changed errors for endpoint `POST /user_management/authenticate`
+
+* [#778](https://github.com/workos/workos-python/pull/778) feat(generated): regenerate from spec (1 change)
+
+  **Features**
+  * **[sso](https://workos.com/docs/reference/sso)**:
+    * Added enum `ConnectionsState`
+    * Added parameter `Connections.list.state`
 
 ## [10.8.0](https://github.com/workos/workos-python/compare/v10.7.0...v10.8.0) (2026-11-05)
 

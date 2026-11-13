@@ -92,7 +92,6 @@ from .organization_connected_account import (
     OrganizationConnectedAccount as OrganizationConnectedAccount,
 )
 from .pipes_ownership import PipesOwnership as PipesOwnership
-from .pipes_ownership import PipesOwnershipLiteral as PipesOwnershipLiteral
 from .update_custom_provider_definition import (
     UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
 )

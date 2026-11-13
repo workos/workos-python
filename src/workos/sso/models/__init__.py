@@ -8,6 +8,8 @@ from .connections_connection_type import (
 from .connections_connection_type import (
     ConnectionsConnectionTypeLiteral as ConnectionsConnectionTypeLiteral,
 )
+from .connections_state import ConnectionsState as ConnectionsState
+from .connections_state import ConnectionsStateLiteral as ConnectionsStateLiteral
 from .create_connection import CreateConnection as CreateConnection
 from .create_connection_attribute_maps import (
     CreateConnectionAttributeMaps as CreateConnectionAttributeMaps,

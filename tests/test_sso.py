@@ -23,6 +23,7 @@ from workos.sso._resource import (
 from workos.sso.models import (
     Connection,
     ConnectionsConnectionType,
+    ConnectionsState,
     CreateConnectionSAMLOptions,
     PatchConnectionSAMLOptions,
     Profile,
@@ -63,6 +64,7 @@ class TestSSO:
             domain="value domain/test",
             organization_id="value organization_id/test",
             search="value search/test",
+            state=ConnectionsState("active"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
@@ -73,6 +75,7 @@ class TestSSO:
         assert request.url.params["domain"] == "value domain/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["search"] == "value search/test"
+        assert request.url.params["state"] == "active"
 
     def test_create_connection(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -420,6 +423,7 @@ class TestAsyncSSO:
             domain="value domain/test",
             organization_id="value organization_id/test",
             search="value search/test",
+            state=ConnectionsState("active"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
@@ -430,6 +434,7 @@ class TestAsyncSSO:
         assert request.url.params["domain"] == "value domain/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["search"] == "value search/test"
+        assert request.url.params["state"] == "active"
 
     @pytest.mark.asyncio
     async def test_create_connection(self, async_workos, httpx_mock):

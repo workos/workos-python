@@ -1,5 +1,19 @@
 # Changelog
 
+## [10.9.0](https://github.com/workos/workos-python/compare/v10.8.0...v10.9.0) (2026-11-13)
+
+
+### Features
+
+* **actions:** Add verify_action returning a typed action context ([#776](https://github.com/workos/workos-python/issues/776)) ([043aa34](https://github.com/workos/workos-python/commit/043aa3410d99949f5550af6446441f01997fb1f9))
+* **pipes:** Update Pipes API surface ([#777](https://github.com/workos/workos-python/issues/777)) ([2cb5d5e](https://github.com/workos/workos-python/commit/2cb5d5e976351b48ca107ed9778b1e4a0e0e3a00))
+* **sso:** Update SSO API surface ([#778](https://github.com/workos/workos-python/issues/778)) ([ef3fa56](https://github.com/workos/workos-python/commit/ef3fa56a31e9aae1832b0f68b1470656e71665e9))
+
+
+### Bug Fixes
+
+* **sdk:** webhooks-django × codex-baseline — The agent hand-rolled HMAC signature verification (parsing a… ([#736](https://github.com/workos/workos-python/issues/736)) ([6e6d782](https://github.com/workos/workos-python/commit/6e6d782b0efb41fd21033b121ca6480c23da1f68))
+
 ## [10.8.0](https://github.com/workos/workos-python/compare/v10.7.0...v10.8.0) (2026-11-05)
 
 

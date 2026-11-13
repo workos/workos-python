@@ -968,6 +968,7 @@
     "src/workos/sso/models/connection.py",
     "src/workos/sso/models/connection_domain.py",
     "src/workos/sso/models/connections_connection_type.py",
+    "src/workos/sso/models/connections_state.py",
     "src/workos/sso/models/create_connection.py",
     "src/workos/sso/models/create_connection_attribute_maps.py",
     "src/workos/sso/models/create_connection_key_pair.py",

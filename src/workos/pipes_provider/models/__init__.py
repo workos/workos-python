@@ -13,6 +13,3 @@ from .data_integration_credentials import (
     DataIntegrationCredentials as DataIntegrationCredentials,
 )
 from .pipes_provider_ownership import PipesProviderOwnership as PipesProviderOwnership
-from .pipes_provider_ownership import (
-    PipesProviderOwnershipLiteral as PipesProviderOwnershipLiteral,
-)

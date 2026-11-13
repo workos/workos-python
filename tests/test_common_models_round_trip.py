@@ -365,8 +365,6 @@ from workos.common.models import (
     OrganizationRoleUpdated,
     OrganizationRoleUpdatedData,
     OrganizationSelectionRequiredErrorBody,
-    OrganizationSelectionRequiredErrorBodyWithOrganization,
-    OrganizationSelectionRequiredErrorBodyWithOrganizations,
     OrganizationUpdated,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
@@ -606,67 +604,6 @@ class TestModelRoundTrip:
         instance = ErrorBody.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["message"] == data["message"]
-
-    def test_organization_selection_required_error_body_with_organizations_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_selection_required_error_body_with_organizations.json"
-        )
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_selection_required_error_body_with_organizations_minimal_payload(
-        self,
-    ):
-        data = {
-            "code": "organization_selection_required",
-            "message": "Request could not be processed.",
-            "organizations": [
-                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-            ],
-        }
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
-        assert serialized["organizations"] == data["organizations"]
-
-    def test_organization_selection_required_error_body_with_organization_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_selection_required_error_body_with_organization.json"
-        )
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_selection_required_error_body_with_organization_minimal_payload(
-        self,
-    ):
-        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["name"] == data["name"]
 
     def test_error_body_with_code_field_errors_round_trip(self):
         data = load_fixture("error_body_with_code_field_errors.json")

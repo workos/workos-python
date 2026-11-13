@@ -73,7 +73,7 @@ client = WorkOSClient(
     credentials=WorkloadIdentityCredentials(
         client_id="client_1234",  # the M2M application's client ID
         token_url="https://.../oauth2/token",  # the token exchange endpoint
-        environment_id="environment_1234",
+        environment_id="environment_1234",  # optional, see below
         identity_token_provider=github_actions("https://api.workos.com"),
     )
 )
@@ -88,11 +88,13 @@ page = client.organizations.list_organizations()
 | `identity_token_provider` | | A callable that returns the workload's JWT (required) |
 | `client_id` | `WORKOS_CLIENT_ID` | The M2M application's client ID (required) |
 | `token_url` | `WORKOS_WIF_TOKEN_URL` | The token exchange endpoint (required; there is no default) |
-| `environment_id` | `WORKOS_ENVIRONMENT_ID` | The environment ID, sent with every API request (required) |
+| `environment_id` | `WORKOS_ENVIRONMENT_ID` | The environment ID (optional). When set, it is sent as the `x-url-environment-id` header on every API request |
 | `resource` | | The resource to request a token for (defaults to `https://api.workos.com`) |
 | `scope` | `WORKOS_WIF_SCOPE` | The scope to request (omitted when unset) |
 
 An explicit argument wins over its environment variable.
+
+`environment_id` is optional. WorkOS binds a workload identity client to exactly one environment, so the header selects nothing, and when no environment ID is set the header is not sent. Setting it is a safety check: if the value names a different environment from the one the client is bound to, the API refuses the request with `403 environment_mismatch`.
 
 ### Platform Providers
 
@@ -147,9 +149,12 @@ provider = token_env("MY_IDENTITY_TOKEN")
 def provider() -> str:
     return fetch_identity_token_somehow()
 
-# client_id, token_url and environment_id come from the environment here
+# client_id and token_url come from the environment here, and so does
+# environment_id when WORKOS_ENVIRONMENT_ID is set
 credentials = WorkloadIdentityCredentials(identity_token_provider=provider)
 ```
+
+WorkOS accepts an identity token for one exchange only. The SDK exchanges again about every four minutes. If the file or the variable still holds the same token then, that exchange fails with `invalid_grant`. So use `token_file` and `token_env` for a source that something rewrites before each exchange, or for a job shorter than five minutes. The platform providers (GitHub Actions, GCP and AWS) fetch a new token every time.
 
 With `AsyncWorkOSClient`, a plain function runs in a worker thread so it cannot block the event loop, and an `async def` provider is awaited.
 

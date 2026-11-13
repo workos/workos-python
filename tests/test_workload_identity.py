@@ -646,11 +646,11 @@ def WIF_01_first_request_triggers_one_exchange_post(h: Harness) -> None:
     assert "client_secret" not in post.form
 
     # Again on a new instance, with a scope.
-    h.get(h.client(h.credentials(Provider("assertion-1"), scope="organizations:write")))
+    h.get(h.client(h.credentials(Provider("assertion-1"), scope="orgs:write")))
 
     assert h.token.count == 2
     scoped = h.token.requests[1]
-    assert scoped.form["scope"] == "organizations:write"
+    assert scoped.form["scope"] == "orgs:write"
     assert "client_secret" not in scoped.form
     assert "authorization" not in scoped.headers
 
@@ -659,6 +659,7 @@ def WIF_01_first_request_triggers_one_exchange_post(h: Harness) -> None:
 def WIF_02_api_request_carries_the_access_token_and_environment_header(
     h: Harness,
 ) -> None:
+    # (a) With an environment ID set, the header names it.
     # No API key and no client ID: the credentials alone are enough to build a client.
     h.get(h.client(h.credentials()))
 
@@ -666,6 +667,24 @@ def WIF_02_api_request_carries_the_access_token_and_environment_header(
     request = h.api.requests[0]
     assert request.headers["authorization"] == "Bearer access-1"
     assert request.headers["x-url-environment-id"] == "environment_wif_test"
+
+
+@scenario
+def WIF_02_no_environment_id_sends_no_environment_header(h: Harness) -> None:
+    # (b) No environment ID, explicit or in the environment: the credentials
+    # are still built, and the header is left off.
+    h.monkeypatch.delenv("WORKOS_ENVIRONMENT_ID", raising=False)
+    credentials = h.bare_credentials(
+        Provider(), client_id=CLIENT_ID, token_url=TOKEN_URL
+    )
+    assert credentials.environment_id is None
+
+    h.get(h.client(credentials))
+
+    assert h.api.count == 1
+    request = h.api.requests[0]
+    assert request.headers["authorization"] == "Bearer access-1"
+    assert "x-url-environment-id" not in request.headers
 
 
 @scenario
@@ -1518,7 +1537,6 @@ def test_one_credentials_instance_serves_both_kinds_of_client(
     [
         ("client_id", "WORKOS_CLIENT_ID"),
         ("token_url", "WORKOS_WIF_TOKEN_URL"),
-        ("environment_id", "WORKOS_ENVIRONMENT_ID"),
     ],
 )
 def test_a_missing_required_setting_fails_at_construction(
@@ -1527,7 +1545,6 @@ def test_a_missing_required_setting_fails_at_construction(
     settings = {
         "client_id": CLIENT_ID,
         "token_url": TOKEN_URL,
-        "environment_id": ENVIRONMENT_ID,
     }
     del settings[missing]
 
@@ -1540,6 +1557,25 @@ def test_a_missing_required_setting_fails_at_construction(
         "Workload identity credentials are missing a required setting."
     )
     assert network.token.count == 0
+
+
+def test_an_empty_environment_id_counts_as_not_set(
+    network: Network, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("WORKOS_ENVIRONMENT_ID", "")
+    credentials = WorkloadIdentityCredentials(
+        identity_token_provider=Provider(),
+        client_id=CLIENT_ID,
+        token_url=TOKEN_URL,
+        environment_id="",
+    )
+    assert credentials.environment_id is None
+
+    with WorkOSClient(base_url=API_URL, credentials=credentials) as client:
+        client.request("GET", ("organizations",))
+
+    assert network.api.bearers() == ["access-1"]
+    assert "x-url-environment-id" not in network.api.requests[0].headers
 
 
 def test_a_provider_that_is_not_callable_fails_at_construction(

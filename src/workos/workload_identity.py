@@ -63,7 +63,8 @@ __all__ = [
 
 # --- constants ------------------------------------------------------------------
 
-# Sent on every API request made with workload identity credentials.
+# Sent on API requests made with workload identity credentials that have an
+# environment ID. Left off when they have none.
 ENVIRONMENT_ID_HEADER = "x-url-environment-id"
 GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 DEFAULT_RESOURCE = "https://api.workos.com"
@@ -96,22 +97,24 @@ _WAIT_TIMEOUT_MESSAGE = "Timed out waiting for the workload identity token excha
 _HINTS: Dict[str, str] = {
     # OAuth error codes from the token endpoint.
     "invalid_grant": (
-        "The identity token did not match a trust rule for this application, "
-        "or the token has expired. Check the issuer, audience and subject "
-        "claims against the trust rule."
+        "The identity token was not accepted. Check its issuer, audience and "
+        "subject claims against the trust rule, and that it has not expired. "
+        "A token that was already exchanged is also refused: each exchange "
+        "needs a new identity token."
     ),
     "invalid_target": (
-        "The resource or audience is wrong. The trust rule's audience must "
-        "match the audience the identity token was requested with, and the "
-        "resource must be registered for the environment."
+        "The resource is not one the token endpoint accepts. Leave the "
+        "resource unset to use the default, https://api.workos.com."
     ),
     "invalid_client": (
-        "Check that the client ID is the M2M application that has the trust rule."
+        "The client ID is unknown, or the application has no enabled trust "
+        "rule. Check that the client ID is the M2M application that has the "
+        "trust rule."
     ),
     "unauthorized_client": (
-        "This application is not allowed to use workload identity federation. "
-        "Check that the feature is enabled for the environment and that the "
-        "application has a trust rule."
+        "This application cannot use workload identity federation. Check that "
+        "the feature is enabled for your team and that the application is "
+        "bound to a non-production environment."
     ),
     "invalid_scope": (
         "The requested scope is not allowed for this application. Fix the "
@@ -423,8 +426,13 @@ class WorkloadIdentityCredentials:
             ``WORKOS_CLIENT_ID``.
         token_url: The token exchange endpoint. Falls back to
             ``WORKOS_WIF_TOKEN_URL``. There is no built-in default.
-        environment_id: The environment ID, sent as a header on every API
-            request. Falls back to ``WORKOS_ENVIRONMENT_ID``.
+        environment_id: Optional. Falls back to ``WORKOS_ENVIRONMENT_ID``.
+            When set, it is sent as the ``x-url-environment-id`` header on
+            every API request; when not set (an empty string counts as not
+            set), the header is not sent. The server binds a workload
+            identity client to exactly one environment, so the header
+            selects nothing. Setting it is a safety check: a value that
+            names a different environment gets ``403 environment_mismatch``.
         resource: The ``resource`` to request a token for. Defaults to
             ``https://api.workos.com``.
         scope: The ``scope`` to request. Falls back to ``WORKOS_WIF_SCOPE``;
@@ -453,8 +461,8 @@ class WorkloadIdentityCredentials:
         self._provider = identity_token_provider
         self._client_id = self._required("client_id", client_id, _CLIENT_ID_ENV)
         self._token_url = self._required("token_url", token_url, _TOKEN_URL_ENV)
-        self._environment_id = self._required(
-            "environment_id", environment_id, _ENVIRONMENT_ID_ENV
+        self._environment_id = (
+            environment_id or os.environ.get(_ENVIRONMENT_ID_ENV) or None
         )
         self._resource = resource or DEFAULT_RESOURCE
         self._scope = scope or os.environ.get(_SCOPE_ENV) or None
@@ -497,8 +505,8 @@ class WorkloadIdentityCredentials:
         return self._token_url
 
     @property
-    def environment_id(self) -> str:
-        """The environment ID sent with every API request."""
+    def environment_id(self) -> Optional[str]:
+        """The environment ID sent with every API request, or None when none is sent."""
         return self._environment_id
 
     @property
@@ -565,11 +573,11 @@ class WorkloadIdentityCredentials:
     # --- cache ---
 
     def _snapshot(self, token: str, generation: int) -> CredentialSnapshot:
+        headers = {"Authorization": f"Bearer {token}"}
+        if self._environment_id:
+            headers[ENVIRONMENT_ID_HEADER] = self._environment_id
         return CredentialSnapshot(
-            headers={
-                "Authorization": f"Bearer {token}",
-                ENVIRONMENT_ID_HEADER: self._environment_id,
-            },
+            headers=headers,
             generation=generation,
             recoverable=True,
         )

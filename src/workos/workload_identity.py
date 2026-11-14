@@ -80,7 +80,6 @@ DESCRIPTION_LIMIT = 500
 _CLIENT_ID_ENV = "WORKOS_CLIENT_ID"
 _TOKEN_URL_ENV = "WORKOS_WIF_TOKEN_URL"
 _SCOPE_ENV = "WORKOS_WIF_SCOPE"
-_ENVIRONMENT_ID_ENV = "WORKOS_ENVIRONMENT_ID"
 
 # How long past its deadline a synchronous exchange may run before a waiter
 # gives it up for lost. See WorkloadIdentityCredentials._wait.
@@ -415,8 +414,9 @@ class WorkloadIdentityCredentials:
     even with identical settings.
 
     Settings are fixed at construction; build a new instance to change one. An
-    omitted setting falls back to its environment variable. The environment
-    variables never switch workload identity on by themselves.
+    omitted ``client_id``, ``token_url`` or ``scope`` falls back to its
+    environment variable. The environment variables never switch workload
+    identity on by themselves.
 
     Args:
         identity_token_provider: A callable returning the workload's JWT, such
@@ -426,13 +426,14 @@ class WorkloadIdentityCredentials:
             ``WORKOS_CLIENT_ID``.
         token_url: The token exchange endpoint. Falls back to
             ``WORKOS_WIF_TOKEN_URL``. There is no built-in default.
-        environment_id: Optional. Falls back to ``WORKOS_ENVIRONMENT_ID``.
-            When set, it is sent as the ``x-url-environment-id`` header on
-            every API request; when not set (an empty string counts as not
-            set), the header is not sent. The server binds a workload
-            identity client to exactly one environment, so the header
-            selects nothing. Setting it is a safety check: a value that
-            names a different environment gets ``403 environment_mismatch``.
+        environment_id: Optional, and set only here: no environment variable
+            is read for it. When set, it is sent as the
+            ``x-url-environment-id`` header on every API request; when not
+            set (an empty string counts as not set), the header is not sent.
+            The server binds a workload identity client to exactly one
+            environment, so the header selects nothing. Setting it is a
+            safety check: a value that names a different environment gets
+            ``403 environment_mismatch``.
         resource: The ``resource`` to request a token for. Defaults to
             ``https://api.workos.com``.
         scope: The ``scope`` to request. Falls back to ``WORKOS_WIF_SCOPE``;
@@ -461,9 +462,7 @@ class WorkloadIdentityCredentials:
         self._provider = identity_token_provider
         self._client_id = self._required("client_id", client_id, _CLIENT_ID_ENV)
         self._token_url = self._required("token_url", token_url, _TOKEN_URL_ENV)
-        self._environment_id = (
-            environment_id or os.environ.get(_ENVIRONMENT_ID_ENV) or None
-        )
+        self._environment_id = environment_id or None
         self._resource = resource or DEFAULT_RESOURCE
         self._scope = scope or os.environ.get(_SCOPE_ENV) or None
 

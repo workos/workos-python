@@ -57,7 +57,6 @@ ENVIRONMENT = (
     "WORKOS_CLIENT_ID",
     "WORKOS_WIF_TOKEN_URL",
     "WORKOS_WIF_SCOPE",
-    "WORKOS_ENVIRONMENT_ID",
     "WORKOS_BASE_URL",
 )
 OAUTH_CODES = (
@@ -671,9 +670,10 @@ def WIF_02_api_request_carries_the_access_token_and_environment_header(
 
 @scenario
 def WIF_02_no_environment_id_sends_no_environment_header(h: Harness) -> None:
-    # (b) No environment ID, explicit or in the environment: the credentials
-    # are still built, and the header is left off.
-    h.monkeypatch.delenv("WORKOS_ENVIRONMENT_ID", raising=False)
+    # (b) No environment ID in code: the credentials are still built, and the
+    # header is left off. The variable is set to show that the SDK does not
+    # read it.
+    h.monkeypatch.setenv("WORKOS_ENVIRONMENT_ID", "environment_env")
     credentials = h.bare_credentials(
         Provider(), client_id=CLIENT_ID, token_url=TOKEN_URL
     )
@@ -1104,14 +1104,12 @@ def WIF_22_env_and_callback_providers_and_environment_defaults(h: Harness) -> No
     h.monkeypatch.setenv("WORKOS_CLIENT_ID", "client_env")
     h.monkeypatch.setenv("WORKOS_WIF_TOKEN_URL", TOKEN_URL)
     h.monkeypatch.setenv("WORKOS_WIF_SCOPE", "scope_env")
-    h.monkeypatch.setenv("WORKOS_ENVIRONMENT_ID", "environment_env")
     before = h.token.count
     h.get(h.client(h.bare_credentials(Provider())))
     assert h.token.count == before + 1
     assert h.token.requests[-1].url == TOKEN_URL
     assert h.token.forms()[-1]["client_id"] == "client_env"
     assert h.token.forms()[-1]["scope"] == "scope_env"
-    assert h.api.requests[-1].headers["x-url-environment-id"] == "environment_env"
 
     # (d) Explicit values win over the environment.
     h.get(
@@ -1120,13 +1118,11 @@ def WIF_22_env_and_callback_providers_and_environment_defaults(h: Harness) -> No
                 Provider(),
                 client_id="client_explicit",
                 scope="scope_explicit",
-                environment_id="environment_explicit",
             )
         )
     )
     assert h.token.forms()[-1]["client_id"] == "client_explicit"
     assert h.token.forms()[-1]["scope"] == "scope_explicit"
-    assert h.api.requests[-1].headers["x-url-environment-id"] == "environment_explicit"
 
 
 @scenario
@@ -1559,15 +1555,15 @@ def test_a_missing_required_setting_fails_at_construction(
     assert network.token.count == 0
 
 
+@pytest.mark.parametrize("environment_id", ["", None])
 def test_an_empty_environment_id_counts_as_not_set(
-    network: Network, monkeypatch: pytest.MonkeyPatch
+    network: Network, environment_id: Optional[str]
 ) -> None:
-    monkeypatch.setenv("WORKOS_ENVIRONMENT_ID", "")
     credentials = WorkloadIdentityCredentials(
         identity_token_provider=Provider(),
         client_id=CLIENT_ID,
         token_url=TOKEN_URL,
-        environment_id="",
+        environment_id=environment_id,
     )
     assert credentials.environment_id is None
 
@@ -1615,7 +1611,6 @@ def test_the_environment_alone_never_turns_workload_identity_on(
 ) -> None:
     monkeypatch.setenv("WORKOS_CLIENT_ID", "client_env")
     monkeypatch.setenv("WORKOS_WIF_TOKEN_URL", TOKEN_URL)
-    monkeypatch.setenv("WORKOS_ENVIRONMENT_ID", "environment_env")
     monkeypatch.setenv("WORKOS_API_KEY", "sk_test_env")
 
     with WorkOSClient(base_url=API_URL) as client:

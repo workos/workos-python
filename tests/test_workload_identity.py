@@ -51,12 +51,12 @@ ENVIRONMENT_ID = "environment_wif_test"
 TOKEN_URL = "https://token.test/oauth2/token"
 API_URL = "https://api.test"
 ELSEWHERE_URL = "https://elsewhere.test/oauth2/token"
+# No mock answers this host: a request to it fails the test.
+IGNORED_URL = "https://ignored.example.test/oauth2/token"
 
 ENVIRONMENT = (
     "WORKOS_API_KEY",
     "WORKOS_CLIENT_ID",
-    "WORKOS_WIF_TOKEN_URL",
-    "WORKOS_WIF_SCOPE",
     "WORKOS_BASE_URL",
 )
 OAUTH_CODES = (
@@ -1052,13 +1052,13 @@ def WIF_20_explicit_credentials_win_over_the_environment_api_key(h: Harness) -> 
     assert h.api.bearers() == ["access-1"]
     assert client._api_key is None
 
-    # (b) Credentials with no token URL, explicit or in the environment, cannot be built.
+    # (b) Credentials with no token URL cannot be built.
     with pytest.raises(WorkloadIdentityError) as missing:
         h.bare_credentials(
             Provider(), client_id=CLIENT_ID, environment_id=ENVIRONMENT_ID
         )
     assert missing.value.code == "invalid_configuration"
-    assert "token_url is required (or set WORKOS_WIF_TOKEN_URL)" in str(missing.value)
+    assert missing.value.description == "token_url is required"
 
     # (c) A failing exchange is an error, never a fall back to the key.
     h.token.script.append(oauth_error("invalid_client"))
@@ -1100,29 +1100,34 @@ def WIF_22_env_and_callback_providers_and_environment_defaults(h: Harness) -> No
     h.get(h.client(h.credentials(lambda: "assertion-cb")))
     assert h.token.forms()[-1]["assertion"] == "assertion-cb"
 
-    # (c) Omitted settings default from the environment.
+    # (c) Only client_id defaults from the environment. The token URL and
+    # scope variables are set to show that the SDK does not read them.
     h.monkeypatch.setenv("WORKOS_CLIENT_ID", "client_env")
-    h.monkeypatch.setenv("WORKOS_WIF_TOKEN_URL", TOKEN_URL)
+    h.monkeypatch.setenv("WORKOS_WIF_TOKEN_URL", IGNORED_URL)
     h.monkeypatch.setenv("WORKOS_WIF_SCOPE", "scope_env")
     before = h.token.count
-    h.get(h.client(h.bare_credentials(Provider())))
+    h.get(h.client(h.bare_credentials(Provider(), token_url=TOKEN_URL)))
     assert h.token.count == before + 1
     assert h.token.requests[-1].url == TOKEN_URL
     assert h.token.forms()[-1]["client_id"] == "client_env"
-    assert h.token.forms()[-1]["scope"] == "scope_env"
+    assert "scope" not in h.token.forms()[-1]
 
-    # (d) Explicit values win over the environment.
+    # (d) An explicit client_id wins over the environment.
     h.get(
         h.client(
             h.bare_credentials(
-                Provider(),
-                client_id="client_explicit",
-                scope="scope_explicit",
+                Provider(), client_id="client_explicit", token_url=TOKEN_URL
             )
         )
     )
     assert h.token.forms()[-1]["client_id"] == "client_explicit"
-    assert h.token.forms()[-1]["scope"] == "scope_explicit"
+
+    # (e) With no token URL in code, the credentials cannot be built.
+    with pytest.raises(WorkloadIdentityError) as missing:
+        h.bare_credentials(Provider())
+    assert missing.value.code == "invalid_configuration"
+    assert missing.value.description == "token_url is required"
+    assert h.token.count == before + 2
 
 
 @scenario
@@ -1529,26 +1534,21 @@ def test_one_credentials_instance_serves_both_kinds_of_client(
 
 
 @pytest.mark.parametrize(
-    ("missing", "variable"),
+    ("settings", "description"),
     [
-        ("client_id", "WORKOS_CLIENT_ID"),
-        ("token_url", "WORKOS_WIF_TOKEN_URL"),
+        ({"token_url": TOKEN_URL}, "client_id is required (or set WORKOS_CLIENT_ID)"),
+        ({"client_id": CLIENT_ID}, "token_url is required"),
+        ({"client_id": CLIENT_ID, "token_url": ""}, "token_url is required"),
     ],
 )
 def test_a_missing_required_setting_fails_at_construction(
-    network: Network, missing: str, variable: str
+    network: Network, settings: Dict[str, str], description: str
 ) -> None:
-    settings = {
-        "client_id": CLIENT_ID,
-        "token_url": TOKEN_URL,
-    }
-    del settings[missing]
-
     with pytest.raises(WorkloadIdentityError) as caught:
         WorkloadIdentityCredentials(identity_token_provider=Provider(), **settings)
 
     assert caught.value.code == "invalid_configuration"
-    assert caught.value.description == f"{missing} is required (or set {variable})"
+    assert caught.value.description == description
     assert caught.value.hint == (
         "Workload identity credentials are missing a required setting."
     )
@@ -1572,6 +1572,24 @@ def test_an_empty_environment_id_counts_as_not_set(
 
     assert network.api.bearers() == ["access-1"]
     assert "x-url-environment-id" not in network.api.requests[0].headers
+
+
+@pytest.mark.parametrize("scope", ["", None])
+def test_an_empty_scope_counts_as_not_set(
+    network: Network, scope: Optional[str]
+) -> None:
+    credentials = WorkloadIdentityCredentials(
+        identity_token_provider=Provider(),
+        client_id=CLIENT_ID,
+        token_url=TOKEN_URL,
+        scope=scope,
+    )
+    assert credentials.scope is None
+
+    with WorkOSClient(base_url=API_URL, credentials=credentials) as client:
+        client.request("GET", ("organizations",))
+
+    assert "scope" not in network.token.forms()[0]
 
 
 def test_a_provider_that_is_not_callable_fails_at_construction(
@@ -1610,7 +1628,6 @@ def test_the_environment_alone_never_turns_workload_identity_on(
     network: Network, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv("WORKOS_CLIENT_ID", "client_env")
-    monkeypatch.setenv("WORKOS_WIF_TOKEN_URL", TOKEN_URL)
     monkeypatch.setenv("WORKOS_API_KEY", "sk_test_env")
 
     with WorkOSClient(base_url=API_URL) as client:

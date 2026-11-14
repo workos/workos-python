@@ -15,7 +15,7 @@ Build a :class:`WorkloadIdentityCredentials` and pass it as ``credentials=`` to
             client_id="client_...",
             token_url="https://.../oauth2/token",
             environment_id="environment_...",
-            identity_token_provider=token_file("/var/run/secrets/tokens/workos"),
+            identity_token_provider=token_file("/run/workos/identity-token"),
         )
     )
 
@@ -77,9 +77,8 @@ DEFAULT_LIFETIME_SECONDS = 300.0
 EXCHANGE_DEADLINE_SECONDS = 30.0
 DESCRIPTION_LIMIT = 500
 
+# The only environment variable the credentials read.
 _CLIENT_ID_ENV = "WORKOS_CLIENT_ID"
-_TOKEN_URL_ENV = "WORKOS_WIF_TOKEN_URL"
-_SCOPE_ENV = "WORKOS_WIF_SCOPE"
 
 # How long past its deadline a synchronous exchange may run before a waiter
 # gives it up for lost. See WorkloadIdentityCredentials._wait.
@@ -414,9 +413,9 @@ class WorkloadIdentityCredentials:
     even with identical settings.
 
     Settings are fixed at construction; build a new instance to change one. An
-    omitted ``client_id``, ``token_url`` or ``scope`` falls back to its
-    environment variable. The environment variables never switch workload
-    identity on by themselves.
+    omitted ``client_id`` falls back to ``WORKOS_CLIENT_ID``, the only
+    environment variable the credentials read. No environment variable
+    switches workload identity on.
 
     Args:
         identity_token_provider: A callable returning the workload's JWT, such
@@ -424,8 +423,9 @@ class WorkloadIdentityCredentials:
             your own function.
         client_id: The M2M application's client ID. Falls back to
             ``WORKOS_CLIENT_ID``.
-        token_url: The token exchange endpoint. Falls back to
-            ``WORKOS_WIF_TOKEN_URL``. There is no built-in default.
+        token_url: The token exchange endpoint. Required, and set only here:
+            no environment variable is read for it and there is no built-in
+            default.
         environment_id: Optional, and set only here: no environment variable
             is read for it. When set, it is sent as the
             ``x-url-environment-id`` header on every API request; when not
@@ -436,12 +436,14 @@ class WorkloadIdentityCredentials:
             ``403 environment_mismatch``.
         resource: The ``resource`` to request a token for. Defaults to
             ``https://api.workos.com``.
-        scope: The ``scope`` to request. Falls back to ``WORKOS_WIF_SCOPE``;
-            left out of the request when empty.
+        scope: The ``scope`` to request. Optional, and set only here: no
+            environment variable is read for it. Left out of the request when
+            not set or empty.
 
     Raises:
         WorkloadIdentityError: With code ``invalid_configuration`` when a
-            required setting is missing after the environment is consulted.
+            required setting is missing; for ``client_id``, that is after
+            ``WORKOS_CLIENT_ID`` is consulted.
     """
 
     def __init__(
@@ -461,10 +463,10 @@ class WorkloadIdentityCredentials:
             )
         self._provider = identity_token_provider
         self._client_id = self._required("client_id", client_id, _CLIENT_ID_ENV)
-        self._token_url = self._required("token_url", token_url, _TOKEN_URL_ENV)
+        self._token_url = self._required("token_url", token_url)
         self._environment_id = environment_id or None
         self._resource = resource or DEFAULT_RESOURCE
-        self._scope = scope or os.environ.get(_SCOPE_ENV) or None
+        self._scope = scope or None
 
         # The cache. Guarded by _lock, which is held only for these few fields
         # and never across I/O, so both the sync and the async path may take it.
@@ -485,12 +487,14 @@ class WorkloadIdentityCredentials:
         self._async_sleep: Callable[[float], Awaitable[None]] = asyncio.sleep
 
     @staticmethod
-    def _required(field: str, value: Optional[str], env: str) -> str:
-        resolved = value or os.environ.get(env)
+    def _required(field: str, value: Optional[str], env: Optional[str] = None) -> str:
+        """A required setting, from the argument or, when it has one, ``env``."""
+        resolved = value or (os.environ.get(env) if env else None)
         if not resolved:
-            raise WorkloadIdentityError(
-                "invalid_configuration", f"{field} is required (or set {env})"
-            )
+            description = f"{field} is required"
+            if env:
+                description = f"{description} (or set {env})"
+            raise WorkloadIdentityError("invalid_configuration", description)
         return resolved
 
     @property

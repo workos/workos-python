@@ -87,12 +87,14 @@ page = client.organizations.list_organizations()
 |----------|----------------------|-------------|
 | `identity_token_provider` | | A callable that returns the workload's JWT (required) |
 | `client_id` | `WORKOS_CLIENT_ID` | The M2M application's client ID (required) |
-| `token_url` | | The token exchange endpoint (required; set in code only, and there is no default) |
+| `token_url` | | The token exchange endpoint (required; set in code only, and there is no default). It must be an `https` URL |
 | `environment_id` | | The environment ID (optional; set in code only). When set, it is sent as the `x-url-environment-id` header on every API request |
 | `resource` | | The resource to request a token for (defaults to `https://api.workos.com`) |
 | `scope` | | The scope to request (optional; set in code only, and omitted when unset) |
 
 `WORKOS_CLIENT_ID` is the only environment variable the credentials read, and an explicit `client_id` wins over it. Every other argument is set in code.
+
+`token_url` must be an absolute `https` URL, because the exchange request carries the workload's identity token and the response carries the access token. Any other URL, `http://localhost` included, raises `WorkloadIdentityError` with the code `invalid_configuration` when the credentials are built.
 
 `environment_id` is optional. WorkOS binds a workload identity client to exactly one environment, so the header selects nothing, and when no environment ID is set the header is not sent. Setting it is a safety check: if the value names a different environment from the one the client is bound to, the API refuses the request with `403 environment_mismatch`.
 

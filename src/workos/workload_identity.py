@@ -22,6 +22,9 @@ Build a :class:`WorkloadIdentityCredentials` and pass it as ``credentials=`` to
 The identity token provider is any callable that returns the workload's JWT.
 :func:`token_file` and :func:`token_env` are built in; the GitHub Actions, GCP
 and AWS providers are separate distributions.
+
+The token URL must be an absolute ``https`` URL. Any other URL fails when the
+credentials are built.
 """
 
 from __future__ import annotations
@@ -404,6 +407,28 @@ def _retrieve_exception(task: "asyncio.Task[Tuple[str, int]]") -> None:
 # --- credentials ----------------------------------------------------------------
 
 
+def _https_url(token_url: str) -> str:
+    """``token_url`` unchanged, if it is an absolute https URL. Raises when it is not.
+
+    https only, on every host: the POST carries the workload's identity token
+    and the response carries the access token. Nothing relaxes this, for
+    localhost or a loopback address either.
+
+    The URL is parsed by httpx2, which also sends the exchange, so the check
+    and the request read it the same way.
+    """
+    try:
+        url = httpx2.URL(token_url)
+    except (TypeError, httpx2.InvalidURL):
+        url = None
+    if url is None or url.scheme != "https" or not url.host:
+        # The URL itself is left out of the error: it may hold credentials.
+        raise WorkloadIdentityError(
+            "invalid_configuration", "token_url must be an absolute https URL"
+        )
+    return token_url
+
+
 class WorkloadIdentityCredentials:
     """Credentials that exchange a workload's JWT for a WorkOS access token.
 
@@ -425,7 +450,10 @@ class WorkloadIdentityCredentials:
             ``WORKOS_CLIENT_ID``.
         token_url: The token exchange endpoint. Required, and set only here:
             no environment variable is read for it and there is no built-in
-            default.
+            default. It must be an absolute ``https`` URL. The scheme is not
+            case-sensitive. Any other URL is refused, ``http://localhost``
+            included, because the request carries the identity token and the
+            response carries the access token.
         environment_id: Optional, and set only here: no environment variable
             is read for it. When set, it is sent as the
             ``x-url-environment-id`` header on every API request; when not
@@ -443,7 +471,8 @@ class WorkloadIdentityCredentials:
     Raises:
         WorkloadIdentityError: With code ``invalid_configuration`` when a
             required setting is missing; for ``client_id``, that is after
-            ``WORKOS_CLIENT_ID`` is consulted.
+            ``WORKOS_CLIENT_ID`` is consulted. The same code is raised when
+            ``token_url`` is not an absolute ``https`` URL.
     """
 
     def __init__(
@@ -463,7 +492,7 @@ class WorkloadIdentityCredentials:
             )
         self._provider = identity_token_provider
         self._client_id = self._required("client_id", client_id, _CLIENT_ID_ENV)
-        self._token_url = self._required("token_url", token_url)
+        self._token_url = _https_url(self._required("token_url", token_url))
         self._environment_id = environment_id or None
         self._resource = resource or DEFAULT_RESOURCE
         self._scope = scope or None
@@ -504,7 +533,7 @@ class WorkloadIdentityCredentials:
 
     @property
     def token_url(self) -> str:
-        """The token exchange endpoint."""
+        """The token exchange endpoint, an absolute ``https`` URL."""
         return self._token_url
 
     @property

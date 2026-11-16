@@ -1555,6 +1555,66 @@ def test_a_missing_required_setting_fails_at_construction(
     assert network.token.count == 0
 
 
+@pytest.mark.parametrize(
+    "token_url",
+    [
+        "http://example.com/oauth2/token",
+        # Loopback hosts are no exception.
+        "http://localhost:8080/oauth2/token",
+        "http://127.0.0.1/oauth2/token",
+        "http://[::1]/oauth2/token",
+        # No host.
+        "https:///oauth2/token",
+        "https://:8443/oauth2/token",
+        "https:token.test/oauth2/token",
+        # No scheme.
+        "token.test/oauth2/token",
+        "//token.test/oauth2/token",
+        "/oauth2/token",
+        # Another scheme.
+        "ftp://token.test/oauth2/token",
+        # Not a URL the HTTP client can read.
+        " https://token.test/oauth2/token",
+        "\thttps://token.test/oauth2/token",
+        "https://token.test:port/oauth2/token",
+    ],
+)
+def test_a_token_url_that_is_not_absolute_https_fails_at_construction(
+    network: Network, token_url: str
+) -> None:
+    with pytest.raises(WorkloadIdentityError) as caught:
+        WorkloadIdentityCredentials(
+            identity_token_provider=Provider(),
+            client_id=CLIENT_ID,
+            token_url=token_url,
+        )
+
+    assert caught.value.code == "invalid_configuration"
+    assert caught.value.description == "token_url must be an absolute https URL"
+    assert str(caught.value) == (
+        "invalid_configuration: Workload identity credentials are missing a "
+        "required setting. token_url must be an absolute https URL"
+    )
+    assert caught.value.__cause__ is None
+    assert network.token.count == 0
+
+
+def test_the_token_url_scheme_is_not_case_sensitive(network: Network) -> None:
+    token_url = "HTTPS://token.test/oauth2/token"
+    credentials = WorkloadIdentityCredentials(
+        identity_token_provider=Provider(),
+        client_id=CLIENT_ID,
+        token_url=token_url,
+    )
+    assert credentials.token_url == token_url
+
+    with WorkOSClient(base_url=API_URL, credentials=credentials) as client:
+        client.request("GET", ("organizations",))
+
+    assert network.token.requests[0].url == TOKEN_URL
+    assert network.api.bearers() == ["access-1"]
+
+
 @pytest.mark.parametrize("environment_id", ["", None])
 def test_an_empty_environment_id_counts_as_not_set(
     network: Network, environment_id: Optional[str]

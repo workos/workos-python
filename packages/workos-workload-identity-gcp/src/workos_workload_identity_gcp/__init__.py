@@ -32,6 +32,23 @@ class GcpMetadataProviderError(Exception):
     """The GCP metadata server did not return an identity token."""
 
 
+def _unreachable(exc: OSError) -> GcpMetadataProviderError:
+    """The error for a request that got no HTTP response, with the cause in words."""
+    # urllib wraps a failed connection in ``URLError`` and keeps the cause in
+    # ``reason``. A timeout while waiting for the response arrives unwrapped.
+    cause: object = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+    reason = str(cause).strip()
+    if not reason:
+        reason = (
+            "timed out" if isinstance(cause, TimeoutError) else "unknown network error"
+        )
+    return GcpMetadataProviderError(
+        f"The GCP metadata server could not be reached: {reason}. "
+        "This provider works only on Google Cloud "
+        "(Compute Engine, GKE, Cloud Run, Cloud Functions)."
+    )
+
+
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     """Turns every redirect into an ``HTTPError`` instead of following it."""
 
@@ -76,9 +93,7 @@ def gcp_metadata(audience: str) -> Callable[[], str]:
                 f"GCP metadata identity request failed with status {exc.code}."
             ) from None
         except OSError as exc:
-            raise GcpMetadataProviderError(
-                f"GCP metadata identity request failed: {type(exc).__name__}."
-            ) from None
+            raise _unreachable(exc) from None
         if status != 200:
             raise GcpMetadataProviderError(
                 f"GCP metadata identity request failed with status {status}."

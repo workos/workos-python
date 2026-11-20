@@ -4,7 +4,10 @@
 
 from __future__ import annotations
 
+import errno
 import http.server
+import os
+import socket
 import threading
 from dataclasses import dataclass, field
 from typing import Dict, Iterator, List
@@ -16,6 +19,15 @@ from workos_workload_identity_gcp import GcpMetadataProviderError, gcp_metadata
 
 AUDIENCE = "https://api.workos.com"
 IDENTITY_PATH = "/computeMetadata/v1/instance/service-accounts/default/identity"
+
+
+def unreachable(reason: str) -> str:
+    """The whole error text for a request that got no HTTP response."""
+    return (
+        f"The GCP metadata server could not be reached: {reason}. "
+        "This provider works only on Google Cloud "
+        "(Compute Engine, GKE, Cloud Run, Cloud Functions)."
+    )
 
 
 @dataclass
@@ -149,8 +161,73 @@ def test_connection_failure_is_a_provider_error(
     server.close()
     monkeypatch.setattr(gcp, "_METADATA_BASE_URL", unused)
 
-    with pytest.raises(GcpMetadataProviderError):
+    with pytest.raises(GcpMetadataProviderError) as raised:
         gcp_metadata(AUDIENCE)()
+
+    # The number differs by platform: 111 on Linux, 61 on macOS.
+    refused = f"[Errno {errno.ECONNREFUSED}] {os.strerror(errno.ECONNREFUSED)}"
+    assert refused.endswith("Connection refused")
+    assert str(raised.value) == unreachable(refused)
+
+
+def test_name_resolution_failure_names_the_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    asked: List[object] = []
+
+    def no_such_name(host: object, *args: object, **kwargs: object) -> None:
+        asked.append(host)
+        raise socket.gaierror(-2, "Name or service not known")
+
+    monkeypatch.setattr(socket, "getaddrinfo", no_such_name)
+
+    with pytest.raises(GcpMetadataProviderError) as raised:
+        gcp_metadata(AUDIENCE)()
+
+    assert str(raised.value) == unreachable("[Errno -2] Name or service not known")
+    assert asked == ["metadata.google.internal"]
+
+
+def test_timeout_waiting_for_the_response_names_the_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # A listener that never accepts: the connection opens through its backlog
+    # and no response ever comes.
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as silent:
+        silent.bind(("127.0.0.1", 0))
+        silent.listen(1)
+        monkeypatch.setattr(
+            gcp, "_METADATA_BASE_URL", f"http://127.0.0.1:{silent.getsockname()[1]}"
+        )
+        monkeypatch.setattr(gcp, "_TIMEOUT_SECONDS", 0.2)
+
+        with pytest.raises(GcpMetadataProviderError) as raised:
+            gcp_metadata(AUDIENCE)()
+
+    assert str(raised.value) == unreachable("timed out")
+
+
+@pytest.mark.parametrize(
+    ("failure", "reason"),
+    [
+        (TimeoutError("timed out"), "timed out"),
+        (TimeoutError(), "timed out"),
+        (OSError(), "unknown network error"),
+    ],
+    ids=["timeout", "timeout without text", "other failure without text"],
+)
+def test_connect_failure_always_names_a_reason(
+    monkeypatch: pytest.MonkeyPatch, failure: OSError, reason: str
+) -> None:
+    def fail(*args: object, **kwargs: object) -> None:
+        raise failure
+
+    monkeypatch.setattr(socket, "create_connection", fail)
+
+    with pytest.raises(GcpMetadataProviderError) as raised:
+        gcp_metadata(AUDIENCE)()
+
+    assert str(raised.value) == unreachable(reason)
 
 
 def test_WIF_GCP_03_the_request_does_not_go_through_an_environment_proxy(

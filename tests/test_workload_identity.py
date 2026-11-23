@@ -1903,6 +1903,45 @@ def test_async_waiter_times_out_without_failing_the_exchange(
     assert h.token.count == 1
 
 
+def test_async_exchange_canceled_before_it_ran_does_not_block_the_next(
+    async_harness: AsyncHarness,
+) -> None:
+    h = async_harness
+    reached = threading.Event()
+    let_go = threading.Event()
+
+    def provider() -> str:
+        reached.set()
+        assert let_go.wait(10), "the provider was never let go"
+        return "assertion-1"
+
+    credentials = h.credentials(provider)
+
+    async def start_an_exchange_and_be_canceled() -> Any:
+        starter = h.loop.create_task(credentials.aresolve())
+        while not reached.is_set():
+            await asyncio.sleep(0.001)
+        starter.cancel()
+        return (await asyncio.gather(starter, return_exceptions=True))[0]
+
+    try:
+        # The caller that started the exchange is canceled while the exchange
+        # still waits for its provider, before it has made its request.
+        gave_up = h.loop.run_until_complete(
+            asyncio.wait_for(start_an_exchange_and_be_canceled(), 10)
+        )
+        assert isinstance(gave_up, asyncio.CancelledError)
+        assert h.token.count == 0
+    finally:
+        let_go.set()
+
+    # The next caller neither hangs nor fails. The exchange went on without
+    # the caller that started it, and this one gets its token.
+    snapshot = h.loop.run_until_complete(asyncio.wait_for(credentials.aresolve(), 10))
+    assert snapshot.headers["Authorization"] == "Bearer access-1"
+    assert h.token.count == 1
+
+
 def test_an_exchange_outlives_the_caller_that_started_it(
     async_harness: AsyncHarness,
 ) -> None:

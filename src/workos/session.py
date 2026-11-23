@@ -339,7 +339,16 @@ class Session:
         RefreshWithSessionCookieSuccessResponse,
         RefreshWithSessionCookieErrorResponse,
     ]:
-        """Refresh the session using the stored refresh token."""
+        """Refresh the session using the stored refresh token.
+
+        Raises:
+            ConfigurationError: The client authenticates with workload identity
+                credentials. The refresh request sends the API key as the
+                client secret, and that client has none.
+        """
+        # Read first, and outside the ``try`` below, so that a client with no
+        # API key to send is an error and not a failed refresh.
+        client_secret = self._client._client_secret("refresh")
         effective_cookie_password = cookie_password or self.cookie_password
 
         try:
@@ -360,7 +369,7 @@ class Session:
             body: Dict[str, Any] = {
                 "grant_type": "refresh_token",
                 "client_id": self._client.client_id,
-                "client_secret": self._client._api_key,
+                "client_secret": client_secret,
                 "refresh_token": session["refresh_token"],
             }
             if organization_id is not None:
@@ -555,7 +564,16 @@ class AsyncSession:
         RefreshWithSessionCookieSuccessResponse,
         RefreshWithSessionCookieErrorResponse,
     ]:
-        """Refresh the session using the stored refresh token."""
+        """Refresh the session using the stored refresh token.
+
+        Raises:
+            ConfigurationError: The client authenticates with workload identity
+                credentials. The refresh request sends the API key as the
+                client secret, and that client has none.
+        """
+        # Read first, and outside the ``try`` below, so that a client with no
+        # API key to send is an error and not a failed refresh.
+        client_secret = self._client._client_secret("refresh")
         effective_cookie_password = cookie_password or self.cookie_password
 
         try:
@@ -576,7 +594,7 @@ class AsyncSession:
             body: Dict[str, Any] = {
                 "grant_type": "refresh_token",
                 "client_id": self._client.client_id,
-                "client_secret": self._client._api_key,
+                "client_secret": client_secret,
                 "refresh_token": session["refresh_token"],
             }
             if organization_id is not None:

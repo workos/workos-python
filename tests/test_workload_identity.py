@@ -35,7 +35,9 @@ from urllib.parse import parse_qs
 
 import httpx2
 import pytest
+from cryptography.fernet import Fernet
 
+from tests.generated_helpers import load_fixture
 from workos import (
     AsyncWorkOSClient,
     AuthenticationError,
@@ -52,6 +54,9 @@ from workos import (
 from workos import workload_identity
 from workos._credentials import StaticKeyCredentials, apply_snapshot
 from workos._errors import ConfigurationError, WorkOSTimeoutError
+from workos.session import seal_data
+from workos.sso.models import SSOTokenResponse
+from workos.user_management.models import AuthenticateResponse
 
 CLIENT_ID = "client_wif_test"
 ENVIRONMENT_ID = "environment_wif_test"
@@ -1486,6 +1491,138 @@ def a_workload_identity_client_cannot_start_the_feature_flags_runtime(
 
     with pytest.raises(ConfigurationError):
         client.create_feature_flags_runtime_client()
+
+
+# --- the API key as the client secret -------------------------------------------------
+#
+# The sign-in calls, the SSO code exchange and session refresh send the API key
+# in the request body, as ``client_secret``. They read it through
+# ``_client_secret``.
+
+COOKIE_PASSWORD = Fernet.generate_key().decode("utf-8")
+
+
+def client_secret_error(method: str) -> str:
+    return (
+        f"{method} needs an API key: this request sends it as the client secret. "
+        "A client that authenticates with workload identity has no API key, so "
+        "use a client built with one for this call."
+    )
+
+
+def load_session(client: Any) -> Any:
+    """A session of ``client`` whose sealed cookie holds a refresh token."""
+    sealed = seal_data(
+        {"refresh_token": "rt_old", "user": {"id": "user_01"}}, COOKIE_PASSWORD
+    )
+    return client.user_management.load_sealed_session(
+        session_data=sealed, cookie_password=COOKIE_PASSWORD
+    )
+
+
+@scenario
+def the_client_secret_is_the_api_key_of_a_client_that_has_one(h: Harness) -> None:
+    client = h.client(api_key="sk_test_static", client_id=CLIENT_ID)
+
+    assert client._client_secret("authenticate_with_password") == "sk_test_static"
+
+
+@scenario
+def a_client_with_no_api_key_and_no_credentials_leaves_the_client_secret_out(
+    h: Harness,
+) -> None:
+    # A public client in a PKCE flow. None tells the caller to send no field.
+    for client in (
+        h.client(client_id=CLIENT_ID),
+        h.client(client_id=CLIENT_ID, is_public=True),
+    ):
+        assert client._client_secret("authenticate_with_code") is None
+
+
+@scenario
+def a_workload_identity_client_has_no_client_secret_to_send(h: Harness) -> None:
+    provider = Provider()
+    client = h.client(h.credentials(provider))
+
+    with pytest.raises(ConfigurationError) as caught:
+        client._client_secret("authenticate_with_password")
+
+    assert str(caught.value) == client_secret_error("authenticate_with_password")
+    assert provider.calls == 0
+    assert h.token.count == 0
+    assert h.api.count == 0
+
+
+@scenario
+def a_workload_identity_client_cannot_refresh_a_session(h: Harness) -> None:
+    provider = Provider()
+    client = h.client(h.credentials(provider), client_id=CLIENT_ID)
+    session = load_session(client)
+
+    # Raised, not returned as a failed refresh, and before anything is sent.
+    error = h.failure(lambda: session.refresh())
+
+    assert isinstance(error, ConfigurationError)
+    assert str(error) == client_secret_error("refresh")
+    assert provider.calls == 0
+    assert h.token.count == 0
+    assert h.api.count == 0
+
+
+@scenario
+def session_refresh_is_unchanged_for_a_client_without_credentials(h: Harness) -> None:
+    with_key = h.client(api_key="sk_test_static", client_id=CLIENT_ID)
+    h.run(lambda: load_session(with_key).refresh())
+    body = json.loads(h.api.requests[-1].content)
+    assert body["client_secret"] == "sk_test_static"
+    assert body["refresh_token"] == "rt_old"
+
+    public = h.client(client_id=CLIENT_ID, is_public=True)
+    h.run(lambda: load_session(public).refresh())
+    body = json.loads(h.api.requests[-1].content)
+    assert body.get("client_secret") is None
+    assert body["refresh_token"] == "rt_old"
+    assert "authorization" not in h.api.requests[-1].headers
+
+    assert h.api.count == 2
+    assert h.token.count == 0
+
+
+@scenario
+def a_public_client_still_exchanges_a_code_with_pkce(h: Harness) -> None:
+    client = h.client(client_id=CLIENT_ID, is_public=True)
+    h.api.script.append(Reply(200, load_fixture("authenticate_response.json")))
+    h.api.script.append(Reply(200, load_fixture("sso_token_response.json")))
+
+    authenticated = h.run(
+        lambda: client.user_management.authenticate_with_code_pkce(
+            code="code-1", code_verifier="verifier-1"
+        )
+    )
+    profile = h.run(
+        lambda: client.sso.get_profile_and_token_pkce(
+            code="code-2", code_verifier="verifier-2"
+        )
+    )
+
+    assert isinstance(authenticated, AuthenticateResponse)
+    assert isinstance(profile, SSOTokenResponse)
+    assert [json.loads(request.content) for request in h.api.requests] == [
+        {
+            "grant_type": "authorization_code",
+            "client_id": CLIENT_ID,
+            "code": "code-1",
+            "code_verifier": "verifier-1",
+        },
+        {
+            "client_id": CLIENT_ID,
+            "code": "code-2",
+            "grant_type": "authorization_code",
+            "code_verifier": "verifier-2",
+        },
+    ]
+    assert h.api.bearers() == [None, None]
+    assert h.token.count == 0
 
 
 # --- one client only -----------------------------------------------------------------

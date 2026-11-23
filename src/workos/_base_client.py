@@ -344,6 +344,27 @@ class _BaseWorkOSClient:
             )
         return self._api_key
 
+    def _client_secret(self, method: str) -> Optional[str]:
+        """The API key, for a request that sends it as ``client_secret``.
+
+        ``method`` is the name of the calling method, used in the error.
+
+        Returns None for a client that has no API key, such as a public client
+        in a PKCE flow; the caller then leaves the field out. A client that
+        authenticates with credentials has no API key either, and can never
+        make such a request, so this raises before anything is sent and before
+        any token exchange.
+        """
+        if self._api_key:
+            return self._api_key
+        if self._credentials is not None:
+            raise ConfigurationError(
+                f"{method} needs an API key: this request sends it as the client "
+                "secret. A client that authenticates with workload identity has "
+                "no API key, so use a client built with one for this call."
+            )
+        return None
+
     def _require_client_id(self) -> str:
         if not self.client_id:
             raise ConfigurationError(

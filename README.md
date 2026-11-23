@@ -83,6 +83,8 @@ page = client.organizations.list_organizations()
 
 `AsyncWorkOSClient` takes the same `credentials` argument. Workload identity is used only when you pass `credentials`: no environment variable switches it on, `WORKOS_API_KEY` is ignored when credentials are passed, and a failed exchange is an error, never a fallback to an API key. Passing both `api_key` and `credentials` raises `ValueError`.
 
+The calls that send the API key as the client secret still need a client built with `api_key`: the `user_management` sign-in methods such as `authenticate_with_password` and `authenticate_with_code`, `sso.get_profile_and_token`, and `refresh()` on a session.
+
 | Argument | Environment variable | Description |
 |----------|----------------------|-------------|
 | `identity_token_provider` | | A callable that returns the workload's JWT (required) |

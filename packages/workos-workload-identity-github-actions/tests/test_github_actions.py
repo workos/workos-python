@@ -4,13 +4,17 @@
 
 from __future__ import annotations
 
+import errno
 import http.server
+import os
+import socket
 import threading
 from dataclasses import dataclass, field
 from typing import Dict, Iterator, List
 
 import pytest
 
+import workos_workload_identity_github_actions as gha
 from workos_workload_identity_github_actions import (
     GitHubActionsProviderError,
     github_actions,
@@ -18,6 +22,15 @@ from workos_workload_identity_github_actions import (
 
 AUDIENCE = "https://api.workos.com"
 REQUEST_TOKEN = "gha-request-token"
+
+
+def unreachable(reason: str, host: str) -> str:
+    """The whole error text for a request that got no HTTP response."""
+    return (
+        f"The GitHub Actions OIDC token endpoint at {host} could not be reached: "
+        f"{reason}. This provider works only in a GitHub Actions job, which sets "
+        "the endpoint in ACTIONS_ID_TOKEN_REQUEST_URL."
+    )
 
 
 @dataclass
@@ -210,7 +223,106 @@ def test_connection_failure_is_a_provider_error(
     with pytest.raises(GitHubActionsProviderError) as excinfo:
         github_actions(AUDIENCE)()
 
-    assert REQUEST_TOKEN not in str(excinfo.value)
+    # The number differs by platform: 111 on Linux, 61 on macOS.
+    refused = f"[Errno {errno.ECONNREFUSED}] {os.strerror(errno.ECONNREFUSED)}"
+    assert refused.endswith("Connection refused")
+    assert str(excinfo.value) == unreachable(refused, unused.removeprefix("http://"))
+
+
+def test_name_resolution_failure_names_the_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    asked: List[object] = []
+
+    def no_such_name(host: object, *args: object, **kwargs: object) -> None:
+        asked.append(host)
+        raise socket.gaierror(-2, "Name or service not known")
+
+    monkeypatch.setattr(socket, "getaddrinfo", no_such_name)
+    monkeypatch.setenv(
+        "ACTIONS_ID_TOKEN_REQUEST_URL",
+        "https://oidc.actions.invalid/token?api-version=2.0",
+    )
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == unreachable(
+        "[Errno -2] Name or service not known", "oidc.actions.invalid"
+    )
+    assert asked == ["oidc.actions.invalid"]
+
+
+def test_timeout_waiting_for_the_response_names_the_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # A listener that never accepts: the connection opens through its backlog
+    # and no response ever comes.
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as silent:
+        silent.bind(("127.0.0.1", 0))
+        silent.listen(1)
+        host = f"127.0.0.1:{silent.getsockname()[1]}"
+        monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", f"http://{host}/token")
+        monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", REQUEST_TOKEN)
+        monkeypatch.setattr(gha, "_TIMEOUT_SECONDS", 0.2)
+
+        with pytest.raises(GitHubActionsProviderError) as excinfo:
+            github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == unreachable("timed out", host)
+
+
+@pytest.mark.parametrize(
+    ("failure", "reason"),
+    [
+        (TimeoutError("timed out"), "timed out"),
+        (TimeoutError(), "timed out"),
+        (OSError(), "unknown network error"),
+    ],
+    ids=["timeout", "timeout without text", "other failure without text"],
+)
+def test_connect_failure_always_names_a_reason(
+    monkeypatch: pytest.MonkeyPatch, failure: OSError, reason: str
+) -> None:
+    def fail(*args: object, **kwargs: object) -> None:
+        raise failure
+
+    monkeypatch.setattr(socket, "create_connection", fail)
+    monkeypatch.setenv(
+        "ACTIONS_ID_TOKEN_REQUEST_URL", "http://oidc.actions.invalid:8080/token"
+    )
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == unreachable(reason, "oidc.actions.invalid:8080")
+
+
+def test_unreachable_endpoint_shows_only_the_host_and_port_of_its_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def refuse(*args: object, **kwargs: object) -> None:
+        raise ConnectionRefusedError(errno.ECONNREFUSED, "Connection refused")
+
+    monkeypatch.setattr(socket, "create_connection", refuse)
+    monkeypatch.setenv(
+        "ACTIONS_ID_TOKEN_REQUEST_URL",
+        "http://url-user:url-password@oidc.actions.invalid:8080/url-path?url-query=1",
+    )
+    monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == unreachable(
+        f"[Errno {errno.ECONNREFUSED}] Connection refused", "oidc.actions.invalid:8080"
+    )
+    # Not chained: nothing of the request is reachable from the error.
+    assert excinfo.value.__cause__ is None
+    for hidden in ("url-user", "url-password", "url-path", "url-query", REQUEST_TOKEN):
+        assert hidden not in repr(excinfo.value)
 
 
 def test_non_http_url_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:

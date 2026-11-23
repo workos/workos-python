@@ -12,11 +12,13 @@ call as part of the token exchange.
 
 from __future__ import annotations
 
+import urllib.parse
 from typing import TYPE_CHECKING, Callable, Optional
 
 import boto3
 import botocore.session
-from botocore.exceptions import BotoCoreError, ClientError
+from botocore.exceptions import BotoCoreError, ClientError, ReadTimeoutError
+from botocore.exceptions import ConnectionError as BotoConnectionError
 
 if TYPE_CHECKING:
     from types_boto3_sts.client import STSClient
@@ -29,6 +31,25 @@ _GLOBAL_ENDPOINT_HOSTS = ("sts.amazonaws.com",)
 
 class AwsStsProviderError(Exception):
     """AWS STS did not return a web identity token."""
+
+
+def _unreachable(exc: BotoCoreError, endpoint_url: str) -> AwsStsProviderError:
+    """The error for a request that got no HTTP response, with the cause in words."""
+    # botocore names only the URL it could not reach. It keeps the cause in
+    # ``error``: a urllib3 error, raised from the operating system's own.
+    cause: object = exc.kwargs.get("error")
+    while isinstance(cause, BaseException) and cause.__cause__ is not None:
+        cause = cause.__cause__
+    reason = str(cause or "").strip()
+    if not reason:
+        reason = (
+            "timed out" if isinstance(cause, TimeoutError) else "unknown network error"
+        )
+    # Of the URL, only the host and port are shown.
+    host = urllib.parse.urlsplit(endpoint_url).netloc.rpartition("@")[2]
+    return AwsStsProviderError(
+        f"The AWS STS endpoint at {host} could not be reached: {reason}."
+    )
 
 
 def _create_sts_client(region: Optional[str]) -> "STSClient":
@@ -86,6 +107,10 @@ def aws_sts(audience: str, region: Optional[str] = None) -> Callable[[], str]:
             raise AwsStsProviderError(
                 f"sts:GetWebIdentityToken failed with {code}."
             ) from None
+        except (BotoConnectionError, ReadTimeoutError) as exc:
+            # No connection, or no answer. Any other failure of the AWS SDK
+            # keeps the message below: its text can quote the request.
+            raise _unreachable(exc, client.meta.endpoint_url) from None
         except BotoCoreError as exc:
             raise AwsStsProviderError(
                 f"sts:GetWebIdentityToken failed with {type(exc).__name__}."

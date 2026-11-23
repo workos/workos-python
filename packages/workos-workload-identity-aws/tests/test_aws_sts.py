@@ -5,11 +5,19 @@
 The STS client is the real boto3 client with a botocore ``Stubber`` attached,
 so parameter names are validated against the service model and no request
 leaves the process.
+
+The tests of an unreachable endpoint have no stub. The client sends its
+request, and the name lookup or the connection under it is faked, so nothing
+leaves the machine.
 """
 
 from __future__ import annotations
 
 import datetime
+import errno
+import os
+import socket
+import ssl
 from pathlib import Path
 from typing import TYPE_CHECKING, Callable, List, Optional
 
@@ -24,6 +32,12 @@ if TYPE_CHECKING:
 
 AUDIENCE = "https://api.workos.com"
 EXPECTED_PARAMS = {"Audience": [AUDIENCE], "SigningAlgorithm": "RS256"}
+STS_HOST = "sts.us-east-1.amazonaws.com"
+
+
+def unreachable(reason: str) -> str:
+    """The whole error text for a request that got no HTTP response."""
+    return f"The AWS STS endpoint at {STS_HOST} could not be reached: {reason}."
 
 
 @pytest.fixture(autouse=True)
@@ -186,6 +200,113 @@ def test_WIF_AWS_02_missing_token_in_the_response_is_an_error(sts: StubbedSts) -
 
     with pytest.raises(AwsStsProviderError, match="sts:GetWebIdentityToken"):
         provider()
+
+
+@pytest.fixture
+def resolves_to(monkeypatch: pytest.MonkeyPatch) -> Callable[[int], List[object]]:
+    """Point every host name at a loopback port, and list the names asked for."""
+    # One attempt: botocore would sleep before each retry of a failed connection.
+    monkeypatch.setenv("AWS_MAX_ATTEMPTS", "1")
+    asked: List[object] = []
+
+    def resolve_to(port: int) -> List[object]:
+        def loopback(host: object, *args: object, **kwargs: object) -> List[object]:
+            asked.append(host)
+            address = ("127.0.0.1", port)
+            return [
+                (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", address)
+            ]
+
+        monkeypatch.setattr(socket, "getaddrinfo", loopback)
+        return asked
+
+    return resolve_to
+
+
+def test_name_resolution_failure_names_the_reason(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AWS_MAX_ATTEMPTS", "1")
+    asked: List[object] = []
+
+    def no_such_name(host: object, *args: object, **kwargs: object) -> None:
+        asked.append(host)
+        raise socket.gaierror(-2, "Name or service not known")
+
+    monkeypatch.setattr(socket, "getaddrinfo", no_such_name)
+
+    with pytest.raises(AwsStsProviderError) as excinfo:
+        aws_sts(AUDIENCE, region="us-east-1")()
+
+    assert str(excinfo.value) == unreachable("[Errno -2] Name or service not known")
+    assert asked == [STS_HOST]
+
+
+def test_connection_refused_names_the_reason(
+    resolves_to: Callable[[int], List[object]],
+) -> None:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as closed:
+        closed.bind(("127.0.0.1", 0))
+        port: int = closed.getsockname()[1]
+    asked = resolves_to(port)
+
+    with pytest.raises(AwsStsProviderError) as excinfo:
+        aws_sts(AUDIENCE, region="us-east-1")()
+
+    # The number differs by platform: 111 on Linux, 61 on macOS.
+    refused = f"[Errno {errno.ECONNREFUSED}] {os.strerror(errno.ECONNREFUSED)}"
+    assert refused.endswith("Connection refused")
+    assert str(excinfo.value) == unreachable(refused)
+    assert asked == [STS_HOST]
+
+
+@pytest.mark.parametrize(
+    ("failure", "reason"),
+    [
+        (TimeoutError("timed out"), "timed out"),
+        (TimeoutError(), "timed out"),
+        (OSError(), "unknown network error"),
+    ],
+    ids=["timeout", "timeout without text", "other failure without text"],
+)
+def test_connect_failure_always_names_a_reason(
+    resolves_to: Callable[[int], List[object]],
+    monkeypatch: pytest.MonkeyPatch,
+    failure: OSError,
+    reason: str,
+) -> None:
+    def fail(self: socket.socket, address: object) -> None:
+        raise failure
+
+    resolves_to(443)
+    monkeypatch.setattr(socket.socket, "connect", fail)
+
+    with pytest.raises(AwsStsProviderError) as excinfo:
+        aws_sts(AUDIENCE, region="us-east-1")()
+
+    assert str(excinfo.value) == unreachable(reason)
+    # Not chained: nothing of the request is reachable from the error.
+    assert excinfo.value.__cause__ is None
+
+
+def test_timeout_waiting_for_the_response_names_the_reason(
+    resolves_to: Callable[[int], List[object]], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def no_answer(*args: object, **kwargs: object) -> None:
+        raise TimeoutError("The read operation timed out")
+
+    # A listener that never accepts: the connection opens through its backlog.
+    # The TLS handshake that would wait a minute for an answer is cut short.
+    monkeypatch.setattr(ssl.SSLContext, "wrap_socket", no_answer)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as silent:
+        silent.bind(("127.0.0.1", 0))
+        silent.listen(1)
+        resolves_to(silent.getsockname()[1])
+
+        with pytest.raises(AwsStsProviderError) as excinfo:
+            aws_sts(AUDIENCE, region="us-east-1")()
+
+    assert str(excinfo.value) == unreachable("The read operation timed out")
 
 
 def test_audience_is_required() -> None:

@@ -53,7 +53,13 @@ import httpx2
 from ._base_client import MAX_RETRIES, _BaseWorkOSClient, _user_agent
 from ._credentials import CredentialSnapshot
 from ._errors import WorkOSError, WorkOSTimeoutError
-from ._http import AsyncHttpxBackend, HTTPResponse, HttpxBackend, TransportError
+from ._http import (
+    AsyncHttpxBackend,
+    HTTPResponse,
+    HttpxBackend,
+    TransportError,
+    TransportTimeout,
+)
 
 __all__ = [
     "ENVIRONMENT_ID_HEADER",
@@ -265,6 +271,30 @@ def _json_object(response: HTTPResponse) -> Optional[Dict[str, Any]]:
     return cast(Dict[str, Any], data) if isinstance(data, dict) else None
 
 
+def _unreachable(error: TransportError, token_url: str) -> str:
+    """The description of a request that got no HTTP response: the host and the reason.
+
+    The reason is the HTTP client's own text for the failure, which is mostly
+    the operating system's, such as ``[Errno 111] Connection refused``. It is
+    never empty and never a class name. Of the token URL, only the host and
+    port are shown.
+    """
+    if isinstance(error.__cause__, httpx2.RemoteProtocolError):
+        # Its text can quote what the server sent, which may hold a token.
+        reason = "the server did not send a valid HTTP response"
+    else:
+        reason = str(error).strip()
+    if not reason:
+        # A timeout in the asynchronous client arrives with no text.
+        reason = (
+            "timed out"
+            if isinstance(error, TransportTimeout)
+            else "unknown network error"
+        )
+    host = httpx2.URL(token_url).netloc.decode("ascii")
+    return f"The request to the token endpoint at {host} failed: {reason}."
+
+
 def _exchange_headers() -> Dict[str, str]:
     # No Authorization header: the exchange carries no client secret and no API key.
     return {
@@ -313,12 +343,12 @@ class _ExchangeRun:
         self._description = str(error) or type(error).__name__
         self._cause = error
 
-    def transport_failed(self, error: TransportError) -> None:
-        # Only the kind of failure: never the request, which holds the assertion.
+    def transport_failed(
+        self, error: TransportError, token_url: str, assertion: str
+    ) -> None:
+        # The reason in words, and no cause: the error's request holds the assertion.
         self._code = "exchange_failed"
-        self._description = (
-            f"The request to the token endpoint failed ({type(error).__name__})."
-        )
+        self._description = _redact(_unreachable(error, token_url), assertion)
         self._cause = None
 
     def exhausted(self) -> WorkloadIdentityError:
@@ -816,7 +846,7 @@ class WorkloadIdentityCredentials:
                         timeout=run.attempt_timeout(attempt),
                     )
                 except TransportError as error:
-                    run.transport_failed(error)
+                    run.transport_failed(error, self._token_url, assertion)
                     continue
                 result = run.read(response, assertion)
                 if result is not None:
@@ -845,7 +875,7 @@ class WorkloadIdentityCredentials:
                         timeout=run.attempt_timeout(attempt),
                     )
                 except TransportError as error:
-                    run.transport_failed(error)
+                    run.transport_failed(error, self._token_url, assertion)
                     continue
                 result = run.read(response, assertion)
                 if result is not None:

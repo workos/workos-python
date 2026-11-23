@@ -35,6 +35,26 @@ class GitHubActionsProviderError(Exception):
     """The GitHub Actions OIDC token could not be fetched."""
 
 
+def _unreachable(exc: OSError, url: str) -> GitHubActionsProviderError:
+    """The error for a request that got no HTTP response, with the cause in words."""
+    # urllib wraps a failed connection in ``URLError`` and keeps the cause in
+    # ``reason``. A timeout while waiting for the response arrives unwrapped.
+    cause: object = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+    reason = str(cause).strip()
+    if not reason:
+        reason = (
+            "timed out" if isinstance(cause, TimeoutError) else "unknown network error"
+        )
+    # Of the URL, only the host and port are shown: no user name, path or query.
+    host = urllib.parse.urlsplit(url).netloc.rpartition("@")[2]
+    at = f" at {host}" if host else ""
+    return GitHubActionsProviderError(
+        f"The GitHub Actions OIDC token endpoint{at} could not be reached: {reason}. "
+        "This provider works only in a GitHub Actions job, which sets the "
+        f"endpoint in {_URL_ENV}."
+    )
+
+
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     """Turns every redirect into an ``HTTPError`` instead of following it."""
 
@@ -97,9 +117,7 @@ def github_actions(audience: str) -> Callable[[], str]:
                 f"GitHub Actions OIDC token request failed with status {exc.code}."
             ) from None
         except OSError as exc:
-            raise GitHubActionsProviderError(
-                f"GitHub Actions OIDC token request failed: {type(exc).__name__}."
-            ) from None
+            raise _unreachable(exc, url) from None
         if status != 200:
             raise GitHubActionsProviderError(
                 f"GitHub Actions OIDC token request failed with status {status}."

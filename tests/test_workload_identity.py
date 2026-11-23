@@ -10,14 +10,21 @@ against ``WorkOSClient`` as ``test_WIF_NN_<name>`` and against
 Nothing here touches the network. The token endpoint and the API are mocked at
 the httpx2 transport, below the client, so redirects, retries and headers are
 the real ones. Time is an injected clock, and backoff is an injected sleeper.
+
+The tests under "the real HTTP stack" are the exception. They leave the
+transport in place, to see how a real failure to connect is worded, and open
+loopback sockets only.
 """
 
 from __future__ import annotations
 
 import asyncio
+import errno
 import json
 import logging
+import os
 import re
+import socket
 import threading
 import time
 import traceback
@@ -618,6 +625,11 @@ def secrets_in(error: BaseException, *secrets: str) -> List[str]:
             )
         current = current.__cause__ or current.__context__
     return found
+
+
+def unreachable(reason: str, host: str = "token.test") -> str:
+    """The whole description of a token request that got no HTTP response."""
+    return f"The request to the token endpoint at {host} failed: {reason}."
 
 
 # --- conformance cases ---------------------------------------------------------------
@@ -1288,6 +1300,101 @@ def an_assertion_echoed_by_the_server_is_redacted(h: Harness) -> None:
 
 
 @scenario
+def an_unreachable_token_endpoint_is_described_by_its_host_and_the_reason(
+    h: Harness,
+) -> None:
+    refused = "[Errno 111] Connection refused"
+    untrusted = (
+        "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: "
+        "unable to get local issuer certificate (_ssl.c:1006)"
+    )
+    # The error httpx2 raises, its text, and the reason the description gives.
+    failures = [
+        (httpx2.ConnectError, "[Errno -2] Name or service not known", None),
+        (httpx2.ConnectError, refused, None),
+        (httpx2.ConnectError, "All connection attempts failed", None),
+        (httpx2.ConnectError, untrusted, None),
+        (httpx2.ConnectTimeout, "timed out", None),
+        (httpx2.ReadTimeout, "The read operation timed out", None),
+        # A timeout in the asynchronous client has no text.
+        (httpx2.ConnectTimeout, "", "timed out"),
+        (httpx2.ReadTimeout, "", "timed out"),
+        (httpx2.ReadError, "", "unknown network error"),
+        (httpx2.ReadError, "[Errno 104] Connection reset by peer", None),
+    ]
+
+    for kind, text, reason in failures:
+        h.token.script.extend(kind(text) for _ in range(EXCHANGE_ATTEMPTS))
+        error = h.failure(h.op_resolve(h.credentials()))
+
+        assert isinstance(error, WorkloadIdentityError)
+        assert error.code == "exchange_failed"
+        assert error.description == unreachable(reason or text)
+        # The sentence for the code comes first, as for every other failure.
+        assert str(error) == (
+            "exchange_failed: The token endpoint could not be reached or kept "
+            f"failing. Check the token URL and try again. {error.description}"
+        )
+        # Not chained: the transport error's request holds the assertion.
+        assert error.__cause__ is None
+
+
+@scenario
+def an_unreachable_token_endpoint_shows_only_the_host_and_port_of_its_url(
+    h: Harness,
+) -> None:
+    token_url = "https://url-user:url-password@token.test:8443/url-path?url-query=1"
+    h.token.script.extend(
+        httpx2.ConnectError("[Errno 111] Connection refused")
+        for _ in range(EXCHANGE_ATTEMPTS)
+    )
+
+    error = h.failure(h.op_resolve(h.credentials(token_url=token_url)))
+
+    assert isinstance(error, WorkloadIdentityError)
+    assert error.description == unreachable(
+        "[Errno 111] Connection refused", host="token.test:8443"
+    )
+    assert secrets_in(error, "url-user", "url-password", "url-path", "url-query") == []
+
+
+@scenario
+def a_malformed_token_response_is_not_quoted(h: Harness) -> None:
+    # The HTTP parser quotes the line it could not read. When the framing is
+    # broken, that line is the body, which holds the access token.
+    access_token = "SECRET-ACCESS-VALUE"
+    body = '{"access_token":"' + access_token + '"}'
+    quoted = f"illegal chunk header: bytearray(b'{body}\\r\\n')"
+    h.token.script.extend(
+        httpx2.RemoteProtocolError(quoted) for _ in range(EXCHANGE_ATTEMPTS)
+    )
+
+    error = h.failure(h.op_resolve(h.credentials()))
+
+    assert isinstance(error, WorkloadIdentityError)
+    assert error.code == "exchange_failed"
+    assert error.description == unreachable(
+        "the server did not send a valid HTTP response"
+    )
+    assert secrets_in(error, access_token) == []
+
+
+@scenario
+def an_assertion_in_a_transport_error_is_redacted(h: Harness) -> None:
+    assertion = "SECRET-ASSERTION-VALUE"
+    h.token.script.extend(
+        httpx2.ReadError(f"could not send {assertion}")
+        for _ in range(EXCHANGE_ATTEMPTS)
+    )
+
+    error = h.failure(h.op_resolve(h.credentials(Provider(assertion))))
+
+    assert isinstance(error, WorkloadIdentityError)
+    assert error.description == unreachable("could not send [redacted]")
+    assert secrets_in(error, assertion) == []
+
+
+@scenario
 def a_long_error_description_is_cut_to_500_characters(h: Harness) -> None:
     h.token.script.append(oauth_error("invalid_grant", "x" * 2000))
 
@@ -1528,6 +1635,99 @@ def test_one_credentials_instance_serves_both_kinds_of_client(
         "access-2",
         "access-2",
     ]
+
+
+# --- the real HTTP stack ---------------------------------------------------------------
+
+both_clients = pytest.mark.parametrize(
+    "asynchronous", [False, True], ids=["sync", "async"]
+)
+
+
+def real_failure(token_url: str, asynchronous: bool) -> WorkloadIdentityError:
+    """Exchange at ``token_url`` with nothing mocked, and return the error raised."""
+
+    async def no_sleep(seconds: float) -> None:
+        return None
+
+    credentials = WorkloadIdentityCredentials(
+        client_id=CLIENT_ID, token_url=token_url, identity_token_provider=Provider()
+    )
+    credentials._sleep = lambda seconds: None
+    credentials._async_sleep = no_sleep
+    with pytest.raises(WorkloadIdentityError) as raised:
+        if asynchronous:
+            asyncio.run(credentials.aresolve())
+        else:
+            credentials.resolve()
+    assert raised.value.code == "exchange_failed"
+    assert raised.value.__cause__ is None
+    return raised.value
+
+
+@both_clients
+def test_a_token_host_that_does_not_resolve_names_the_reason(
+    asynchronous: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    asked: List[object] = []
+
+    def no_such_name(host: object, *args: object, **kwargs: object) -> None:
+        asked.append(host.decode() if isinstance(host, bytes) else host)
+        raise socket.gaierror(-2, "Name or service not known")
+
+    monkeypatch.setattr(socket, "getaddrinfo", no_such_name)
+
+    error = real_failure("https://token.invalid:8443/oauth2/token", asynchronous)
+
+    assert error.description == unreachable(
+        "[Errno -2] Name or service not known", host="token.invalid:8443"
+    )
+    assert asked == ["token.invalid"] * EXCHANGE_ATTEMPTS
+
+
+@both_clients
+def test_a_token_endpoint_that_refuses_the_connection_names_the_reason(
+    asynchronous: bool,
+) -> None:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as closed:
+        closed.bind(("127.0.0.1", 0))
+        host = f"127.0.0.1:{closed.getsockname()[1]}"
+
+    error = real_failure(f"https://{host}/oauth2/token", asynchronous)
+
+    # The number differs by platform: 111 on Linux, 61 on macOS.
+    refused = f"[Errno {errno.ECONNREFUSED}] {os.strerror(errno.ECONNREFUSED)}"
+    assert refused.endswith("Connection refused")
+    # The asynchronous client tries every address the host has and reports
+    # them as one failure. The operating system's error is not in its text.
+    reason = "All connection attempts failed" if asynchronous else refused
+    assert error.description == unreachable(reason, host=host)
+
+
+@both_clients
+def test_a_token_endpoint_that_does_not_answer_names_the_reason(
+    asynchronous: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # One short attempt: its timeout is a quarter of the deadline, and the
+    # backoff that would follow is longer than what is left.
+    monkeypatch.setattr(workload_identity, "EXCHANGE_DEADLINE_SECONDS", 0.6)
+    # A listener that never accepts: the connection opens through its backlog
+    # and the TLS handshake gets no answer.
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as silent:
+        silent.bind(("127.0.0.1", 0))
+        silent.listen(1)
+        host = f"127.0.0.1:{silent.getsockname()[1]}"
+
+        error = real_failure(f"https://{host}/oauth2/token", asynchronous)
+
+    if asynchronous:
+        # The timeout has no text of its own here.
+        assert error.description == unreachable("timed out", host=host)
+    else:
+        # The interpreter's words, such as "The handshake operation timed out".
+        said = error.description
+        assert said.startswith(f"The request to the token endpoint at {host} failed: ")
+        assert said.endswith("timed out.")
 
 
 # --- configuration -------------------------------------------------------------------

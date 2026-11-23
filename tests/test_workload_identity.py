@@ -19,6 +19,7 @@ loopback sockets only.
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import errno
 import json
 import logging
@@ -1531,6 +1532,24 @@ def an_exchange_that_outruns_its_deadline_is_given_up(h: Harness) -> None:
 
 
 @scenario
+def a_provider_reads_the_context_of_the_caller_that_started_the_exchange(
+    h: Harness,
+) -> None:
+    # Set by the caller, as a web framework does per request. The exchange
+    # runs on another thread, in a copy of the caller's context.
+    assertion: contextvars.ContextVar[str] = contextvars.ContextVar("assertion")
+    reset = assertion.set("assertion-from-the-context")
+    try:
+        h.get(h.client(h.credentials(assertion.get)))
+    finally:
+        assertion.reset(reset)
+
+    assert h.token.forms()[0]["assertion"] == "assertion-from-the-context"
+    assert h.token.count == 1
+    assert h.sleeps == []
+
+
+@scenario
 def the_thread_of_an_exchange_ends_with_the_exchange(h: Harness) -> None:
     credentials = h.credentials()
     before = threading.enumerate()
@@ -1807,6 +1826,27 @@ def test_async_client_awaits_a_coroutine_provider(async_harness: Harness) -> Non
     assert h.token.forms()[0]["assertion"] == "assertion-async"
     # Awaited on the event loop, not sent to a worker thread.
     assert threads == [threading.get_ident()]
+
+
+def test_an_awaited_provider_reads_the_context_of_the_caller_too(
+    async_harness: Harness,
+) -> None:
+    h = async_harness
+    assertion: contextvars.ContextVar[str] = contextvars.ContextVar("assertion")
+
+    async def provider() -> str:
+        await asyncio.sleep(0)
+        return assertion.get()
+
+    reset = assertion.set("assertion-from-the-context")
+    try:
+        h.get(h.client(h.credentials(provider)))
+    finally:
+        assertion.reset(reset)
+
+    assert h.token.forms()[0]["assertion"] == "assertion-from-the-context"
+    assert h.token.count == 1
+    assert h.sleeps == []
 
 
 def test_async_client_awaits_a_callable_object_with_an_async_call(

@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
+import contextvars
 import inspect
 import math
 import os
@@ -198,6 +199,8 @@ class IdentityTokenProvider(Protocol):
     A plain function may block: it runs on the exchange's own thread, never on
     an event loop. A coroutine function is awaited on the event loop of the
     asynchronous client that started the exchange (asynchronous client only).
+    Either way it runs in a copy of the context of the caller that started the
+    exchange, so it reads the context variables that caller set.
     """
 
     def __call__(self) -> Union[str, Awaitable[str]]: ...
@@ -745,10 +748,13 @@ class WorkloadIdentityCredentials:
             try:
                 # Its own thread, not the first caller's thread or event loop:
                 # a caller that gives up, or a loop that is blocked or closed,
-                # must not take the exchange down with it.
+                # must not take the exchange down with it. The thread runs in
+                # a copy of that caller's context, so a provider that reads a
+                # context variable finds what the caller set. An asynchronous
+                # provider is scheduled from this thread and inherits the copy.
                 threading.Thread(
-                    target=self._run_exchange,
-                    args=(exchange,),
+                    target=contextvars.copy_context().run,
+                    args=(self._run_exchange, exchange),
                     name="workos-workload-identity-exchange",
                     daemon=True,
                 ).start()

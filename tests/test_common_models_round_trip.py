@@ -156,8 +156,6 @@ from workos.common.models import (
     DataIntegrationCredentialsResponseWithCredential,
     DataIntegrationCredentialsResponseWithError,
     DirectorySyncRateLimitError,
-    DirectoryUser,
-    DirectoryUserEmail,
     DsyncActivated,
     DsyncActivatedData,
     DsyncActivatedDataDomain,
@@ -367,8 +365,6 @@ from workos.common.models import (
     OrganizationRoleUpdated,
     OrganizationRoleUpdatedData,
     OrganizationSelectionRequiredErrorBody,
-    OrganizationSelectionRequiredErrorBodyWithOrganization,
-    OrganizationSelectionRequiredErrorBodyWithOrganizations,
     OrganizationUpdated,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
@@ -433,7 +429,7 @@ from workos.common.models import (
     SlowDownOAuthErrorBody,
     SmsChallengeQuotaReachedErrorBody,
     SmsChallengeRateLimitedErrorBody,
-    SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken,
+    SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,
     TokenTooBigOAuthErrorBody,
     TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter,
@@ -608,67 +604,6 @@ class TestModelRoundTrip:
         instance = ErrorBody.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["message"] == data["message"]
-
-    def test_organization_selection_required_error_body_with_organizations_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_selection_required_error_body_with_organizations.json"
-        )
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_selection_required_error_body_with_organizations_minimal_payload(
-        self,
-    ):
-        data = {
-            "code": "organization_selection_required",
-            "message": "Request could not be processed.",
-            "organizations": [
-                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-            ],
-        }
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
-        assert serialized["organizations"] == data["organizations"]
-
-    def test_organization_selection_required_error_body_with_organization_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_selection_required_error_body_with_organization.json"
-        )
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_selection_required_error_body_with_organization_minimal_payload(
-        self,
-    ):
-        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["name"] == data["name"]
 
     def test_error_body_with_code_field_errors_round_trip(self):
         data = load_fixture("error_body_with_code_field_errors.json")
@@ -1163,6 +1098,27 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["error"] == data["error"]
         assert serialized["error_description"] == data["error_description"]
+
+    def test_policy_denied_error_body_round_trip(self):
+        data = load_fixture("policy_denied_error_body.json")
+        instance = PolicyDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PolicyDeniedErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_policy_denied_error_body_minimal_payload(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = PolicyDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_policy_denied_error_body_omits_absent_optional_non_nullable_fields(self):
+        data = {"code": "policy_denied", "message": "Request could not be processed."}
+        instance = PolicyDeniedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_sub_resource_scoped_role_not_allowed_error_body_with_role_slug_round_trip(
         self,
@@ -2614,21 +2570,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_policy_denied_error_body_round_trip(self):
-        data = load_fixture("policy_denied_error_body.json")
-        instance = PolicyDeniedErrorBody.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PolicyDeniedErrorBody.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_policy_denied_error_body_minimal_payload(self):
-        data = {"code": "policy_denied", "message": "Request could not be processed."}
-        instance = PolicyDeniedErrorBody.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
-
     def test_action_denied_error_body_round_trip(self):
         data = load_fixture("action_denied_error_body.json")
         instance = ActionDeniedErrorBody.from_dict(data)
@@ -2932,147 +2873,6 @@ class TestModelRoundTrip:
         assert "client_id" not in serialized
         assert "actor" not in serialized
         assert "previous_attributes" not in serialized
-
-    def test_directory_user_round_trip(self):
-        data = load_fixture("directory_user.json")
-        instance = DirectoryUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DirectoryUser.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_directory_user_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DirectoryUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["email"] == data["email"]
-        assert serialized["state"] == data["state"]
-        assert serialized["raw_attributes"] == data["raw_attributes"]
-        assert serialized["custom_attributes"] == data["custom_attributes"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_directory_user_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "name": "Marcelina Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DirectoryUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert "emails" not in serialized
-        assert "role" not in serialized
-        assert "roles" not in serialized
-
-    def test_directory_user_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DirectoryUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["email"] is None
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["name"] is None
-        assert serialized["job_title"] is None
-        assert serialized["username"] is None
-
-    def test_directory_user_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "name": "Marcelina Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_directory_user_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DirectoryUser.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_flag_rule_round_trip(self):
         data = load_fixture("flag_rule.json")
@@ -4627,6 +4427,7 @@ class TestModelRoundTrip:
                 "object": "agent_registration_claim",
                 "id": "agent_reg_claim_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "completed_by_attempt_id": "agent_reg_claim_attempt_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "claimed_by": {
                     "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
@@ -4657,6 +4458,7 @@ class TestModelRoundTrip:
                 "object": "agent_registration_claim",
                 "id": "agent_reg_claim_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "completed_by_attempt_id": "agent_reg_claim_attempt_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "claimed_by": {
                     "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
@@ -4704,6 +4506,26 @@ class TestModelRoundTrip:
         assert serialized["completed_at"] == data["completed_at"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
+
+    def test_agent_registration_claim_completed_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "agent_registration_claim",
+            "id": "agent_reg_claim_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "agent_registration_id": "agent_reg_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "completed_by_attempt_id": "agent_reg_claim_attempt_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "claimed_by": {
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": None,
+            },
+            "completed_at": "2024-01-15T10:32:00.000Z",
+            "created_at": "2024-01-15T10:30:00.000Z",
+            "updated_at": "2024-01-15T10:32:00.000Z",
+        }
+        instance = AgentRegistrationClaimCompletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
 
     def test_agent_registration_claim_completed_data_claimed_by_round_trip(self):
         data = load_fixture("agent_registration_claim_completed_data_claimed_by.json")
@@ -5762,6 +5584,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -5791,6 +5614,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -5818,6 +5642,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationEmailVerificationFailedData.from_dict(data)
@@ -5843,6 +5668,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationEmailVerificationFailedData.from_dict(data)
@@ -5869,6 +5695,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_email_verification_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationEmailVerificationFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_email_verification_succeeded_round_trip(self):
         data = load_fixture("authentication_email_verification_succeeded.json")
@@ -5987,6 +5824,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6016,6 +5854,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6043,6 +5882,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationMagicAuthFailedData.from_dict(data)
@@ -6066,6 +5906,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationMagicAuthFailedData.from_dict(data)
@@ -6092,6 +5933,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_magic_auth_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationMagicAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_magic_auth_succeeded_round_trip(self):
         data = load_fixture("authentication_magic_auth_succeeded.json")
@@ -6208,6 +6060,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6235,6 +6088,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6262,6 +6116,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationMFAFailedData.from_dict(data)
@@ -6285,6 +6140,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationMFAFailedData.from_dict(data)
@@ -6311,6 +6167,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_mfa_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationMFAFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_mfa_succeeded_round_trip(self):
         data = load_fixture("authentication_mfa_succeeded.json")
@@ -6427,6 +6294,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
                 "provider": "GoogleOAuth",
             },
@@ -6457,6 +6325,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
                 "provider": "GoogleOAuth",
             },
@@ -6485,6 +6354,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationOAuthFailedData.from_dict(data)
@@ -6510,6 +6380,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationOAuthFailedData.from_dict(data)
@@ -6527,6 +6398,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
             "provider": "GoogleOAuth",
         }
@@ -6554,6 +6426,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_oauth_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationOAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_oauth_succeeded_round_trip(self):
         data = load_fixture("authentication_oauth_succeeded.json")
@@ -6689,6 +6572,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6718,6 +6602,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6745,6 +6630,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationPasskeyFailedData.from_dict(data)
@@ -6768,6 +6654,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationPasskeyFailedData.from_dict(data)
@@ -6794,6 +6681,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_passkey_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationPasskeyFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_passkey_succeeded_round_trip(self):
         data = load_fixture("authentication_passkey_succeeded.json")
@@ -6910,6 +6808,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6939,6 +6838,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -6966,6 +6866,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationPasswordFailedData.from_dict(data)
@@ -6989,6 +6890,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationPasswordFailedData.from_dict(data)
@@ -7015,6 +6917,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_password_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationPasswordFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_password_succeeded_round_trip(self):
         data = load_fixture("authentication_password_succeeded.json")
@@ -7130,6 +7043,7 @@ class TestModelRoundTrip:
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "user@example.com",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -7157,6 +7071,7 @@ class TestModelRoundTrip:
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
                 "email": "user@example.com",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
             "created_at": "2026-01-15T12:00:00.000Z",
         }
@@ -7194,6 +7109,23 @@ class TestModelRoundTrip:
         assert serialized["user_id"] == data["user_id"]
         assert serialized["email"] == data["email"]
 
+    def test_authentication_radar_risk_detected_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "auth_method": "password",
+            "action": "signup",
+            "control": "block",
+            "blocklist_type": "ip",
+            "ip_address": "203.0.113.42",
+            "user_agent": "Mozilla/5.0",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationRadarRiskDetectedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
+
     def test_authentication_radar_risk_detected_data_preserves_nullable_fields(self):
         data = {
             "auth_method": "password",
@@ -7204,6 +7136,7 @@ class TestModelRoundTrip:
             "user_agent": None,
             "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "email": "user@example.com",
+            "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
         }
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
         serialized = instance.to_dict()
@@ -7224,6 +7157,7 @@ class TestModelRoundTrip:
             "user_agent": "Mozilla/5.0",
             "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
             "email": "user@example.com",
+            "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
         }
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
         assert instance.to_dict() == data
@@ -7350,6 +7284,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -7382,6 +7317,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -7414,6 +7350,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationSSOFailedData.from_dict(data)
@@ -7443,6 +7380,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationSSOFailedData.from_dict(data)
@@ -7493,6 +7431,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_sso_failed_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationSSOFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_authentication_sso_started_round_trip(self):
         data = load_fixture("authentication_sso_started.json")
@@ -7797,6 +7746,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -7831,6 +7781,7 @@ class TestModelRoundTrip:
                 "error": {
                     "code": "mfa_challenge_failed",
                     "message": "The MFA challenge has failed.",
+                    "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
                 },
             },
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -7863,6 +7814,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationSSOTimedOutData.from_dict(data)
@@ -7892,6 +7844,7 @@ class TestModelRoundTrip:
             "error": {
                 "code": "mfa_challenge_failed",
                 "message": "The MFA challenge has failed.",
+                "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X",
             },
         }
         instance = AuthenticationSSOTimedOutData.from_dict(data)
@@ -7942,6 +7895,17 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
+
+    def test_authentication_sso_timed_out_data_error_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationSSOTimedOutDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert "radar_detection_id" not in serialized
 
     def test_connection_activated_round_trip(self):
         data = load_fixture("connection_activated.json")
@@ -19826,32 +19790,6 @@ class TestModelRoundTrip:
         instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_directory_user_email_round_trip(self):
-        data = load_fixture("directory_user_email.json")
-        instance = DirectoryUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DirectoryUserEmail.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_directory_user_email_minimal_payload(self):
-        data = {}
-        instance = DirectoryUserEmail.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_directory_user_email_omits_absent_optional_non_nullable_fields(self):
-        data = {"value": "marcelina.davis@example.com"}
-        instance = DirectoryUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert "primary" not in serialized
-        assert "type" not in serialized
-
-    def test_directory_user_email_preserves_nullable_fields(self):
-        data = {"primary": True, "type": "work", "value": None}
-        instance = DirectoryUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["value"] is None
-
     def test_event_context_google_analytics_session_round_trip(self):
         data = load_fixture("event_context_google_analytics_session.json")
         instance = EventContextGoogleAnalyticsSession.from_dict(data)
@@ -19875,23 +19813,21 @@ class TestModelRoundTrip:
         assert "sessionId" not in serialized
         assert "sessionNumber" not in serialized
 
-    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_round_trip(
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_round_trip(
         self,
     ):
         data = load_fixture(
-            "sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token.json"
+            "sso_required_oauth_error_body_with_connection_ids_list_email.json"
         )
-        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
-            data
-        )
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmail.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
+        restored = SSORequiredOAuthErrorBodyWithConnectionIdsListEmail.from_dict(
             serialized
         )
         assert restored.to_dict() == serialized
 
-    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_minimal_payload(
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_minimal_payload(
         self,
     ):
         data = {
@@ -19900,16 +19836,14 @@ class TestModelRoundTrip:
             "connection_ids": ["connection_ids_01234"],
             "email": "user@example.com",
         }
-        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
-            data
-        )
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmail.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["error"] == data["error"]
         assert serialized["error_description"] == data["error_description"]
         assert serialized["connection_ids"] == data["connection_ids"]
         assert serialized["email"] == data["email"]
 
-    def test_sso_required_oauth_error_body_with_connection_ids_list_email_pending_authentication_token_omits_absent_optional_non_nullable_fields(
+    def test_sso_required_oauth_error_body_with_connection_ids_list_email_omits_absent_optional_non_nullable_fields(
         self,
     ):
         data = {
@@ -19918,8 +19852,6 @@ class TestModelRoundTrip:
             "connection_ids": ["connection_ids_01234"],
             "email": "user@example.com",
         }
-        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken.from_dict(
-            data
-        )
+        instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmail.from_dict(data)
         serialized = instance.to_dict()
         assert "pending_authentication_token" not in serialized

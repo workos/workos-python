@@ -19,7 +19,7 @@ from workos.common.models.data_integration_access_token_response_error import (
 class DataIntegrationAccessTokenResponse:
     """Data Integration Access Token Response model."""
 
-    active: Literal[True] | None = None
+    active: Literal[True, False] | None = None
     """Indicates whether the access token is valid and ready for use, or if reauthorization is required."""
     access_token: DataIntegrationAccessTokenResponseAccessToken | None = None
     """The [access token](https://workos.com/docs/reference/pipes/access-token) object, present when `active` is `true`."""

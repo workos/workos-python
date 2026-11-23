@@ -29,9 +29,6 @@ from workos.common.models.data_integrations_list_response_data_connected_account
     DataIntegrationsListResponseDataConnectedAccountWarning as DataIntegrationsListResponseDataConnectedAccountWarning,
 )
 
-from .add_data_integrations_get_data_integration_authorize_url_request_connection_owner_literal import (
-    AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral as AddDataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral,
-)
 from .api_key_installation import ApiKeyInstallation as ApiKeyInstallation
 from .connected_account_input import ConnectedAccountInput as ConnectedAccountInput
 from .create_connected_account import CreateConnectedAccount as CreateConnectedAccount
@@ -95,7 +92,6 @@ from .organization_connected_account import (
     OrganizationConnectedAccount as OrganizationConnectedAccount,
 )
 from .pipes_ownership import PipesOwnership as PipesOwnership
-from .pipes_ownership import PipesOwnershipLiteral as PipesOwnershipLiteral
 from .update_custom_provider_definition import (
     UpdateCustomProviderDefinition as UpdateCustomProviderDefinition,
 )

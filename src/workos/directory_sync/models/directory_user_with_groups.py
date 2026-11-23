@@ -67,7 +67,7 @@ class DirectoryUserWithGroups:
     roles: list[SlimRole] | None = None
     """All roles assigned to the user."""
     groups: list[DirectoryGroup] | None = None
-    """The directory groups the user belongs to. Deprecated: starting May 1, 2026, this field returns an empty array by default for newly created teams. Existing teams currently depending on this field should migrate to the new access pattern for better throughput performance — the field is unbounded by user, so users with many group memberships produce large, slow response payloads. Use the List Directory Groups endpoint with a `user` filter to fetch a user's group memberships.
+    """The directory groups the user belongs to. Deprecated: use `GET /directories/{directoryId}/groups?user={userId}` instead.
 
     .. deprecated:: This field is deprecated."""
 

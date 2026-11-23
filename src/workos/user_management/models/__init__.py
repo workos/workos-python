@@ -131,9 +131,6 @@ from .user_management_authentication_provider import (
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
 )
-from .user_management_authentication_screen_hint import (
-    UserManagementAuthenticationScreenHintLiteral as UserManagementAuthenticationScreenHintLiteral,
-)
 from .user_management_waitlists_state import (
     UserManagementWaitlistsState as UserManagementWaitlistsState,
 )

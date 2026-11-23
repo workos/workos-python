@@ -20,8 +20,7 @@ from workos.common.models.data_integration_vended_credential import (
 class DataIntegrationCredentialsResponse:
     """Data Integration Credentials Response model."""
 
-    active: Literal[True] | None = None
-    """Indicates credentials are available."""
+    active: Literal[True, False] | None = None
     credential: DataIntegrationVendedCredentialVariant | None = None
     """The credential object containing the vended secret."""
     error: DataIntegrationCredentialsResponseError | None = None

@@ -1046,11 +1046,13 @@ class Pipes:
         user_id: str,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
         scopes: list[str] | None = None,
         state: CreateOrganizationConnectedAccountState | str | None = None,
+        metadata: dict[str, Any] | None = None,
         connection_intent: Literal["add"] | None = None,
         idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
@@ -1064,12 +1066,14 @@ class Pipes:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            metadata: Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.
             connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.
             idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1089,12 +1093,14 @@ class Pipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
                 "user_id": user_id,
+                "metadata": metadata,
                 "connection_intent": connection_intent,
             }.items()
             if v is not None
@@ -1125,6 +1131,7 @@ class Pipes:
         user_id: str,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
@@ -1137,13 +1144,14 @@ class Pipes:
     ) -> ConnectedAccount:
         """Update an organization connected account
 
-        Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+        Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
@@ -1171,6 +1179,7 @@ class Pipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
@@ -1358,11 +1367,13 @@ class Pipes:
         *,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
         scopes: list[str] | None = None,
         state: CreateConnectedAccountState | str | None = None,
+        metadata: dict[str, Any] | None = None,
         connection_intent: Literal["add"] | None = None,
         organization_id: str | None = None,
         idempotency_key: str | None = None,
@@ -1377,11 +1388,13 @@ class Pipes:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            metadata: Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.
             connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
             idempotency_key: Optional idempotency key for safe retries.
@@ -1401,11 +1414,13 @@ class Pipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "metadata": metadata,
                 "connection_intent": connection_intent,
             }.items()
             if v is not None
@@ -1444,6 +1459,7 @@ class Pipes:
         *,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
@@ -1457,13 +1473,14 @@ class Pipes:
     ) -> ConnectedAccount:
         """Update a connected account
 
-        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
@@ -1490,6 +1507,7 @@ class Pipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
@@ -2597,11 +2615,13 @@ class AsyncPipes:
         user_id: str,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
         scopes: list[str] | None = None,
         state: CreateOrganizationConnectedAccountState | str | None = None,
+        metadata: dict[str, Any] | None = None,
         connection_intent: Literal["add"] | None = None,
         idempotency_key: str | None = None,
         request_options: RequestOptions | None = None,
@@ -2615,12 +2635,14 @@ class AsyncPipes:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
             user_id: The [User](https://workos.com/docs/reference/authkit/user) identifier of the organization member on whose behalf the connected account is being imported or updated. The user must be an active member of the organization.
+            metadata: Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.
             connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.
             idempotency_key: Optional idempotency key for safe retries.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2640,12 +2662,14 @@ class AsyncPipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
                 "user_id": user_id,
+                "metadata": metadata,
                 "connection_intent": connection_intent,
             }.items()
             if v is not None
@@ -2676,6 +2700,7 @@ class AsyncPipes:
         user_id: str,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
@@ -2688,13 +2713,14 @@ class AsyncPipes:
     ) -> ConnectedAccount:
         """Update an organization connected account
 
-        Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+        Updates an organization's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
@@ -2722,6 +2748,7 @@ class AsyncPipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
@@ -2909,11 +2936,13 @@ class AsyncPipes:
         *,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
         scopes: list[str] | None = None,
         state: CreateConnectedAccountState | str | None = None,
+        metadata: dict[str, Any] | None = None,
         connection_intent: Literal["add"] | None = None,
         organization_id: str | None = None,
         idempotency_key: str | None = None,
@@ -2928,11 +2957,13 @@ class AsyncPipes:
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
             scopes: The OAuth scopes granted for this connection.
             state: Explicitly set the state of the connected account. When omitted, the state is derived from the token combination provided.
+            metadata: Provider token-response metadata to preserve during import, such as Salesforce instance_url. Only allowlisted, non-sensitive scalar fields from this provider are accepted, including nested fields. Provider refresh responses can update these values. Not accepted on update.
             connection_intent: Set to `add` to create another connected account. Omit this field for permanent compatibility behavior.
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
             idempotency_key: Optional idempotency key for safe retries.
@@ -2952,11 +2983,13 @@ class AsyncPipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,
                 "scopes": scopes,
                 "state": enum_value(state) if state is not None else None,
+                "metadata": metadata,
                 "connection_intent": connection_intent,
             }.items()
             if v is not None
@@ -2995,6 +3028,7 @@ class AsyncPipes:
         *,
         account_display_name: str | None | NotGiven = NOT_GIVEN,
         account_identifier: str | None | NotGiven = NOT_GIVEN,
+        config: dict[str, str] | None = None,
         access_token: str | None = None,
         refresh_token: str | None = None,
         expires_at: datetime | str | None = None,
@@ -3008,13 +3042,14 @@ class AsyncPipes:
     ) -> ConnectedAccount:
         """Update a connected account
 
-        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, or state for a specific provider.
+        Updates a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) tokens, scopes, state, or provider configuration for a specific provider.
 
         Args:
             user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
             slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
             account_display_name: A mutable, non-unique connection label; null clears it. Not an account identifier.
             account_identifier: A developer-attested account identifier; null clears it.
+            config: Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections.
             access_token: The OAuth access token for the connected account.
             refresh_token: The OAuth refresh token for the connected account.
             expires_at: The ISO-8601 timestamp when the access token expires. Required when `access_token` is provided for tokens that expire.
@@ -3041,6 +3076,7 @@ class AsyncPipes:
         body: dict[str, Any] = {
             k: v
             for k, v in {
+                "config": config,
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expires_at": expires_at,

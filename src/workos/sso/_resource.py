@@ -16,6 +16,7 @@ from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     Connection,
     ConnectionsConnectionType,
+    ConnectionsState,
     CreateConnectionAttributeMaps,
     CreateConnectionOIDCOptions,
     CreateConnectionSAMLOptions,
@@ -79,6 +80,7 @@ class SSO:
         domain: str | None = None,
         organization_id: str | None = None,
         search: str | None = None,
+        state: ConnectionsState | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> SyncPage[Connection]:
         """List Connections
@@ -94,6 +96,7 @@ class SSO:
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
             search: Searchable text to match against Connection names.
+            state: Filter Connections by their state.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -119,6 +122,7 @@ class SSO:
                 "domain": domain,
                 "organization_id": organization_id,
                 "search": search,
+                "state": enum_value(state) if state is not None else None,
             }.items()
             if v is not None
         }
@@ -950,6 +954,7 @@ class AsyncSSO:
         domain: str | None = None,
         organization_id: str | None = None,
         search: str | None = None,
+        state: ConnectionsState | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> AsyncPage[Connection]:
         """List Connections
@@ -965,6 +970,7 @@ class AsyncSSO:
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
             search: Searchable text to match against Connection names.
+            state: Filter Connections by their state.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -990,6 +996,7 @@ class AsyncSSO:
                 "domain": domain,
                 "organization_id": organization_id,
                 "search": search,
+                "state": enum_value(state) if state is not None else None,
             }.items()
             if v is not None
         }

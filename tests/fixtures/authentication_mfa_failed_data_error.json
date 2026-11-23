@@ -1,4 +1,5 @@
 {
   "code": "mfa_challenge_failed",
-  "message": "The MFA challenge has failed."
+  "message": "The MFA challenge has failed.",
+  "radar_detection_id": "detection_01HZBC6N1EB1ZY7KG32X"
 }

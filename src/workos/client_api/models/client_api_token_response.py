@@ -13,7 +13,7 @@ class ClientApiTokenResponse:
     """Client Api Token Response model."""
 
     token: str
-    """The Client API token."""
+    """The Widgets API token."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ClientApiTokenResponse:

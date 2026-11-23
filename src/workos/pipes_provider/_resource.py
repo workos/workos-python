@@ -7,10 +7,11 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import NOT_GIVEN, NotGiven, RequestOptions
+from .._types import NOT_GIVEN, NotGiven, RequestOptions, enum_value
 from .models import (
     DataIntegrationConfigurationListResponse,
     DataIntegrationConfigurationResponse,
+    PipesProviderOwnership,
 )
 
 
@@ -24,6 +25,7 @@ class PipesProvider:
         self,
         organization_id: str,
         *,
+        ownership: PipesProviderOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationListResponse:
         """List providers for an organization
@@ -32,6 +34,7 @@ class PipesProvider:
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier to list provider configurations for.
+            ownership: Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership. Defaults to `user`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -40,9 +43,17 @@ class PipesProvider:
         Raises:
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
+        params: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "ownership": enum_value(ownership) if ownership is not None else None,
+            }.items()
+            if v is not None
+        }
         return self._client.request(
             method="get",
             path=(
@@ -50,6 +61,7 @@ class PipesProvider:
                 str(organization_id),
                 "data_integration_configurations",
             ),
+            params=params,
             model=DataIntegrationConfigurationListResponse,
             request_options=request_options,
         )
@@ -64,6 +76,7 @@ class PipesProvider:
         client_id: str | None = None,
         client_secret: str | None = None,
         config: dict[str, str] | None = None,
+        ownership: PipesProviderOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationResponse:
         """Configure a provider for an organization
@@ -78,6 +91,7 @@ class PipesProvider:
             client_id: The OAuth client ID of the organization's own application. Must be provided together with `client_secret`, and only for providers whose credentials are supplied by the organization.
             client_secret: The OAuth client secret of the organization's own application. Must be provided together with `client_id`.
             config: Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected.
+            ownership: Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership. Defaults to `user`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -103,6 +117,13 @@ class PipesProvider:
         }
         if not isinstance(scopes, NotGiven):
             body["scopes"] = scopes
+        params: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "ownership": enum_value(ownership) if ownership is not None else None,
+            }.items()
+            if v is not None
+        }
         return self._client.request(
             method="put",
             path=(
@@ -112,6 +133,7 @@ class PipesProvider:
                 str(slug),
             ),
             body=body,
+            params=params,
             model=DataIntegrationConfigurationResponse,
             request_options=request_options,
         )
@@ -127,6 +149,7 @@ class AsyncPipesProvider:
         self,
         organization_id: str,
         *,
+        ownership: PipesProviderOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationListResponse:
         """List providers for an organization
@@ -135,6 +158,7 @@ class AsyncPipesProvider:
 
         Args:
             organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier to list provider configurations for.
+            ownership: Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership. Defaults to `user`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -143,9 +167,17 @@ class AsyncPipesProvider:
         Raises:
             AuthenticationError: If the API key is invalid (401).
             NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
+        params: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "ownership": enum_value(ownership) if ownership is not None else None,
+            }.items()
+            if v is not None
+        }
         return await self._client.request(
             method="get",
             path=(
@@ -153,6 +185,7 @@ class AsyncPipesProvider:
                 str(organization_id),
                 "data_integration_configurations",
             ),
+            params=params,
             model=DataIntegrationConfigurationListResponse,
             request_options=request_options,
         )
@@ -167,6 +200,7 @@ class AsyncPipesProvider:
         client_id: str | None = None,
         client_secret: str | None = None,
         config: dict[str, str] | None = None,
+        ownership: PipesProviderOwnership | str | None = None,
         request_options: RequestOptions | None = None,
     ) -> DataIntegrationConfigurationResponse:
         """Configure a provider for an organization
@@ -181,6 +215,7 @@ class AsyncPipesProvider:
             client_id: The OAuth client ID of the organization's own application. Must be provided together with `client_secret`, and only for providers whose credentials are supplied by the organization.
             client_secret: The OAuth client secret of the organization's own application. Must be provided together with `client_id`.
             config: Provider-specific config values to set for the organization, keyed by config field. Only fields the provider declares are accepted, and each value must match that field's pattern. Accepted only for providers whose credentials are organization-managed; for shared or custom credential providers, config belongs on the integration itself (via the data-integrations API) and supplying it here is rejected.
+            ownership: Select the provider configuration for `user` connections or `organization` shared connections. Defaults to `user`; never falls back to the other ownership. Defaults to `user`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -206,6 +241,13 @@ class AsyncPipesProvider:
         }
         if not isinstance(scopes, NotGiven):
             body["scopes"] = scopes
+        params: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "ownership": enum_value(ownership) if ownership is not None else None,
+            }.items()
+            if v is not None
+        }
         return await self._client.request(
             method="put",
             path=(
@@ -215,6 +257,7 @@ class AsyncPipesProvider:
                 str(slug),
             ),
             body=body,
+            params=params,
             model=DataIntegrationConfigurationResponse,
             request_options=request_options,
         )

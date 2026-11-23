@@ -12,7 +12,9 @@ class AgentAdminValidateCredentialRequestType(str, Enum):
     """Known values for AgentAdminValidateCredentialRequestType."""
 
     API_KEY = "api_key"
+    """The kind of credential being validated — an agent API key or an agent access token."""
     ACCESS_TOKEN = "access_token"
+    """The kind of credential being validated — an agent API key or an agent access token."""
 
     @classmethod
     def _missing_(cls, value: object) -> AgentAdminValidateCredentialRequestType | None:

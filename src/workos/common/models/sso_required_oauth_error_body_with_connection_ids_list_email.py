@@ -9,8 +9,8 @@ from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
-class SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken:
-    """SSO Required O Auth Error Body With Connection Ids List Email Pending Authentication Token model."""
+class SSORequiredOAuthErrorBodyWithConnectionIdsListEmail:
+    """SSO Required O Auth Error Body With Connection Ids List Email model."""
 
     error: Literal["sso_required"]
     """The OAuth error code."""
@@ -26,7 +26,7 @@ class SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationTo
     @classmethod
     def from_dict(
         cls, data: dict[str, Any]
-    ) -> SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken:
+    ) -> SSORequiredOAuthErrorBodyWithConnectionIdsListEmail:
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -38,8 +38,7 @@ class SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationTo
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error(
-                "SSORequiredOAuthErrorBodyWithConnectionIdsListEmailPendingAuthenticationToken",
-                e,
+                "SSORequiredOAuthErrorBodyWithConnectionIdsListEmail", e
             )
 
     def to_dict(self) -> dict[str, Any]:

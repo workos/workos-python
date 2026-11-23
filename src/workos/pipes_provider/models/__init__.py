@@ -12,3 +12,4 @@ from .data_integration_configuration_response import (
 from .data_integration_credentials import (
     DataIntegrationCredentials as DataIntegrationCredentials,
 )
+from .pipes_provider_ownership import PipesProviderOwnership as PipesProviderOwnership

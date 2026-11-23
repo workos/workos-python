@@ -32,6 +32,8 @@ class AuthenticationRadarRiskDetectedData:
     """The ID of the user."""
     email: str
     """The email address of the user."""
+    radar_detection_id: str | None = None
+    """The ID of the Radar detection that challenged the authentication."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuthenticationRadarRiskDetectedData:
@@ -46,6 +48,7 @@ class AuthenticationRadarRiskDetectedData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
+                radar_detection_id=data.get("radar_detection_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationRadarRiskDetectedData", e)
@@ -75,4 +78,6 @@ class AuthenticationRadarRiskDetectedData:
             result["user_agent"] = None
         result["user_id"] = self.user_id
         result["email"] = self.email
+        if self.radar_detection_id is not None:
+            result["radar_detection_id"] = self.radar_detection_id
         return result

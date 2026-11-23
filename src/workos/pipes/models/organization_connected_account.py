@@ -23,6 +23,8 @@ class OrganizationConnectedAccount:
     """A mutable, non-unique connection label; null clears it. Not an account identifier."""
     account_identifier: str | None = None
     """A developer-attested account identifier; null clears it."""
+    config: dict[str, str] | None = None
+    """Installation-scoped provider configuration for this connection, such as Salesforce salesforce_host. Imports apply supplied values over installation-scoped integration pins and inherit other config from the credential source. Credential-bearing imports must satisfy required configuration even when config is omitted or {}. On update, a supplied object replaces installation-scoped values; omitted config preserves the stored snapshot. Stored integration-scoped values remain bound to the OAuth client and cannot be overridden or replaced with current integration pins. Replacements must satisfy required configuration; {} and empty-string values clear installation-scoped values only when the result is valid. Provider defaults count toward completeness but are resolved at read time, not stored. Only tokenless needs_reauthorization placeholders may remain incomplete; attaching their first tokens validates configuration even when config is omitted. Unrelated updates do not revalidate unchanged configuration. Clearing salesforce_host falls back to login.salesforce.com, which may not work for sandbox or My Domain-only connections."""
     access_token: str | None = None
     """The OAuth access token for the connected account."""
     refresh_token: str | None = None
@@ -42,6 +44,7 @@ class OrganizationConnectedAccount:
                 user_id=data["user_id"],
                 account_display_name=data.get("account_display_name"),
                 account_identifier=data.get("account_identifier"),
+                config=data.get("config"),
                 access_token=data.get("access_token"),
                 refresh_token=data.get("refresh_token"),
                 expires_at=_parse_datetime(_v_expires_at)
@@ -67,6 +70,8 @@ class OrganizationConnectedAccount:
             result["account_identifier"] = self.account_identifier
         else:
             result["account_identifier"] = None
+        if self.config is not None:
+            result["config"] = self.config
         if self.access_token is not None:
             result["access_token"] = self.access_token
         if self.refresh_token is not None:

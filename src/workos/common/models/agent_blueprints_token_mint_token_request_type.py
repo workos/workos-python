@@ -12,9 +12,13 @@ class AgentBlueprintsTokenMintTokenRequestType(str, Enum):
     """Known values for AgentBlueprintsTokenMintTokenRequestType."""
 
     USER_DELEGATED = "user_delegated"
+    """How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`."""
     AUTONOMOUS = "autonomous"
+    """How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`."""
     AGENT_DELEGATED = "agent_delegated"
+    """How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`."""
     REFRESH = "refresh"
+    """How the session is minted: `user_delegated`, `autonomous`, `agent_delegated`, or `refresh`."""
 
     @classmethod
     def _missing_(

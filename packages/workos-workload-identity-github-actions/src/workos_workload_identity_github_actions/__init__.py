@@ -31,6 +31,17 @@ _MISSING_ENV_MESSAGE = (
     "Add `permissions: id-token: write` to the workflow or job."
 )
 _INVALID_URL_MESSAGE = f"{_URL_ENV} is not a valid URL."
+# For a value with a character outside visible ASCII. The value is not shown.
+_UNUSABLE_TOKEN_MESSAGE = (
+    f"{_TOKEN_ENV} contains a character that is not allowed in an HTTP header, "
+    "such as a line break. GitHub Actions sets this variable; pass it to the "
+    "program unchanged."
+)
+_UNUSABLE_URL_MESSAGE = (
+    f"{_URL_ENV} contains a character that is not allowed in a URL, such as a "
+    "space or a line break. GitHub Actions sets this variable; pass it to the "
+    "program unchanged."
+)
 
 
 class GitHubActionsProviderError(Exception):
@@ -57,17 +68,14 @@ def _unreachable(exc: OSError, url: str) -> GitHubActionsProviderError:
     )
 
 
-def _require_visible_ascii(name: str, value: str) -> None:
+def _require_visible_ascii(value: str, message: str) -> None:
     """Refuse a value that has a character outside visible ASCII (0x21 to 0x7E).
 
     Neither a URL nor a bearer token has such a character. The value is not
-    repaired, and the error does not show it or any part of it.
+    repaired, and ``message`` shows no part of it.
     """
     if any(not "!" <= char <= "~" for char in value):
-        raise GitHubActionsProviderError(
-            f"{name} must not contain a space, a line break, another control "
-            "character or a non-ASCII character."
-        )
+        raise GitHubActionsProviderError(message)
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -163,8 +171,8 @@ def github_actions(audience: str) -> Callable[[], str]:
             raise GitHubActionsProviderError(_MISSING_ENV_MESSAGE)
         # Checked before a request is built. urllib would drop a line break
         # from the URL, and would quote the request token in its own error.
-        _require_visible_ascii(_TOKEN_ENV, request_token)
-        _require_visible_ascii(_URL_ENV, url)
+        _require_visible_ascii(request_token, _UNUSABLE_TOKEN_MESSAGE)
+        _require_visible_ascii(url, _UNUSABLE_URL_MESSAGE)
 
         status, body = _get(_with_audience(url, audience), request_token)
         if status != 200:

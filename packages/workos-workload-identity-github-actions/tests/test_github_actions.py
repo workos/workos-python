@@ -30,9 +30,16 @@ URL_ENV = "ACTIONS_ID_TOKEN_REQUEST_URL"
 TOKEN_ENV = "ACTIONS_ID_TOKEN_REQUEST_TOKEN"
 
 # The fixed texts of the errors for a value or a response that cannot be used.
-NOT_VISIBLE_ASCII = (
-    "{name} must not contain a space, a line break, another control character "
-    "or a non-ASCII character."
+# The one for the request token is the same in every SDK that checks it.
+UNUSABLE_TOKEN = (
+    "ACTIONS_ID_TOKEN_REQUEST_TOKEN contains a character that is not allowed "
+    "in an HTTP header, such as a line break. GitHub Actions sets this "
+    "variable; pass it to the program unchanged."
+)
+UNUSABLE_URL = (
+    "ACTIONS_ID_TOKEN_REQUEST_URL contains a character that is not allowed in "
+    "a URL, such as a space or a line break. GitHub Actions sets this "
+    "variable; pass it to the program unchanged."
 )
 INVALID_URL = f"{URL_ENV} is not a valid URL."
 INVALID_RESPONSE = "GitHub Actions OIDC token response was not valid HTTP."
@@ -448,7 +455,7 @@ def test_request_token_outside_visible_ascii_is_refused_before_any_request(
     with pytest.raises(GitHubActionsProviderError) as excinfo:
         github_actions(AUDIENCE)()
 
-    assert str(excinfo.value) == NOT_VISIBLE_ASCII.format(name=TOKEN_ENV)
+    assert str(excinfo.value) == UNUSABLE_TOKEN
     assert shown(excinfo.value, REQUEST_TOKEN) == []
     assert mock.requests == []
 
@@ -485,7 +492,7 @@ def test_url_outside_visible_ascii_is_refused_before_any_request(
 
     # urllib alone would drop the line breaks, the tab and the space at the
     # start and send the request, and would quote the path with a space in it.
-    assert str(excinfo.value) == NOT_VISIBLE_ASCII.format(name=URL_ENV)
+    assert str(excinfo.value) == UNUSABLE_URL
     assert shown(excinfo.value, REQUEST_TOKEN, "api-version") == []
     assert mock.requests == []
 
@@ -584,7 +591,7 @@ def test_response_that_is_not_valid_http_is_not_quoted(
 def test_request_token_stays_out_of_the_error_without_the_character_check(
     mock: MockServer, monkeypatch: pytest.MonkeyPatch, ending: str, kind: str
 ) -> None:
-    def no_check(name: str, value: str) -> None:
+    def no_check(value: str, message: str) -> None:
         return None
 
     # With the check out of the way, http.client refuses the header itself,

@@ -102,6 +102,17 @@ class Reply:
         return httpx2.Response(self.status, json=self.json, headers=self.headers)
 
 
+@dataclass
+class HeldReply(Reply):
+    """A response that is not sent until ``release`` is set."""
+
+    release: threading.Event = field(default_factory=threading.Event)
+
+    def response(self) -> httpx2.Response:
+        assert self.release.wait(10), "a held reply was never released"
+        return super().response()
+
+
 def oauth_error(code: str, description: str = "the server said no") -> Reply:
     return Reply(400, {"error": code, "error_description": description})
 
@@ -1661,6 +1672,47 @@ def test_sync_waiter_times_out_without_failing_the_exchange(
     assert h.token.count == 1
 
 
+def test_an_exchange_given_up_at_its_deadline_does_not_publish_a_late_token(
+    sync_harness: Harness,
+) -> None:
+    h = sync_harness
+    usual_deadline = workload_identity.EXCHANGE_DEADLINE_SECONDS
+    h.monkeypatch.setattr(workload_identity, "EXCHANGE_DEADLINE_SECONDS", 0.3)
+    h.monkeypatch.setattr(workload_identity, "_DEADLINE_GRACE_SECONDS", 0.01)
+    late = HeldReply(
+        200, {"access_token": "access-late", "token_type": "Bearer", "expires_in": 300}
+    )
+    h.token.script.append(late)
+    credentials = h.credentials()
+    before = threading.enumerate()
+
+    try:
+        # The first exchange is still waiting for its response at the deadline.
+        waiter = h.start(h.op_resolve(credentials))
+        h.wait_until(h.token.entered.is_set)
+        abandoned = [t for t in threading.enumerate() if t not in before]
+        error = h.outcome(waiter)
+        assert isinstance(error, WorkloadIdentityError)
+        assert "did not finish" in error.description
+
+        # The next one succeeds and stores its token.
+        h.monkeypatch.setattr(
+            workload_identity, "EXCHANGE_DEADLINE_SECONDS", usual_deadline
+        )
+        current = h.resolve(credentials)
+        assert current.headers["Authorization"] == "Bearer access-1"
+    finally:
+        late.release.set()
+    # The first exchange now gets its response. It failed at the deadline, so
+    # the token it comes back with replaces nothing.
+    for thread in abandoned:
+        thread.join(10)
+        assert not thread.is_alive()
+
+    assert h.resolve(credentials) == current
+    assert h.token.count == 2
+
+
 def test_async_client_awaits_a_coroutine_provider(async_harness: Harness) -> None:
     h = async_harness
     threads: List[int] = []
@@ -1737,14 +1789,44 @@ def test_async_exchange_canceled_before_it_ran_does_not_block_the_next(
     h = async_harness
     credentials = h.credentials()
 
-    async def never_runs() -> Any:
+    async def never_runs() -> None:
         raise AssertionError("canceled before its first step")
 
     stale = h.loop.create_task(never_runs())
     stale.cancel()
     h.outcome(stale)
-    credentials._async_inflight = stale
+    exchange = workload_identity._Exchange(time.monotonic() + 30)
+    exchange.task = stale
+    credentials._inflight = exchange
 
+    assert h.resolve(credentials).headers["Authorization"] == "Bearer access-1"
+
+
+def test_an_async_exchange_canceled_before_it_ran_fails_its_waiters_at_once(
+    async_harness: AsyncHarness,
+) -> None:
+    h = async_harness
+    credentials = h.credentials()
+
+    async def cancel_the_exchange_before_its_first_step() -> Any:
+        waiter = h.loop.create_task(credentials.aresolve())
+        # One turn of the loop: the waiter has created the task that runs the
+        # exchange, and that task has not run yet.
+        await asyncio.sleep(0)
+        exchange = credentials._inflight
+        assert exchange is not None and exchange.task is not None
+        exchange.task.cancel()
+        return (await asyncio.gather(waiter, return_exceptions=True))[0]
+
+    error = h.loop.run_until_complete(
+        asyncio.wait_for(cancel_the_exchange_before_its_first_step(), 10)
+    )
+
+    # Its waiter is told, and does not wait for the deadline to find out.
+    assert isinstance(error, WorkloadIdentityError)
+    assert error.code == "exchange_failed"
+    assert "canceled" in error.description
+    assert h.token.count == 0
     assert h.resolve(credentials).headers["Authorization"] == "Bearer access-1"
 
 
@@ -1770,6 +1852,137 @@ def test_one_credentials_instance_serves_both_kinds_of_client(
         "access-1",
         "access-1",
         "access-2",
+        "access-2",
+    ]
+
+
+def beside_an_async_exchange(
+    h: AsyncHarness, client: Any, joins: Counter, second: Operation
+) -> List[Any]:
+    """Run ``second`` on a thread while ``client``'s exchange is held back.
+
+    The event loop keeps running throughout, as it does in an application.
+    Returns the outcome of the asynchronous request, then that of ``second``.
+    """
+
+    async def scene() -> List[Any]:
+        first = h.loop.create_task(client.request("GET", ("organizations",)))
+        while not h.token.entered.is_set():
+            await asyncio.sleep(0.001)
+        other = _ThreadCaller(second)
+        other.thread.start()
+        while joins.value < 2:
+            await asyncio.sleep(0.001)
+        h.token.release()
+        outcome = (await asyncio.gather(first, return_exceptions=True))[0]
+        while other.thread.is_alive():
+            await asyncio.sleep(0.001)
+        return [outcome, other.outcome]
+
+    return h.loop.run_until_complete(asyncio.wait_for(scene(), 10))
+
+
+def test_a_coroutine_joins_the_exchange_a_thread_runs(
+    sync_harness: Harness, async_harness: Harness
+) -> None:
+    provider = Provider()
+    credentials = sync_harness.credentials(provider)
+    joins = sync_harness.watch_joins(credentials)
+    sync_client = sync_harness.client(credentials)
+    async_client = async_harness.client(credentials)
+    token = sync_harness.token
+    token.hold()
+
+    blocking = sync_harness.start(sync_harness.op_request(sync_client))
+    sync_harness.wait_until(token.entered.is_set)
+    awaiting = async_harness.start(async_harness.op_request(async_client))
+    async_harness.wait_until(lambda: joins.value == 2)
+    token.release()
+
+    assert async_harness.outcome(awaiting) == {"ok": True}
+    assert sync_harness.outcome(blocking) == {"ok": True}
+    assert token.count == 1
+    assert provider.calls == 1
+    assert sync_harness.api.bearers() == ["access-1", "access-1"]
+
+
+def test_a_thread_joins_the_exchange_a_task_runs(
+    sync_harness: Harness, async_harness: AsyncHarness
+) -> None:
+    provider = Provider()
+    credentials = async_harness.credentials(provider)
+    joins = async_harness.watch_joins(credentials)
+    sync_client = sync_harness.client(credentials)
+    async_client = async_harness.client(credentials)
+    async_harness.token.hold()
+
+    outcomes = beside_an_async_exchange(
+        async_harness, async_client, joins, sync_harness.op_request(sync_client)
+    )
+
+    assert outcomes == [{"ok": True}, {"ok": True}]
+    assert async_harness.token.count == 1
+    assert provider.calls == 1
+    assert async_harness.api.bearers() == ["access-1", "access-1"]
+
+
+def test_a_coroutine_on_another_event_loop_joins_the_exchange(
+    async_harness: AsyncHarness,
+) -> None:
+    h = async_harness
+    provider = Provider()
+    credentials = h.credentials(provider)
+    joins = h.watch_joins(credentials)
+    client = h.client(credentials)
+    h.token.hold()
+
+    def on_another_loop() -> Any:
+        async def request() -> Any:
+            async with AsyncWorkOSClient(
+                base_url=API_URL, credentials=credentials
+            ) as other:
+                return await other.request("GET", ("organizations",))
+
+        return asyncio.run(request())
+
+    outcomes = beside_an_async_exchange(h, client, joins, on_another_loop)
+
+    assert outcomes == [{"ok": True}, {"ok": True}]
+    assert h.token.count == 1
+    assert provider.calls == 1
+    assert h.api.bearers() == ["access-1", "access-1"]
+
+
+def test_a_blocking_call_on_the_loop_that_runs_the_exchange_does_not_wait_for_it(
+    sync_harness: Harness, async_harness: AsyncHarness
+) -> None:
+    # A synchronous client called from a coroutine blocks the event loop. The
+    # exchange a task of that loop runs cannot finish until the call returns,
+    # so the call exchanges for itself instead of waiting for it.
+    credentials = async_harness.credentials()
+    sync_client = sync_harness.client(credentials)
+    async_client = async_harness.client(credentials)
+    token = async_harness.token
+    token.hold()
+
+    async def scene() -> List[Any]:
+        first = async_harness.loop.create_task(
+            async_client.request("GET", ("organizations",))
+        )
+        while not token.entered.is_set():
+            await asyncio.sleep(0.001)
+        # Nothing on this loop runs during the blocking call, so a timer on a
+        # thread of its own lets the token endpoint answer.
+        threading.Timer(0.05, token.release).start()
+        blocked = sync_client.request("GET", ("organizations",))
+        return [blocked, await first]
+
+    outcomes = async_harness.loop.run_until_complete(asyncio.wait_for(scene(), 10))
+
+    assert outcomes == [{"ok": True}, {"ok": True}]
+    assert token.count == 2
+    assert sorted(str(bearer) for bearer in async_harness.api.bearers()) == [
+        "access-1",
         "access-2",
     ]
 

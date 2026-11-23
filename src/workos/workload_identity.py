@@ -40,6 +40,7 @@ from typing import (
     Awaitable,
     Callable,
     Dict,
+    List,
     Optional,
     Protocol,
     Tuple,
@@ -95,6 +96,7 @@ _DEADLINE_GRACE_SECONDS = 1.0
 _DEADLINE_DESCRIPTION = (
     f"The exchange did not finish within {EXCHANGE_DEADLINE_SECONDS:g} seconds."
 )
+_CANCELED_DESCRIPTION = "The exchange was canceled before it finished."
 _WAIT_TIMEOUT_MESSAGE = "Timed out waiting for the workload identity token exchange."
 
 # --- errors ---------------------------------------------------------------------
@@ -408,17 +410,27 @@ class _ExchangeRun:
         return access_token, _lifetime(body.get("expires_in"))
 
 
-class _SyncExchange:
-    """One in-flight exchange started by the synchronous path, and its shared result."""
+class _Exchange:
+    """One in-flight exchange and its result, shared by every caller that waits for it.
 
-    __slots__ = ("deadline", "done", "error", "result", "settled")
+    A thread runs the exchange when a synchronous caller starts it, and a task
+    on the caller's event loop when an asynchronous caller does. Either kind
+    of caller can wait for either: a thread waits on ``done``, and a coroutine
+    is woken through ``wakers``.
+    """
+
+    __slots__ = ("deadline", "done", "error", "result", "settled", "task", "wakers")
 
     def __init__(self, deadline: float) -> None:
         self.deadline = deadline
+        # The task that runs the exchange. None when a thread runs it.
+        self.task: Optional["asyncio.Task[None]"] = None
         self.done = threading.Event()
         self.settled = False
         self.result: Optional[Tuple[str, int]] = None
         self.error: Optional[BaseException] = None
+        # One per waiting coroutine. Each wakes its own event loop.
+        self.wakers: List[Callable[[], None]] = []
 
     def outcome(self) -> Tuple[str, int]:
         if self.error is not None:
@@ -427,11 +439,12 @@ class _SyncExchange:
         return self.result
 
 
-def _retrieve_exception(task: "asyncio.Task[Tuple[str, int]]") -> None:
-    # Marks a failed exchange's exception as seen, so asyncio does not log
-    # "Task exception was never retrieved" when every waiter has given up.
-    if not task.cancelled():
-        task.exception()
+def _running_loop() -> Optional[asyncio.AbstractEventLoop]:
+    """The event loop running in this thread, or None when there is none."""
+    try:
+        return asyncio.get_running_loop()
+    except RuntimeError:
+        return None
 
 
 # --- credentials ----------------------------------------------------------------
@@ -464,8 +477,9 @@ class WorkloadIdentityCredentials:
 
     The access token is cached on this instance, in memory only, and refreshed
     on demand once less than ``min(60 seconds, 20% of its lifetime)`` remains.
-    Concurrent callers share one exchange. Two instances never share a token,
-    even with identical settings.
+    Concurrent callers share one exchange, whether they come from a
+    synchronous client, an asynchronous one, or both. Two instances never
+    share a token, even with identical settings.
 
     Settings are fixed at construction; build a new instance to change one. An
     omitted ``client_id`` falls back to ``WORKOS_CLIENT_ID``, the only
@@ -534,10 +548,9 @@ class WorkloadIdentityCredentials:
         self._expires_at = -math.inf
         self._lifetime = 0.0
         self._generation = 0
-        # In-flight exchanges. The two kinds of client wait in different ways,
-        # so each has its own: a thread for sync callers, a task for async ones.
-        self._inflight: Optional[_SyncExchange] = None
-        self._async_inflight: Optional["asyncio.Task[Tuple[str, int]]"] = None
+        # The exchange in flight. Callers of both kinds of client wait for the
+        # same one, whichever kind started it.
+        self._inflight: Optional[_Exchange] = None
 
         # Seams for tests: the clock that decides freshness, and the sleeps
         # between exchange attempts.
@@ -615,12 +628,10 @@ class WorkloadIdentityCredentials:
         """
         with self._lock:
             current = self._fresh()
-        if current is None:
-            task = self._join_or_start_async()
-            try:
-                current = await asyncio.wait_for(asyncio.shield(task), timeout)
-            except asyncio.TimeoutError:
-                raise WorkOSTimeoutError(_WAIT_TIMEOUT_MESSAGE) from None
+            exchange = None if current is not None else self._join_or_start_async()
+        if exchange is not None:
+            current = await self._wait_async(exchange, timeout)
+        assert current is not None
         return self._snapshot(*current)
 
     def invalidate(self, generation: int) -> None:
@@ -663,13 +674,34 @@ class WorkloadIdentityCredentials:
         self._generation += 1
         return self._generation
 
-    # --- shared exchange, synchronous callers ---
+    # --- shared exchange ---
 
-    def _join_or_start(self) -> _SyncExchange:
-        """The exchange in progress, started if there is none. Lock held."""
+    def _can_join(self, exchange: _Exchange, *, blocking: bool) -> bool:
+        """Whether a caller can wait for ``exchange`` and count on an answer. Lock held.
+
+        ``blocking`` is true for a synchronous caller, which blocks its thread
+        while it waits.
+        """
+        task = exchange.task
+        if task is None:
+            # A thread runs it, whatever its waiters do.
+            return True
+        if task.done():
+            # Canceled before it ran a single step, so it never settled.
+            return False
+        runner = task.get_loop()
+        if runner is _running_loop():
+            # The caller is on the loop that runs the exchange. A coroutine
+            # that awaits lets it run. A blocked thread would stop it.
+            return not blocking
+        # Another thread's loop. It runs the exchange only while it is running.
+        return runner.is_running()
+
+    def _join_or_start(self) -> _Exchange:
+        """The exchange in progress, started on a thread if there is none. Lock held."""
         exchange = self._inflight
-        if exchange is None:
-            exchange = _SyncExchange(time.monotonic() + EXCHANGE_DEADLINE_SECONDS)
+        if exchange is None or not self._can_join(exchange, blocking=True):
+            exchange = _Exchange(time.monotonic() + EXCHANGE_DEADLINE_SECONDS)
             self._inflight = exchange
             try:
                 # Its own thread, not the first caller's: a caller that gives up
@@ -685,7 +717,23 @@ class WorkloadIdentityCredentials:
                 raise
         return exchange
 
-    def _run_exchange(self, exchange: _SyncExchange) -> None:
+    def _join_or_start_async(self) -> _Exchange:
+        """The exchange in progress, started as a task if there is none. Lock held."""
+        exchange = self._inflight
+        if exchange is None or not self._can_join(exchange, blocking=False):
+            exchange = _Exchange(time.monotonic() + EXCHANGE_DEADLINE_SECONDS)
+            # A task of its own, not the first caller's, for the same reason.
+            task = asyncio.get_running_loop().create_task(
+                self._run_exchange_async(exchange)
+            )
+            exchange.task = task
+            # A task canceled before its first step never reaches its own
+            # ``except``; this settles the exchange for it.
+            task.add_done_callback(lambda _: self._settle_canceled(exchange))
+            self._inflight = exchange
+        return exchange
+
+    def _run_exchange(self, exchange: _Exchange) -> None:
         try:
             token, lifetime = self._exchange(exchange.deadline)
         except BaseException as error:
@@ -693,9 +741,36 @@ class WorkloadIdentityCredentials:
             return
         self._settle(exchange, token=token, lifetime=lifetime)
 
+    async def _run_exchange_async(self, exchange: _Exchange) -> None:
+        try:
+            try:
+                token, lifetime = await asyncio.wait_for(
+                    self._exchange_async(exchange.deadline), EXCHANGE_DEADLINE_SECONDS
+                )
+            except asyncio.TimeoutError:
+                raise WorkloadIdentityError(
+                    "exchange_failed", _DEADLINE_DESCRIPTION
+                ) from None
+        except Exception as error:
+            self._settle(exchange, error=error)
+        except BaseException:
+            # Canceled, as when its event loop shuts down. Callers on other
+            # threads and loops may be waiting, so they are told.
+            self._settle_canceled(exchange)
+            raise
+        else:
+            self._settle(exchange, token=token, lifetime=lifetime)
+
+    def _settle_canceled(self, exchange: _Exchange) -> None:
+        """Fail an exchange whose task ended without an outcome. No effect otherwise."""
+        self._settle(
+            exchange,
+            error=WorkloadIdentityError("exchange_failed", _CANCELED_DESCRIPTION),
+        )
+
     def _settle(
         self,
-        exchange: _SyncExchange,
+        exchange: _Exchange,
         *,
         token: Optional[str] = None,
         lifetime: float = 0.0,
@@ -706,24 +781,28 @@ class WorkloadIdentityCredentials:
         The in-flight slot is cleared before anyone is woken, so a caller that
         gets an error and calls again starts a new exchange. On success the
         token is stored under the same lock that clears the slot.
+
+        Only the first outcome counts. An exchange that a waiter gave up at its
+        deadline has failed, and a token it comes back with later is dropped:
+        by then a newer exchange may have stored a token of its own.
         """
         with self._lock:
-            generation = self._store(token, lifetime) if token is not None else 0
             if self._inflight is exchange:
                 self._inflight = None
             if exchange.settled:
-                # A waiter already gave this exchange up at its deadline.
                 return
             exchange.settled = True
             if token is not None:
-                exchange.result = (token, generation)
+                exchange.result = (token, self._store(token, lifetime))
             else:
                 exchange.error = error
+            # No waker is added once the exchange is settled.
+            wakers = exchange.wakers
         exchange.done.set()
+        for wake in wakers:
+            wake()
 
-    def _wait(
-        self, exchange: _SyncExchange, timeout: Optional[float]
-    ) -> Tuple[str, int]:
+    def _wait(self, exchange: _Exchange, timeout: Optional[float]) -> Tuple[str, int]:
         overdue_at = exchange.deadline + _DEADLINE_GRACE_SECONDS
         budget = overdue_at - time.monotonic()
         patience = budget if timeout is None else min(timeout, budget)
@@ -732,9 +811,10 @@ class WorkloadIdentityCredentials:
         if time.monotonic() < overdue_at:
             # This caller's own timeout. The exchange is left alone.
             raise WorkOSTimeoutError(_WAIT_TIMEOUT_MESSAGE)
-        # The exchange outran its deadline, which only a provider that does not
-        # return can cause: a thread cannot be interrupted. Give it up so the
-        # next caller starts a new exchange instead of waiting on this one.
+        # The exchange outran its deadline: a provider that does not return (a
+        # thread cannot be interrupted), or a task whose event loop stopped.
+        # Give it up so the next caller starts a new exchange instead of
+        # waiting on this one.
         self._settle(
             exchange,
             error=WorkloadIdentityError("exchange_failed", _DEADLINE_DESCRIPTION),
@@ -742,42 +822,40 @@ class WorkloadIdentityCredentials:
         exchange.done.wait()
         return exchange.outcome()
 
-    # --- shared exchange, asynchronous callers ---
-
-    def _join_or_start_async(self) -> "asyncio.Task[Tuple[str, int]]":
+    async def _wait_async(
+        self, exchange: _Exchange, timeout: Optional[float]
+    ) -> Tuple[str, int]:
+        """Asynchronous twin of :meth:`_wait`. It never blocks the event loop."""
         loop = asyncio.get_running_loop()
-        with self._lock:
-            task = self._async_inflight
-            # A task is bound to its event loop; one left by another loop, or
-            # canceled before it ever ran, cannot be joined.
-            if task is None or task.done() or task.get_loop() is not loop:
-                task = loop.create_task(self._run_exchange_async())
-                task.add_done_callback(_retrieve_exception)
-                self._async_inflight = task
-            return task
+        woken = asyncio.Event()
 
-    async def _run_exchange_async(self) -> Tuple[str, int]:
-        task = asyncio.current_task()
-        deadline = time.monotonic() + EXCHANGE_DEADLINE_SECONDS
-        try:
+        def wake() -> None:
+            # Called by whichever thread settles the exchange.
             try:
-                token, lifetime = await asyncio.wait_for(
-                    self._exchange_async(deadline), EXCHANGE_DEADLINE_SECONDS
-                )
-            except asyncio.TimeoutError:
-                raise WorkloadIdentityError(
-                    "exchange_failed", _DEADLINE_DESCRIPTION
-                ) from None
-            with self._lock:
-                generation = self._store(token, lifetime)
-                if self._async_inflight is task:
-                    self._async_inflight = None
-            return token, generation
-        finally:
-            # Cleared on every path, before any waiter sees the outcome.
-            with self._lock:
-                if self._async_inflight is task:
-                    self._async_inflight = None
+                loop.call_soon_threadsafe(woken.set)
+            except RuntimeError:
+                # This waiter's loop has closed. Nobody is waiting on it.
+                pass
+
+        with self._lock:
+            if exchange.settled:
+                return exchange.outcome()
+            exchange.wakers.append(wake)
+        overdue_at = exchange.deadline + _DEADLINE_GRACE_SECONDS
+        budget = overdue_at - time.monotonic()
+        patience = budget if timeout is None else min(timeout, budget)
+        try:
+            await asyncio.wait_for(woken.wait(), max(patience, 0.0))
+        except asyncio.TimeoutError:
+            if time.monotonic() < overdue_at:
+                # This caller's own timeout. The exchange is left alone.
+                raise WorkOSTimeoutError(_WAIT_TIMEOUT_MESSAGE) from None
+            # As in _wait: given up, so the next caller starts a new exchange.
+            self._settle(
+                exchange,
+                error=WorkloadIdentityError("exchange_failed", _DEADLINE_DESCRIPTION),
+            )
+        return exchange.outcome()
 
     # --- the exchange itself ---
 

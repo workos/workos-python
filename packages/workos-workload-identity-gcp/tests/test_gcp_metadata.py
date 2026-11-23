@@ -5,12 +5,14 @@
 from __future__ import annotations
 
 import errno
+import http.client
 import http.server
 import os
 import socket
 import threading
+import urllib.request
 from dataclasses import dataclass, field
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional, Type
 
 import pytest
 
@@ -19,6 +21,9 @@ from workos_workload_identity_gcp import GcpMetadataProviderError, gcp_metadata
 
 AUDIENCE = "https://api.workos.com"
 IDENTITY_PATH = "/computeMetadata/v1/instance/service-accounts/default/identity"
+IDENTITY_TOKEN = "SECRET-GCP-IDENTITY-TOKEN"
+INVALID_RESPONSE = "GCP metadata identity response was not valid HTTP."
+UNEXPECTED = "GCP metadata identity request failed with an unexpected {kind}."
 
 
 def unreachable(reason: str) -> str:
@@ -84,6 +89,74 @@ class MockServer:
         self._server.shutdown()
         self._server.server_close()
         self._thread.join()
+
+
+class RawServer:
+    """A loopback server that answers every connection with the same bytes.
+
+    The bytes need not be HTTP, which ``http.server`` cannot be made to send.
+    """
+
+    def __init__(self, payload: bytes) -> None:
+        self._payload = payload
+        self._stop = threading.Event()
+        self._socket = socket.create_server(("127.0.0.1", 0))
+        self._socket.settimeout(0.01)
+        self._thread = threading.Thread(target=self._serve, daemon=True)
+        self._thread.start()
+
+    @property
+    def url(self) -> str:
+        return f"http://127.0.0.1:{self._socket.getsockname()[1]}"
+
+    def _serve(self) -> None:
+        while not self._stop.is_set():
+            try:
+                connection, _ = self._socket.accept()
+            except OSError:
+                continue
+            with connection:
+                connection.settimeout(5)
+                try:
+                    received = b""
+                    while b"\r\n\r\n" not in received:
+                        received += connection.recv(65536) or b"\r\n\r\n"
+                    connection.sendall(self._payload)
+                    # Closed only once the client has closed, so the client
+                    # reads the answer and not a reset connection.
+                    connection.shutdown(socket.SHUT_WR)
+                    while connection.recv(65536):
+                        pass
+                except OSError:
+                    pass
+
+    def close(self) -> None:
+        self._stop.set()
+        self._thread.join()
+        self._socket.close()
+
+
+def shown(error: BaseException, *secrets: str) -> List[str]:
+    """Every place a secret shows up in an error or in an error attached to it."""
+    found: List[str] = []
+    seen: List[BaseException] = []
+    current: Optional[BaseException] = error
+    while current is not None and current not in seen:
+        seen.append(current)
+        places = {
+            "str": str(current),
+            "repr": repr(current),
+            "args": repr(current.args),
+            "attributes": repr(vars(current)),
+        }
+        found.extend(
+            f"{type(current).__name__} {place}: {secret}"
+            for place, text in places.items()
+            for secret in secrets
+            if secret in text
+        )
+        current = current.__cause__ or current.__context__
+    return found
 
 
 @pytest.fixture
@@ -242,6 +315,73 @@ def test_WIF_GCP_03_the_request_does_not_go_through_an_environment_proxy(
     assert gcp_metadata(AUDIENCE)() == "gcp-jwt"
 
     assert len(mock.requests) == 1
+
+
+TOKEN_BODY = IDENTITY_TOKEN.encode()
+
+
+@pytest.mark.parametrize(
+    ("payload", "underneath"),
+    [
+        (TOKEN_BODY + b"\r\n\r\n", http.client.BadStatusLine),
+        (
+            b"HTTP/1.1 200 OK\r\nContent-Length: 500\r\n\r\n" + TOKEN_BODY,
+            http.client.IncompleteRead,
+        ),
+        (
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n"
+            + TOKEN_BODY
+            + b"\r\n",
+            http.client.IncompleteRead,
+        ),
+        (b"HTTP/1.1 200 " + b"x" * 70000 + b"\r\n\r\n", http.client.LineTooLong),
+        (
+            b"HTTP/1.1 200 OK\r\n" + b"X-Filler: 1\r\n" * 150 + b"\r\n",
+            http.client.HTTPException,
+        ),
+        (b"HTTP/9.9 200 OK\r\n\r\n", http.client.UnknownProtocol),
+    ],
+    ids=[
+        "token where the status line belongs",
+        "token shorter than its Content-Length",
+        "token that is not chunked under a chunked header",
+        "status line too long",
+        "too many headers",
+        "unknown HTTP version",
+    ],
+)
+def test_response_that_is_not_valid_http_is_not_quoted(
+    monkeypatch: pytest.MonkeyPatch, payload: bytes, underneath: Type[Exception]
+) -> None:
+    server = RawServer(payload)
+    monkeypatch.setattr(gcp, "_METADATA_BASE_URL", server.url)
+    try:
+        with pytest.raises(GcpMetadataProviderError) as excinfo:
+            gcp_metadata(AUDIENCE)()
+        # What urllib raises for the same answer. It holds the bytes received.
+        with pytest.raises(underneath):
+            with urllib.request.urlopen(server.url, timeout=5) as response:
+                response.read()
+    finally:
+        server.close()
+
+    assert str(excinfo.value) == INVALID_RESPONSE
+    assert shown(excinfo.value, IDENTITY_TOKEN) == []
+
+
+def test_an_unexpected_error_is_named_and_not_quoted(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail(*args: object, **kwargs: object) -> None:
+        raise ValueError(f"something that quotes {IDENTITY_TOKEN}")
+
+    monkeypatch.setattr(urllib.request.OpenerDirector, "open", fail)
+
+    with pytest.raises(GcpMetadataProviderError) as excinfo:
+        gcp_metadata(AUDIENCE)()
+
+    assert str(excinfo.value) == UNEXPECTED.format(kind="ValueError")
+    assert shown(excinfo.value, IDENTITY_TOKEN) == []
 
 
 def test_audience_is_percent_encoded(mock: MockServer) -> None:

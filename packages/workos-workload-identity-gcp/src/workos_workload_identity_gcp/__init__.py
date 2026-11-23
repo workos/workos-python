@@ -12,11 +12,12 @@ call as part of the token exchange.
 
 from __future__ import annotations
 
+import http.client
 import urllib.error
 import urllib.parse
 import urllib.request
 from email.message import Message
-from typing import IO, Callable
+from typing import IO, Callable, Tuple
 
 __all__ = ["GcpMetadataProviderError", "gcp_metadata"]
 
@@ -64,6 +65,42 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def _get(opener: urllib.request.OpenerDirector, url: str) -> Tuple[int, bytes]:
+    """Send the identity request and return the status and the body of the response.
+
+    Every failure leaves as a ``GcpMetadataProviderError`` that shows nothing
+    of the identity token.
+    """
+    try:
+        request = urllib.request.Request(
+            url, headers={"Metadata-Flavor": "Google"}, method="GET"
+        )
+        with opener.open(request, timeout=_TIMEOUT_SECONDS) as response:
+            status: int = response.status
+            body: bytes = response.read()
+            return status, body
+    except urllib.error.HTTPError as exc:
+        exc.close()
+        raise GcpMetadataProviderError(
+            f"GCP metadata identity request failed with status {exc.code}."
+        ) from None
+    except OSError as exc:
+        raise _unreachable(exc) from None
+    except http.client.HTTPException:
+        message = "GCP metadata identity response was not valid HTTP."
+    except Exception as exc:
+        message = (
+            "GCP metadata identity request failed with an unexpected "
+            f"{type(exc).__name__}."
+        )
+    # These two kinds of error can hold what the server sent: the text of a
+    # ``BadStatusLine`` quotes it, and an ``IncompleteRead`` keeps the bytes
+    # that arrived, which are part of the identity token. So none of it is
+    # shown. The error is raised here, outside the handlers, so that the one
+    # that was caught is not kept as its context either.
+    raise GcpMetadataProviderError(message) from None
+
+
 def gcp_metadata(audience: str) -> Callable[[], str]:
     """Return a provider of GCP metadata-server identity tokens for ``audience``.
 
@@ -78,22 +115,7 @@ def gcp_metadata(audience: str) -> Callable[[], str]:
     opener = urllib.request.build_opener(_NoRedirect, urllib.request.ProxyHandler({}))
 
     def provider() -> str:
-        request = urllib.request.Request(
-            f"{_METADATA_BASE_URL}{_IDENTITY_PATH}?{query}",
-            headers={"Metadata-Flavor": "Google"},
-            method="GET",
-        )
-        try:
-            with opener.open(request, timeout=_TIMEOUT_SECONDS) as response:
-                status: int = response.status
-                body: bytes = response.read()
-        except urllib.error.HTTPError as exc:
-            exc.close()
-            raise GcpMetadataProviderError(
-                f"GCP metadata identity request failed with status {exc.code}."
-            ) from None
-        except OSError as exc:
-            raise _unreachable(exc) from None
+        status, body = _get(opener, f"{_METADATA_BASE_URL}{_IDENTITY_PATH}?{query}")
         if status != 200:
             raise GcpMetadataProviderError(
                 f"GCP metadata identity request failed with status {status}."

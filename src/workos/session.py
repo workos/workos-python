@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from dataclasses import dataclass
 from enum import Enum
@@ -22,7 +23,7 @@ from typing import (
 
 import jwt
 from cryptography.fernet import Fernet
-from jwt import PyJWKClient
+from jwt import PyJWK, PyJWKClient
 
 from ._errors import (
     AuthenticationError,
@@ -480,17 +481,9 @@ class AsyncSession:
         jwks_url = f"{client.base_url}sso/jwks/{client.client_id}"
         self.jwks = _get_jwks_client(jwks_url)
 
-    def authenticate(
+    def _unseal_access_token(
         self,
-    ) -> Union[
-        AuthenticateWithSessionCookieSuccessResponse,
-        AuthenticateWithSessionCookieErrorResponse,
-    ]:
-        """Validate the sealed session cookie and return the session claims.
-
-        Note: This method is synchronous because it only performs local
-        operations (Fernet decryption and JWT validation using cached JWKS).
-        """
+    ) -> Union[Dict[str, Any], AuthenticateWithSessionCookieErrorResponse]:
         if not self.session_data:
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
@@ -511,21 +504,24 @@ class AsyncSession:
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
             )
 
-        try:
-            signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
-            decoded = jwt.decode(
-                session["access_token"],
-                signing_key.key,
-                algorithms=self._JWK_ALGORITHMS,
-                options={"verify_aud": False},
-                leeway=self._client._jwt_leeway,
-                issuer=self._client._jwt_issuer,
-            )
-        except jwt.exceptions.InvalidTokenError:
-            return AuthenticateWithSessionCookieErrorResponse(
-                authenticated=False,
-                reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
-            )
+        return session
+
+    def _decode_access_token(
+        self,
+        session: Dict[str, Any],
+        signing_key: PyJWK,
+    ) -> Union[
+        AuthenticateWithSessionCookieSuccessResponse,
+        AuthenticateWithSessionCookieErrorResponse,
+    ]:
+        decoded = jwt.decode(
+            session["access_token"],
+            signing_key.key,
+            algorithms=self._JWK_ALGORITHMS,
+            options={"verify_aud": False},
+            leeway=self._client._jwt_leeway,
+            issuer=self._client._jwt_issuer,
+        )
 
         if not _is_user_access_token(decoded):
             return AuthenticateWithSessionCookieErrorResponse(
@@ -545,6 +541,51 @@ class AsyncSession:
             impersonator=session.get("impersonator"),
             feature_flags=decoded.get("feature_flags"),
         )
+
+    def authenticate(
+        self,
+    ) -> Union[
+        AuthenticateWithSessionCookieSuccessResponse,
+        AuthenticateWithSessionCookieErrorResponse,
+    ]:
+        """Validate the sealed session cookie and return the session claims.
+
+        Note: This method is synchronous because it only performs local
+        operations (Fernet decryption and JWT validation using cached JWKS).
+        """
+        session = self._unseal_access_token()
+        if isinstance(session, AuthenticateWithSessionCookieErrorResponse):
+            return session
+
+        try:
+            signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
+            return self._decode_access_token(session, signing_key)
+        except jwt.exceptions.InvalidTokenError:
+            return AuthenticateWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+            )
+
+    async def _authenticate_async(
+        self,
+    ) -> Union[
+        AuthenticateWithSessionCookieSuccessResponse,
+        AuthenticateWithSessionCookieErrorResponse,
+    ]:
+        session = self._unseal_access_token()
+        if isinstance(session, AuthenticateWithSessionCookieErrorResponse):
+            return session
+
+        try:
+            signing_key = await asyncio.to_thread(
+                self.jwks.get_signing_key_from_jwt, session["access_token"]
+            )
+            return self._decode_access_token(session, signing_key)
+        except jwt.exceptions.InvalidTokenError:
+            return AuthenticateWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
+            )
 
     async def refresh(
         self,
@@ -600,7 +641,9 @@ class AsyncSession:
             impersonator = auth_response.get("impersonator")
 
             try:
-                signing_key = self.jwks.get_signing_key_from_jwt(access_token)
+                signing_key = await asyncio.to_thread(
+                    self.jwks.get_signing_key_from_jwt, access_token
+                )
                 decoded = jwt.decode(
                     access_token,
                     signing_key.key,
@@ -656,7 +699,7 @@ class AsyncSession:
 
     async def get_logout_url(self, return_to: Optional[str] = None) -> str:
         """Get the logout URL for the current session."""
-        auth_response = self.authenticate()
+        auth_response = await self._authenticate_async()
 
         if isinstance(auth_response, AuthenticateWithSessionCookieErrorResponse):
             raise ValueError(

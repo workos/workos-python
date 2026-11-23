@@ -1018,3 +1018,141 @@ class TestAsyncSession:
         assert isinstance(result, RefreshWithSessionCookieErrorResponse)
         assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
         assert session.session_data == original_sealed
+
+    async def _run_with_slow_jwks(self, public_key, coro_factory):
+        import asyncio
+        import http.server
+        import json
+        import threading
+        from jwt import PyJWKClient
+        from jwt.algorithms import RSAAlgorithm
+
+        jwk = json.loads(RSAAlgorithm.to_jwk(public_key))
+        jwk["kid"] = "test-kid"
+        jwk["use"] = "sig"
+        jwk["alg"] = "RS256"
+        jwks_payload = json.dumps({"keys": [jwk]}).encode("utf-8")
+
+        jwks_started = threading.Event()
+        release_jwks = threading.Event()
+
+        class _SlowJWKSHandler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                jwks_started.set()
+                if not release_jwks.wait(timeout=1.5):
+                    self.send_response(504)
+                    self.end_headers()
+                    return
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(jwks_payload)))
+                self.end_headers()
+                self.wfile.write(jwks_payload)
+
+            def log_message(self, format, *args):
+                return
+
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _SlowJWKSHandler)
+        port = server.server_address[1]
+        server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+        server_thread.start()
+
+        heartbeat_ran_during_jwks = False
+
+        async def _driver():
+            nonlocal heartbeat_ran_during_jwks
+            while not jwks_started.is_set():
+                await asyncio.sleep(0.01)
+            heartbeat_ran_during_jwks = True
+            release_jwks.set()
+
+        driver_task = asyncio.create_task(_driver())
+        try:
+            jwks_client = PyJWKClient(f"http://127.0.0.1:{port}/jwks")
+            result = await asyncio.wait_for(coro_factory(jwks_client), timeout=2.5)
+            await driver_task
+        finally:
+            release_jwks.set()
+            if not driver_task.done():
+                driver_task.cancel()
+            server.shutdown()
+            server.server_close()
+            server_thread.join(timeout=2.0)
+
+        return result, heartbeat_ran_during_jwks
+
+    async def test_async_session_refresh_does_not_block_event_loop_on_jwks(
+        self, async_workos
+    ):
+        from unittest.mock import AsyncMock
+
+        private_key, public_key = _generate_rsa_key_pair()
+        token = pyjwt.encode(
+            {
+                "sid": "session_01",
+                "iat": int(time.time()),
+                "auth_time": int(time.time()),
+                "exp": int(time.time() + 3600),
+            },
+            private_key,
+            algorithm="RS256",
+            headers={"kid": "test-kid"},
+        )
+        sealed = seal_data(
+            {"refresh_token": "rt_old", "user": {"id": "user_01"}},
+            COOKIE_PASSWORD,
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+        session._client.request_raw = AsyncMock(
+            return_value={
+                "access_token": token,
+                "refresh_token": "rt_new",
+                "user": {"id": "user_01"},
+            }
+        )
+
+        async def _call(jwks_client):
+            session.jwks = jwks_client
+            return await session.refresh()
+
+        result, heartbeat_ran = await self._run_with_slow_jwks(public_key, _call)
+        assert heartbeat_ran
+        assert isinstance(result, RefreshWithSessionCookieSuccessResponse)
+        assert result.session_id == "session_01"
+
+    async def test_async_session_get_logout_url_does_not_block_event_loop_on_jwks(
+        self, async_workos
+    ):
+        private_key, public_key = _generate_rsa_key_pair()
+        token = pyjwt.encode(
+            {
+                "sid": "session_01",
+                "iat": int(time.time()),
+                "auth_time": int(time.time()),
+                "exp": int(time.time() + 3600),
+            },
+            private_key,
+            algorithm="RS256",
+            headers={"kid": "test-kid"},
+        )
+        sealed = seal_data(
+            {
+                "access_token": token,
+                "refresh_token": "rt_old",
+                "user": {"id": "user_01"},
+            },
+            COOKIE_PASSWORD,
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
+
+        async def _call(jwks_client):
+            session.jwks = jwks_client
+            return await session.get_logout_url()
+
+        logout_url, heartbeat_ran = await self._run_with_slow_jwks(public_key, _call)
+        assert heartbeat_ran
+        assert "session_id=session_01" in logout_url

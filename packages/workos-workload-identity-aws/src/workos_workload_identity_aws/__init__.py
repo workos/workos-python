@@ -7,7 +7,8 @@
 it to ``workos.WorkloadIdentityCredentials(identity_token_provider=...)``.
 
 The provider keeps no cache and does no retries; the WorkOS SDK retries the
-call as part of the token exchange.
+call as part of the token exchange. One call is one STS request: the AWS SDK's
+own retries are turned off on the provider's client.
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 import boto3
 import botocore.session
+from botocore.config import Config
 from botocore.exceptions import BotoCoreError, ClientError, ReadTimeoutError
 from botocore.exceptions import ConnectionError as BotoConnectionError
 
@@ -26,6 +28,8 @@ if TYPE_CHECKING:
 __all__ = ["AwsStsProviderError", "aws_sts"]
 
 _SIGNING_ALGORITHM = "RS256"
+# For connecting to STS, and for each wait for its response.
+_TIMEOUT_SECONDS = 10.0
 _GLOBAL_ENDPOINT_HOSTS = ("sts.amazonaws.com",)
 
 
@@ -71,8 +75,17 @@ def _create_sts_client(region: Optional[str]) -> "STSClient":
             "AWS_DEFAULT_REGION; sts:GetWebIdentityToken needs a regional STS "
             "endpoint."
         )
+    # One request per call, and a limit on it. The AWS SDK would retry a
+    # throttled or failed request by itself, and waits 60 seconds by default.
+    # These are set on this client only, so they win over AWS_MAX_ATTEMPTS and
+    # the shared config file and change nothing for the rest of the process.
+    config = Config(
+        retries={"total_max_attempts": 1},
+        connect_timeout=_TIMEOUT_SECONDS,
+        read_timeout=_TIMEOUT_SECONDS,
+    )
     # The stubs type every service's client; only the STS one is installed.
-    client: STSClient = session.client("sts", region_name=resolved)  # pyright: ignore[reportUnknownMemberType]
+    client: STSClient = session.client("sts", region_name=resolved, config=config)  # pyright: ignore[reportUnknownMemberType]
     endpoint = client.meta.endpoint_url
     if any(endpoint.endswith(f"//{host}") for host in _GLOBAL_ENDPOINT_HOSTS):
         raise AwsStsProviderError(

@@ -30,3 +30,5 @@ client = WorkOSClient(
 ```
 
 `aws_sts(audience, region=None)` builds one STS client from the default AWS credential chain and returns a callable that requests an `RS256` token on every call. `region` is optional when boto3 can resolve one (`AWS_DEFAULT_REGION` or the shared config file); with no region, `aws_sts` raises. The request always goes to the regional STS endpoint. The audience must match the audience of the trust rule on your WorkOS application.
+
+Each call makes one STS request, with a 10-second limit on connecting and on waiting for the response. The AWS SDK's own retries are turned off on this client, because the WorkOS SDK retries the call as part of the token exchange.

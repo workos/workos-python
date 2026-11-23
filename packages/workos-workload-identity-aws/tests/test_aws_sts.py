@@ -9,17 +9,22 @@ leaves the process.
 The tests of an unreachable endpoint have no stub. The client sends its
 request, and the name lookup or the connection under it is faked, so nothing
 leaves the machine.
+
+The tests that count requests have no stub either: the stub answers before the
+AWS SDK's retry logic runs. They point the client at a loopback server.
 """
 
 from __future__ import annotations
 
 import datetime
 import errno
+import http.server
 import os
 import socket
 import ssl
+import threading
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Callable, Iterator, List, Optional
 
 import pytest
 from botocore.stub import Stubber
@@ -296,7 +301,7 @@ def test_timeout_waiting_for_the_response_names_the_reason(
         raise TimeoutError("The read operation timed out")
 
     # A listener that never accepts: the connection opens through its backlog.
-    # The TLS handshake that would wait a minute for an answer is cut short.
+    # The TLS handshake that would wait ten seconds for an answer is cut short.
     monkeypatch.setattr(ssl.SSLContext, "wrap_socket", no_answer)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as silent:
         silent.bind(("127.0.0.1", 0))
@@ -307,6 +312,95 @@ def test_timeout_waiting_for_the_response_names_the_reason(
             aws_sts(AUDIENCE, region="us-east-1")()
 
     assert str(excinfo.value) == unreachable("The read operation timed out")
+
+
+class CountingSts:
+    """A loopback server that answers every request with one STS error, and counts them."""
+
+    def __init__(self) -> None:
+        self.status = 400
+        self.code = "Throttling"
+        self.requests = 0
+        counting = self
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self) -> None:
+                self.rfile.read(int(self.headers.get("Content-Length", 0)))
+                counting.requests += 1
+                body = (
+                    "<ErrorResponse><Error><Type>Sender</Type>"
+                    f"<Code>{counting.code}</Code><Message>no</Message></Error>"
+                    "<RequestId>request-1</RequestId></ErrorResponse>"
+                ).encode()
+                self.send_response(counting.status)
+                self.send_header("Content-Type", "text/xml")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, format: str, *args: object) -> None:
+                return None
+
+        self._server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self._thread = threading.Thread(
+            target=self._server.serve_forever,
+            kwargs={"poll_interval": 0.01},
+            daemon=True,
+        )
+        self._thread.start()
+
+    @property
+    def url(self) -> str:
+        return f"http://127.0.0.1:{self._server.server_address[1]}"
+
+    def close(self) -> None:
+        self._server.shutdown()
+        self._server.server_close()
+        self._thread.join()
+
+
+@pytest.fixture
+def counting_sts(monkeypatch: pytest.MonkeyPatch) -> Iterator[CountingSts]:
+    server = CountingSts()
+    monkeypatch.setenv("AWS_ENDPOINT_URL_STS", server.url)
+    yield server
+    server.close()
+
+
+@pytest.mark.parametrize(
+    ("status", "code"),
+    [(400, "Throttling"), (500, "InternalFailure"), (503, "ServiceUnavailable")],
+)
+def test_one_provider_call_is_one_sts_request(
+    counting_sts: CountingSts,
+    monkeypatch: pytest.MonkeyPatch,
+    status: int,
+    code: str,
+) -> None:
+    counting_sts.status = status
+    counting_sts.code = code
+    # The AWS SDK's own settings ask for retries. The provider's client does
+    # not follow them: the WorkOS SDK retries the provider call itself.
+    monkeypatch.setenv("AWS_MAX_ATTEMPTS", "5")
+    monkeypatch.setenv("AWS_RETRY_MODE", "standard")
+    provider = aws_sts(AUDIENCE, region="us-east-1")
+
+    with pytest.raises(AwsStsProviderError) as excinfo:
+        provider()
+
+    assert str(excinfo.value) == f"sts:GetWebIdentityToken failed with {code}."
+    assert counting_sts.requests == 1
+
+
+def test_the_sts_client_waits_ten_seconds_at_most(sts: StubbedSts) -> None:
+    aws_sts(AUDIENCE, region="us-east-1")
+
+    # The type stubs do not declare the settings of a client's configuration.
+    limits = vars(sts.clients[0].meta.config)
+    # To connect, and for each wait for the response. The AWS SDK's default
+    # is 60 seconds for both.
+    assert limits["connect_timeout"] == 10
+    assert limits["read_timeout"] == 10
 
 
 def test_audience_is_required() -> None:

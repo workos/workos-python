@@ -639,6 +639,29 @@ def secrets_in(error: BaseException, *secrets: str) -> List[str]:
     return found
 
 
+def locals_showing(error: BaseException, *secrets: str) -> List[str]:
+    """Every local variable, in the frames of an error's tracebacks, that shows a secret.
+
+    This is what a tool that records the local variables of a traceback sees,
+    such as an error reporter.
+    """
+    found: List[str] = []
+    seen: List[BaseException] = []
+    current: Optional[BaseException] = error
+    while current is not None and current not in seen:
+        seen.append(current)
+        frames = [frame for frame, _ in traceback.walk_tb(current.__traceback__)]
+        found.extend(
+            f"{type(current).__name__} {frame.f_code.co_name}() {name}: {secret}"
+            for frame in frames
+            for name, value in frame.f_locals.items()
+            for secret in secrets
+            if secret in repr(value)
+        )
+        current = current.__cause__ or current.__context__
+    return found
+
+
 def unreachable(reason: str, host: str = "token.test") -> str:
     """The whole description of a token request that got no HTTP response."""
     return f"The request to the token endpoint at {host} failed: {reason}."
@@ -1022,16 +1045,34 @@ def WIF_17_tokens_never_appear_in_errors_or_logs(h: Harness) -> None:
     # A second 401 from the API, after the access token was issued and sent.
     h.api.script.extend(unauthorized() for _ in range(2))
     fail_with(Provider(assertion))
+    # An OAuth error in which the token endpoint repeats the assertion.
+    repeated = {
+        "error": "invalid_grant",
+        "error_description": f"JWT {assertion} failed validation",
+    }
+    h.token.script.append(Reply(400, repeated))
+    fail_with(Provider(assertion))
+    # The same body on a 503, until the retries run out.
+    h.token.script.extend(Reply(503, repeated) for _ in range(EXCHANGE_ATTEMPTS))
+    fail_with(Provider(assertion))
 
     assert [type(error).__name__ for error in errors] == [
         "WorkloadIdentityError",
         "WorkloadIdentityError",
         "WorkloadIdentityError",
         "AuthenticationError",
+        "WorkloadIdentityError",
+        "WorkloadIdentityError",
     ]
     assert h.api.bearers() == [access_token, access_token]
+    for error in errors[4:]:
+        assert isinstance(error, WorkloadIdentityError)
+        assert error.code == "invalid_grant"
+        assert error.description == "JWT [redacted] failed validation"
     for error in errors:
         assert secrets_in(error, assertion, access_token) == []
+        # Nor in a local variable of any frame the error's traceback holds.
+        assert locals_showing(error, assertion, access_token) == []
     for record in h.caplog.records:
         logged = f"{record.getMessage()} {record.__dict__!r}"
         assert assertion not in logged
@@ -1309,6 +1350,7 @@ def an_assertion_echoed_by_the_server_is_redacted(h: Harness) -> None:
     assert error.code == "bad_[redacted]"
     assert error.description == "assertion [redacted] was rejected"
     assert secrets_in(error, assertion) == []
+    assert locals_showing(error, assertion) == []
 
 
 @scenario
@@ -1404,6 +1446,22 @@ def an_assertion_in_a_transport_error_is_redacted(h: Harness) -> None:
     assert isinstance(error, WorkloadIdentityError)
     assert error.description == unreachable("could not send [redacted]")
     assert secrets_in(error, assertion) == []
+    assert locals_showing(error, assertion) == []
+
+
+@scenario
+def a_repeated_assertion_is_replaced_before_the_description_is_cut(
+    h: Harness,
+) -> None:
+    assertion = "SECRET-ASSERTION-VALUE"
+    # Cut first, the 500 characters would end with the start of the assertion.
+    h.token.script.append(oauth_error("invalid_grant", "x" * 495 + assertion))
+
+    error = h.failure(h.op_resolve(h.credentials(Provider(assertion))))
+
+    assert isinstance(error, WorkloadIdentityError)
+    assert error.description == "x" * 495 + "[reda"
+    assert "SECRE" not in str(error)
 
 
 @scenario

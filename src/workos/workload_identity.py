@@ -36,6 +36,7 @@ import math
 import os
 import threading
 import time
+import traceback
 from typing import (
     Any,
     Awaitable,
@@ -284,6 +285,22 @@ def _require_token(value: object) -> str:
 
 def _redact(text: str, secret: str) -> str:
     return text.replace(secret, "[redacted]") if secret else text
+
+
+def _clear_frames(error: BaseException) -> None:
+    """Empty the local variables of every frame the tracebacks of ``error`` hold.
+
+    A traceback keeps the frames it passed through, and the frames of an
+    exchange hold the assertion and what the server answered. Anything that
+    records the local variables of a traceback, such as an error reporter,
+    would find them there. The frames and their line numbers stay.
+    """
+    seen: List[BaseException] = []
+    current: Optional[BaseException] = error
+    while current is not None and current not in seen:
+        seen.append(current)
+        traceback.clear_frames(current.__traceback__)
+        current = current.__cause__ or current.__context__
 
 
 def _lifetime(expires_in: object) -> float:
@@ -744,6 +761,7 @@ class WorkloadIdentityCredentials:
         try:
             token, lifetime = self._exchange(exchange.deadline, exchange.loop)
         except BaseException as error:
+            _clear_frames(error)
             self._settle(exchange, error=error)
             return
         self._settle(exchange, token=token, lifetime=lifetime)

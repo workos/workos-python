@@ -25,6 +25,8 @@ import logging
 import os
 import re
 import socket
+import subprocess
+import sys
 import threading
 import time
 import traceback
@@ -364,13 +366,8 @@ class Harness:
         self, credentials: WorkloadIdentityCredentials
     ) -> WorkloadIdentityCredentials:
         """Give the credentials the fake clock and a sleeper that only records."""
-
-        async def record(seconds: float) -> None:
-            self.sleeps.append(seconds)
-
         credentials._clock = self.clock.now
         credentials._sleep = self.sleeps.append
-        credentials._async_sleep = record
         return credentials
 
     def credentials(
@@ -391,15 +388,14 @@ class Harness:
     def watch_joins(self, credentials: WorkloadIdentityCredentials) -> Counter:
         """Count the callers that joined (or started) a shared exchange."""
         joins = Counter()
-        for name in ("_join_or_start", "_join_or_start_async"):
-            original = getattr(credentials, name)
+        original = credentials._join_or_start
 
-            def joined(original: Callable[[], Any] = original) -> Any:
-                exchange = original()
-                joins.increment()
-                return exchange
+        def joined(loop: Optional[asyncio.AbstractEventLoop]) -> Any:
+            exchange = original(loop)
+            joins.increment()
+            return exchange
 
-            setattr(credentials, name, joined)
+        setattr(credentials, "_join_or_start", joined)
         return joins
 
     # clients
@@ -1332,7 +1328,7 @@ def an_unreachable_token_endpoint_is_described_by_its_host_and_the_reason(
         (httpx2.ConnectError, untrusted, None),
         (httpx2.ConnectTimeout, "timed out", None),
         (httpx2.ReadTimeout, "The read operation timed out", None),
-        # A timeout in the asynchronous client has no text.
+        # A timeout with no text.
         (httpx2.ConnectTimeout, "", "timed out"),
         (httpx2.ReadTimeout, "", "timed out"),
         (httpx2.ReadError, "", "unknown network error"),
@@ -1474,6 +1470,32 @@ def an_exchange_that_outruns_its_deadline_is_given_up(h: Harness) -> None:
         assert calls.value == 2
     finally:
         stuck.set()
+
+
+@scenario
+def the_thread_of_an_exchange_ends_with_the_exchange(h: Harness) -> None:
+    credentials = h.credentials()
+    before = threading.enumerate()
+    h.token.hold()
+
+    waiter = h.start(h.op_resolve(credentials))
+    h.wait_until(h.token.entered.is_set)
+    started = [thread for thread in threading.enumerate() if thread not in before]
+    exchanging = [
+        thread
+        for thread in started
+        if thread.name == "workos-workload-identity-exchange"
+    ]
+    assert len(exchanging) == 1
+    # A daemon: an exchange in flight does not keep the interpreter alive.
+    assert exchanging[0].daemon
+    h.token.release()
+    snapshot = h.outcome(waiter)
+
+    assert snapshot.headers["Authorization"] == "Bearer access-1"
+    exchanging[0].join(10)
+    assert not exchanging[0].is_alive()
+    assert credentials._inflight is None
 
 
 @scenario
@@ -1783,51 +1805,54 @@ def test_async_waiter_times_out_without_failing_the_exchange(
     assert h.token.count == 1
 
 
-def test_async_exchange_canceled_before_it_ran_does_not_block_the_next(
+def test_an_exchange_outlives_the_caller_that_started_it(
     async_harness: AsyncHarness,
 ) -> None:
     h = async_harness
     credentials = h.credentials()
+    h.token.hold()
 
-    async def never_runs() -> None:
-        raise AssertionError("canceled before its first step")
+    async def start_an_exchange_and_be_canceled() -> Any:
+        starter = h.loop.create_task(credentials.aresolve())
+        while not h.token.entered.is_set():
+            await asyncio.sleep(0.001)
+        starter.cancel()
+        return (await asyncio.gather(starter, return_exceptions=True))[0]
 
-    stale = h.loop.create_task(never_runs())
-    stale.cancel()
-    h.outcome(stale)
-    exchange = workload_identity._Exchange(time.monotonic() + 30)
-    exchange.task = stale
-    credentials._inflight = exchange
-
-    assert h.resolve(credentials).headers["Authorization"] == "Bearer access-1"
-
-
-def test_an_async_exchange_canceled_before_it_ran_fails_its_waiters_at_once(
-    async_harness: AsyncHarness,
-) -> None:
-    h = async_harness
-    credentials = h.credentials()
-
-    async def cancel_the_exchange_before_its_first_step() -> Any:
-        waiter = h.loop.create_task(credentials.aresolve())
-        # One turn of the loop: the waiter has created the task that runs the
-        # exchange, and that task has not run yet.
-        await asyncio.sleep(0)
-        exchange = credentials._inflight
-        assert exchange is not None and exchange.task is not None
-        exchange.task.cancel()
-        return (await asyncio.gather(waiter, return_exceptions=True))[0]
-
-    error = h.loop.run_until_complete(
-        asyncio.wait_for(cancel_the_exchange_before_its_first_step(), 10)
+    gave_up = h.loop.run_until_complete(
+        asyncio.wait_for(start_an_exchange_and_be_canceled(), 10)
     )
+    assert isinstance(gave_up, asyncio.CancelledError)
 
-    # Its waiter is told, and does not wait for the deadline to find out.
-    assert isinstance(error, WorkloadIdentityError)
-    assert error.code == "exchange_failed"
-    assert "canceled" in error.description
-    assert h.token.count == 0
+    # The exchange it started is still the one in flight, and serves the next.
+    h.token.release()
     assert h.resolve(credentials).headers["Authorization"] == "Bearer access-1"
+    assert h.token.count == 1
+
+
+def test_an_exchange_does_not_need_the_event_loop_that_started_it(
+    network: Network,
+) -> None:
+    provider = Provider()
+    credentials = WorkloadIdentityCredentials(
+        identity_token_provider=provider, client_id=CLIENT_ID, token_url=TOKEN_URL
+    )
+    network.token.hold()
+
+    async def give_up() -> None:
+        with pytest.raises(WorkOSTimeoutError):
+            await credentials.aresolve(timeout=0.05)
+
+    # The loop that started the exchange is closed while the exchange waits
+    # for its response.
+    asyncio.run(give_up())
+    assert network.token.entered.is_set()
+    network.token.release()
+
+    assert credentials.resolve().headers["Authorization"] == "Bearer access-1"
+    assert asyncio.run(credentials.aresolve()).generation == 1
+    assert network.token.count == 1
+    assert provider.calls == 1
 
 
 def test_one_credentials_instance_serves_both_kinds_of_client(
@@ -1882,7 +1907,7 @@ def beside_an_async_exchange(
     return h.loop.run_until_complete(asyncio.wait_for(scene(), 10))
 
 
-def test_a_coroutine_joins_the_exchange_a_thread_runs(
+def test_a_coroutine_joins_the_exchange_a_synchronous_caller_started(
     sync_harness: Harness, async_harness: Harness
 ) -> None:
     provider = Provider()
@@ -1906,7 +1931,7 @@ def test_a_coroutine_joins_the_exchange_a_thread_runs(
     assert sync_harness.api.bearers() == ["access-1", "access-1"]
 
 
-def test_a_thread_joins_the_exchange_a_task_runs(
+def test_a_thread_joins_the_exchange_a_coroutine_started(
     sync_harness: Harness, async_harness: AsyncHarness
 ) -> None:
     provider = Provider()
@@ -1953,13 +1978,14 @@ def test_a_coroutine_on_another_event_loop_joins_the_exchange(
     assert h.api.bearers() == ["access-1", "access-1"]
 
 
-def test_a_blocking_call_on_the_loop_that_runs_the_exchange_does_not_wait_for_it(
+def test_a_blocking_call_on_the_event_loop_joins_the_exchange_a_coroutine_started(
     sync_harness: Harness, async_harness: AsyncHarness
 ) -> None:
     # A synchronous client called from a coroutine blocks the event loop. The
-    # exchange a task of that loop runs cannot finish until the call returns,
-    # so the call exchanges for itself instead of waiting for it.
-    credentials = async_harness.credentials()
+    # exchange runs on a thread of its own, so it finishes all the same, and
+    # the blocking call gets its token.
+    provider = Provider()
+    credentials = async_harness.credentials(provider)
     sync_client = sync_harness.client(credentials)
     async_client = async_harness.client(credentials)
     token = async_harness.token
@@ -1980,11 +2006,129 @@ def test_a_blocking_call_on_the_loop_that_runs_the_exchange_does_not_wait_for_it
     outcomes = async_harness.loop.run_until_complete(asyncio.wait_for(scene(), 10))
 
     assert outcomes == [{"ok": True}, {"ok": True}]
-    assert token.count == 2
-    assert sorted(str(bearer) for bearer in async_harness.api.bearers()) == [
-        "access-1",
-        "access-2",
-    ]
+    assert token.count == 1
+    assert provider.calls == 1
+    assert async_harness.api.bearers() == ["access-1", "access-1"]
+
+
+def test_a_blocking_call_with_an_asynchronous_provider_fails_at_once(
+    sync_harness: Harness, async_harness: AsyncHarness
+) -> None:
+    # The provider is awaited on the event loop, which the blocking call
+    # blocks. It is refused before it can wait for an exchange that needs
+    # that loop.
+    calls = Counter()
+
+    async def provider() -> str:
+        calls.increment()
+        return "assertion-1"
+
+    credentials = async_harness.credentials(provider)
+    sync_client = sync_harness.client(credentials)
+    async_client = async_harness.client(credentials)
+    token = async_harness.token
+    token.hold()
+
+    async def scene() -> List[Any]:
+        first = async_harness.loop.create_task(
+            async_client.request("GET", ("organizations",))
+        )
+        while not token.entered.is_set():
+            await asyncio.sleep(0.001)
+        with pytest.raises(WorkloadIdentityError) as refused:
+            sync_client.request("GET", ("organizations",))
+        token.release()
+        return [refused.value, await first]
+
+    refused, outcome = async_harness.loop.run_until_complete(
+        asyncio.wait_for(scene(), 10)
+    )
+
+    assert refused.code == "provider_failed"
+    assert "AsyncWorkOSClient" in refused.description
+    assert outcome == {"ok": True}
+    assert token.count == 1
+    assert calls.value == 1
+
+
+def test_a_blocking_call_ends_at_the_deadline_when_the_provider_needs_the_loop_it_blocks(
+    sync_harness: Harness, async_harness: AsyncHarness
+) -> None:
+    # A plain callable that returns an awaitable is known to be asynchronous
+    # only once it is called. A blocking call that joins such an exchange
+    # blocks the loop the awaitable needs. The exchange gives the provider
+    # until its deadline, then fails for everyone. No second one is started.
+    h = async_harness
+    h.monkeypatch.setattr(workload_identity, "EXCHANGE_DEADLINE_SECONDS", 0.3)
+    h.monkeypatch.setattr(workload_identity, "_DEADLINE_GRACE_SECONDS", 0.05)
+    entered = threading.Event()
+    calls = Counter()
+
+    async def fetch() -> str:
+        entered.set()
+        await asyncio.Event().wait()
+        return "assertion-1"
+
+    def provider() -> Any:
+        calls.increment()
+        return fetch()
+
+    credentials = h.credentials(provider)
+    sync_client = sync_harness.client(credentials)
+    async_client = h.client(credentials)
+
+    async def scene() -> List[Any]:
+        first = h.loop.create_task(async_client.request("GET", ("organizations",)))
+        while not entered.is_set():
+            await asyncio.sleep(0.001)
+        started = time.monotonic()
+        with pytest.raises(WorkloadIdentityError) as blocked:
+            sync_client.request("GET", ("organizations",))
+        waited = time.monotonic() - started
+        outcome = (await asyncio.gather(first, return_exceptions=True))[0]
+        return [blocked.value, waited, outcome]
+
+    blocked, waited, outcome = h.loop.run_until_complete(asyncio.wait_for(scene(), 10))
+
+    assert blocked.code == "provider_failed"
+    assert "did not return before the exchange's deadline" in blocked.description
+    assert waited < 5
+    # The asynchronous caller waited for the same exchange.
+    assert outcome is blocked
+    assert calls.value == 1
+    assert h.token.count == 0
+
+
+def test_an_exchange_in_flight_does_not_keep_the_interpreter_alive() -> None:
+    script = """
+import threading
+
+from workos import WorkloadIdentityCredentials
+from workos._errors import WorkOSTimeoutError
+
+
+def provider() -> str:
+    threading.Event().wait()  # never returns
+    return ""
+
+
+credentials = WorkloadIdentityCredentials(
+    identity_token_provider=provider,
+    client_id="client_wif_test",
+    token_url="https://token.invalid/oauth2/token",
+)
+try:
+    credentials.resolve(timeout=0.05)
+except WorkOSTimeoutError:
+    print("gave up with the exchange in flight")
+"""
+    # The interpreter does not wait for the exchange's thread.
+    finished = subprocess.run(
+        [sys.executable, "-c", script], capture_output=True, text=True, timeout=30
+    )
+
+    assert finished.returncode == 0, finished.stderr
+    assert finished.stdout.strip() == "gave up with the exchange in flight"
 
 
 # --- the real HTTP stack ---------------------------------------------------------------
@@ -1996,15 +2140,10 @@ both_clients = pytest.mark.parametrize(
 
 def real_failure(token_url: str, asynchronous: bool) -> WorkloadIdentityError:
     """Exchange at ``token_url`` with nothing mocked, and return the error raised."""
-
-    async def no_sleep(seconds: float) -> None:
-        return None
-
     credentials = WorkloadIdentityCredentials(
         client_id=CLIENT_ID, token_url=token_url, identity_token_provider=Provider()
     )
     credentials._sleep = lambda seconds: None
-    credentials._async_sleep = no_sleep
     with pytest.raises(WorkloadIdentityError) as raised:
         if asynchronous:
             asyncio.run(credentials.aresolve())
@@ -2048,10 +2187,9 @@ def test_a_token_endpoint_that_refuses_the_connection_names_the_reason(
     # The number differs by platform: 111 on Linux, 61 on macOS.
     refused = f"[Errno {errno.ECONNREFUSED}] {os.strerror(errno.ECONNREFUSED)}"
     assert refused.endswith("Connection refused")
-    # The asynchronous client tries every address the host has and reports
-    # them as one failure. The operating system's error is not in its text.
-    reason = "All connection attempts failed" if asynchronous else refused
-    assert error.description == unreachable(reason, host=host)
+    # Both clients name the operating system's error: the exchange is sent
+    # the same way for both.
+    assert error.description == unreachable(refused, host=host)
 
 
 @both_clients
@@ -2070,14 +2208,10 @@ def test_a_token_endpoint_that_does_not_answer_names_the_reason(
 
         error = real_failure(f"https://{host}/oauth2/token", asynchronous)
 
-    if asynchronous:
-        # The timeout has no text of its own here.
-        assert error.description == unreachable("timed out", host=host)
-    else:
-        # The interpreter's words, such as "The handshake operation timed out".
-        said = error.description
-        assert said.startswith(f"The request to the token endpoint at {host} failed: ")
-        assert said.endswith("timed out.")
+    # The interpreter's words, such as "The handshake operation timed out".
+    said = error.description
+    assert said.startswith(f"The request to the token endpoint at {host} failed: ")
+    assert said.endswith("timed out.")
 
 
 # --- configuration -------------------------------------------------------------------

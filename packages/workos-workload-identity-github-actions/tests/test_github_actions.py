@@ -5,12 +5,15 @@
 from __future__ import annotations
 
 import errno
+import http.client
 import http.server
 import os
 import socket
 import threading
+import urllib.parse
+import urllib.request
 from dataclasses import dataclass, field
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Optional, Type
 
 import pytest
 
@@ -22,6 +25,21 @@ from workos_workload_identity_github_actions import (
 
 AUDIENCE = "https://api.workos.com"
 REQUEST_TOKEN = "gha-request-token"
+IDENTITY_TOKEN = "gha-identity-jwt"
+URL_ENV = "ACTIONS_ID_TOKEN_REQUEST_URL"
+TOKEN_ENV = "ACTIONS_ID_TOKEN_REQUEST_TOKEN"
+
+# The fixed texts of the errors for a value or a response that cannot be used.
+NOT_VISIBLE_ASCII = (
+    "{name} must not contain a space, a line break, another control character "
+    "or a non-ASCII character."
+)
+INVALID_URL = f"{URL_ENV} is not a valid URL."
+INVALID_RESPONSE = "GitHub Actions OIDC token response was not valid HTTP."
+UNEXPECTED = (
+    "GitHub Actions OIDC token request failed with an unexpected {kind}. "
+    f"Check {URL_ENV} and {TOKEN_ENV}."
+)
 
 
 def unreachable(reason: str, host: str) -> str:
@@ -87,6 +105,74 @@ class MockServer:
         self._server.shutdown()
         self._server.server_close()
         self._thread.join()
+
+
+class RawServer:
+    """A loopback server that answers every connection with the same bytes.
+
+    The bytes need not be HTTP, which ``http.server`` cannot be made to send.
+    """
+
+    def __init__(self, payload: bytes) -> None:
+        self._payload = payload
+        self._stop = threading.Event()
+        self._socket = socket.create_server(("127.0.0.1", 0))
+        self._socket.settimeout(0.01)
+        self._thread = threading.Thread(target=self._serve, daemon=True)
+        self._thread.start()
+
+    @property
+    def url(self) -> str:
+        return f"http://127.0.0.1:{self._socket.getsockname()[1]}/token"
+
+    def _serve(self) -> None:
+        while not self._stop.is_set():
+            try:
+                connection, _ = self._socket.accept()
+            except OSError:
+                continue
+            with connection:
+                connection.settimeout(5)
+                try:
+                    received = b""
+                    while b"\r\n\r\n" not in received:
+                        received += connection.recv(65536) or b"\r\n\r\n"
+                    connection.sendall(self._payload)
+                    # Closed only once the client has closed, so the client
+                    # reads the answer and not a reset connection.
+                    connection.shutdown(socket.SHUT_WR)
+                    while connection.recv(65536):
+                        pass
+                except OSError:
+                    pass
+
+    def close(self) -> None:
+        self._stop.set()
+        self._thread.join()
+        self._socket.close()
+
+
+def shown(error: BaseException, *secrets: str) -> List[str]:
+    """Every place a secret shows up in an error or in an error attached to it."""
+    found: List[str] = []
+    seen: List[BaseException] = []
+    current: Optional[BaseException] = error
+    while current is not None and current not in seen:
+        seen.append(current)
+        places = {
+            "str": str(current),
+            "repr": repr(current),
+            "args": repr(current.args),
+            "attributes": repr(vars(current)),
+        }
+        found.extend(
+            f"{type(current).__name__} {place}: {secret}"
+            for place, text in places.items()
+            for secret in secrets
+            if secret in text
+        )
+        current = current.__cause__ or current.__context__
+    return found
 
 
 @pytest.fixture
@@ -185,8 +271,7 @@ def test_non_200_fails_naming_the_status(mock: MockServer) -> None:
     with pytest.raises(GitHubActionsProviderError, match="404") as excinfo:
         github_actions(AUDIENCE)()
 
-    assert REQUEST_TOKEN not in str(excinfo.value)
-    assert REQUEST_TOKEN not in repr(excinfo.value)
+    assert shown(excinfo.value, REQUEST_TOKEN) == []
 
 
 @pytest.mark.usefixtures("actions_env")
@@ -323,6 +408,231 @@ def test_unreachable_endpoint_shows_only_the_host_and_port_of_its_url(
     assert excinfo.value.__cause__ is None
     for hidden in ("url-user", "url-password", "url-path", "url-query", REQUEST_TOKEN):
         assert hidden not in repr(excinfo.value)
+
+
+@pytest.mark.usefixtures("actions_env")
+@pytest.mark.parametrize(
+    "request_token",
+    [
+        f"{REQUEST_TOKEN}\n",
+        f"{REQUEST_TOKEN}\r\n",
+        f"{REQUEST_TOKEN}\r\nX-Added: 1",
+        f" {REQUEST_TOKEN}",
+        f"{REQUEST_TOKEN} {REQUEST_TOKEN}",
+        f"{REQUEST_TOKEN}\t",
+        f"{REQUEST_TOKEN}\x01",
+        f"{REQUEST_TOKEN}\x7f",
+        f"{REQUEST_TOKEN}\xe9",
+        f"{REQUEST_TOKEN}\u20ac",
+        f"{REQUEST_TOKEN}\udcff",
+    ],
+    ids=[
+        "line break at the end",
+        "carriage return and line break",
+        "a second header line",
+        "space at the start",
+        "space inside",
+        "tab",
+        "control character",
+        "delete character",
+        "Latin-1 letter",
+        "character outside Latin-1",
+        "byte that is not UTF-8",
+    ],
+)
+def test_request_token_outside_visible_ascii_is_refused_before_any_request(
+    mock: MockServer, monkeypatch: pytest.MonkeyPatch, request_token: str
+) -> None:
+    monkeypatch.setenv(TOKEN_ENV, request_token)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == NOT_VISIBLE_ASCII.format(name=TOKEN_ENV)
+    assert shown(excinfo.value, REQUEST_TOKEN) == []
+    assert mock.requests == []
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "{mock}/to ken?api-version=2.0",
+        "{mock}/token?api-version=2.0\n",
+        "{mock}/tok\nen?api-version=2.0",
+        " {mock}/token?api-version=2.0",
+        "{mock}/token\t?api-version=2.0",
+        "{mock}/tok\xe9n?api-version=2.0",
+        "http://oidc actions.invalid/token?api-version=2.0",
+    ],
+    ids=[
+        "space in the path",
+        "line break at the end",
+        "line break inside",
+        "space at the start",
+        "tab",
+        "non-ASCII letter",
+        "space in the host",
+    ],
+)
+def test_url_outside_visible_ascii_is_refused_before_any_request(
+    mock: MockServer, monkeypatch: pytest.MonkeyPatch, url: str
+) -> None:
+    monkeypatch.setenv(URL_ENV, url.format(mock=mock.url))
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    # urllib alone would drop the line breaks, the tab and the space at the
+    # start and send the request, and would quote the path with a space in it.
+    assert str(excinfo.value) == NOT_VISIBLE_ASCII.format(name=URL_ENV)
+    assert shown(excinfo.value, REQUEST_TOKEN, "api-version") == []
+    assert mock.requests == []
+
+
+def test_url_with_a_port_that_is_not_a_number_is_not_a_valid_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    url = "http://127.0.0.1:url-port/url-path"
+    monkeypatch.setenv(URL_ENV, url)
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == INVALID_URL
+    assert shown(excinfo.value, REQUEST_TOKEN, "url-port", "url-path") == []
+    # What urllib raises for it, and what that quotes.
+    with pytest.raises(http.client.InvalidURL, match="url-port"):
+        urllib.request.urlopen(url, timeout=1)
+
+
+def test_url_that_cannot_be_split_is_not_a_valid_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    url = "http://[::1/url-path"
+    monkeypatch.setenv(URL_ENV, url)
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == INVALID_URL
+    assert shown(excinfo.value, REQUEST_TOKEN, "url-path") == []
+    with pytest.raises(ValueError):
+        urllib.parse.urlsplit(url)
+
+
+TOKEN_BODY = f'{{"value":"{IDENTITY_TOKEN}"}}'.encode()
+
+
+@pytest.mark.parametrize(
+    ("payload", "underneath"),
+    [
+        (TOKEN_BODY + b"\r\n\r\n", http.client.BadStatusLine),
+        (
+            b"HTTP/1.1 200 OK\r\nContent-Length: 500\r\n\r\n" + TOKEN_BODY,
+            http.client.IncompleteRead,
+        ),
+        (
+            b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n"
+            + TOKEN_BODY
+            + b"\r\n",
+            http.client.IncompleteRead,
+        ),
+        (b"HTTP/1.1 200 " + b"x" * 70000 + b"\r\n\r\n", http.client.LineTooLong),
+        (
+            b"HTTP/1.1 200 OK\r\n" + b"X-Filler: 1\r\n" * 150 + b"\r\n",
+            http.client.HTTPException,
+        ),
+        (b"HTTP/9.9 200 OK\r\n\r\n", http.client.UnknownProtocol),
+    ],
+    ids=[
+        "body where the status line belongs",
+        "body shorter than its Content-Length",
+        "body that is not chunked under a chunked header",
+        "status line too long",
+        "too many headers",
+        "unknown HTTP version",
+    ],
+)
+def test_response_that_is_not_valid_http_is_not_quoted(
+    monkeypatch: pytest.MonkeyPatch, payload: bytes, underneath: Type[Exception]
+) -> None:
+    server = RawServer(payload)
+    monkeypatch.setenv(URL_ENV, server.url)
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+    try:
+        with pytest.raises(GitHubActionsProviderError) as excinfo:
+            github_actions(AUDIENCE)()
+        # What urllib raises for the same answer. It holds the bytes received.
+        with pytest.raises(underneath):
+            with urllib.request.urlopen(server.url, timeout=5) as response:
+                response.read()
+    finally:
+        server.close()
+
+    assert str(excinfo.value) == INVALID_RESPONSE
+    assert shown(excinfo.value, REQUEST_TOKEN, IDENTITY_TOKEN) == []
+
+
+@pytest.mark.parametrize(
+    ("ending", "kind"),
+    [("\n", "ValueError"), ("\u20ac", "UnicodeEncodeError")],
+    ids=["line break", "character outside Latin-1"],
+)
+def test_request_token_stays_out_of_the_error_without_the_character_check(
+    mock: MockServer, monkeypatch: pytest.MonkeyPatch, ending: str, kind: str
+) -> None:
+    def no_check(name: str, value: str) -> None:
+        return None
+
+    # With the check out of the way, http.client refuses the header itself,
+    # with an error that quotes the header value.
+    monkeypatch.setattr(gha, "_require_visible_ascii", no_check)
+    monkeypatch.setenv(URL_ENV, f"{mock.url}/token")
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN + ending)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    assert str(excinfo.value) == UNEXPECTED.format(kind=kind)
+    assert shown(excinfo.value, REQUEST_TOKEN) == []
+    assert mock.requests == []
+
+
+def test_host_name_that_cannot_be_encoded_is_a_provider_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # A host name with an empty label. Encoding it for the name lookup fails
+    # before anything is looked up.
+    monkeypatch.setenv(URL_ENV, "http://url-host..invalid:8080/url-path")
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+
+    with pytest.raises(GitHubActionsProviderError) as excinfo:
+        github_actions(AUDIENCE)()
+
+    # The class is UnicodeError before Python 3.13 and a subclass of it since.
+    assert str(excinfo.value) in (
+        UNEXPECTED.format(kind="UnicodeError"),
+        UNEXPECTED.format(kind="UnicodeEncodeError"),
+    )
+    assert shown(excinfo.value, REQUEST_TOKEN, "url-host", "url-path") == []
+
+
+def test_json_nested_too_deep_to_parse_has_no_token_value(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    body = b"[" * 100000
+    head = f"HTTP/1.1 200 OK\r\nContent-Length: {len(body)}\r\n\r\n".encode()
+    server = RawServer(head + body)
+    monkeypatch.setenv(URL_ENV, server.url)
+    monkeypatch.setenv(TOKEN_ENV, REQUEST_TOKEN)
+    try:
+        with pytest.raises(GitHubActionsProviderError, match="no token value"):
+            github_actions(AUDIENCE)()
+    finally:
+        server.close()
 
 
 def test_non_http_url_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:

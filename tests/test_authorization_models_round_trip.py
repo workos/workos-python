@@ -10,6 +10,7 @@ from workos.authorization.models import (
     GroupRoleAssignment,
     GroupRoleAssignmentList,
     GroupRoleAssignmentResource,
+    PatchRoleAssignmentEntry,
     Permission,
     ReplaceGroupRoleAssignmentEntry,
     Role,
@@ -42,6 +43,30 @@ class TestModelRoundTrip:
     ):
         data = {"role_slug": "admin"}
         instance = ReplaceGroupRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert "resource_id" not in serialized
+        assert "resource_external_id" not in serialized
+        assert "resource_type_slug" not in serialized
+
+    def test_patch_role_assignment_entry_round_trip(self):
+        data = load_fixture("patch_role_assignment_entry.json")
+        instance = PatchRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PatchRoleAssignmentEntry.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_patch_role_assignment_entry_minimal_payload(self):
+        data = {"role_slug": "editor"}
+        instance = PatchRoleAssignmentEntry.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["role_slug"] == data["role_slug"]
+
+    def test_patch_role_assignment_entry_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"role_slug": "editor"}
+        instance = PatchRoleAssignmentEntry.from_dict(data)
         serialized = instance.to_dict()
         assert "resource_id" not in serialized
         assert "resource_external_id" not in serialized

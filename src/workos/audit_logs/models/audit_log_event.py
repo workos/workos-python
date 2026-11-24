@@ -19,14 +19,14 @@ class AuditLogEvent:
 
     action: str
     """Identifier of what happened."""
-    occurred_at: datetime
-    """ISO-8601 value of when the action occurred."""
     actor: AuditLogEventActor
     """The entity that performed the action."""
     targets: list[AuditLogEventTarget]
     """The resources affected by the action."""
     context: AuditLogEventContext
     """Additional context about where and how the action occurred."""
+    occurred_at: datetime | None = None
+    """ISO-8601 timestamp of when the action occurred. When omitted, defaults to the time WorkOS receives the event. Explicit JSON null is rejected."""
     metadata: dict[str, str | float | bool] | None = None
     """Additional data associated with the event or entity."""
     version: int | None = None
@@ -38,7 +38,6 @@ class AuditLogEvent:
         try:
             return cls(
                 action=data["action"],
-                occurred_at=_parse_datetime(data["occurred_at"]),
                 actor=AuditLogEventActor.from_dict(cast(dict[str, Any], data["actor"])),
                 targets=[
                     AuditLogEventTarget.from_dict(cast(dict[str, Any], item))
@@ -47,6 +46,9 @@ class AuditLogEvent:
                 context=AuditLogEventContext.from_dict(
                     cast(dict[str, Any], data["context"])
                 ),
+                occurred_at=_parse_datetime(_v_occurred_at)
+                if (_v_occurred_at := data.get("occurred_at")) is not None
+                else None,
                 metadata=data.get("metadata"),
                 version=data.get("version"),
             )
@@ -57,10 +59,11 @@ class AuditLogEvent:
         """Serialize to a dictionary."""
         result: dict[str, Any] = {}
         result["action"] = self.action
-        result["occurred_at"] = _format_datetime(self.occurred_at)
         result["actor"] = self.actor.to_dict()
         result["targets"] = [item.to_dict() for item in self.targets]
         result["context"] = self.context.to_dict()
+        if self.occurred_at is not None:
+            result["occurred_at"] = _format_datetime(self.occurred_at)
         if self.metadata is not None:
             result["metadata"] = self.metadata
         if self.version is not None:

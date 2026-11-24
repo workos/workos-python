@@ -95,7 +95,6 @@ class TestModelRoundTrip:
     def test_audit_log_event_minimal_payload(self):
         data = {
             "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.000Z",
             "actor": {
                 "id": "user_TF4C5938",
                 "type": "user",
@@ -118,7 +117,6 @@ class TestModelRoundTrip:
         instance = AuditLogEvent.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["action"] == data["action"]
-        assert serialized["occurred_at"] == data["occurred_at"]
         assert serialized["actor"] == data["actor"]
         assert serialized["targets"] == data["targets"]
         assert serialized["context"] == data["context"]
@@ -126,7 +124,6 @@ class TestModelRoundTrip:
     def test_audit_log_event_omits_absent_optional_non_nullable_fields(self):
         data = {
             "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.000Z",
             "actor": {
                 "id": "user_TF4C5938",
                 "type": "user",
@@ -148,6 +145,7 @@ class TestModelRoundTrip:
         }
         instance = AuditLogEvent.from_dict(data)
         serialized = instance.to_dict()
+        assert "occurred_at" not in serialized
         assert "metadata" not in serialized
         assert "version" not in serialized
 

@@ -10,6 +10,7 @@ from workos._types import _format_datetime, _parse_datetime, _raise_deserialize_
 
 from .agent_blueprint_invocable_as import AgentBlueprintInvocableAs
 from .agent_blueprint_invocable_by import AgentBlueprintInvocableBy
+from .agent_blueprint_scoped_permission import AgentBlueprintScopedPermission
 from .agent_blueprint_session_setting import AgentBlueprintSessionSetting
 
 
@@ -25,8 +26,8 @@ class AgentBlueprint:
     """Human-readable name of the agent blueprint."""
     description: str | None
     """Human-readable description of the agent blueprint."""
-    permissions: list[str]
-    """Permission slugs forming the ceiling on what sessions minted from this blueprint may do."""
+    scoped_permissions: list[AgentBlueprintScopedPermission]
+    """Permissions forming the ceiling on what sessions minted from this blueprint may do, with the instance types that receive each one."""
     invocable_by: AgentBlueprintInvocableBy
     """Who may mint sessions from this blueprint."""
     invocable_as: AgentBlueprintInvocableAs
@@ -37,6 +38,10 @@ class AgentBlueprint:
     """Timestamp when the agent blueprint was created."""
     updated_at: datetime
     """Timestamp when the agent blueprint was last updated."""
+    permissions: list[str] | None = None
+    """Deprecated: use `scoped_permissions`. Slugs of every permission in the ceiling, across all instance types.
+
+    .. deprecated:: This field is deprecated."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AgentBlueprint:
@@ -47,7 +52,10 @@ class AgentBlueprint:
                 id=data["id"],
                 name=data["name"],
                 description=data["description"],
-                permissions=data["permissions"],
+                scoped_permissions=[
+                    AgentBlueprintScopedPermission.from_dict(cast(dict[str, Any], item))
+                    for item in cast(list[Any], data["scoped_permissions"])
+                ],
                 invocable_by=AgentBlueprintInvocableBy.from_dict(
                     cast(dict[str, Any], data["invocable_by"])
                 ),
@@ -59,6 +67,7 @@ class AgentBlueprint:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                permissions=data.get("permissions"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AgentBlueprint", e)
@@ -73,10 +82,14 @@ class AgentBlueprint:
             result["description"] = self.description
         else:
             result["description"] = None
-        result["permissions"] = self.permissions
+        result["scoped_permissions"] = [
+            item.to_dict() for item in self.scoped_permissions
+        ]
         result["invocable_by"] = self.invocable_by.to_dict()
         result["invocable_as"] = self.invocable_as.to_dict()
         result["session_settings"] = self.session_settings.to_dict()
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        if self.permissions is not None:
+            result["permissions"] = self.permissions
         return result

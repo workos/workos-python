@@ -1,0 +1,6 @@
+{
+  "slug": "email:send",
+  "instance_types": [
+    "delegated"
+  ]
+}

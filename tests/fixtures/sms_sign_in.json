@@ -1,0 +1,7 @@
+{
+  "type": "sms_sign_in",
+  "trigger": "country_mismatch",
+  "phone_country": "US",
+  "line_type": "voip",
+  "masked_phone_number": "••••0123"
+}

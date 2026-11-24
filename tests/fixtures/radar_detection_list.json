@@ -1,0 +1,6 @@
+{
+  "type": "domain",
+  "action": "block",
+  "name": "Disposable email domains",
+  "workos_managed": true
+}

@@ -1023,6 +1023,32 @@ class UserManagement:
             request_options=request_options,
         )
 
+    def delete_cors_origin(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete a CORS origin
+
+        Deletes a CORS origin from the API key's application.
+
+        Args:
+            id: The ID of the CORS origin to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=("user_management", "cors_origins", str(id)),
+            request_options=request_options,
+        )
+
     def get_email_verification(
         self,
         id: str,
@@ -3780,6 +3806,32 @@ class AsyncUserManagement:
             path=("user_management", "cors_origins"),
             body=body,
             model=CORSOriginResponse,
+            request_options=request_options,
+        )
+
+    async def delete_cors_origin(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Delete a CORS origin
+
+        Deletes a CORS origin from the API key's application.
+
+        Args:
+            id: The ID of the CORS origin to delete.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=("user_management", "cors_origins", str(id)),
             request_options=request_options,
         )
 

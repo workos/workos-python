@@ -21,7 +21,7 @@ class AuthenticationRadarRiskDetectedData:
     """The authentication method used."""
     action: AuthenticationRadarRiskDetectedDataAction
     control: str | None
-    """The control action taken for the detected risk."""
+    """The Radar control that detected the risk."""
     blocklist_type: str | None
     """The type of blocklist that triggered the risk detection."""
     ip_address: str | None
@@ -33,7 +33,7 @@ class AuthenticationRadarRiskDetectedData:
     email: str
     """The email address of the user."""
     radar_detection_id: str | None = None
-    """The ID of the Radar detection that challenged the authentication."""
+    """The ID of the Radar detection that challenged the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted."""
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AuthenticationRadarRiskDetectedData:

@@ -9,6 +9,9 @@ from workos.common.models.connect_application import (
 from workos.common.models.connect_application import (
     ConnectApplicationVariant as ConnectApplicationVariant,
 )
+from workos.common.models.create_application_secret import (
+    CreateApplicationSecret as CreateApplicationSecret,
+)
 
 from .application_credentials_list_item import (
     ApplicationCredentialsListItem as ApplicationCredentialsListItem,
@@ -18,9 +21,6 @@ from .applications_registration_types import (
 )
 from .applications_registration_types import (
     ApplicationsRegistrationTypesLiteral as ApplicationsRegistrationTypesLiteral,
-)
-from .create_application_secret import (
-    CreateApplicationSecret as CreateApplicationSecret,
 )
 from .create_m2m_application import CreateM2MApplication as CreateM2MApplication
 from .create_oauth_application import CreateOAuthApplication as CreateOAuthApplication

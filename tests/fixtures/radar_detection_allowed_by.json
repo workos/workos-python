@@ -1,0 +1,10 @@
+{
+  "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+  "list": {
+    "type": "domain",
+    "action": "block",
+    "name": "Disposable email domains",
+    "workos_managed": true
+  },
+  "entry": "example.com"
+}

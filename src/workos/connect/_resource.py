@@ -44,16 +44,13 @@ class Connect:
     ) -> ExternalAuthCompleteResponse:
         """Complete external authentication
 
-        Completes an external authentication flow and returns control to AuthKit. This endpoint is used with [Standalone Connect](https://workos.com/docs/authkit/connect/standalone) to bridge your existing authentication system with the Connect OAuth API infrastructure.
+        Completes a [Standalone Connect](https://workos.com/docs/authkit/connect/standalone) login by creating or updating the AuthKit user and returning a `redirect_uri` your application should redirect to so AuthKit can finish the flow.
 
-        After successfully authenticating a user in your application, calling this endpoint will:
+        The user is matched by `id`, stored as its `external_id`, and updated if found. Otherwise:
 
-        - Create or update the user in AuthKit, using the given `id` as its `external_id`.
-        - Return a `redirect_uri` your application should redirect to in order for AuthKit to complete the flow
-
-        Users are automatically created or updated based on the `id` and `email` provided. If a user with the same `id` exists, their information is updated. Otherwise, a new user is created.
-
-        If you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.
+        - If a user with the given `email` has no `external_id`, it is linked to `id`.
+        - If a user with the given `email` has a different `external_id`, the request fails.
+        - If no user has the given `email`, a new user is created.
 
         Args:
             external_auth_id: Identifier provided when AuthKit redirected to your login page.
@@ -490,16 +487,13 @@ class AsyncConnect:
     ) -> ExternalAuthCompleteResponse:
         """Complete external authentication
 
-        Completes an external authentication flow and returns control to AuthKit. This endpoint is used with [Standalone Connect](https://workos.com/docs/authkit/connect/standalone) to bridge your existing authentication system with the Connect OAuth API infrastructure.
+        Completes a [Standalone Connect](https://workos.com/docs/authkit/connect/standalone) login by creating or updating the AuthKit user and returning a `redirect_uri` your application should redirect to so AuthKit can finish the flow.
 
-        After successfully authenticating a user in your application, calling this endpoint will:
+        The user is matched by `id`, stored as its `external_id`, and updated if found. Otherwise:
 
-        - Create or update the user in AuthKit, using the given `id` as its `external_id`.
-        - Return a `redirect_uri` your application should redirect to in order for AuthKit to complete the flow
-
-        Users are automatically created or updated based on the `id` and `email` provided. If a user with the same `id` exists, their information is updated. Otherwise, a new user is created.
-
-        If you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.
+        - If a user with the given `email` has no `external_id`, it is linked to `id`.
+        - If a user with the given `email` has a different `external_id`, the request fails.
+        - If no user has the given `email`, a new user is created.
 
         Args:
             external_auth_id: Identifier provided when AuthKit redirected to your login page.

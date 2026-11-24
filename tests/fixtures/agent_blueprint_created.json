@@ -11,6 +11,21 @@
       "crm:read",
       "email:send"
     ],
+    "scoped_permissions": [
+      {
+        "slug": "crm:read",
+        "instance_types": [
+          "delegated",
+          "autonomous"
+        ]
+      },
+      {
+        "slug": "email:send",
+        "instance_types": [
+          "delegated"
+        ]
+      }
+    ],
     "invocable_by": {
       "role_slugs": [
         "manager"

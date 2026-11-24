@@ -2,14 +2,224 @@
 
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
+import pytest
+
 from tests.generated_helpers import load_fixture
+from workos.common.models import BotDetection
 from workos.radar.models import (
+    RadarDetection,
+    RadarDetectionAllowedBy,
+    RadarDetectionEvidence,
+    RadarDetectionEvidenceUnknown,
+    RadarDetectionList,
+    RadarDetectionLocation,
     RadarListEntryAlreadyPresentResponse,
     RadarStandaloneResponse,
 )
 
 
 class TestModelRoundTrip:
+    def test_radar_detection_list_round_trip(self):
+        data = load_fixture("radar_detection_list.json")
+        instance = RadarDetectionList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_list_minimal_payload(self):
+        data = {"type": "domain", "action": None, "name": None, "workos_managed": True}
+        instance = RadarDetectionList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["action"] == data["action"]
+        assert serialized["name"] == data["name"]
+        assert serialized["workos_managed"] == data["workos_managed"]
+
+    def test_radar_detection_list_preserves_nullable_fields(self):
+        data = {"type": "domain", "action": None, "name": None, "workos_managed": True}
+        instance = RadarDetectionList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["action"] is None
+        assert serialized["name"] is None
+
+    def test_radar_detection_list_round_trips_unknown_enum_values(self):
+        data = {
+            "type": "unexpected_radar_detection_list_type",
+            "action": "block",
+            "name": "Disposable email domains",
+            "workos_managed": True,
+        }
+        instance = RadarDetectionList.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_radar_detection_allowed_by_round_trip(self):
+        data = load_fixture("radar_detection_allowed_by.json")
+        instance = RadarDetectionAllowedBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionAllowedBy.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_allowed_by_minimal_payload(self):
+        data = {"list_id": "radar_list_01HZBC6N1EB1ZY7KG32X", "list": None}
+        instance = RadarDetectionAllowedBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["list_id"] == data["list_id"]
+        assert serialized["list"] == data["list"]
+
+    def test_radar_detection_allowed_by_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": {
+                "type": "domain",
+                "action": "block",
+                "name": "Disposable email domains",
+                "workos_managed": True,
+            },
+        }
+        instance = RadarDetectionAllowedBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert "entry" not in serialized
+
+    def test_radar_detection_allowed_by_preserves_nullable_fields(self):
+        data = {
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": None,
+            "entry": "example.com",
+        }
+        instance = RadarDetectionAllowedBy.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["list"] is None
+
+    def test_radar_detection_round_trip(self):
+        data = load_fixture("radar_detection.json")
+        instance = RadarDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetection.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_minimal_payload(self):
+        data = {
+            "object": "radar_detection",
+            "id": "detection_01HZBC6N1EB1ZY7KG32X",
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "control": "bot_detection",
+            "verdict": "challenge",
+            "challenge_type": None,
+            "evidence": None,
+            "ip_address": "203.0.113.42",
+            "location": {"city": "San Francisco", "country": "US"},
+            "user_agent": "Mozilla/5.0",
+            "email": "user@example.com",
+            "user_id": None,
+            "action": None,
+            "auth_method": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["attempt_id"] == data["attempt_id"]
+        assert serialized["control"] == data["control"]
+        assert serialized["verdict"] == data["verdict"]
+        assert serialized["challenge_type"] == data["challenge_type"]
+        assert serialized["evidence"] == data["evidence"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["location"] == data["location"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["email"] == data["email"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["action"] == data["action"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_radar_detection_preserves_nullable_fields(self):
+        data = {
+            "object": "radar_detection",
+            "id": "detection_01HZBC6N1EB1ZY7KG32X",
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "control": "bot_detection",
+            "verdict": "challenge",
+            "challenge_type": None,
+            "evidence": None,
+            "ip_address": "203.0.113.42",
+            "location": {"city": "San Francisco", "country": "US"},
+            "user_agent": "Mozilla/5.0",
+            "email": "user@example.com",
+            "user_id": None,
+            "action": None,
+            "auth_method": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["challenge_type"] is None
+        assert serialized["evidence"] is None
+        assert serialized["user_id"] is None
+        assert serialized["action"] is None
+        assert serialized["auth_method"] is None
+
+    def test_radar_detection_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "radar_detection",
+            "id": "detection_01HZBC6N1EB1ZY7KG32X",
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "control": "unexpected_radar_detection_control",
+            "verdict": "challenge",
+            "challenge_type": "email",
+            "evidence": {
+                "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+                "allowed_by": {
+                    "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+                    "list": {
+                        "type": "domain",
+                        "action": "block",
+                        "name": "Disposable email domains",
+                        "workos_managed": True,
+                    },
+                    "entry": "example.com",
+                },
+                "control": "bot_detection",
+                "details": {
+                    "signals": [{"signal": "risky_ip", "action": "block"}],
+                    "decided_by": "risky_ip",
+                    "ip_risk": ["abuser", "anonymous", "vpn", "tor", "proxy"],
+                    "email_pattern": [
+                        "generated_looking",
+                        "repeated_format",
+                        "suspicious_domain",
+                    ],
+                    "browser_signals": [
+                        "automation_framework",
+                        "headless_browser",
+                        "tampered_signals",
+                        "inconsistent_hardware",
+                        "missing_signals",
+                        "missing_expected_signals",
+                    ],
+                    "ip_sign_ups": {"count": 6, "window_minutes": 5},
+                    "domain_sign_ups": {"root_domain": "example.com", "count": 44},
+                },
+            },
+            "ip_address": "203.0.113.42",
+            "location": {"city": "San Francisco", "country": "US"},
+            "user_agent": "Mozilla/5.0",
+            "email": "user@example.com",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "action": "signup",
+            "auth_method": "password",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetection.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_radar_standalone_response_round_trip(self):
         data = load_fixture("radar_standalone_response.json")
         instance = RadarStandaloneResponse.from_dict(data)
@@ -65,3 +275,51 @@ class TestModelRoundTrip:
         instance = RadarListEntryAlreadyPresentResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["message"] == data["message"]
+
+    def test_radar_detection_location_round_trip(self):
+        data = load_fixture("radar_detection_location.json")
+        instance = RadarDetectionLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionLocation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_location_minimal_payload(self):
+        data = {"city": None, "country": None}
+        instance = RadarDetectionLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["city"] == data["city"]
+        assert serialized["country"] == data["country"]
+
+    def test_radar_detection_location_preserves_nullable_fields(self):
+        data = {"city": None, "country": None}
+        instance = RadarDetectionLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["city"] is None
+        assert serialized["country"] is None
+
+
+class TestDiscriminatorDispatch:
+    def test_radar_detection_evidence_dispatches_known_variant(self):
+        data = load_fixture("bot_detection.json")
+        result = RadarDetectionEvidence.from_dict(data)
+        assert isinstance(result, BotDetection)
+
+    def test_radar_detection_evidence_returns_unknown_for_unrecognized_type(self):
+        data = load_fixture("bot_detection.json")
+        data = {**data, "control": "future.unrecognized.type"}
+        result = RadarDetectionEvidence.from_dict(data)
+        assert isinstance(result, RadarDetectionEvidenceUnknown)
+        assert result.raw_data == data
+
+    def test_radar_detection_evidence_raises_on_missing_discriminator(self):
+        data = load_fixture("bot_detection.json")
+        data = {k: v for k, v in data.items() if k != "control"}
+        with pytest.raises(Exception):
+            RadarDetectionEvidence.from_dict(data)
+
+    def test_radar_detection_evidence_raises_on_none_discriminator(self):
+        data = load_fixture("bot_detection.json")
+        data = {**data, "control": None}
+        with pytest.raises(Exception):
+            RadarDetectionEvidence.from_dict(data)

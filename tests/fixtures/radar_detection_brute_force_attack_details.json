@@ -1,0 +1,5 @@
+{
+  "attempts": 11,
+  "window_minutes": 1,
+  "matched_on": "device_fingerprint_and_email"
+}

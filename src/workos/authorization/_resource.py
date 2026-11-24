@@ -23,6 +23,7 @@ from .models import (
     AuthorizationResource,
     GroupRoleAssignment,
     GroupRoleAssignmentList,
+    PatchRoleAssignmentEntry,
     Permission,
     ReplaceGroupRoleAssignmentEntry,
     Role,
@@ -707,7 +708,7 @@ class Authorization:
     ) -> UserRoleAssignment:
         """Assign a role
 
-        Assign a role to an organization membership on a specific resource.
+        Assign a role to an organization membership on a specific resource. If the role is already assigned to the membership on that resource, the existing role assignment is returned and no changes are made.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -744,6 +745,56 @@ class Authorization:
             ),
             body=body,
             model=UserRoleAssignment,
+            request_options=request_options,
+        )
+
+    def update_role_assignments(
+        self,
+        organization_membership_id: str,
+        *,
+        add: list[PatchRoleAssignmentEntry] | None = None,
+        remove: list[PatchRoleAssignmentEntry] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update role assignments for an organization membership
+
+        Add and remove role assignments for an organization membership in a single atomic operation. Each entry identifies a role and a resource, either by `resource_id` or by `resource_type_slug` and `resource_external_id`; to change an organization-level role, target the organization resource. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected, as is a removal of a role granted only through a group. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            add: Role assignments to add to the organization membership. Assignments that already exist are skipped.
+            remove: Role assignments to remove from the organization membership. Entries that match no assignment are skipped. Roles granted through a group cannot be removed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": [item.to_dict() for item in add] if add is not None else None,
+                "remove": [item.to_dict() for item in remove]
+                if remove is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        self._client.request(
+            method="patch",
+            path=(
+                "authorization",
+                "organization_memberships",
+                str(organization_membership_id),
+                "role_assignments",
+            ),
+            body=body,
             request_options=request_options,
         )
 
@@ -2922,7 +2973,7 @@ class AsyncAuthorization:
     ) -> UserRoleAssignment:
         """Assign a role
 
-        Assign a role to an organization membership on a specific resource.
+        Assign a role to an organization membership on a specific resource. If the role is already assigned to the membership on that resource, the existing role assignment is returned and no changes are made.
 
         Args:
             organization_membership_id: The ID of the organization membership.
@@ -2959,6 +3010,56 @@ class AsyncAuthorization:
             ),
             body=body,
             model=UserRoleAssignment,
+            request_options=request_options,
+        )
+
+    async def update_role_assignments(
+        self,
+        organization_membership_id: str,
+        *,
+        add: list[PatchRoleAssignmentEntry] | None = None,
+        remove: list[PatchRoleAssignmentEntry] | None = None,
+        request_options: RequestOptions | None = None,
+    ) -> None:
+        """Update role assignments for an organization membership
+
+        Add and remove role assignments for an organization membership in a single atomic operation. Each entry identifies a role and a resource, either by `resource_id` or by `resource_type_slug` and `resource_external_id`; to change an organization-level role, target the organization resource. Additions that already exist and removals that match no assignment are skipped. An assignment in both lists is rejected, as is a removal of a role granted only through a group. `add` and `remove` must contain between 1 and 100 entries combined.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            add: Role assignments to add to the organization membership. Assignments that already exist are skipped.
+            remove: Role assignments to remove from the organization membership. Entries that match no assignment are skipped. Roles granted through a group cannot be removed.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: dict[str, Any] = {
+            k: v
+            for k, v in {
+                "add": [item.to_dict() for item in add] if add is not None else None,
+                "remove": [item.to_dict() for item in remove]
+                if remove is not None
+                else None,
+            }.items()
+            if v is not None
+        }
+        await self._client.request(
+            method="patch",
+            path=(
+                "authorization",
+                "organization_memberships",
+                str(organization_membership_id),
+                "role_assignments",
+            ),
+            body=body,
             request_options=request_options,
         )
 

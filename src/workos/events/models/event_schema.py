@@ -41,6 +41,12 @@ from workos.common.models.agent_registration_revoked import AgentRegistrationRev
 from workos.common.models.api_key_created import ApiKeyCreated
 from workos.common.models.api_key_revoked import ApiKeyRevoked
 from workos.common.models.api_key_updated import ApiKeyUpdated
+from workos.common.models.application_token_exchange_failed import (
+    ApplicationTokenExchangeFailed,
+)
+from workos.common.models.application_token_exchange_succeeded import (
+    ApplicationTokenExchangeSucceeded,
+)
 from workos.common.models.authentication_email_verification_failed import (
     AuthenticationEmailVerificationFailed,
 )
@@ -90,6 +96,9 @@ from workos.common.models.connection_saml_certificate_renewal_required import (
 from workos.common.models.connection_saml_certificate_renewed import (
     ConnectionSAMLCertificateRenewed,
 )
+from workos.common.models.connection_saml_certificate_replaced import (
+    ConnectionSAMLCertificateReplaced,
+)
 from workos.common.models.dsync_activated import DsyncActivated
 from workos.common.models.dsync_deleted import DsyncDeleted
 from workos.common.models.dsync_group_created import DsyncGroupCreated
@@ -134,6 +143,9 @@ from workos.common.models.invitation_accepted import InvitationAccepted
 from workos.common.models.invitation_created import InvitationCreated
 from workos.common.models.invitation_resent import InvitationResent
 from workos.common.models.invitation_revoked import InvitationRevoked
+from workos.common.models.issuer_trust_created import IssuerTrustCreated
+from workos.common.models.issuer_trust_deleted import IssuerTrustDeleted
+from workos.common.models.issuer_trust_updated import IssuerTrustUpdated
 from workos.common.models.magic_auth_created import MagicAuthCreated
 from workos.common.models.organization_created import OrganizationCreated
 from workos.common.models.organization_deleted import OrganizationDeleted
@@ -261,6 +273,8 @@ EventSchemaVariant = Union[
     ApiKeyCreated,
     ApiKeyRevoked,
     ApiKeyUpdated,
+    ApplicationTokenExchangeFailed,
+    ApplicationTokenExchangeSucceeded,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationSucceeded,
     AuthenticationMagicAuthFailed,
@@ -284,6 +298,7 @@ EventSchemaVariant = Union[
     ConnectionDeleted,
     ConnectionSAMLCertificateRenewalRequired,
     ConnectionSAMLCertificateRenewed,
+    ConnectionSAMLCertificateReplaced,
     DsyncActivated,
     DsyncDeleted,
     DsyncGroupCreated,
@@ -318,6 +333,9 @@ EventSchemaVariant = Union[
     InvitationCreated,
     InvitationResent,
     InvitationRevoked,
+    IssuerTrustCreated,
+    IssuerTrustDeleted,
+    IssuerTrustUpdated,
     MagicAuthCreated,
     OrganizationCreated,
     OrganizationDeleted,
@@ -405,6 +423,8 @@ class EventSchema:
         "api_key.created": ApiKeyCreated,
         "api_key.revoked": ApiKeyRevoked,
         "api_key.updated": ApiKeyUpdated,
+        "application.token_exchange_failed": ApplicationTokenExchangeFailed,
+        "application.token_exchange_succeeded": ApplicationTokenExchangeSucceeded,
         "authentication.email_verification_failed": AuthenticationEmailVerificationFailed,
         "authentication.email_verification_succeeded": AuthenticationEmailVerificationSucceeded,
         "authentication.magic_auth_failed": AuthenticationMagicAuthFailed,
@@ -428,6 +448,7 @@ class EventSchema:
         "connection.deleted": ConnectionDeleted,
         "connection.saml_certificate_renewal_required": ConnectionSAMLCertificateRenewalRequired,
         "connection.saml_certificate_renewed": ConnectionSAMLCertificateRenewed,
+        "connection.saml_certificate_replaced": ConnectionSAMLCertificateReplaced,
         "dsync.activated": DsyncActivated,
         "dsync.deleted": DsyncDeleted,
         "dsync.group.created": DsyncGroupCreated,
@@ -462,6 +483,9 @@ class EventSchema:
         "invitation.created": InvitationCreated,
         "invitation.resent": InvitationResent,
         "invitation.revoked": InvitationRevoked,
+        "issuer_trust.created": IssuerTrustCreated,
+        "issuer_trust.deleted": IssuerTrustDeleted,
+        "issuer_trust.updated": IssuerTrustUpdated,
         "magic_auth.created": MagicAuthCreated,
         "organization_domain.created": OrganizationDomainCreated,
         "organization_domain.deleted": OrganizationDomainDeleted,

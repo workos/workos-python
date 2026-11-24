@@ -123,6 +123,36 @@ class Webhooks:
             request_options=request_options,
         )
 
+    def get_webhook_endpoint(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WebhookEndpoint:
+        """Get a Webhook Endpoint
+
+        Get the details of an existing webhook endpoint.
+
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WebhookEndpoint
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("webhook_endpoints", str(id)),
+            model=WebhookEndpoint,
+            request_options=request_options,
+        )
+
     def update_webhook_endpoint(
         self,
         id: str,
@@ -376,6 +406,36 @@ class AsyncWebhooks:
             method="post",
             path=("webhook_endpoints",),
             body=body,
+            model=WebhookEndpoint,
+            request_options=request_options,
+        )
+
+    async def get_webhook_endpoint(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> WebhookEndpoint:
+        """Get a Webhook Endpoint
+
+        Get the details of an existing webhook endpoint.
+
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            WebhookEndpoint
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("webhook_endpoints", str(id)),
             model=WebhookEndpoint,
             request_options=request_options,
         )

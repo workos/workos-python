@@ -66,6 +66,18 @@ class TestWebhooks:
         assert body["endpoint_url"] == "test_endpoint_url"
         assert "events" in body
 
+    def test_get_webhook_endpoint(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("webhook_endpoint.json"),
+        )
+        result = workos.webhooks.get_webhook_endpoint("test_id")
+        assert isinstance(result, WebhookEndpoint)
+        assert result.object == "webhook_endpoint"
+        assert result.id == "we_0123456789"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/webhook_endpoints/test_id")
+
     def test_update_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("webhook_endpoint.json"),
@@ -207,6 +219,17 @@ class TestAsyncWebhooks:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/webhook_endpoints")
+
+    @pytest.mark.asyncio
+    async def test_get_webhook_endpoint(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("webhook_endpoint.json"))
+        result = await async_workos.webhooks.get_webhook_endpoint("test_id")
+        assert isinstance(result, WebhookEndpoint)
+        assert result.object == "webhook_endpoint"
+        assert result.id == "we_0123456789"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/webhook_endpoints/test_id")
 
     @pytest.mark.asyncio
     async def test_update_webhook_endpoint(self, async_workos, httpx_mock):

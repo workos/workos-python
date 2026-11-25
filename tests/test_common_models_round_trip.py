@@ -2,6 +2,8 @@
 
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
+import pytest
+
 from tests.generated_helpers import load_fixture
 from workos.common.models import (
     AccessDeniedOAuthErrorBody,
@@ -17,6 +19,7 @@ from workos.common.models import (
     AgentBlueprintCreatedData,
     AgentBlueprintCreatedDataInvocableAs,
     AgentBlueprintCreatedDataInvocableBy,
+    AgentBlueprintCreatedDataScopedPermission,
     AgentBlueprintCreatedDataSessionSetting,
     AgentBlueprintDeleted,
     AgentBlueprintDeletedData,
@@ -24,6 +27,7 @@ from workos.common.models import (
     AgentBlueprintUpdatedData,
     AgentBlueprintUpdatedDataInvocableAs,
     AgentBlueprintUpdatedDataInvocableBy,
+    AgentBlueprintUpdatedDataScopedPermission,
     AgentBlueprintUpdatedDataSessionSetting,
     AgentInstanceCreated,
     AgentInstanceCreatedData,
@@ -67,6 +71,11 @@ from workos.common.models import (
     ApiKeyUpdatedDataOwner,
     ApiKeyUpdatedDataPreviousAttribute,
     ApplicationConsentRequiredErrorBody,
+    ApplicationTokenExchangeFailed,
+    ApplicationTokenExchangeFailedData,
+    ApplicationTokenExchangeFailedDataError,
+    ApplicationTokenExchangeSucceeded,
+    ApplicationTokenExchangeSucceededData,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
@@ -122,6 +131,9 @@ from workos.common.models import (
     AuthorizationPendingOAuthErrorBody,
     AuthorizationUrlNotFoundErrorBody,
     AuthorizationUrlRequestErrorBody,
+    BlockedTld,
+    BotDetection,
+    BruteForceAttack,
     ClientCredentialsDataIntegrationVendedCredential,
     CodeChallengeNotFoundErrorBody,
     ConnectApplicationM2M,
@@ -148,6 +160,10 @@ from workos.common.models import (
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    ConnectionSAMLCertificateReplaced,
+    ConnectionSAMLCertificateReplacedData,
+    ConnectionSAMLCertificateReplacedDataCertificate,
+    ConnectionSAMLCertificateReplacedDataConnection,
     ConnectionTypeNotUpdatableErrorBody,
     DailyQuotaExceededErrorBody,
     DataIntegrationAccessTokenResponseWithAccessToken,
@@ -156,6 +172,7 @@ from workos.common.models import (
     DataIntegrationCredentialsResponseWithCredential,
     DataIntegrationCredentialsResponseWithError,
     DirectorySyncRateLimitError,
+    DomainProtections,
     DsyncActivated,
     DsyncActivatedData,
     DsyncActivatedDataDomain,
@@ -189,6 +206,8 @@ from workos.common.models import (
     EmailVerificationCreatedData,
     EmailVerificationRequiredErrorBody,
     EntityNotFoundErrorBody,
+    EntityNotFoundErrorBodyWithEntityId,
+    EntityNotFoundErrorBodyWithIdsList,
     ErrorBody,
     ErrorBodyWithCode,
     ErrorBodyWithCodeErrors,
@@ -289,6 +308,7 @@ from workos.common.models import (
     GroupMemberRemovedData,
     GroupUpdated,
     IdpMetadataFetchFailedErrorBody,
+    ImpossibleTravel,
     InvalidClientOAuthErrorBody,
     InvalidConnectionOAuthErrorBody,
     InvalidCredentialsErrorBody,
@@ -319,6 +339,9 @@ from workos.common.models import (
     InvitationResentData,
     InvitationRevoked,
     InvitationRevokedData,
+    IssuerTrustCreated,
+    IssuerTrustDeleted,
+    IssuerTrustUpdated,
     MagicAuthCreated,
     MagicAuthCreatedData,
     MFAChallengeErrorBody,
@@ -326,6 +349,7 @@ from workos.common.models import (
     MFAEnrollmentOAuthErrorBody,
     MultipleRolesNotEnabledErrorBody,
     MustUseSSOForSelectedOrganizationMessageErrorBody,
+    NormalizedEmail,
     OAuthDataIntegrationVendedCredential,
     OAuthErrorBody,
     OneTimeCodeExpiredErrorBody,
@@ -365,6 +389,8 @@ from workos.common.models import (
     OrganizationRoleUpdated,
     OrganizationRoleUpdatedData,
     OrganizationSelectionRequiredErrorBody,
+    OrganizationSelectionRequiredErrorBodyWithOrganization,
+    OrganizationSelectionRequiredErrorBodyWithOrganizations,
     OrganizationUpdated,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
@@ -402,9 +428,29 @@ from workos.common.models import (
     RadarChallengeCreated,
     RadarChallengeCreatedData,
     RadarChallengeErrorBody,
+    RadarDetectionBotDetectionDetails,
+    RadarDetectionBotDetectionSignal,
+    RadarDetectionBruteForceAttackDetails,
+    RadarDetectionDomainProtectionsDetails,
+    RadarDetectionDomainSignUps,
+    RadarDetectionEvidenceRestriction,
+    RadarDetectionImpossibleTravelDetails,
+    RadarDetectionIpSignUps,
+    RadarDetectionPreviousAttempt,
+    RadarDetectionPreviousAttemptLocation,
+    RadarDetectionRepeatSignUpDetails,
+    RadarDetectionRepeatSignUpDetailsEmail,
+    RadarDetectionRepeatSignUpDetailsUnknown,
+    RadarDetectionRestrictionDetails,
+    RadarDetectionRestrictionDetailsList,
+    RadarDetectionRestrictionDetailsUnknown,
+    RadarDetectionStaleAccountDetails,
+    RadarDetectionUnrecognizedDeviceDetails,
     RadarSignUpChallengeErrorBody,
+    RadarSmsChallengeErrorBody,
     RadarSmsSignInChallengeErrorBody,
     RateLimitExceededErrorBodyWithRetryAfter,
+    RepeatSignUp,
     ResourceExportCompleted,
     ResourceExportCompletedData,
     ResourceExportCreated,
@@ -413,6 +459,7 @@ from workos.common.models import (
     ResourceExportDownloadedData,
     ResourceExportFailed,
     ResourceExportFailedData,
+    RoleAssignmentUpdateOverlapErrorBody,
     RoleCreated,
     RoleCreatedData,
     RoleDeleted,
@@ -425,17 +472,21 @@ from workos.common.models import (
     SessionRevoked,
     SessionRevokedData,
     SessionRevokedDataImpersonator,
+    SignUp,
     SignUpNotAllowedOAuthErrorBody,
     SlowDownOAuthErrorBody,
     SmsChallengeQuotaReachedErrorBody,
     SmsChallengeRateLimitedErrorBody,
+    SmsSignIn,
     SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
+    StaleAccount,
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,
     TokenTooBigOAuthErrorBody,
     TooManyFailedVerificationAttemptsErrorBodyWithRetryAfter,
     TooManyRequestsOAuthErrorBody,
     UnauthorizedClientOAuthErrorBody,
     UnauthorizedErrorBody,
+    UnrecognizedDevice,
     UpdateAuditLogsRetentionWithRetentionPeriod,
     UpdateAuditLogsRetentionWithRetentionPeriodInDays,
     UpdateUserOrganizationMembershipWithRoleSlug,
@@ -582,10 +633,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_error_body_with_error_minimal_payload(self):
-        data = {
-            "error": "Bad Request",
-            "message": 'Claim "sub" is reserved and cannot be used.',
-        }
+        data = {"error": "Bad Request", "message": "Request could not be processed."}
         instance = ErrorBodyWithError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["error"] == data["error"]
@@ -604,6 +652,67 @@ class TestModelRoundTrip:
         instance = ErrorBody.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["message"] == data["message"]
+
+    def test_organization_selection_required_error_body_with_organizations_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_selection_required_error_body_with_organizations.json"
+        )
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_error_body_with_organizations_minimal_payload(
+        self,
+    ):
+        data = {
+            "code": "organization_selection_required",
+            "message": "Request could not be processed.",
+            "organizations": [
+                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+            ],
+        }
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganizations.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["organizations"] == data["organizations"]
+
+    def test_organization_selection_required_error_body_with_organization_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_selection_required_error_body_with_organization.json"
+        )
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_selection_required_error_body_with_organization_minimal_payload(
+        self,
+    ):
+        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+        instance = OrganizationSelectionRequiredErrorBodyWithOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
 
     def test_error_body_with_code_field_errors_round_trip(self):
         data = load_fixture("error_body_with_code_field_errors.json")
@@ -806,6 +915,39 @@ class TestModelRoundTrip:
         assert "code" not in serialized
         assert "statusCode" not in serialized
 
+    def test_error_body_with_code_errors_round_trip(self):
+        data = load_fixture("error_body_with_code_errors.json")
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ErrorBodyWithCodeErrors.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_body_with_code_errors_minimal_payload(self):
+        data = {
+            "code": "account_selection_required",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["errors"] == data["errors"]
+
+    def test_error_body_with_code_errors_round_trips_unknown_enum_values(self):
+        data = {
+            "code": "unexpected_error_body_with_code_errors_code",
+            "message": "Validation failed.",
+            "errors": [
+                {"code": "action_denied", "message": "Request could not be processed."}
+            ],
+        }
+        instance = ErrorBodyWithCodeErrors.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_connection_finish_error_body_round_trip(self):
         data = load_fixture("connection_finish_error_body.json")
         instance = ConnectionFinishErrorBody.from_dict(data)
@@ -992,39 +1134,6 @@ class TestModelRoundTrip:
         instance = ConnectionCreationConflictErrorBody.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_error_body_with_code_errors_round_trip(self):
-        data = load_fixture("error_body_with_code_errors.json")
-        instance = ErrorBodyWithCodeErrors.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ErrorBodyWithCodeErrors.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_error_body_with_code_errors_minimal_payload(self):
-        data = {
-            "code": "account_selection_required",
-            "message": "Validation failed.",
-            "errors": [
-                {"code": "action_denied", "message": "Request could not be processed."}
-            ],
-        }
-        instance = ErrorBodyWithCodeErrors.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["code"] == data["code"]
-        assert serialized["message"] == data["message"]
-        assert serialized["errors"] == data["errors"]
-
-    def test_error_body_with_code_errors_round_trips_unknown_enum_values(self):
-        data = {
-            "code": "unexpected_error_body_with_code_errors_code",
-            "message": "Validation failed.",
-            "errors": [
-                {"code": "action_denied", "message": "Request could not be processed."}
-            ],
-        }
-        instance = ErrorBodyWithCodeErrors.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_connected_account_import_error_body_round_trip(self):
         data = load_fixture("organization_connected_account_import_error_body.json")
         instance = OrganizationConnectedAccountImportErrorBody.from_dict(data)
@@ -1147,6 +1256,49 @@ class TestModelRoundTrip:
         assert serialized["message"] == data["message"]
         assert serialized["code"] == data["code"]
         assert serialized["role_slug"] == data["role_slug"]
+
+    def test_entity_not_found_error_body_with_ids_list_round_trip(self):
+        data = load_fixture("entity_not_found_error_body_with_ids_list.json")
+        instance = EntityNotFoundErrorBodyWithIdsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EntityNotFoundErrorBodyWithIdsList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_entity_not_found_error_body_with_ids_list_minimal_payload(self):
+        data = {
+            "code": "entities_not_found",
+            "message": "Request could not be processed.",
+            "ids": [
+                "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
+                "org_01E4ZCR3C56J083X43JQXF3JK5",
+            ],
+        }
+        instance = EntityNotFoundErrorBodyWithIdsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["ids"] == data["ids"]
+
+    def test_entity_not_found_error_body_with_entity_id_round_trip(self):
+        data = load_fixture("entity_not_found_error_body_with_entity_id.json")
+        instance = EntityNotFoundErrorBodyWithEntityId.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EntityNotFoundErrorBodyWithEntityId.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_entity_not_found_error_body_with_entity_id_minimal_payload(self):
+        data = {
+            "code": "entity_not_found",
+            "message": "Request could not be processed.",
+            "entity_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+        }
+        instance = EntityNotFoundErrorBodyWithEntityId.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+        assert serialized["entity_id"] == data["entity_id"]
 
     def test_email_completion_required_error_body_with_email_completion_token_round_trip(
         self,
@@ -1346,6 +1498,24 @@ class TestModelRoundTrip:
             "message": "Request could not be processed.",
         }
         instance = SmsChallengeQuotaReachedErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_role_assignment_update_overlap_error_body_round_trip(self):
+        data = load_fixture("role_assignment_update_overlap_error_body.json")
+        instance = RoleAssignmentUpdateOverlapErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleAssignmentUpdateOverlapErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_assignment_update_overlap_error_body_minimal_payload(self):
+        data = {
+            "code": "role_assignment_update_overlap",
+            "message": "Request could not be processed.",
+        }
+        instance = RoleAssignmentUpdateOverlapErrorBody.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
@@ -2534,6 +2704,24 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
+    def test_radar_sms_challenge_error_body_round_trip(self):
+        data = load_fixture("radar_sms_challenge_error_body.json")
+        instance = RadarSmsChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarSmsChallengeErrorBody.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_sms_challenge_error_body_minimal_payload(self):
+        data = {
+            "code": "radar_sms_challenge",
+            "message": "Request could not be processed.",
+        }
+        instance = RadarSmsChallengeErrorBody.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
     def test_radar_sms_sign_in_challenge_error_body_round_trip(self):
         data = load_fixture("radar_sms_sign_in_challenge_error_body.json")
         instance = RadarSmsSignInChallengeErrorBody.from_dict(data)
@@ -3443,6 +3631,10 @@ class TestModelRoundTrip:
                 "name": "Prospecting Agent",
                 "description": "Finds and qualifies sales prospects.",
                 "permissions": ["crm:read", "email:send"],
+                "scoped_permissions": [
+                    {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                    {"slug": "email:send", "instance_types": ["delegated"]},
+                ],
                 "invocable_by": {
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -3477,6 +3669,10 @@ class TestModelRoundTrip:
                 "name": "Prospecting Agent",
                 "description": "Finds and qualifies sales prospects.",
                 "permissions": ["crm:read", "email:send"],
+                "scoped_permissions": [
+                    {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                    {"slug": "email:send", "instance_types": ["delegated"]},
+                ],
                 "invocable_by": {
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -3537,12 +3733,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_agent_blueprint_created_data_preserves_nullable_fields(self):
+    def test_agent_blueprint_created_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
         data = {
             "object": "agent_blueprint",
             "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "name": "Prospecting Agent",
-            "description": None,
+            "description": "Finds and qualifies sales prospects.",
             "permissions": ["crm:read", "email:send"],
             "invocable_by": {
                 "role_slugs": ["manager"],
@@ -3559,7 +3757,50 @@ class TestModelRoundTrip:
         }
         instance = AgentBlueprintCreatedData.from_dict(data)
         serialized = instance.to_dict()
+        assert "scoped_permissions" not in serialized
+
+    def test_agent_blueprint_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "scoped_permissions": [
+                {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                {"slug": "email:send", "instance_types": ["delegated"]},
+            ],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintCreatedData.from_dict(data)
+        serialized = instance.to_dict()
         assert serialized["description"] is None
+
+    def test_agent_blueprint_created_data_scoped_permission_round_trip(self):
+        data = load_fixture("agent_blueprint_created_data_scoped_permission.json")
+        instance = AgentBlueprintCreatedDataScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintCreatedDataScopedPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_created_data_scoped_permission_minimal_payload(self):
+        data = {"slug": "email:send", "instance_types": ["delegated"]}
+        instance = AgentBlueprintCreatedDataScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+        assert serialized["instance_types"] == data["instance_types"]
 
     def test_agent_blueprint_created_data_invocable_by_round_trip(self):
         data = load_fixture("agent_blueprint_created_data_invocable_by.json")
@@ -3708,6 +3949,10 @@ class TestModelRoundTrip:
                 "name": "Prospecting Agent",
                 "description": "Finds and qualifies sales prospects.",
                 "permissions": ["crm:read", "email:send"],
+                "scoped_permissions": [
+                    {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                    {"slug": "email:send", "instance_types": ["delegated"]},
+                ],
                 "invocable_by": {
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -3742,6 +3987,10 @@ class TestModelRoundTrip:
                 "name": "Prospecting Agent",
                 "description": "Finds and qualifies sales prospects.",
                 "permissions": ["crm:read", "email:send"],
+                "scoped_permissions": [
+                    {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                    {"slug": "email:send", "instance_types": ["delegated"]},
+                ],
                 "invocable_by": {
                     "role_slugs": ["manager"],
                     "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -3802,12 +4051,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_agent_blueprint_updated_data_preserves_nullable_fields(self):
+    def test_agent_blueprint_updated_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
         data = {
             "object": "agent_blueprint",
             "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "name": "Prospecting Agent",
-            "description": None,
+            "description": "Finds and qualifies sales prospects.",
             "permissions": ["crm:read", "email:send"],
             "invocable_by": {
                 "role_slugs": ["manager"],
@@ -3824,7 +4075,50 @@ class TestModelRoundTrip:
         }
         instance = AgentBlueprintUpdatedData.from_dict(data)
         serialized = instance.to_dict()
+        assert "scoped_permissions" not in serialized
+
+    def test_agent_blueprint_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "agent_blueprint",
+            "id": "agent_blueprint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Prospecting Agent",
+            "description": None,
+            "permissions": ["crm:read", "email:send"],
+            "scoped_permissions": [
+                {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                {"slug": "email:send", "instance_types": ["delegated"]},
+            ],
+            "invocable_by": {
+                "role_slugs": ["manager"],
+                "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            },
+            "invocable_as": {"instance_types": ["delegated", "autonomous"]},
+            "session_settings": {
+                "max_age_seconds": 3600,
+                "access_token_ttl_seconds": 300,
+                "refresh_token_ttl_seconds": 3600,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AgentBlueprintUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
         assert serialized["description"] is None
+
+    def test_agent_blueprint_updated_data_scoped_permission_round_trip(self):
+        data = load_fixture("agent_blueprint_updated_data_scoped_permission.json")
+        instance = AgentBlueprintUpdatedDataScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintUpdatedDataScopedPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_updated_data_scoped_permission_minimal_payload(self):
+        data = {"slug": "email:send", "instance_types": ["delegated"]}
+        instance = AgentBlueprintUpdatedDataScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+        assert serialized["instance_types"] == data["instance_types"]
 
     def test_agent_blueprint_updated_data_invocable_by_round_trip(self):
         data = load_fixture("agent_blueprint_updated_data_invocable_by.json")
@@ -5561,6 +5855,219 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["expires_at"] is None
 
+    def test_application_token_exchange_failed_round_trip(self):
+        data = load_fixture("application_token_exchange_failed.json")
+        instance = ApplicationTokenExchangeFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationTokenExchangeFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_token_exchange_failed_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "application.token_exchange_failed",
+            "data": {
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "issuer": "https://example.okta.com",
+                "error": {
+                    "code": "invalid_grant",
+                    "message": "The assertion issuer is not trusted in this environment.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApplicationTokenExchangeFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_application_token_exchange_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "application.token_exchange_failed",
+            "data": {
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "issuer": "https://example.okta.com",
+                "error": {
+                    "code": "invalid_grant",
+                    "message": "The assertion issuer is not trusted in this environment.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApplicationTokenExchangeFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_application_token_exchange_failed_data_round_trip(self):
+        data = load_fixture("application_token_exchange_failed_data.json")
+        instance = ApplicationTokenExchangeFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationTokenExchangeFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_token_exchange_failed_data_minimal_payload(self):
+        data = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "issuer": None,
+            "error": {
+                "code": "invalid_grant",
+                "message": "The assertion issuer is not trusted in this environment.",
+            },
+        }
+        instance = ApplicationTokenExchangeFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["grant_type"] == data["grant_type"]
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["issuer"] == data["issuer"]
+        assert serialized["error"] == data["error"]
+
+    def test_application_token_exchange_failed_data_preserves_nullable_fields(self):
+        data = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "issuer": None,
+            "error": {
+                "code": "invalid_grant",
+                "message": "The assertion issuer is not trusted in this environment.",
+            },
+        }
+        instance = ApplicationTokenExchangeFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["issuer"] is None
+
+    def test_application_token_exchange_failed_data_error_round_trip(self):
+        data = load_fixture("application_token_exchange_failed_data_error.json")
+        instance = ApplicationTokenExchangeFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationTokenExchangeFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_token_exchange_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "invalid_grant",
+            "message": "The assertion issuer is not trusted in this environment.",
+        }
+        instance = ApplicationTokenExchangeFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_application_token_exchange_succeeded_round_trip(self):
+        data = load_fixture("application_token_exchange_succeeded.json")
+        instance = ApplicationTokenExchangeSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationTokenExchangeSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_token_exchange_succeeded_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "application.token_exchange_succeeded",
+            "data": {
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "issuer": "https://example.okta.com",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "jti": "01HXYZ123456789ABCDEFGHIJ",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApplicationTokenExchangeSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_application_token_exchange_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "application.token_exchange_succeeded",
+            "data": {
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "issuer": "https://example.okta.com",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "jti": "01HXYZ123456789ABCDEFGHIJ",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApplicationTokenExchangeSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_application_token_exchange_succeeded_data_round_trip(self):
+        data = load_fixture("application_token_exchange_succeeded_data.json")
+        instance = ApplicationTokenExchangeSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApplicationTokenExchangeSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_application_token_exchange_succeeded_data_minimal_payload(self):
+        data = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+            "organization_id": None,
+            "issuer": "https://example.okta.com",
+            "connection_id": None,
+            "jti": "01HXYZ123456789ABCDEFGHIJ",
+        }
+        instance = ApplicationTokenExchangeSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["grant_type"] == data["grant_type"]
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["issuer"] == data["issuer"]
+        assert serialized["connection_id"] == data["connection_id"]
+        assert serialized["jti"] == data["jti"]
+
+    def test_application_token_exchange_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+            "organization_id": None,
+            "issuer": "https://example.okta.com",
+            "connection_id": None,
+            "jti": "01HXYZ123456789ABCDEFGHIJ",
+        }
+        instance = ApplicationTokenExchangeSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["connection_id"] is None
+
     def test_authentication_email_verification_failed_round_trip(self):
         data = load_fixture("authentication_email_verification_failed.json")
         instance = AuthenticationEmailVerificationFailed.from_dict(data)
@@ -7037,8 +7544,8 @@ class TestModelRoundTrip:
             "data": {
                 "auth_method": "password",
                 "action": "signup",
-                "control": "block",
-                "blocklist_type": "ip",
+                "control": "bot_detection",
+                "blocklist_type": "ip_address",
                 "ip_address": "203.0.113.42",
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -7065,8 +7572,8 @@ class TestModelRoundTrip:
             "data": {
                 "auth_method": "password",
                 "action": "signup",
-                "control": "block",
-                "blocklist_type": "ip",
+                "control": "bot_detection",
+                "blocklist_type": "ip_address",
                 "ip_address": "203.0.113.42",
                 "user_agent": "Mozilla/5.0",
                 "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -7115,8 +7622,8 @@ class TestModelRoundTrip:
         data = {
             "auth_method": "password",
             "action": "signup",
-            "control": "block",
-            "blocklist_type": "ip",
+            "control": "bot_detection",
+            "blocklist_type": "ip_address",
             "ip_address": "203.0.113.42",
             "user_agent": "Mozilla/5.0",
             "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -7151,8 +7658,8 @@ class TestModelRoundTrip:
         data = {
             "auth_method": "password",
             "action": "unexpected_authentication_radar_risk_detected_data_action",
-            "control": "block",
-            "blocklist_type": "ip",
+            "control": "bot_detection",
+            "blocklist_type": "ip_address",
             "ip_address": "203.0.113.42",
             "user_agent": "Mozilla/5.0",
             "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
@@ -8675,6 +9182,161 @@ class TestModelRoundTrip:
             "expiry_date": "2026-01-15T12:00:00.000Z",
         }
         instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_saml_certificate_replaced_round_trip(self):
+        data = load_fixture("connection_saml_certificate_replaced.json")
+        instance = ConnectionSAMLCertificateReplaced.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateReplaced.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_replaced_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_replaced",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "RequestSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                    "previous_expiry_date": "2026-01-15T12:00:00.000Z",
+                },
+                "replaced_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplaced.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_connection_saml_certificate_replaced_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_replaced",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "RequestSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                    "previous_expiry_date": "2026-01-15T12:00:00.000Z",
+                },
+                "replaced_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplaced.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_saml_certificate_replaced_data_round_trip(self):
+        data = load_fixture("connection_saml_certificate_replaced_data.json")
+        instance = ConnectionSAMLCertificateReplacedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateReplacedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_replaced_data_minimal_payload(self):
+        data = {
+            "connection": {
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "certificate": {
+                "certificate_type": "RequestSigning",
+                "expiry_date": "2026-01-15T12:00:00.000Z",
+                "previous_expiry_date": "2026-01-15T12:00:00.000Z",
+            },
+            "replaced_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplacedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["connection"] == data["connection"]
+        assert serialized["certificate"] == data["certificate"]
+        assert serialized["replaced_at"] == data["replaced_at"]
+
+    def test_connection_saml_certificate_replaced_data_connection_round_trip(self):
+        data = load_fixture("connection_saml_certificate_replaced_data_connection.json")
+        instance = ConnectionSAMLCertificateReplacedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateReplacedDataConnection.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_replaced_data_connection_minimal_payload(self):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateReplacedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+
+    def test_connection_saml_certificate_replaced_data_connection_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateReplacedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_saml_certificate_replaced_data_certificate_round_trip(self):
+        data = load_fixture(
+            "connection_saml_certificate_replaced_data_certificate.json"
+        )
+        instance = ConnectionSAMLCertificateReplacedDataCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateReplacedDataCertificate.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_replaced_data_certificate_minimal_payload(
+        self,
+    ):
+        data = {
+            "certificate_type": "RequestSigning",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplacedDataCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["certificate_type"] == data["certificate_type"]
+        assert serialized["expiry_date"] == data["expiry_date"]
+
+    def test_connection_saml_certificate_replaced_data_certificate_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "certificate_type": "RequestSigning",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplacedDataCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert "previous_expiry_date" not in serialized
+
+    def test_connection_saml_certificate_replaced_data_certificate_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "certificate_type": "unexpected_connection_saml_certificate_replaced_data_certificate_certificate_type",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+            "previous_expiry_date": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateReplacedDataCertificate.from_dict(data)
         assert instance.to_dict() == data
 
     def test_dsync_activated_round_trip(self):
@@ -13607,6 +14269,168 @@ class TestModelRoundTrip:
         }
         instance = InvitationRevokedData.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_issuer_trust_created_round_trip(self):
+        data = load_fixture("issuer_trust_created.json")
+        instance = IssuerTrustCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = IssuerTrustCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_issuer_trust_created_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.created",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_issuer_trust_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.created",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_issuer_trust_deleted_round_trip(self):
+        data = load_fixture("issuer_trust_deleted.json")
+        instance = IssuerTrustDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = IssuerTrustDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_issuer_trust_deleted_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.deleted",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_issuer_trust_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.deleted",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_issuer_trust_updated_round_trip(self):
+        data = load_fixture("issuer_trust_updated.json")
+        instance = IssuerTrustUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = IssuerTrustUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_issuer_trust_updated_minimal_payload(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.updated",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_issuer_trust_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "issuer_trust.updated",
+            "data": {
+                "object": "issuer_trust",
+                "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+                "type": "claude",
+                "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+                "enabled": True,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = IssuerTrustUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
 
     def test_magic_auth_created_round_trip(self):
         data = load_fixture("magic_auth_created.json")
@@ -19790,6 +20614,868 @@ class TestModelRoundTrip:
         instance = DataIntegrationCredentialsResponseWithError.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_radar_detection_bot_detection_signal_round_trip(self):
+        data = load_fixture("radar_detection_bot_detection_signal.json")
+        instance = RadarDetectionBotDetectionSignal.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionBotDetectionSignal.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_bot_detection_signal_minimal_payload(self):
+        data = {"signal": "risky_ip"}
+        instance = RadarDetectionBotDetectionSignal.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["signal"] == data["signal"]
+
+    def test_radar_detection_bot_detection_signal_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"signal": "risky_ip"}
+        instance = RadarDetectionBotDetectionSignal.from_dict(data)
+        serialized = instance.to_dict()
+        assert "action" not in serialized
+
+    def test_radar_detection_bot_detection_signal_round_trips_unknown_enum_values(self):
+        data = {
+            "signal": "unexpected_radar_detection_bot_detection_signal_signal",
+            "action": "block",
+        }
+        instance = RadarDetectionBotDetectionSignal.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_radar_detection_ip_sign_ups_round_trip(self):
+        data = load_fixture("radar_detection_ip_sign_ups.json")
+        instance = RadarDetectionIpSignUps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionIpSignUps.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_ip_sign_ups_minimal_payload(self):
+        data = {"count": 6, "window_minutes": 5}
+        instance = RadarDetectionIpSignUps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["count"] == data["count"]
+        assert serialized["window_minutes"] == data["window_minutes"]
+
+    def test_radar_detection_domain_sign_ups_round_trip(self):
+        data = load_fixture("radar_detection_domain_sign_ups.json")
+        instance = RadarDetectionDomainSignUps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionDomainSignUps.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_domain_sign_ups_minimal_payload(self):
+        data = {"root_domain": "example.com"}
+        instance = RadarDetectionDomainSignUps.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["root_domain"] == data["root_domain"]
+
+    def test_radar_detection_domain_sign_ups_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"root_domain": "example.com"}
+        instance = RadarDetectionDomainSignUps.from_dict(data)
+        serialized = instance.to_dict()
+        assert "count" not in serialized
+
+    def test_radar_detection_bot_detection_details_round_trip(self):
+        data = load_fixture("radar_detection_bot_detection_details.json")
+        instance = RadarDetectionBotDetectionDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionBotDetectionDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_bot_detection_details_minimal_payload(self):
+        data = {"signals": [{"signal": "risky_ip", "action": "block"}]}
+        instance = RadarDetectionBotDetectionDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["signals"] == data["signals"]
+
+    def test_radar_detection_bot_detection_details_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"signals": [{"signal": "risky_ip", "action": "block"}]}
+        instance = RadarDetectionBotDetectionDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert "decided_by" not in serialized
+        assert "ip_risk" not in serialized
+        assert "email_pattern" not in serialized
+        assert "browser_signals" not in serialized
+        assert "ip_sign_ups" not in serialized
+        assert "domain_sign_ups" not in serialized
+
+    def test_radar_detection_bot_detection_details_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "signals": [{"signal": "risky_ip", "action": "block"}],
+            "decided_by": "unexpected_radar_detection_bot_detection_details_decided_by",
+            "ip_risk": ["abuser", "anonymous", "vpn", "tor", "proxy"],
+            "email_pattern": [
+                "generated_looking",
+                "repeated_format",
+                "suspicious_domain",
+            ],
+            "browser_signals": [
+                "automation_framework",
+                "headless_browser",
+                "tampered_signals",
+                "inconsistent_hardware",
+                "missing_signals",
+                "missing_expected_signals",
+            ],
+            "ip_sign_ups": {"count": 6, "window_minutes": 5},
+            "domain_sign_ups": {"root_domain": "example.com", "count": 44},
+        }
+        instance = RadarDetectionBotDetectionDetails.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_radar_detection_brute_force_attack_details_round_trip(self):
+        data = load_fixture("radar_detection_brute_force_attack_details.json")
+        instance = RadarDetectionBruteForceAttackDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionBruteForceAttackDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_brute_force_attack_details_minimal_payload(self):
+        data = {
+            "attempts": 11,
+            "window_minutes": 1,
+            "matched_on": "device_fingerprint_and_email",
+        }
+        instance = RadarDetectionBruteForceAttackDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["attempts"] == data["attempts"]
+        assert serialized["window_minutes"] == data["window_minutes"]
+        assert serialized["matched_on"] == data["matched_on"]
+
+    def test_radar_detection_brute_force_attack_details_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "attempts": 11,
+            "window_minutes": 1,
+            "matched_on": "unexpected_radar_detection_brute_force_attack_details_matched_on",
+        }
+        instance = RadarDetectionBruteForceAttackDetails.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_radar_detection_domain_protections_details_round_trip(self):
+        data = load_fixture("radar_detection_domain_protections_details.json")
+        instance = RadarDetectionDomainProtectionsDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionDomainProtectionsDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_domain_protections_details_minimal_payload(self):
+        data = {"list_id": "radar_list_01HZBC6N1EB1ZY7KG32X", "list": None}
+        instance = RadarDetectionDomainProtectionsDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["list_id"] == data["list_id"]
+        assert serialized["list"] == data["list"]
+
+    def test_radar_detection_domain_protections_details_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": {
+                "type": "domain",
+                "action": "block",
+                "name": "Disposable email domains",
+                "workos_managed": True,
+            },
+        }
+        instance = RadarDetectionDomainProtectionsDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert "also_matched_list_ids" not in serialized
+        assert "also_matched_lists" not in serialized
+        assert "matched_domain" not in serialized
+
+    def test_radar_detection_domain_protections_details_preserves_nullable_fields(self):
+        data = {
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": None,
+            "also_matched_list_ids": ["also_matched_list_ids_01234"],
+            "also_matched_lists": [
+                {
+                    "type": "domain",
+                    "action": "block",
+                    "name": "Disposable email domains",
+                    "workos_managed": True,
+                }
+            ],
+            "matched_domain": "example.com",
+        }
+        instance = RadarDetectionDomainProtectionsDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["list"] is None
+
+    def test_radar_detection_previous_attempt_round_trip(self):
+        data = load_fixture("radar_detection_previous_attempt.json")
+        instance = RadarDetectionPreviousAttempt.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionPreviousAttempt.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_previous_attempt_minimal_payload(self):
+        data = {
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "location": {"city": "San Francisco", "country": "US"},
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetectionPreviousAttempt.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["attempt_id"] == data["attempt_id"]
+        assert serialized["location"] == data["location"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_radar_detection_previous_attempt_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "user_agent": "Mozilla/5.0",
+            "location": {"city": "San Francisco", "country": "US"},
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetectionPreviousAttempt.from_dict(data)
+        serialized = instance.to_dict()
+        assert "ip_address" not in serialized
+
+    def test_radar_detection_previous_attempt_preserves_nullable_fields(self):
+        data = {
+            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+            "ip_address": "198.51.100.7",
+            "user_agent": None,
+            "location": {"city": "San Francisco", "country": "US"},
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RadarDetectionPreviousAttempt.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["user_agent"] is None
+
+    def test_radar_detection_impossible_travel_details_round_trip(self):
+        data = load_fixture("radar_detection_impossible_travel_details.json")
+        instance = RadarDetectionImpossibleTravelDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionImpossibleTravelDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_impossible_travel_details_minimal_payload(self):
+        data = {
+            "previous": {
+                "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+                "ip_address": "198.51.100.7",
+                "user_agent": "Mozilla/5.0",
+                "location": {"city": "San Francisco", "country": "US"},
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "distance_km": 8543,
+            "speed_km_per_s": 4.07,
+        }
+        instance = RadarDetectionImpossibleTravelDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["previous"] == data["previous"]
+        assert serialized["distance_km"] == data["distance_km"]
+        assert serialized["speed_km_per_s"] == data["speed_km_per_s"]
+
+    def test_radar_detection_repeat_sign_up_details_email_round_trip(self):
+        data = load_fixture("radar_detection_repeat_sign_up_details_email.json")
+        instance = RadarDetectionRepeatSignUpDetailsEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionRepeatSignUpDetailsEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_repeat_sign_up_details_email_minimal_payload(self):
+        data = {"matched_on": "email", "prior_sign_ups": 8, "window_days": 60}
+        instance = RadarDetectionRepeatSignUpDetailsEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["matched_on"] == data["matched_on"]
+        assert serialized["prior_sign_ups"] == data["prior_sign_ups"]
+        assert serialized["window_days"] == data["window_days"]
+
+    def test_normalized_email_round_trip(self):
+        data = load_fixture("normalized_email.json")
+        instance = NormalizedEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = NormalizedEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_normalized_email_minimal_payload(self):
+        data = {
+            "matched_on": "normalized_email",
+            "matched_user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+        }
+        instance = NormalizedEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["matched_on"] == data["matched_on"]
+        assert serialized["matched_user_id"] == data["matched_user_id"]
+
+    def test_radar_detection_stale_account_details_round_trip(self):
+        data = load_fixture("radar_detection_stale_account_details.json")
+        instance = RadarDetectionStaleAccountDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionStaleAccountDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_stale_account_details_minimal_payload(self):
+        data = {"last_activity_at": None}
+        instance = RadarDetectionStaleAccountDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_activity_at"] == data["last_activity_at"]
+
+    def test_radar_detection_stale_account_details_preserves_nullable_fields(self):
+        data = {"last_activity_at": None}
+        instance = RadarDetectionStaleAccountDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_activity_at"] is None
+
+    def test_radar_detection_unrecognized_device_details_round_trip(self):
+        data = load_fixture("radar_detection_unrecognized_device_details.json")
+        instance = RadarDetectionUnrecognizedDeviceDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionUnrecognizedDeviceDetails.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_unrecognized_device_details_minimal_payload(self):
+        data = {"previous_device": None}
+        instance = RadarDetectionUnrecognizedDeviceDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["previous_device"] == data["previous_device"]
+
+    def test_radar_detection_unrecognized_device_details_preserves_nullable_fields(
+        self,
+    ):
+        data = {"previous_device": None}
+        instance = RadarDetectionUnrecognizedDeviceDetails.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["previous_device"] is None
+
+    def test_radar_detection_restriction_details_list_round_trip(self):
+        data = load_fixture("radar_detection_restriction_details_list.json")
+        instance = RadarDetectionRestrictionDetailsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionRestrictionDetailsList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_restriction_details_list_minimal_payload(self):
+        data = {
+            "type": "list",
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": None,
+        }
+        instance = RadarDetectionRestrictionDetailsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["list_id"] == data["list_id"]
+        assert serialized["list"] == data["list"]
+
+    def test_radar_detection_restriction_details_list_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "type": "list",
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": {
+                "type": "domain",
+                "action": "block",
+                "name": "Disposable email domains",
+                "workos_managed": True,
+            },
+        }
+        instance = RadarDetectionRestrictionDetailsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert "entry" not in serialized
+
+    def test_radar_detection_restriction_details_list_preserves_nullable_fields(self):
+        data = {
+            "type": "list",
+            "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+            "list": None,
+            "entry": "example.com",
+        }
+        instance = RadarDetectionRestrictionDetailsList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["list"] is None
+
+    def test_blocked_tld_round_trip(self):
+        data = load_fixture("blocked_tld.json")
+        instance = BlockedTld.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = BlockedTld.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_blocked_tld_minimal_payload(self):
+        data = {"type": "blocked_tld"}
+        instance = BlockedTld.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+
+    def test_sign_up_round_trip(self):
+        data = load_fixture("sign_up.json")
+        instance = SignUp.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SignUp.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sign_up_minimal_payload(self):
+        data = {"type": "sign_up"}
+        instance = SignUp.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+
+    def test_sms_sign_in_round_trip(self):
+        data = load_fixture("sms_sign_in.json")
+        instance = SmsSignIn.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SmsSignIn.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_sms_sign_in_minimal_payload(self):
+        data = {"type": "sms_sign_in", "trigger": "country_mismatch"}
+        instance = SmsSignIn.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["trigger"] == data["trigger"]
+
+    def test_sms_sign_in_omits_absent_optional_non_nullable_fields(self):
+        data = {"type": "sms_sign_in", "trigger": "country_mismatch"}
+        instance = SmsSignIn.from_dict(data)
+        serialized = instance.to_dict()
+        assert "phone_country" not in serialized
+        assert "line_type" not in serialized
+        assert "masked_phone_number" not in serialized
+
+    def test_sms_sign_in_round_trips_unknown_enum_values(self):
+        data = {
+            "type": "sms_sign_in",
+            "trigger": "unexpected_sms_sign_in_trigger",
+            "phone_country": "US",
+            "line_type": "voip",
+            "masked_phone_number": "••••0123",
+        }
+        instance = SmsSignIn.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_bot_detection_round_trip(self):
+        data = load_fixture("bot_detection.json")
+        instance = BotDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = BotDetection.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_bot_detection_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "bot_detection",
+            "details": {
+                "signals": [{"signal": "risky_ip", "action": "block"}],
+                "decided_by": "risky_ip",
+                "ip_risk": ["abuser", "anonymous", "vpn", "tor", "proxy"],
+                "email_pattern": [
+                    "generated_looking",
+                    "repeated_format",
+                    "suspicious_domain",
+                ],
+                "browser_signals": [
+                    "automation_framework",
+                    "headless_browser",
+                    "tampered_signals",
+                    "inconsistent_hardware",
+                    "missing_signals",
+                    "missing_expected_signals",
+                ],
+                "ip_sign_ups": {"count": 6, "window_minutes": 5},
+                "domain_sign_ups": {"root_domain": "example.com", "count": 44},
+            },
+        }
+        instance = BotDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_bot_detection_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "bot_detection",
+            "details": {
+                "signals": [{"signal": "risky_ip", "action": "block"}],
+                "decided_by": "risky_ip",
+                "ip_risk": ["abuser", "anonymous", "vpn", "tor", "proxy"],
+                "email_pattern": [
+                    "generated_looking",
+                    "repeated_format",
+                    "suspicious_domain",
+                ],
+                "browser_signals": [
+                    "automation_framework",
+                    "headless_browser",
+                    "tampered_signals",
+                    "inconsistent_hardware",
+                    "missing_signals",
+                    "missing_expected_signals",
+                ],
+                "ip_sign_ups": {"count": 6, "window_minutes": 5},
+                "domain_sign_ups": {"root_domain": "example.com", "count": 44},
+            },
+        }
+        instance = BotDetection.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_brute_force_attack_round_trip(self):
+        data = load_fixture("brute_force_attack.json")
+        instance = BruteForceAttack.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = BruteForceAttack.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_brute_force_attack_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "brute_force_attack",
+            "details": {
+                "attempts": 11,
+                "window_minutes": 1,
+                "matched_on": "device_fingerprint_and_email",
+            },
+        }
+        instance = BruteForceAttack.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_brute_force_attack_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "brute_force_attack",
+            "details": {
+                "attempts": 11,
+                "window_minutes": 1,
+                "matched_on": "device_fingerprint_and_email",
+            },
+        }
+        instance = BruteForceAttack.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_domain_protections_round_trip(self):
+        data = load_fixture("domain_protections.json")
+        instance = DomainProtections.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DomainProtections.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_domain_protections_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "domain_protections",
+            "details": {
+                "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+                "list": {
+                    "type": "domain",
+                    "action": "block",
+                    "name": "Disposable email domains",
+                    "workos_managed": True,
+                },
+                "also_matched_list_ids": ["also_matched_list_ids_01234"],
+                "also_matched_lists": [
+                    {
+                        "type": "domain",
+                        "action": "block",
+                        "name": "Disposable email domains",
+                        "workos_managed": True,
+                    }
+                ],
+                "matched_domain": "example.com",
+            },
+        }
+        instance = DomainProtections.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_domain_protections_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "domain_protections",
+            "details": {
+                "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+                "list": {
+                    "type": "domain",
+                    "action": "block",
+                    "name": "Disposable email domains",
+                    "workos_managed": True,
+                },
+                "also_matched_list_ids": ["also_matched_list_ids_01234"],
+                "also_matched_lists": [
+                    {
+                        "type": "domain",
+                        "action": "block",
+                        "name": "Disposable email domains",
+                        "workos_managed": True,
+                    }
+                ],
+                "matched_domain": "example.com",
+            },
+        }
+        instance = DomainProtections.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_impossible_travel_round_trip(self):
+        data = load_fixture("impossible_travel.json")
+        instance = ImpossibleTravel.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ImpossibleTravel.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_impossible_travel_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "impossible_travel",
+            "details": {
+                "previous": {
+                    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+                    "ip_address": "198.51.100.7",
+                    "user_agent": "Mozilla/5.0",
+                    "location": {"city": "San Francisco", "country": "US"},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                },
+                "distance_km": 8543,
+                "speed_km_per_s": 4.07,
+            },
+        }
+        instance = ImpossibleTravel.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_impossible_travel_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "impossible_travel",
+            "details": {
+                "previous": {
+                    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+                    "ip_address": "198.51.100.7",
+                    "user_agent": "Mozilla/5.0",
+                    "location": {"city": "San Francisco", "country": "US"},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                },
+                "distance_km": 8543,
+                "speed_km_per_s": 4.07,
+            },
+        }
+        instance = ImpossibleTravel.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_repeat_sign_up_round_trip(self):
+        data = load_fixture("repeat_sign_up.json")
+        instance = RepeatSignUp.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RepeatSignUp.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_repeat_sign_up_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "repeat_sign_up",
+            "details": {"matched_on": "email", "prior_sign_ups": 8, "window_days": 60},
+        }
+        instance = RepeatSignUp.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_repeat_sign_up_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "repeat_sign_up",
+            "details": {"matched_on": "email", "prior_sign_ups": 8, "window_days": 60},
+        }
+        instance = RepeatSignUp.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_stale_account_round_trip(self):
+        data = load_fixture("stale_account.json")
+        instance = StaleAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = StaleAccount.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_stale_account_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "stale_account",
+            "details": {"last_activity_at": "2026-01-15T12:00:00.000Z"},
+        }
+        instance = StaleAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_stale_account_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "stale_account",
+            "details": {"last_activity_at": "2026-01-15T12:00:00.000Z"},
+        }
+        instance = StaleAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_unrecognized_device_round_trip(self):
+        data = load_fixture("unrecognized_device.json")
+        instance = UnrecognizedDevice.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UnrecognizedDevice.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_unrecognized_device_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "unrecognized_device",
+            "details": {
+                "previous_device": {
+                    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+                    "ip_address": "198.51.100.7",
+                    "user_agent": "Mozilla/5.0",
+                    "location": {"city": "San Francisco", "country": "US"},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                }
+            },
+        }
+        instance = UnrecognizedDevice.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_unrecognized_device_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "unrecognized_device",
+            "details": {
+                "previous_device": {
+                    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+                    "ip_address": "198.51.100.7",
+                    "user_agent": "Mozilla/5.0",
+                    "location": {"city": "San Francisco", "country": "US"},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                }
+            },
+        }
+        instance = UnrecognizedDevice.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_radar_detection_evidence_restriction_round_trip(self):
+        data = load_fixture("radar_detection_evidence_restriction.json")
+        instance = RadarDetectionEvidenceRestriction.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionEvidenceRestriction.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_evidence_restriction_minimal_payload(self):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "restriction",
+            "details": {
+                "type": "list",
+                "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+                "list": {
+                    "type": "domain",
+                    "action": "block",
+                    "name": "Disposable email domains",
+                    "workos_managed": True,
+                },
+                "entry": "example.com",
+            },
+        }
+        instance = RadarDetectionEvidenceRestriction.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["summary"] == data["summary"]
+        assert serialized["control"] == data["control"]
+        assert serialized["details"] == data["details"]
+
+    def test_radar_detection_evidence_restriction_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+            "control": "restriction",
+            "details": {
+                "type": "list",
+                "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+                "list": {
+                    "type": "domain",
+                    "action": "block",
+                    "name": "Disposable email domains",
+                    "workos_managed": True,
+                },
+                "entry": "example.com",
+            },
+        }
+        instance = RadarDetectionEvidenceRestriction.from_dict(data)
+        serialized = instance.to_dict()
+        assert "allowed_by" not in serialized
+
+    def test_radar_detection_previous_attempt_location_round_trip(self):
+        data = load_fixture("radar_detection_previous_attempt_location.json")
+        instance = RadarDetectionPreviousAttemptLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RadarDetectionPreviousAttemptLocation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_radar_detection_previous_attempt_location_minimal_payload(self):
+        data = {"city": None, "country": None}
+        instance = RadarDetectionPreviousAttemptLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["city"] == data["city"]
+        assert serialized["country"] == data["country"]
+
+    def test_radar_detection_previous_attempt_location_preserves_nullable_fields(self):
+        data = {"city": None, "country": None}
+        instance = RadarDetectionPreviousAttemptLocation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["city"] is None
+        assert serialized["country"] is None
+
     def test_event_context_google_analytics_session_round_trip(self):
         data = load_fixture("event_context_google_analytics_session.json")
         instance = EventContextGoogleAnalyticsSession.from_dict(data)
@@ -19855,3 +21541,59 @@ class TestModelRoundTrip:
         instance = SSORequiredOAuthErrorBodyWithConnectionIdsListEmail.from_dict(data)
         serialized = instance.to_dict()
         assert "pending_authentication_token" not in serialized
+
+
+class TestDiscriminatorDispatch:
+    def test_radar_detection_repeat_sign_up_details_dispatches_known_variant(self):
+        data = load_fixture("radar_detection_repeat_sign_up_details_email.json")
+        result = RadarDetectionRepeatSignUpDetails.from_dict(data)
+        assert isinstance(result, RadarDetectionRepeatSignUpDetailsEmail)
+
+    def test_radar_detection_repeat_sign_up_details_returns_unknown_for_unrecognized_type(
+        self,
+    ):
+        data = load_fixture("radar_detection_repeat_sign_up_details_email.json")
+        data = {**data, "matched_on": "future.unrecognized.type"}
+        result = RadarDetectionRepeatSignUpDetails.from_dict(data)
+        assert isinstance(result, RadarDetectionRepeatSignUpDetailsUnknown)
+        assert result.raw_data == data
+
+    def test_radar_detection_repeat_sign_up_details_raises_on_missing_discriminator(
+        self,
+    ):
+        data = load_fixture("radar_detection_repeat_sign_up_details_email.json")
+        data = {k: v for k, v in data.items() if k != "matched_on"}
+        with pytest.raises(Exception):
+            RadarDetectionRepeatSignUpDetails.from_dict(data)
+
+    def test_radar_detection_repeat_sign_up_details_raises_on_none_discriminator(self):
+        data = load_fixture("radar_detection_repeat_sign_up_details_email.json")
+        data = {**data, "matched_on": None}
+        with pytest.raises(Exception):
+            RadarDetectionRepeatSignUpDetails.from_dict(data)
+
+    def test_radar_detection_restriction_details_dispatches_known_variant(self):
+        data = load_fixture("blocked_tld.json")
+        result = RadarDetectionRestrictionDetails.from_dict(data)
+        assert isinstance(result, BlockedTld)
+
+    def test_radar_detection_restriction_details_returns_unknown_for_unrecognized_type(
+        self,
+    ):
+        data = load_fixture("blocked_tld.json")
+        data = {**data, "type": "future.unrecognized.type"}
+        result = RadarDetectionRestrictionDetails.from_dict(data)
+        assert isinstance(result, RadarDetectionRestrictionDetailsUnknown)
+        assert result.raw_data == data
+
+    def test_radar_detection_restriction_details_raises_on_missing_discriminator(self):
+        data = load_fixture("blocked_tld.json")
+        data = {k: v for k, v in data.items() if k != "type"}
+        with pytest.raises(Exception):
+            RadarDetectionRestrictionDetails.from_dict(data)
+
+    def test_radar_detection_restriction_details_raises_on_none_discriminator(self):
+        data = load_fixture("blocked_tld.json")
+        data = {**data, "type": None}
+        with pytest.raises(Exception):
+            RadarDetectionRestrictionDetails.from_dict(data)

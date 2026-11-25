@@ -8,12 +8,15 @@ from workos.agents.models import (
     AgentBlueprint,
     AgentBlueprintInvocableAs,
     AgentBlueprintInvocableBy,
+    AgentBlueprintScopedPermission,
     AgentBlueprintsCreateRequestInvocableAs,
     AgentBlueprintsCreateRequestInvocableBy,
+    AgentBlueprintsCreateRequestPermission,
     AgentBlueprintsCreateRequestSessionSetting,
     AgentBlueprintSessionSetting,
     AgentBlueprintsUpdateRequestInvocableAs,
     AgentBlueprintsUpdateRequestInvocableBy,
+    AgentBlueprintsUpdateRequestPermission,
     AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
     AgentInstance,
@@ -216,6 +219,10 @@ class TestModelRoundTrip:
             "name": "Prospecting Agent",
             "description": None,
             "permissions": ["crm:read", "email:send"],
+            "scoped_permissions": [
+                {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                {"slug": "email:send", "instance_types": ["delegated"]},
+            ],
             "invocable_by": {
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -236,6 +243,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["description"] == data["description"]
         assert serialized["permissions"] == data["permissions"]
+        assert serialized["scoped_permissions"] == data["scoped_permissions"]
         assert serialized["invocable_by"] == data["invocable_by"]
         assert serialized["invocable_as"] == data["invocable_as"]
         assert serialized["session_settings"] == data["session_settings"]
@@ -249,6 +257,10 @@ class TestModelRoundTrip:
             "name": "Prospecting Agent",
             "description": None,
             "permissions": ["crm:read", "email:send"],
+            "scoped_permissions": [
+                {"slug": "crm:read", "instance_types": ["delegated", "autonomous"]},
+                {"slug": "email:send", "instance_types": ["delegated"]},
+            ],
             "invocable_by": {
                 "role_slugs": ["manager"],
                 "organization_ids": ["org_01EHWNCE74X7JSDV0X3SZ3KJNY"],
@@ -467,6 +479,21 @@ class TestModelRoundTrip:
         instance = AgentInstanceSession.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_agent_blueprint_scoped_permission_round_trip(self):
+        data = load_fixture("agent_blueprint_scoped_permission.json")
+        instance = AgentBlueprintScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintScopedPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprint_scoped_permission_minimal_payload(self):
+        data = {"slug": "email:send", "instance_types": ["delegated"]}
+        instance = AgentBlueprintScopedPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+        assert serialized["instance_types"] == data["instance_types"]
+
     def test_agent_blueprint_invocable_by_round_trip(self):
         data = load_fixture("agent_blueprint_invocable_by.json")
         instance = AgentBlueprintInvocableBy.from_dict(data)
@@ -607,6 +634,21 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["claim_completion"] is None
 
+    def test_agent_blueprints_create_request_permission_round_trip(self):
+        data = load_fixture("agent_blueprints_create_request_permission.json")
+        instance = AgentBlueprintsCreateRequestPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsCreateRequestPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_create_request_permission_minimal_payload(self):
+        data = {"slug": "email:send", "instance_types": ["delegated"]}
+        instance = AgentBlueprintsCreateRequestPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+        assert serialized["instance_types"] == data["instance_types"]
+
     def test_agent_blueprints_create_request_invocable_by_round_trip(self):
         data = load_fixture("agent_blueprints_create_request_invocable_by.json")
         instance = AgentBlueprintsCreateRequestInvocableBy.from_dict(data)
@@ -673,6 +715,21 @@ class TestModelRoundTrip:
         assert (
             serialized["refresh_token_ttl_seconds"] == data["refresh_token_ttl_seconds"]
         )
+
+    def test_agent_blueprints_update_request_permission_round_trip(self):
+        data = load_fixture("agent_blueprints_update_request_permission.json")
+        instance = AgentBlueprintsUpdateRequestPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AgentBlueprintsUpdateRequestPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_agent_blueprints_update_request_permission_minimal_payload(self):
+        data = {"slug": "email:send", "instance_types": ["delegated"]}
+        instance = AgentBlueprintsUpdateRequestPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+        assert serialized["instance_types"] == data["instance_types"]
 
     def test_agent_blueprints_update_request_invocable_by_round_trip(self):
         data = load_fixture("agent_blueprints_update_request_invocable_by.json")

@@ -368,6 +368,15 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert body["role_slug"] == "test_role_slug"
 
+    def test_update_role_assignments(self, workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        workos.authorization.update_role_assignments("test_organization_membership_id")
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
+        assert request.url.path.endswith(
+            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
+        )
+
     def test_remove_role(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = workos.authorization.remove_role(
@@ -1448,6 +1457,18 @@ class TestAsyncAuthorization:
         assert result.id == "role_assignment_01HXYZ123456789ABCDEFGH"
         request = httpx_mock.get_request()
         assert request.method == "POST"
+        assert request.url.path.endswith(
+            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
+        )
+
+    @pytest.mark.asyncio
+    async def test_update_role_assignments(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={})
+        await async_workos.authorization.update_role_assignments(
+            "test_organization_membership_id"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "PATCH"
         assert request.url.path.endswith(
             "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
         )

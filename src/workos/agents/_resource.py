@@ -22,9 +22,11 @@ from .models import (
     AgentBlueprint,
     AgentBlueprintsCreateRequestInvocableAs,
     AgentBlueprintsCreateRequestInvocableBy,
+    AgentBlueprintsCreateRequestPermission,
     AgentBlueprintsCreateRequestSessionSetting,
     AgentBlueprintsUpdateRequestInvocableAs,
     AgentBlueprintsUpdateRequestInvocableBy,
+    AgentBlueprintsUpdateRequestPermission,
     AgentBlueprintsUpdateRequestSessionSetting,
     AgentCredentialValidation,
     AgentInstance,
@@ -93,7 +95,7 @@ class Agents:
         *,
         name: str,
         description: str | None = None,
-        permissions: list[str] | None = None,
+        permissions: list[AgentBlueprintsCreateRequestPermission | str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
         invocable_as: AgentBlueprintsCreateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
@@ -106,7 +108,7 @@ class Agents:
         Args:
             name: Human-readable name of the agent blueprint.
             description: Human-readable description of the agent blueprint.
-            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            permissions: Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.
             invocable_by: Who may mint sessions from this blueprint.
             invocable_as: How sessions may be minted from this blueprint.
             session_settings: Token and session lifetimes for sessions minted from this blueprint.
@@ -185,7 +187,7 @@ class Agents:
         *,
         name: str | None = None,
         description: str | None | NotGiven = NOT_GIVEN,
-        permissions: list[str] | None = None,
+        permissions: list[AgentBlueprintsUpdateRequestPermission | str] | None = None,
         invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
         invocable_as: AgentBlueprintsUpdateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
@@ -199,7 +201,7 @@ class Agents:
             agent_blueprint_id: The unique ID of the agent blueprint.
             name: Human-readable name of the agent blueprint.
             description: Human-readable description of the agent blueprint. Pass `null` to clear it.
-            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            permissions: Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.
             invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
             invocable_as: How sessions may be minted from this blueprint. Omitted lists are left unchanged.
             session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.
@@ -805,7 +807,7 @@ class AsyncAgents:
         *,
         name: str,
         description: str | None = None,
-        permissions: list[str] | None = None,
+        permissions: list[AgentBlueprintsCreateRequestPermission | str] | None = None,
         invocable_by: AgentBlueprintsCreateRequestInvocableBy | None = None,
         invocable_as: AgentBlueprintsCreateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsCreateRequestSessionSetting | None = None,
@@ -818,7 +820,7 @@ class AsyncAgents:
         Args:
             name: Human-readable name of the agent blueprint.
             description: Human-readable description of the agent blueprint.
-            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            permissions: Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.
             invocable_by: Who may mint sessions from this blueprint.
             invocable_as: How sessions may be minted from this blueprint.
             session_settings: Token and session lifetimes for sessions minted from this blueprint.
@@ -897,7 +899,7 @@ class AsyncAgents:
         *,
         name: str | None = None,
         description: str | None | NotGiven = NOT_GIVEN,
-        permissions: list[str] | None = None,
+        permissions: list[AgentBlueprintsUpdateRequestPermission | str] | None = None,
         invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None,
         invocable_as: AgentBlueprintsUpdateRequestInvocableAs | None = None,
         session_settings: AgentBlueprintsUpdateRequestSessionSetting | None = None,
@@ -911,7 +913,7 @@ class AsyncAgents:
             agent_blueprint_id: The unique ID of the agent blueprint.
             name: Human-readable name of the agent blueprint.
             description: Human-readable description of the agent blueprint. Pass `null` to clear it.
-            permissions: Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment.
+            permissions: Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once.
             invocable_by: Who may mint sessions from this blueprint. Omitted lists are left unchanged.
             invocable_as: How sessions may be minted from this blueprint. Omitted lists are left unchanged.
             session_settings: Token and session lifetimes for sessions minted from this blueprint. Omitted fields are left unchanged.

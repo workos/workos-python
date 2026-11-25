@@ -19,6 +19,9 @@ from .agent_blueprint_invocable_as import (
 from .agent_blueprint_invocable_by import (
     AgentBlueprintInvocableBy as AgentBlueprintInvocableBy,
 )
+from .agent_blueprint_scoped_permission import (
+    AgentBlueprintScopedPermission as AgentBlueprintScopedPermission,
+)
 from .agent_blueprint_session_setting import (
     AgentBlueprintSessionSetting as AgentBlueprintSessionSetting,
 )
@@ -30,6 +33,9 @@ from .agent_blueprints_create_request_invocable_as import (
 )
 from .agent_blueprints_create_request_invocable_by import (
     AgentBlueprintsCreateRequestInvocableBy as AgentBlueprintsCreateRequestInvocableBy,
+)
+from .agent_blueprints_create_request_permission import (
+    AgentBlueprintsCreateRequestPermission as AgentBlueprintsCreateRequestPermission,
 )
 from .agent_blueprints_create_request_session_setting import (
     AgentBlueprintsCreateRequestSessionSetting as AgentBlueprintsCreateRequestSessionSetting,
@@ -48,6 +54,9 @@ from .agent_blueprints_update_request_invocable_as import (
 )
 from .agent_blueprints_update_request_invocable_by import (
     AgentBlueprintsUpdateRequestInvocableBy as AgentBlueprintsUpdateRequestInvocableBy,
+)
+from .agent_blueprints_update_request_permission import (
+    AgentBlueprintsUpdateRequestPermission as AgentBlueprintsUpdateRequestPermission,
 )
 from .agent_blueprints_update_request_session_setting import (
     AgentBlueprintsUpdateRequestSessionSetting as AgentBlueprintsUpdateRequestSessionSetting,

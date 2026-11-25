@@ -2,8 +2,8 @@
 
 from typing import TypeAlias
 
-from workos.organizations.models.it_contact_list_list_metadata import (
-    ItContactListListMetadata,
+from workos.organizations_issuer_trusts.models.issuer_trust_list_list_metadata import (
+    IssuerTrustListListMetadata,
 )
 
-WaitlistListResponseListMetadata: TypeAlias = ItContactListListMetadata
+WaitlistListResponseListMetadata: TypeAlias = IssuerTrustListListMetadata

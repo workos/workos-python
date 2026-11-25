@@ -1,0 +1,9 @@
+{
+  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+  "issuer": "https://example.okta.com",
+  "error": {
+    "code": "invalid_grant",
+    "message": "The assertion issuer is not trusted in this environment."
+  }
+}

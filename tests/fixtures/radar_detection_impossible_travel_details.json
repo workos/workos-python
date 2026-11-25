@@ -1,0 +1,14 @@
+{
+  "previous": {
+    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+    "ip_address": "198.51.100.7",
+    "user_agent": "Mozilla/5.0",
+    "location": {
+      "city": "San Francisco",
+      "country": "US"
+    },
+    "created_at": "2026-01-15T12:00:00.000Z"
+  },
+  "distance_km": 8543,
+  "speed_km_per_s": 4.07
+}

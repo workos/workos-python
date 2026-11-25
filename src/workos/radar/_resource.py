@@ -19,6 +19,7 @@ from workos.common.models.radar_standalone_assess_request_auth_method import (
 
 from .._types import RequestOptions, enum_value
 from .models import (
+    RadarDetection,
     RadarListAction,
     RadarListType,
     RadarStandaloneResponse,
@@ -121,6 +122,36 @@ class Radar:
             method="put",
             path=("radar", "attempts", str(id)),
             body=body,
+            request_options=request_options,
+        )
+
+    def get_detection(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> RadarDetection:
+        """Get a Radar detection
+
+        Get a Radar detection from the last 30 days, including the evidence for why Radar fired.
+
+        Args:
+            id: The unique ID of the Radar detection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            RadarDetection
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=("radar", "detections", str(id)),
+            model=RadarDetection,
             request_options=request_options,
         )
 
@@ -294,6 +325,36 @@ class AsyncRadar:
             method="put",
             path=("radar", "attempts", str(id)),
             body=body,
+            request_options=request_options,
+        )
+
+    async def get_detection(
+        self,
+        id: str,
+        *,
+        request_options: RequestOptions | None = None,
+    ) -> RadarDetection:
+        """Get a Radar detection
+
+        Get a Radar detection from the last 30 days, including the evidence for why Radar fired.
+
+        Args:
+            id: The unique ID of the Radar detection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            RadarDetection
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=("radar", "detections", str(id)),
+            model=RadarDetection,
             request_options=request_options,
         )
 

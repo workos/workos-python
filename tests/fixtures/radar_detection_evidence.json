@@ -1,0 +1,51 @@
+{
+  "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+  "allowed_by": {
+    "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+    "list": {
+      "type": "domain",
+      "action": "block",
+      "name": "Disposable email domains",
+      "workos_managed": true
+    },
+    "entry": "example.com"
+  },
+  "control": "bot_detection",
+  "details": {
+    "signals": [
+      {
+        "signal": "risky_ip",
+        "action": "block"
+      }
+    ],
+    "decided_by": "risky_ip",
+    "ip_risk": [
+      "abuser",
+      "anonymous",
+      "vpn",
+      "tor",
+      "proxy"
+    ],
+    "email_pattern": [
+      "generated_looking",
+      "repeated_format",
+      "suspicious_domain"
+    ],
+    "browser_signals": [
+      "automation_framework",
+      "headless_browser",
+      "tampered_signals",
+      "inconsistent_hardware",
+      "missing_signals",
+      "missing_expected_signals"
+    ],
+    "ip_sign_ups": {
+      "count": 6,
+      "window_minutes": 5
+    },
+    "domain_sign_ups": {
+      "root_domain": "example.com",
+      "count": 44
+    }
+  }
+}

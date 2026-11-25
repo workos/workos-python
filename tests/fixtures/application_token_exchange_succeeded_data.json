@@ -1,0 +1,10 @@
+{
+  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+  "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+  "email": "user@example.com",
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "issuer": "https://example.okta.com",
+  "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+  "jti": "01HXYZ123456789ABCDEFGHIJ"
+}

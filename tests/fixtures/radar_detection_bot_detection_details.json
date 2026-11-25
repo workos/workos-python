@@ -1,0 +1,37 @@
+{
+  "signals": [
+    {
+      "signal": "risky_ip",
+      "action": "block"
+    }
+  ],
+  "decided_by": "risky_ip",
+  "ip_risk": [
+    "abuser",
+    "anonymous",
+    "vpn",
+    "tor",
+    "proxy"
+  ],
+  "email_pattern": [
+    "generated_looking",
+    "repeated_format",
+    "suspicious_domain"
+  ],
+  "browser_signals": [
+    "automation_framework",
+    "headless_browser",
+    "tampered_signals",
+    "inconsistent_hardware",
+    "missing_signals",
+    "missing_expected_signals"
+  ],
+  "ip_sign_ups": {
+    "count": 6,
+    "window_minutes": 5
+  },
+  "domain_sign_ups": {
+    "root_domain": "example.com",
+    "count": 44
+  }
+}

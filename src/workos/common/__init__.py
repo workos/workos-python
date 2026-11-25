@@ -36,6 +36,15 @@ from .models import (
     AgentBlueprintCreatedDataInvocableBy as AgentBlueprintCreatedDataInvocableBy,
 )
 from .models import (
+    AgentBlueprintCreatedDataScopedPermission as AgentBlueprintCreatedDataScopedPermission,
+)
+from .models import (
+    AgentBlueprintCreatedDataScopedPermissionInstanceTypes as AgentBlueprintCreatedDataScopedPermissionInstanceTypes,
+)
+from .models import (
+    AgentBlueprintCreatedDataScopedPermissionInstanceTypesLiteral as AgentBlueprintCreatedDataScopedPermissionInstanceTypesLiteral,
+)
+from .models import (
     AgentBlueprintCreatedDataSessionSetting as AgentBlueprintCreatedDataSessionSetting,
 )
 from .models import AgentBlueprintDeleted as AgentBlueprintDeleted
@@ -44,7 +53,25 @@ from .models import (
     AgentBlueprintInvocableAsInstanceTypes as AgentBlueprintInvocableAsInstanceTypes,
 )
 from .models import (
+    AgentBlueprintInvocableAsInstanceTypesLiteral as AgentBlueprintInvocableAsInstanceTypesLiteral,
+)
+from .models import (
+    AgentBlueprintScopedPermissionInstanceTypes as AgentBlueprintScopedPermissionInstanceTypes,
+)
+from .models import (
+    AgentBlueprintScopedPermissionInstanceTypesLiteral as AgentBlueprintScopedPermissionInstanceTypesLiteral,
+)
+from .models import (
     AgentBlueprintsCreateRequestInvocableAsInstanceTypes as AgentBlueprintsCreateRequestInvocableAsInstanceTypes,
+)
+from .models import (
+    AgentBlueprintsCreateRequestInvocableAsInstanceTypesLiteral as AgentBlueprintsCreateRequestInvocableAsInstanceTypesLiteral,
+)
+from .models import (
+    AgentBlueprintsCreateRequestPermissionInstanceTypes as AgentBlueprintsCreateRequestPermissionInstanceTypes,
+)
+from .models import (
+    AgentBlueprintsCreateRequestPermissionInstanceTypesLiteral as AgentBlueprintsCreateRequestPermissionInstanceTypesLiteral,
 )
 from .models import (
     AgentBlueprintsTokenMintTokenRequestType as AgentBlueprintsTokenMintTokenRequestType,
@@ -55,6 +82,15 @@ from .models import (
 from .models import (
     AgentBlueprintsUpdateRequestInvocableAsInstanceTypes as AgentBlueprintsUpdateRequestInvocableAsInstanceTypes,
 )
+from .models import (
+    AgentBlueprintsUpdateRequestInvocableAsInstanceTypesLiteral as AgentBlueprintsUpdateRequestInvocableAsInstanceTypesLiteral,
+)
+from .models import (
+    AgentBlueprintsUpdateRequestPermissionInstanceTypes as AgentBlueprintsUpdateRequestPermissionInstanceTypes,
+)
+from .models import (
+    AgentBlueprintsUpdateRequestPermissionInstanceTypesLiteral as AgentBlueprintsUpdateRequestPermissionInstanceTypesLiteral,
+)
 from .models import AgentBlueprintUpdated as AgentBlueprintUpdated
 from .models import AgentBlueprintUpdatedData as AgentBlueprintUpdatedData
 from .models import (
@@ -64,7 +100,19 @@ from .models import (
     AgentBlueprintUpdatedDataInvocableAsInstanceTypes as AgentBlueprintUpdatedDataInvocableAsInstanceTypes,
 )
 from .models import (
+    AgentBlueprintUpdatedDataInvocableAsInstanceTypesLiteral as AgentBlueprintUpdatedDataInvocableAsInstanceTypesLiteral,
+)
+from .models import (
     AgentBlueprintUpdatedDataInvocableBy as AgentBlueprintUpdatedDataInvocableBy,
+)
+from .models import (
+    AgentBlueprintUpdatedDataScopedPermission as AgentBlueprintUpdatedDataScopedPermission,
+)
+from .models import (
+    AgentBlueprintUpdatedDataScopedPermissionInstanceTypes as AgentBlueprintUpdatedDataScopedPermissionInstanceTypes,
+)
+from .models import (
+    AgentBlueprintUpdatedDataScopedPermissionInstanceTypesLiteral as AgentBlueprintUpdatedDataScopedPermissionInstanceTypesLiteral,
 )
 from .models import (
     AgentBlueprintUpdatedDataSessionSetting as AgentBlueprintUpdatedDataSessionSetting,
@@ -72,9 +120,15 @@ from .models import (
 from .models import AgentInstanceCreated as AgentInstanceCreated
 from .models import AgentInstanceCreatedData as AgentInstanceCreatedData
 from .models import AgentInstanceCreatedDataType as AgentInstanceCreatedDataType
+from .models import (
+    AgentInstanceCreatedDataTypeLiteral as AgentInstanceCreatedDataTypeLiteral,
+)
 from .models import AgentInstanceDeleted as AgentInstanceDeleted
 from .models import AgentInstanceDeletedData as AgentInstanceDeletedData
 from .models import AgentInstanceDeletedDataType as AgentInstanceDeletedDataType
+from .models import (
+    AgentInstanceDeletedDataTypeLiteral as AgentInstanceDeletedDataTypeLiteral,
+)
 from .models import AgentInstanceSessionCreated as AgentInstanceSessionCreated
 from .models import AgentInstanceSessionCreatedData as AgentInstanceSessionCreatedData
 from .models import AgentInstanceSessionRevoked as AgentInstanceSessionRevoked
@@ -84,6 +138,7 @@ from .models import (
     AgentInstanceSessionStatusLiteral as AgentInstanceSessionStatusLiteral,
 )
 from .models import AgentInstanceType as AgentInstanceType
+from .models import AgentInstanceTypeLiteral as AgentInstanceTypeLiteral
 from .models import (
     AgentRegistrationClaimAttemptCreated as AgentRegistrationClaimAttemptCreated,
 )
@@ -132,6 +187,7 @@ from .models import AgentRegistrationDeletedData as AgentRegistrationDeletedData
 from .models import AgentRegistrationExpired as AgentRegistrationExpired
 from .models import AgentRegistrationExpiredData as AgentRegistrationExpiredData
 from .models import AgentRegistrationKind as AgentRegistrationKind
+from .models import AgentRegistrationKindLiteral as AgentRegistrationKindLiteral
 from .models import (
     AgentRegistrationOrganizationSwitched as AgentRegistrationOrganizationSwitched,
 )
@@ -143,6 +199,7 @@ from .models import AgentRegistrationRefreshedData as AgentRegistrationRefreshed
 from .models import AgentRegistrationRevoked as AgentRegistrationRevoked
 from .models import AgentRegistrationRevokedData as AgentRegistrationRevokedData
 from .models import AgentRegistrationStatus as AgentRegistrationStatus
+from .models import AgentRegistrationStatusLiteral as AgentRegistrationStatusLiteral
 from .models import AlreadyClaimedErrorBody as AlreadyClaimedErrorBody
 from .models import ApiKeyCreated as ApiKeyCreated
 from .models import ApiKeyCreatedData as ApiKeyCreatedData
@@ -161,6 +218,19 @@ from .models import (
 )
 from .models import (
     ApplicationConsentRequiredErrorBody as ApplicationConsentRequiredErrorBody,
+)
+from .models import ApplicationTokenExchangeFailed as ApplicationTokenExchangeFailed
+from .models import (
+    ApplicationTokenExchangeFailedData as ApplicationTokenExchangeFailedData,
+)
+from .models import (
+    ApplicationTokenExchangeFailedDataError as ApplicationTokenExchangeFailedDataError,
+)
+from .models import (
+    ApplicationTokenExchangeSucceeded as ApplicationTokenExchangeSucceeded,
+)
+from .models import (
+    ApplicationTokenExchangeSucceededData as ApplicationTokenExchangeSucceededData,
 )
 from .models import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
@@ -220,6 +290,7 @@ from .models import (
 from .models import AuthenticationFactorSms as AuthenticationFactorSms
 from .models import AuthenticationFactorTotp as AuthenticationFactorTotp
 from .models import AuthenticationFactorType as AuthenticationFactorType
+from .models import AuthenticationFactorTypeLiteral as AuthenticationFactorTypeLiteral
 from .models import AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed
 from .models import (
     AuthenticationMagicAuthFailedData as AuthenticationMagicAuthFailedData,
@@ -323,7 +394,11 @@ from .models import (
 from .models import (
     AuthorizationUrlRequestErrorBodyCodeLiteral as AuthorizationUrlRequestErrorBodyCodeLiteral,
 )
+from .models import BlockedTld as BlockedTld
+from .models import BotDetection as BotDetection
+from .models import BruteForceAttack as BruteForceAttack
 from .models import ClaimViewResponseStatus as ClaimViewResponseStatus
+from .models import ClaimViewResponseStatusLiteral as ClaimViewResponseStatusLiteral
 from .models import (
     ClientCredentialsDataIntegrationVendedCredential as ClientCredentialsDataIntegrationVendedCredential,
 )
@@ -398,15 +473,30 @@ from .models import ConnectionDeactivatedData as ConnectionDeactivatedData
 from .models import (
     ConnectionDeactivatedDataConnectionType as ConnectionDeactivatedDataConnectionType,
 )
+from .models import (
+    ConnectionDeactivatedDataConnectionTypeLiteral as ConnectionDeactivatedDataConnectionTypeLiteral,
+)
 from .models import ConnectionDeactivatedDataDomain as ConnectionDeactivatedDataDomain
 from .models import ConnectionDeactivatedDataState as ConnectionDeactivatedDataState
+from .models import (
+    ConnectionDeactivatedDataStateLiteral as ConnectionDeactivatedDataStateLiteral,
+)
 from .models import ConnectionDeactivatedDataStatus as ConnectionDeactivatedDataStatus
+from .models import (
+    ConnectionDeactivatedDataStatusLiteral as ConnectionDeactivatedDataStatusLiteral,
+)
 from .models import ConnectionDeleted as ConnectionDeleted
 from .models import ConnectionDeletedData as ConnectionDeletedData
 from .models import (
     ConnectionDeletedDataConnectionType as ConnectionDeletedDataConnectionType,
 )
+from .models import (
+    ConnectionDeletedDataConnectionTypeLiteral as ConnectionDeletedDataConnectionTypeLiteral,
+)
 from .models import ConnectionDeletedDataState as ConnectionDeletedDataState
+from .models import (
+    ConnectionDeletedDataStateLiteral as ConnectionDeletedDataStateLiteral,
+)
 from .models import ConnectionFinishErrorBody as ConnectionFinishErrorBody
 from .models import ConnectionFinishErrorBodyCode as ConnectionFinishErrorBodyCode
 from .models import (
@@ -441,7 +531,28 @@ from .models import (
     ConnectionSAMLCertificateRenewedDataCertificateCertificateType as ConnectionSAMLCertificateRenewedDataCertificateCertificateType,
 )
 from .models import (
+    ConnectionSAMLCertificateRenewedDataCertificateCertificateTypeLiteral as ConnectionSAMLCertificateRenewedDataCertificateCertificateTypeLiteral,
+)
+from .models import (
     ConnectionSAMLCertificateRenewedDataConnection as ConnectionSAMLCertificateRenewedDataConnection,
+)
+from .models import (
+    ConnectionSAMLCertificateReplaced as ConnectionSAMLCertificateReplaced,
+)
+from .models import (
+    ConnectionSAMLCertificateReplacedData as ConnectionSAMLCertificateReplacedData,
+)
+from .models import (
+    ConnectionSAMLCertificateReplacedDataCertificate as ConnectionSAMLCertificateReplacedDataCertificate,
+)
+from .models import (
+    ConnectionSAMLCertificateReplacedDataCertificateCertificateType as ConnectionSAMLCertificateReplacedDataCertificateCertificateType,
+)
+from .models import (
+    ConnectionSAMLCertificateReplacedDataCertificateCertificateTypeLiteral as ConnectionSAMLCertificateReplacedDataCertificateCertificateTypeLiteral,
+)
+from .models import (
+    ConnectionSAMLCertificateReplacedDataConnection as ConnectionSAMLCertificateReplacedDataConnection,
 )
 from .models import ConnectionState as ConnectionState
 from .models import ConnectionStateLiteral as ConnectionStateLiteral
@@ -452,7 +563,11 @@ from .models import ConnectionTypeLiteral as ConnectionTypeLiteral
 from .models import (
     ConnectionTypeNotUpdatableErrorBody as ConnectionTypeNotUpdatableErrorBody,
 )
+from .models import CreateApplicationSecret as CreateApplicationSecret
 from .models import CreateConnectedAccountState as CreateConnectedAccountState
+from .models import (
+    CreateConnectedAccountStateLiteral as CreateConnectedAccountStateLiteral,
+)
 from .models import (
     CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm as CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm,
 )
@@ -466,6 +581,9 @@ from .models import (
     CreateConnectionOIDCOptionsTokenAuthenticationMethodLiteral as CreateConnectionOIDCOptionsTokenAuthenticationMethodLiteral,
 )
 from .models import CreateDataIntegrationAuthMethods as CreateDataIntegrationAuthMethods
+from .models import (
+    CreateDataIntegrationAuthMethodsLiteral as CreateDataIntegrationAuthMethodsLiteral,
+)
 from .models import CreateDataIntegrationOwnership as CreateDataIntegrationOwnership
 from .models import (
     CreateDataIntegrationOwnershipLiteral as CreateDataIntegrationOwnershipLiteral,
@@ -477,8 +595,17 @@ from .models import (
 from .models import (
     CreateOrganizationConnectedAccountState as CreateOrganizationConnectedAccountState,
 )
+from .models import (
+    CreateOrganizationConnectedAccountStateLiteral as CreateOrganizationConnectedAccountStateLiteral,
+)
 from .models import CreatePasswordResetTokenLocale as CreatePasswordResetTokenLocale
+from .models import (
+    CreatePasswordResetTokenLocaleLiteral as CreatePasswordResetTokenLocaleLiteral,
+)
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
+from .models import (
+    CreateUserInviteOptionsLocaleLiteral as CreateUserInviteOptionsLocaleLiteral,
+)
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import (
     CreateUserPasswordHashTypeLiteral as CreateUserPasswordHashTypeLiteral,
@@ -519,7 +646,13 @@ from .models import (
 from .models import (
     DataIntegrationAccessTokenResponseWithErrorError as DataIntegrationAccessTokenResponseWithErrorError,
 )
+from .models import (
+    DataIntegrationAccessTokenResponseWithErrorErrorLiteral as DataIntegrationAccessTokenResponseWithErrorErrorLiteral,
+)
 from .models import DataIntegrationAuthMethods as DataIntegrationAuthMethods
+from .models import (
+    DataIntegrationAuthMethodsLiteral as DataIntegrationAuthMethodsLiteral,
+)
 from .models import (
     DataIntegrationCredentialsCredentialsType as DataIntegrationCredentialsCredentialsType,
 )
@@ -530,7 +663,13 @@ from .models import (
     DataIntegrationCredentialsInputType as DataIntegrationCredentialsInputType,
 )
 from .models import (
+    DataIntegrationCredentialsInputTypeLiteral as DataIntegrationCredentialsInputTypeLiteral,
+)
+from .models import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
+)
+from .models import (
+    DataIntegrationCredentialsResponseErrorLiteral as DataIntegrationCredentialsResponseErrorLiteral,
 )
 from .models import (
     DataIntegrationCredentialsResponseWithCredential as DataIntegrationCredentialsResponseWithCredential,
@@ -541,6 +680,9 @@ from .models import (
 from .models import (
     DataIntegrationCredentialsResponseWithErrorError as DataIntegrationCredentialsResponseWithErrorError,
 )
+from .models import (
+    DataIntegrationCredentialsResponseWithErrorErrorLiteral as DataIntegrationCredentialsResponseWithErrorErrorLiteral,
+)
 from .models import DataIntegrationCredentialType as DataIntegrationCredentialType
 from .models import (
     DataIntegrationCredentialTypeLiteral as DataIntegrationCredentialTypeLiteral,
@@ -549,14 +691,27 @@ from .models import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
 )
 from .models import (
+    DataIntegrationCustomProviderAuthenticateViaLiteral as DataIntegrationCustomProviderAuthenticateViaLiteral,
+)
+from .models import (
     DataIntegrationInstallationConnectionRole as DataIntegrationInstallationConnectionRole,
 )
+from .models import (
+    DataIntegrationInstallationConnectionRoleLiteral as DataIntegrationInstallationConnectionRoleLiteral,
+)
 from .models import DataIntegrationOwnership as DataIntegrationOwnership
+from .models import DataIntegrationOwnershipLiteral as DataIntegrationOwnershipLiteral
 from .models import (
     DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
 )
 from .models import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwnerLiteral as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwnerLiteral,
+)
+from .models import (
     DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwnerLiteral as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwnerLiteral,
 )
 from .models import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent,
@@ -568,12 +723,21 @@ from .models import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
 )
 from .models import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral,
+)
+from .models import (
     DataIntegrationsGetUserTokenRequestConnectionOwner as DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsGetUserTokenRequestConnectionOwnerLiteral as DataIntegrationsGetUserTokenRequestConnectionOwnerLiteral,
 )
 from .models import DataIntegrationsListResponse as DataIntegrationsListResponse
 from .models import DataIntegrationsListResponseData as DataIntegrationsListResponseData
 from .models import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
+)
+from .models import (
+    DataIntegrationsListResponseDataAuthMethodsLiteral as DataIntegrationsListResponseDataAuthMethodsLiteral,
 )
 from .models import (
     DataIntegrationsListResponseDataConnectedAccount as DataIntegrationsListResponseDataConnectedAccount,
@@ -582,16 +746,28 @@ from .models import (
     DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
 from .models import (
+    DataIntegrationsListResponseDataConnectedAccountAuthMethodLiteral as DataIntegrationsListResponseDataConnectedAccountAuthMethodLiteral,
+)
+from .models import (
     DataIntegrationsListResponseDataConnectedAccountConnectionRole as DataIntegrationsListResponseDataConnectedAccountConnectionRole,
 )
 from .models import (
+    DataIntegrationsListResponseDataConnectedAccountConnectionRoleLiteral as DataIntegrationsListResponseDataConnectedAccountConnectionRoleLiteral,
+)
+from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
+)
+from .models import (
+    DataIntegrationsListResponseDataConnectedAccountStateLiteral as DataIntegrationsListResponseDataConnectedAccountStateLiteral,
 )
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountWarning as DataIntegrationsListResponseDataConnectedAccountWarning,
 )
 from .models import (
     DataIntegrationsListResponseDataConnectionOwner as DataIntegrationsListResponseDataConnectionOwner,
+)
+from .models import (
+    DataIntegrationsListResponseDataConnectionOwnerLiteral as DataIntegrationsListResponseDataConnectionOwnerLiteral,
 )
 from .models import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
@@ -605,14 +781,26 @@ from .models import (
     DataIntegrationsUpsertApiKeyRequestConnectionOwner as DataIntegrationsUpsertApiKeyRequestConnectionOwner,
 )
 from .models import (
+    DataIntegrationsUpsertApiKeyRequestConnectionOwnerLiteral as DataIntegrationsUpsertApiKeyRequestConnectionOwnerLiteral,
+)
+from .models import (
     DataIntegrationsUpsertClientCredentialsRequestConnectionOwner as DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
+)
+from .models import (
+    DataIntegrationsUpsertClientCredentialsRequestConnectionOwnerLiteral as DataIntegrationsUpsertClientCredentialsRequestConnectionOwnerLiteral,
 )
 from .models import (
     DataIntegrationsVendCredentialsRequestConnectionOwner as DataIntegrationsVendCredentialsRequestConnectionOwner,
 )
+from .models import (
+    DataIntegrationsVendCredentialsRequestConnectionOwnerLiteral as DataIntegrationsVendCredentialsRequestConnectionOwnerLiteral,
+)
 from .models import DataIntegrationVendedCredential as DataIntegrationVendedCredential
 from .models import (
     DataIntegrationVendedCredentialAuthMethod as DataIntegrationVendedCredentialAuthMethod,
+)
+from .models import (
+    DataIntegrationVendedCredentialAuthMethodLiteral as DataIntegrationVendedCredentialAuthMethodLiteral,
 )
 from .models import (
     DataIntegrationVendedCredentialUnknown as DataIntegrationVendedCredentialUnknown,
@@ -631,6 +819,10 @@ from .models import DirectoryUserEmail as DirectoryUserEmail
 from .models import DirectoryUserState as DirectoryUserState
 from .models import DirectoryUserStateLiteral as DirectoryUserStateLiteral
 from .models import DirectoryUserWithGroupsState as DirectoryUserWithGroupsState
+from .models import (
+    DirectoryUserWithGroupsStateLiteral as DirectoryUserWithGroupsStateLiteral,
+)
+from .models import DomainProtections as DomainProtections
 from .models import DsyncActivated as DsyncActivated
 from .models import DsyncActivatedData as DsyncActivatedData
 from .models import DsyncActivatedDataDomain as DsyncActivatedDataDomain
@@ -641,7 +833,9 @@ from .models import DsyncActivatedDataTypeLiteral as DsyncActivatedDataTypeLiter
 from .models import DsyncDeleted as DsyncDeleted
 from .models import DsyncDeletedData as DsyncDeletedData
 from .models import DsyncDeletedDataState as DsyncDeletedDataState
+from .models import DsyncDeletedDataStateLiteral as DsyncDeletedDataStateLiteral
 from .models import DsyncDeletedDataType as DsyncDeletedDataType
+from .models import DsyncDeletedDataTypeLiteral as DsyncDeletedDataTypeLiteral
 from .models import DsyncGroupCreated as DsyncGroupCreated
 from .models import DsyncGroupDeleted as DsyncGroupDeleted
 from .models import DsyncGroupUpdated as DsyncGroupUpdated
@@ -660,6 +854,7 @@ from .models import DsyncUserUpdated as DsyncUserUpdated
 from .models import DsyncUserUpdatedData as DsyncUserUpdatedData
 from .models import DsyncUserUpdatedDataEmail as DsyncUserUpdatedDataEmail
 from .models import DsyncUserUpdatedDataState as DsyncUserUpdatedDataState
+from .models import DsyncUserUpdatedDataStateLiteral as DsyncUserUpdatedDataStateLiteral
 from .models import EmailAlreadyInUseErrorBody as EmailAlreadyInUseErrorBody
 from .models import EmailAlreadyVerifiedErrorBody as EmailAlreadyVerifiedErrorBody
 from .models import EmailChangeNotAllowedErrorBody as EmailChangeNotAllowedErrorBody
@@ -679,6 +874,12 @@ from .models import (
     EmailVerificationRequiredErrorBody as EmailVerificationRequiredErrorBody,
 )
 from .models import EntityNotFoundErrorBody as EntityNotFoundErrorBody
+from .models import (
+    EntityNotFoundErrorBodyWithEntityId as EntityNotFoundErrorBodyWithEntityId,
+)
+from .models import (
+    EntityNotFoundErrorBodyWithIdsList as EntityNotFoundErrorBodyWithIdsList,
+)
 from .models import ErrorBody as ErrorBody
 from .models import ErrorBodyCode as ErrorBodyCode
 from .models import ErrorBodyCodeLiteral as ErrorBodyCodeLiteral
@@ -730,6 +931,9 @@ from .models import (
 from .models import (
     FeatureFlagsFlagCreatedContextActorSource as FeatureFlagsFlagCreatedContextActorSource,
 )
+from .models import (
+    FeatureFlagsFlagCreatedContextActorSourceLiteral as FeatureFlagsFlagCreatedContextActorSourceLiteral,
+)
 from .models import FeatureFlagsFlagCreatedData as FeatureFlagsFlagCreatedData
 from .models import FeatureFlagsFlagCreatedDataOwner as FeatureFlagsFlagCreatedDataOwner
 from .models import FeatureFlagsFlagDeleted as FeatureFlagsFlagDeleted
@@ -739,6 +943,9 @@ from .models import (
 )
 from .models import (
     FeatureFlagsFlagDeletedContextActorSource as FeatureFlagsFlagDeletedContextActorSource,
+)
+from .models import (
+    FeatureFlagsFlagDeletedContextActorSourceLiteral as FeatureFlagsFlagDeletedContextActorSourceLiteral,
 )
 from .models import FeatureFlagsFlagDeletedData as FeatureFlagsFlagDeletedData
 from .models import FeatureFlagsFlagDeletedDataOwner as FeatureFlagsFlagDeletedDataOwner
@@ -752,6 +959,9 @@ from .models import (
 from .models import (
     FeatureFlagsFlagRuleCreatedContextActorSource as FeatureFlagsFlagRuleCreatedContextActorSource,
 )
+from .models import (
+    FeatureFlagsFlagRuleCreatedContextActorSourceLiteral as FeatureFlagsFlagRuleCreatedContextActorSourceLiteral,
+)
 from .models import FeatureFlagsFlagRuleDeleted as FeatureFlagsFlagRuleDeleted
 from .models import (
     FeatureFlagsFlagRuleDeletedContext as FeatureFlagsFlagRuleDeletedContext,
@@ -762,6 +972,9 @@ from .models import (
 from .models import (
     FeatureFlagsFlagRuleDeletedContextActorSource as FeatureFlagsFlagRuleDeletedContextActorSource,
 )
+from .models import (
+    FeatureFlagsFlagRuleDeletedContextActorSourceLiteral as FeatureFlagsFlagRuleDeletedContextActorSourceLiteral,
+)
 from .models import FeatureFlagsFlagRuleUpdated as FeatureFlagsFlagRuleUpdated
 from .models import (
     FeatureFlagsFlagRuleUpdatedContext as FeatureFlagsFlagRuleUpdatedContext,
@@ -771,6 +984,9 @@ from .models import (
 )
 from .models import (
     FeatureFlagsFlagRuleUpdatedContextActorSource as FeatureFlagsFlagRuleUpdatedContextActorSource,
+)
+from .models import (
+    FeatureFlagsFlagRuleUpdatedContextActorSourceLiteral as FeatureFlagsFlagRuleUpdatedContextActorSourceLiteral,
 )
 from .models import (
     FeatureFlagsFlagRuleUpdatedContextPreviousAttribute as FeatureFlagsFlagRuleUpdatedContextPreviousAttribute,
@@ -788,6 +1004,9 @@ from .models import (
 from .models import (
     FeatureFlagsFlagTargetCreatedContextActorSource as FeatureFlagsFlagTargetCreatedContextActorSource,
 )
+from .models import (
+    FeatureFlagsFlagTargetCreatedContextActorSourceLiteral as FeatureFlagsFlagTargetCreatedContextActorSourceLiteral,
+)
 from .models import FeatureFlagsFlagTargetDeleted as FeatureFlagsFlagTargetDeleted
 from .models import (
     FeatureFlagsFlagTargetDeletedContext as FeatureFlagsFlagTargetDeletedContext,
@@ -798,6 +1017,9 @@ from .models import (
 from .models import (
     FeatureFlagsFlagTargetDeletedContextActorSource as FeatureFlagsFlagTargetDeletedContextActorSource,
 )
+from .models import (
+    FeatureFlagsFlagTargetDeletedContextActorSourceLiteral as FeatureFlagsFlagTargetDeletedContextActorSourceLiteral,
+)
 from .models import FeatureFlagsFlagUpdated as FeatureFlagsFlagUpdated
 from .models import FeatureFlagsFlagUpdatedContext as FeatureFlagsFlagUpdatedContext
 from .models import (
@@ -805,6 +1027,9 @@ from .models import (
 )
 from .models import (
     FeatureFlagsFlagUpdatedContextActorSource as FeatureFlagsFlagUpdatedContextActorSource,
+)
+from .models import (
+    FeatureFlagsFlagUpdatedContextActorSourceLiteral as FeatureFlagsFlagUpdatedContextActorSourceLiteral,
 )
 from .models import (
     FeatureFlagsFlagUpdatedContextPreviousAttribute as FeatureFlagsFlagUpdatedContextPreviousAttribute,
@@ -822,12 +1047,18 @@ from .models import FlagCreated as FlagCreated
 from .models import FlagCreatedContext as FlagCreatedContext
 from .models import FlagCreatedContextActor as FlagCreatedContextActor
 from .models import FlagCreatedContextActorSource as FlagCreatedContextActorSource
+from .models import (
+    FlagCreatedContextActorSourceLiteral as FlagCreatedContextActorSourceLiteral,
+)
 from .models import FlagCreatedData as FlagCreatedData
 from .models import FlagCreatedDataOwner as FlagCreatedDataOwner
 from .models import FlagDeleted as FlagDeleted
 from .models import FlagDeletedContext as FlagDeletedContext
 from .models import FlagDeletedContextActor as FlagDeletedContextActor
 from .models import FlagDeletedContextActorSource as FlagDeletedContextActorSource
+from .models import (
+    FlagDeletedContextActorSourceLiteral as FlagDeletedContextActorSourceLiteral,
+)
 from .models import FlagDeletedData as FlagDeletedData
 from .models import FlagDeletedDataOwner as FlagDeletedDataOwner
 from .models import FlagOwner as FlagOwner
@@ -841,6 +1072,9 @@ from .models import (
 from .models import FlagRuleUpdatedContextActor as FlagRuleUpdatedContextActor
 from .models import (
     FlagRuleUpdatedContextActorSource as FlagRuleUpdatedContextActorSource,
+)
+from .models import (
+    FlagRuleUpdatedContextActorSourceLiteral as FlagRuleUpdatedContextActorSourceLiteral,
 )
 from .models import (
     FlagRuleUpdatedContextConfiguredTarget as FlagRuleUpdatedContextConfiguredTarget,
@@ -859,6 +1093,9 @@ from .models import (
 )
 from .models import (
     FlagRuleUpdatedContextPreviousAttributeContextAccessType as FlagRuleUpdatedContextPreviousAttributeContextAccessType,
+)
+from .models import (
+    FlagRuleUpdatedContextPreviousAttributeContextAccessTypeLiteral as FlagRuleUpdatedContextPreviousAttributeContextAccessTypeLiteral,
 )
 from .models import (
     FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
@@ -882,6 +1119,9 @@ from .models import FlagUpdatedContext as FlagUpdatedContext
 from .models import FlagUpdatedContextActor as FlagUpdatedContextActor
 from .models import FlagUpdatedContextActorSource as FlagUpdatedContextActorSource
 from .models import (
+    FlagUpdatedContextActorSourceLiteral as FlagUpdatedContextActorSourceLiteral,
+)
+from .models import (
     FlagUpdatedContextPreviousAttribute as FlagUpdatedContextPreviousAttribute,
 )
 from .models import (
@@ -903,6 +1143,7 @@ from .models import GroupMemberRemoved as GroupMemberRemoved
 from .models import GroupMemberRemovedData as GroupMemberRemovedData
 from .models import GroupUpdated as GroupUpdated
 from .models import IdpMetadataFetchFailedErrorBody as IdpMetadataFetchFailedErrorBody
+from .models import ImpossibleTravel as ImpossibleTravel
 from .models import InvalidClientOAuthErrorBody as InvalidClientOAuthErrorBody
 from .models import InvalidConnectionOAuthErrorBody as InvalidConnectionOAuthErrorBody
 from .models import InvalidCredentialsErrorBody as InvalidCredentialsErrorBody
@@ -943,16 +1184,28 @@ from .models import (
 from .models import InvitationCreated as InvitationCreated
 from .models import InvitationCreatedData as InvitationCreatedData
 from .models import InvitationCreatedDataState as InvitationCreatedDataState
+from .models import (
+    InvitationCreatedDataStateLiteral as InvitationCreatedDataStateLiteral,
+)
 from .models import InvitationInvalidOAuthErrorBody as InvitationInvalidOAuthErrorBody
 from .models import InvitationResent as InvitationResent
 from .models import InvitationResentData as InvitationResentData
 from .models import InvitationResentDataState as InvitationResentDataState
+from .models import InvitationResentDataStateLiteral as InvitationResentDataStateLiteral
 from .models import InvitationRevoked as InvitationRevoked
 from .models import InvitationRevokedData as InvitationRevokedData
 from .models import InvitationRevokedDataState as InvitationRevokedDataState
+from .models import (
+    InvitationRevokedDataStateLiteral as InvitationRevokedDataStateLiteral,
+)
 from .models import InvitationState as InvitationState
+from .models import InvitationStateLiteral as InvitationStateLiteral
 from .models import InviteItContactIntents as InviteItContactIntents
 from .models import InviteItContactIntentsLiteral as InviteItContactIntentsLiteral
+from .models import IssuerTrust as IssuerTrust
+from .models import IssuerTrustCreated as IssuerTrustCreated
+from .models import IssuerTrustDeleted as IssuerTrustDeleted
+from .models import IssuerTrustUpdated as IssuerTrustUpdated
 from .models import ListMetadata as ListMetadata
 from .models import MagicAuthCreated as MagicAuthCreated
 from .models import MagicAuthCreatedData as MagicAuthCreatedData
@@ -963,6 +1216,7 @@ from .models import MultipleRolesNotEnabledErrorBody as MultipleRolesNotEnabledE
 from .models import (
     MustUseSSOForSelectedOrganizationMessageErrorBody as MustUseSSOForSelectedOrganizationMessageErrorBody,
 )
+from .models import NormalizedEmail as NormalizedEmail
 from .models import (
     OAuthDataIntegrationVendedCredential as OAuthDataIntegrationVendedCredential,
 )
@@ -989,6 +1243,9 @@ from .models import (
 from .models import (
     OrganizationConnectedAccountState as OrganizationConnectedAccountState,
 )
+from .models import (
+    OrganizationConnectedAccountStateLiteral as OrganizationConnectedAccountStateLiteral,
+)
 from .models import OrganizationCreated as OrganizationCreated
 from .models import OrganizationCreatedData as OrganizationCreatedData
 from .models import OrganizationCreatedDataDomain as OrganizationCreatedDataDomain
@@ -1011,7 +1268,13 @@ from .models import (
     OrganizationDeletedDataDomainState as OrganizationDeletedDataDomainState,
 )
 from .models import (
+    OrganizationDeletedDataDomainStateLiteral as OrganizationDeletedDataDomainStateLiteral,
+)
+from .models import (
     OrganizationDeletedDataDomainVerificationStrategy as OrganizationDeletedDataDomainVerificationStrategy,
+)
+from .models import (
+    OrganizationDeletedDataDomainVerificationStrategyLiteral as OrganizationDeletedDataDomainVerificationStrategyLiteral,
 )
 from .models import OrganizationDomain as OrganizationDomain
 from .models import OrganizationDomainCreated as OrganizationDomainCreated
@@ -1020,7 +1283,13 @@ from .models import (
     OrganizationDomainCreatedDataState as OrganizationDomainCreatedDataState,
 )
 from .models import (
+    OrganizationDomainCreatedDataStateLiteral as OrganizationDomainCreatedDataStateLiteral,
+)
+from .models import (
     OrganizationDomainCreatedDataVerificationStrategy as OrganizationDomainCreatedDataVerificationStrategy,
+)
+from .models import (
+    OrganizationDomainCreatedDataVerificationStrategyLiteral as OrganizationDomainCreatedDataVerificationStrategyLiteral,
 )
 from .models import OrganizationDomainDataState as OrganizationDomainDataState
 from .models import (
@@ -1032,16 +1301,29 @@ from .models import (
     OrganizationDomainDeletedDataState as OrganizationDomainDeletedDataState,
 )
 from .models import (
+    OrganizationDomainDeletedDataStateLiteral as OrganizationDomainDeletedDataStateLiteral,
+)
+from .models import (
     OrganizationDomainDeletedDataVerificationStrategy as OrganizationDomainDeletedDataVerificationStrategy,
 )
+from .models import (
+    OrganizationDomainDeletedDataVerificationStrategyLiteral as OrganizationDomainDeletedDataVerificationStrategyLiteral,
+)
 from .models import OrganizationDomainState as OrganizationDomainState
+from .models import OrganizationDomainStateLiteral as OrganizationDomainStateLiteral
 from .models import OrganizationDomainUpdated as OrganizationDomainUpdated
 from .models import OrganizationDomainUpdatedData as OrganizationDomainUpdatedData
 from .models import (
     OrganizationDomainUpdatedDataState as OrganizationDomainUpdatedDataState,
 )
 from .models import (
+    OrganizationDomainUpdatedDataStateLiteral as OrganizationDomainUpdatedDataStateLiteral,
+)
+from .models import (
     OrganizationDomainUpdatedDataVerificationStrategy as OrganizationDomainUpdatedDataVerificationStrategy,
+)
+from .models import (
+    OrganizationDomainUpdatedDataVerificationStrategyLiteral as OrganizationDomainUpdatedDataVerificationStrategyLiteral,
 )
 from .models import (
     OrganizationDomainVerificationFailed as OrganizationDomainVerificationFailed,
@@ -1056,7 +1338,13 @@ from .models import (
     OrganizationDomainVerificationFailedDataOrganizationDomainState as OrganizationDomainVerificationFailedDataOrganizationDomainState,
 )
 from .models import (
+    OrganizationDomainVerificationFailedDataOrganizationDomainStateLiteral as OrganizationDomainVerificationFailedDataOrganizationDomainStateLiteral,
+)
+from .models import (
     OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategy as OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategy,
+)
+from .models import (
+    OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategyLiteral as OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategyLiteral,
 )
 from .models import (
     OrganizationDomainVerificationFailedDataReason as OrganizationDomainVerificationFailedDataReason,
@@ -1067,13 +1355,22 @@ from .models import (
 from .models import (
     OrganizationDomainVerificationStrategy as OrganizationDomainVerificationStrategy,
 )
+from .models import (
+    OrganizationDomainVerificationStrategyLiteral as OrganizationDomainVerificationStrategyLiteral,
+)
 from .models import OrganizationDomainVerified as OrganizationDomainVerified
 from .models import OrganizationDomainVerifiedData as OrganizationDomainVerifiedData
 from .models import (
     OrganizationDomainVerifiedDataState as OrganizationDomainVerifiedDataState,
 )
 from .models import (
+    OrganizationDomainVerifiedDataStateLiteral as OrganizationDomainVerifiedDataStateLiteral,
+)
+from .models import (
     OrganizationDomainVerifiedDataVerificationStrategy as OrganizationDomainVerifiedDataVerificationStrategy,
+)
+from .models import (
+    OrganizationDomainVerifiedDataVerificationStrategyLiteral as OrganizationDomainVerifiedDataVerificationStrategyLiteral,
 )
 from .models import OrganizationMembershipCreated as OrganizationMembershipCreated
 from .models import (
@@ -1093,15 +1390,24 @@ from .models import (
     OrganizationMembershipDeletedDataStatus as OrganizationMembershipDeletedDataStatus,
 )
 from .models import (
+    OrganizationMembershipDeletedDataStatusLiteral as OrganizationMembershipDeletedDataStatusLiteral,
+)
+from .models import (
     OrganizationMembershipNotFoundOAuthErrorBody as OrganizationMembershipNotFoundOAuthErrorBody,
 )
 from .models import OrganizationMembershipStatus as OrganizationMembershipStatus
+from .models import (
+    OrganizationMembershipStatusLiteral as OrganizationMembershipStatusLiteral,
+)
 from .models import OrganizationMembershipUpdated as OrganizationMembershipUpdated
 from .models import (
     OrganizationMembershipUpdatedData as OrganizationMembershipUpdatedData,
 )
 from .models import (
     OrganizationMembershipUpdatedDataStatus as OrganizationMembershipUpdatedDataStatus,
+)
+from .models import (
+    OrganizationMembershipUpdatedDataStatusLiteral as OrganizationMembershipUpdatedDataStatusLiteral,
 )
 from .models import (
     OrganizationNotFoundOAuthErrorBody as OrganizationNotFoundOAuthErrorBody,
@@ -1128,7 +1434,13 @@ from .models import (
     OrganizationUpdatedDataDomainState as OrganizationUpdatedDataDomainState,
 )
 from .models import (
+    OrganizationUpdatedDataDomainStateLiteral as OrganizationUpdatedDataDomainStateLiteral,
+)
+from .models import (
     OrganizationUpdatedDataDomainVerificationStrategy as OrganizationUpdatedDataDomainVerificationStrategy,
+)
+from .models import (
+    OrganizationUpdatedDataDomainVerificationStrategyLiteral as OrganizationUpdatedDataDomainVerificationStrategyLiteral,
 )
 from .models import PaginationOrder as PaginationOrder
 from .models import PaginationOrderLiteral as PaginationOrderLiteral
@@ -1173,9 +1485,16 @@ from .models import PhoneNumberRequiredErrorBody as PhoneNumberRequiredErrorBody
 from .models import PipeConnectedAccount as PipeConnectedAccount
 from .models import PipeConnectedAccountAuthMethod as PipeConnectedAccountAuthMethod
 from .models import (
+    PipeConnectedAccountAuthMethodLiteral as PipeConnectedAccountAuthMethodLiteral,
+)
+from .models import (
     PipeConnectedAccountConnectionRole as PipeConnectedAccountConnectionRole,
 )
+from .models import (
+    PipeConnectedAccountConnectionRoleLiteral as PipeConnectedAccountConnectionRoleLiteral,
+)
 from .models import PipeConnectedAccountState as PipeConnectedAccountState
+from .models import PipeConnectedAccountStateLiteral as PipeConnectedAccountStateLiteral
 from .models import PipesAccountConnectionAddFailed as PipesAccountConnectionAddFailed
 from .models import (
     PipesAccountConnectionAddFailedData as PipesAccountConnectionAddFailedData,
@@ -1213,10 +1532,122 @@ from .models import ProfileConnectionTypeLiteral as ProfileConnectionTypeLiteral
 from .models import RadarChallengeCreated as RadarChallengeCreated
 from .models import RadarChallengeCreatedData as RadarChallengeCreatedData
 from .models import RadarChallengeErrorBody as RadarChallengeErrorBody
+from .models import RadarDetectionAction as RadarDetectionAction
+from .models import RadarDetectionActionLiteral as RadarDetectionActionLiteral
+from .models import RadarDetectionAllowedBy as RadarDetectionAllowedBy
+from .models import RadarDetectionAuthMethod as RadarDetectionAuthMethod
+from .models import RadarDetectionAuthMethodLiteral as RadarDetectionAuthMethodLiteral
+from .models import (
+    RadarDetectionBotDetectionDetails as RadarDetectionBotDetectionDetails,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsBrowserSignals as RadarDetectionBotDetectionDetailsBrowserSignals,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsBrowserSignalsLiteral as RadarDetectionBotDetectionDetailsBrowserSignalsLiteral,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsDecidedBy as RadarDetectionBotDetectionDetailsDecidedBy,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsDecidedByLiteral as RadarDetectionBotDetectionDetailsDecidedByLiteral,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsEmailPattern as RadarDetectionBotDetectionDetailsEmailPattern,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsEmailPatternLiteral as RadarDetectionBotDetectionDetailsEmailPatternLiteral,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsIpRisk as RadarDetectionBotDetectionDetailsIpRisk,
+)
+from .models import (
+    RadarDetectionBotDetectionDetailsIpRiskLiteral as RadarDetectionBotDetectionDetailsIpRiskLiteral,
+)
+from .models import RadarDetectionBotDetectionSignal as RadarDetectionBotDetectionSignal
+from .models import (
+    RadarDetectionBotDetectionSignalAction as RadarDetectionBotDetectionSignalAction,
+)
+from .models import (
+    RadarDetectionBotDetectionSignalActionLiteral as RadarDetectionBotDetectionSignalActionLiteral,
+)
+from .models import (
+    RadarDetectionBotDetectionSignalSignal as RadarDetectionBotDetectionSignalSignal,
+)
+from .models import (
+    RadarDetectionBotDetectionSignalSignalLiteral as RadarDetectionBotDetectionSignalSignalLiteral,
+)
+from .models import (
+    RadarDetectionBruteForceAttackDetails as RadarDetectionBruteForceAttackDetails,
+)
+from .models import (
+    RadarDetectionBruteForceAttackDetailsMatchedOn as RadarDetectionBruteForceAttackDetailsMatchedOn,
+)
+from .models import (
+    RadarDetectionBruteForceAttackDetailsMatchedOnLiteral as RadarDetectionBruteForceAttackDetailsMatchedOnLiteral,
+)
+from .models import RadarDetectionChallengeType as RadarDetectionChallengeType
+from .models import (
+    RadarDetectionChallengeTypeLiteral as RadarDetectionChallengeTypeLiteral,
+)
+from .models import RadarDetectionControl as RadarDetectionControl
+from .models import RadarDetectionControlLiteral as RadarDetectionControlLiteral
+from .models import (
+    RadarDetectionDomainProtectionsDetails as RadarDetectionDomainProtectionsDetails,
+)
+from .models import RadarDetectionDomainSignUps as RadarDetectionDomainSignUps
+from .models import (
+    RadarDetectionEvidenceRestriction as RadarDetectionEvidenceRestriction,
+)
+from .models import (
+    RadarDetectionImpossibleTravelDetails as RadarDetectionImpossibleTravelDetails,
+)
+from .models import RadarDetectionIpSignUps as RadarDetectionIpSignUps
+from .models import RadarDetectionList as RadarDetectionList
+from .models import RadarDetectionListAction as RadarDetectionListAction
+from .models import RadarDetectionListActionLiteral as RadarDetectionListActionLiteral
+from .models import RadarDetectionListType as RadarDetectionListType
+from .models import RadarDetectionListTypeLiteral as RadarDetectionListTypeLiteral
+from .models import RadarDetectionLocation as RadarDetectionLocation
+from .models import RadarDetectionPreviousAttempt as RadarDetectionPreviousAttempt
+from .models import (
+    RadarDetectionPreviousAttemptLocation as RadarDetectionPreviousAttemptLocation,
+)
+from .models import (
+    RadarDetectionRepeatSignUpDetails as RadarDetectionRepeatSignUpDetails,
+)
+from .models import (
+    RadarDetectionRepeatSignUpDetailsEmail as RadarDetectionRepeatSignUpDetailsEmail,
+)
+from .models import (
+    RadarDetectionRepeatSignUpDetailsUnknown as RadarDetectionRepeatSignUpDetailsUnknown,
+)
+from .models import (
+    RadarDetectionRepeatSignUpDetailsVariant as RadarDetectionRepeatSignUpDetailsVariant,
+)
+from .models import RadarDetectionRestrictionDetails as RadarDetectionRestrictionDetails
+from .models import (
+    RadarDetectionRestrictionDetailsList as RadarDetectionRestrictionDetailsList,
+)
+from .models import (
+    RadarDetectionRestrictionDetailsUnknown as RadarDetectionRestrictionDetailsUnknown,
+)
+from .models import (
+    RadarDetectionRestrictionDetailsVariant as RadarDetectionRestrictionDetailsVariant,
+)
+from .models import (
+    RadarDetectionStaleAccountDetails as RadarDetectionStaleAccountDetails,
+)
+from .models import (
+    RadarDetectionUnrecognizedDeviceDetails as RadarDetectionUnrecognizedDeviceDetails,
+)
+from .models import RadarDetectionVerdict as RadarDetectionVerdict
+from .models import RadarDetectionVerdictLiteral as RadarDetectionVerdictLiteral
 from .models import (
     RadarListEntryAlreadyPresentResponse as RadarListEntryAlreadyPresentResponse,
 )
 from .models import RadarSignUpChallengeErrorBody as RadarSignUpChallengeErrorBody
+from .models import RadarSmsChallengeErrorBody as RadarSmsChallengeErrorBody
 from .models import RadarSmsSignInChallengeErrorBody as RadarSmsSignInChallengeErrorBody
 from .models import (
     RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
@@ -1233,6 +1664,9 @@ from .models import (
 from .models import (
     RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType,
 )
+from .models import (
+    RadarStandaloneResponseBlocklistTypeLiteral as RadarStandaloneResponseBlocklistTypeLiteral,
+)
 from .models import RadarStandaloneResponseControl as RadarStandaloneResponseControl
 from .models import (
     RadarStandaloneResponseControlLiteral as RadarStandaloneResponseControlLiteral,
@@ -1244,7 +1678,11 @@ from .models import (
 from .models import (
     RateLimitExceededErrorBodyWithRetryAfter as RateLimitExceededErrorBodyWithRetryAfter,
 )
+from .models import RepeatSignUp as RepeatSignUp
 from .models import ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale
+from .models import (
+    ResendUserInviteOptionsLocaleLiteral as ResendUserInviteOptionsLocaleLiteral,
+)
 from .models import ResourceExportCompleted as ResourceExportCompleted
 from .models import ResourceExportCompletedData as ResourceExportCompletedData
 from .models import (
@@ -1258,15 +1696,27 @@ from .models import ResourceExportCreatedData as ResourceExportCreatedData
 from .models import (
     ResourceExportCreatedDataResourceType as ResourceExportCreatedDataResourceType,
 )
+from .models import (
+    ResourceExportCreatedDataResourceTypeLiteral as ResourceExportCreatedDataResourceTypeLiteral,
+)
 from .models import ResourceExportDownloaded as ResourceExportDownloaded
 from .models import ResourceExportDownloadedData as ResourceExportDownloadedData
 from .models import (
     ResourceExportDownloadedDataResourceType as ResourceExportDownloadedDataResourceType,
 )
+from .models import (
+    ResourceExportDownloadedDataResourceTypeLiteral as ResourceExportDownloadedDataResourceTypeLiteral,
+)
 from .models import ResourceExportFailed as ResourceExportFailed
 from .models import ResourceExportFailedData as ResourceExportFailedData
 from .models import (
     ResourceExportFailedDataResourceType as ResourceExportFailedDataResourceType,
+)
+from .models import (
+    ResourceExportFailedDataResourceTypeLiteral as ResourceExportFailedDataResourceTypeLiteral,
+)
+from .models import (
+    RoleAssignmentUpdateOverlapErrorBody as RoleAssignmentUpdateOverlapErrorBody,
 )
 from .models import RoleCreated as RoleCreated
 from .models import RoleCreatedData as RoleCreatedData
@@ -1277,7 +1727,11 @@ from .models import RoleTypeLiteral as RoleTypeLiteral
 from .models import RoleUpdated as RoleUpdated
 from .models import RoleUpdatedData as RoleUpdatedData
 from .models import SendEmailChangeLocale as SendEmailChangeLocale
+from .models import SendEmailChangeLocaleLiteral as SendEmailChangeLocaleLiteral
 from .models import SendVerificationEmailLocale as SendVerificationEmailLocale
+from .models import (
+    SendVerificationEmailLocaleLiteral as SendVerificationEmailLocaleLiteral,
+)
 from .models import SessionCreated as SessionCreated
 from .models import SessionCreatedData as SessionCreatedData
 from .models import SessionCreatedDataAuthMethod as SessionCreatedDataAuthMethod
@@ -1286,11 +1740,17 @@ from .models import (
 )
 from .models import SessionCreatedDataImpersonator as SessionCreatedDataImpersonator
 from .models import SessionCreatedDataStatus as SessionCreatedDataStatus
+from .models import SessionCreatedDataStatusLiteral as SessionCreatedDataStatusLiteral
 from .models import SessionRevoked as SessionRevoked
 from .models import SessionRevokedData as SessionRevokedData
 from .models import SessionRevokedDataAuthMethod as SessionRevokedDataAuthMethod
+from .models import (
+    SessionRevokedDataAuthMethodLiteral as SessionRevokedDataAuthMethodLiteral,
+)
 from .models import SessionRevokedDataImpersonator as SessionRevokedDataImpersonator
 from .models import SessionRevokedDataStatus as SessionRevokedDataStatus
+from .models import SessionRevokedDataStatusLiteral as SessionRevokedDataStatusLiteral
+from .models import SignUp as SignUp
 from .models import SignUpNotAllowedOAuthErrorBody as SignUpNotAllowedOAuthErrorBody
 from .models import SlimRole as SlimRole
 from .models import SlowDownOAuthErrorBody as SlowDownOAuthErrorBody
@@ -1298,9 +1758,13 @@ from .models import (
     SmsChallengeQuotaReachedErrorBody as SmsChallengeQuotaReachedErrorBody,
 )
 from .models import SmsChallengeRateLimitedErrorBody as SmsChallengeRateLimitedErrorBody
+from .models import SmsSignIn as SmsSignIn
+from .models import SmsSignInTrigger as SmsSignInTrigger
+from .models import SmsSignInTriggerLiteral as SmsSignInTriggerLiteral
 from .models import (
     SSORequiredOAuthErrorBodyWithConnectionIdsListEmail as SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
 )
+from .models import StaleAccount as StaleAccount
 from .models import (
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug as SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,
 )
@@ -1315,6 +1779,7 @@ from .models import (
 from .models import TooManyRequestsOAuthErrorBody as TooManyRequestsOAuthErrorBody
 from .models import UnauthorizedClientOAuthErrorBody as UnauthorizedClientOAuthErrorBody
 from .models import UnauthorizedErrorBody as UnauthorizedErrorBody
+from .models import UnrecognizedDevice as UnrecognizedDevice
 from .models import (
     UpdateAuditLogsRetentionRetentionPeriod as UpdateAuditLogsRetentionRetentionPeriod,
 )
@@ -1331,7 +1796,13 @@ from .models import (
     UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriod as UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriod,
 )
 from .models import (
+    UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriodLiteral as UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriodLiteral,
+)
+from .models import (
     UpdateCustomProviderDefinitionAuthenticateVia as UpdateCustomProviderDefinitionAuthenticateVia,
+)
+from .models import (
+    UpdateCustomProviderDefinitionAuthenticateViaLiteral as UpdateCustomProviderDefinitionAuthenticateViaLiteral,
 )
 from .models import (
     UpdateUserOrganizationMembershipWithRoleSlug as UpdateUserOrganizationMembershipWithRoleSlug,
@@ -1340,8 +1811,17 @@ from .models import (
     UpdateUserOrganizationMembershipWithRoleSlugs as UpdateUserOrganizationMembershipWithRoleSlugs,
 )
 from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
+from .models import (
+    UpdateUserPasswordHashTypeLiteral as UpdateUserPasswordHashTypeLiteral,
+)
 from .models import UpdateUserPasswordSaltPosition as UpdateUserPasswordSaltPosition
+from .models import (
+    UpdateUserPasswordSaltPositionLiteral as UpdateUserPasswordSaltPositionLiteral,
+)
 from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
+from .models import (
+    UpdateWebhookEndpointEventsLiteral as UpdateWebhookEndpointEventsLiteral,
+)
 from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
 from .models import (
     UpdateWebhookEndpointStatusLiteral as UpdateWebhookEndpointStatusLiteral,
@@ -1372,6 +1852,7 @@ from .models import (
     UserIdentitiesGetItemProviderLiteral as UserIdentitiesGetItemProviderLiteral,
 )
 from .models import UserInviteState as UserInviteState
+from .models import UserInviteStateLiteral as UserInviteStateLiteral
 from .models import UserMismatchErrorBody as UserMismatchErrorBody
 from .models import (
     UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
@@ -1379,15 +1860,23 @@ from .models import (
 from .models import (
     UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
 )
+from .models import (
+    UserOrganizationMembershipBaseListDataStatusLiteral as UserOrganizationMembershipBaseListDataStatusLiteral,
+)
 from .models import UserOrganizationMembershipStatus as UserOrganizationMembershipStatus
+from .models import (
+    UserOrganizationMembershipStatusLiteral as UserOrganizationMembershipStatusLiteral,
+)
 from .models import UserRoleAssignmentSourceType as UserRoleAssignmentSourceType
 from .models import (
     UserRoleAssignmentSourceTypeLiteral as UserRoleAssignmentSourceTypeLiteral,
 )
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .models import UserSessionsAuthMethodLiteral as UserSessionsAuthMethodLiteral
 from .models import UserSessionsImpersonator as UserSessionsImpersonator
 from .models import UserSessionsListItem as UserSessionsListItem
 from .models import UserSessionsStatus as UserSessionsStatus
+from .models import UserSessionsStatusLiteral as UserSessionsStatusLiteral
 from .models import UserUpdated as UserUpdated
 from .models import VaultByokKeyDeleted as VaultByokKeyDeleted
 from .models import VaultByokKeyDeletedData as VaultByokKeyDeletedData
@@ -1408,40 +1897,73 @@ from .models import (
 from .models import VaultDataDeleted as VaultDataDeleted
 from .models import VaultDataDeletedData as VaultDataDeletedData
 from .models import VaultDataDeletedDataActorSource as VaultDataDeletedDataActorSource
+from .models import (
+    VaultDataDeletedDataActorSourceLiteral as VaultDataDeletedDataActorSourceLiteral,
+)
 from .models import VaultDataRead as VaultDataRead
 from .models import VaultDataReadData as VaultDataReadData
 from .models import VaultDataReadDataActorSource as VaultDataReadDataActorSource
+from .models import (
+    VaultDataReadDataActorSourceLiteral as VaultDataReadDataActorSourceLiteral,
+)
 from .models import VaultDataUpdated as VaultDataUpdated
 from .models import VaultDataUpdatedData as VaultDataUpdatedData
 from .models import VaultDataUpdatedDataActorSource as VaultDataUpdatedDataActorSource
+from .models import (
+    VaultDataUpdatedDataActorSourceLiteral as VaultDataUpdatedDataActorSourceLiteral,
+)
 from .models import VaultDekDecrypted as VaultDekDecrypted
 from .models import VaultDekDecryptedData as VaultDekDecryptedData
 from .models import VaultDekDecryptedDataActorSource as VaultDekDecryptedDataActorSource
+from .models import (
+    VaultDekDecryptedDataActorSourceLiteral as VaultDekDecryptedDataActorSourceLiteral,
+)
 from .models import VaultDekRead as VaultDekRead
 from .models import VaultDekReadData as VaultDekReadData
 from .models import VaultDekReadDataActorSource as VaultDekReadDataActorSource
+from .models import (
+    VaultDekReadDataActorSourceLiteral as VaultDekReadDataActorSourceLiteral,
+)
 from .models import VaultDekRekeyed as VaultDekRekeyed
 from .models import VaultDekRekeyedData as VaultDekRekeyedData
 from .models import VaultDekRekeyedDataActorSource as VaultDekRekeyedDataActorSource
+from .models import (
+    VaultDekRekeyedDataActorSourceLiteral as VaultDekRekeyedDataActorSourceLiteral,
+)
 from .models import VaultKekCreated as VaultKekCreated
 from .models import VaultKekCreatedData as VaultKekCreatedData
 from .models import VaultKekCreatedDataActorSource as VaultKekCreatedDataActorSource
+from .models import (
+    VaultKekCreatedDataActorSourceLiteral as VaultKekCreatedDataActorSourceLiteral,
+)
 from .models import VaultKekDeleted as VaultKekDeleted
 from .models import VaultKekDeletedData as VaultKekDeletedData
 from .models import VaultKekDeletedDataActorSource as VaultKekDeletedDataActorSource
+from .models import (
+    VaultKekDeletedDataActorSourceLiteral as VaultKekDeletedDataActorSourceLiteral,
+)
 from .models import VaultMetadataRead as VaultMetadataRead
 from .models import VaultMetadataReadData as VaultMetadataReadData
 from .models import VaultMetadataReadDataActorSource as VaultMetadataReadDataActorSource
+from .models import (
+    VaultMetadataReadDataActorSourceLiteral as VaultMetadataReadDataActorSourceLiteral,
+)
 from .models import VaultNamesListed as VaultNamesListed
 from .models import VaultNamesListedData as VaultNamesListedData
 from .models import VaultNamesListedDataActorSource as VaultNamesListedDataActorSource
+from .models import (
+    VaultNamesListedDataActorSourceLiteral as VaultNamesListedDataActorSourceLiteral,
+)
 from .models import VerificationIdRequiredErrorBody as VerificationIdRequiredErrorBody
 from .models import WaitlistEntryState as WaitlistEntryState
+from .models import WaitlistEntryStateLiteral as WaitlistEntryStateLiteral
 from .models import WaitlistUser as WaitlistUser
 from .models import WaitlistUserApproved as WaitlistUserApproved
 from .models import WaitlistUserCreated as WaitlistUserCreated
 from .models import WaitlistUserDenied as WaitlistUserDenied
 from .models import WaitlistUserState as WaitlistUserState
+from .models import WaitlistUserStateLiteral as WaitlistUserStateLiteral
 from .models import WebhookEndpointStatus as WebhookEndpointStatus
+from .models import WebhookEndpointStatusLiteral as WebhookEndpointStatusLiteral
 from .models import WidgetSessionTokenScopes as WidgetSessionTokenScopes
 from .models import WidgetSessionTokenScopesLiteral as WidgetSessionTokenScopesLiteral

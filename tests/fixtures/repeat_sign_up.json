@@ -1,0 +1,19 @@
+{
+  "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+  "allowed_by": {
+    "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+    "list": {
+      "type": "domain",
+      "action": "block",
+      "name": "Disposable email domains",
+      "workos_managed": true
+    },
+    "entry": "example.com"
+  },
+  "control": "repeat_sign_up",
+  "details": {
+    "matched_on": "email",
+    "prior_sign_ups": 8,
+    "window_days": 60
+  }
+}

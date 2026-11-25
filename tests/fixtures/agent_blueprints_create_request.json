@@ -2,8 +2,19 @@
   "name": "Prospecting Agent",
   "description": "Finds and qualifies sales prospects.",
   "permissions": [
-    "crm:read",
-    "email:send"
+    {
+      "slug": "crm:read",
+      "instance_types": [
+        "delegated",
+        "autonomous"
+      ]
+    },
+    {
+      "slug": "email:send",
+      "instance_types": [
+        "delegated"
+      ]
+    }
   ],
   "invocable_by": {
     "role_slugs": [

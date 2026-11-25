@@ -13,6 +13,9 @@ from .agent_blueprints_update_request_invocable_as import (
 from .agent_blueprints_update_request_invocable_by import (
     AgentBlueprintsUpdateRequestInvocableBy,
 )
+from .agent_blueprints_update_request_permission import (
+    AgentBlueprintsUpdateRequestPermission,
+)
 from .agent_blueprints_update_request_session_setting import (
     AgentBlueprintsUpdateRequestSessionSetting,
 )
@@ -26,8 +29,8 @@ class AgentBlueprintsUpdateRequest:
     """Human-readable name of the agent blueprint."""
     description: str | None = None
     """Human-readable description of the agent blueprint. Pass `null` to clear it."""
-    permissions: list[str] | None = None
-    """Permission slugs forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment."""
+    permissions: list[AgentBlueprintsUpdateRequestPermission | str] | None = None
+    """Permissions forming the ceiling on what sessions minted from this blueprint may do. Each slug must exist in the environment and may appear once."""
     invocable_by: AgentBlueprintsUpdateRequestInvocableBy | None = None
     """Who may mint sessions from this blueprint. Omitted lists are left unchanged."""
     invocable_as: AgentBlueprintsUpdateRequestInvocableAs | None = None

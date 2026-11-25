@@ -55,12 +55,15 @@ class CreateWebhookEndpointEvents(str, Enum):
     API_KEY_CREATED = "api_key.created"
     API_KEY_REVOKED = "api_key.revoked"
     API_KEY_UPDATED = "api_key.updated"
+    APPLICATION_TOKEN_EXCHANGE_FAILED = "application.token_exchange_failed"
+    APPLICATION_TOKEN_EXCHANGE_SUCCEEDED = "application.token_exchange_succeeded"
     CONNECTION_ACTIVATED = "connection.activated"
     CONNECTION_DEACTIVATED = "connection.deactivated"
     CONNECTION_SAML_CERTIFICATE_RENEWAL_REQUIRED = (
         "connection.saml_certificate_renewal_required"
     )
     CONNECTION_SAML_CERTIFICATE_RENEWED = "connection.saml_certificate_renewed"
+    CONNECTION_SAML_CERTIFICATE_REPLACED = "connection.saml_certificate_replaced"
     CONNECTION_DELETED = "connection.deleted"
     DSYNC_ACTIVATED = "dsync.activated"
     DSYNC_DELETED = "dsync.deleted"
@@ -94,6 +97,9 @@ class CreateWebhookEndpointEvents(str, Enum):
     INVITATION_CREATED = "invitation.created"
     INVITATION_RESENT = "invitation.resent"
     INVITATION_REVOKED = "invitation.revoked"
+    ISSUER_TRUST_CREATED = "issuer_trust.created"
+    ISSUER_TRUST_DELETED = "issuer_trust.deleted"
+    ISSUER_TRUST_UPDATED = "issuer_trust.updated"
     MAGIC_AUTH_CREATED = "magic_auth.created"
     ORGANIZATION_CREATED = "organization.created"
     ORGANIZATION_DELETED = "organization.deleted"
@@ -190,10 +196,13 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "api_key.created",
     "api_key.revoked",
     "api_key.updated",
+    "application.token_exchange_failed",
+    "application.token_exchange_succeeded",
     "connection.activated",
     "connection.deactivated",
     "connection.saml_certificate_renewal_required",
     "connection.saml_certificate_renewed",
+    "connection.saml_certificate_replaced",
     "connection.deleted",
     "dsync.activated",
     "dsync.deleted",
@@ -227,6 +236,9 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "invitation.created",
     "invitation.resent",
     "invitation.revoked",
+    "issuer_trust.created",
+    "issuer_trust.deleted",
+    "issuer_trust.updated",
     "magic_auth.created",
     "organization.created",
     "organization.deleted",

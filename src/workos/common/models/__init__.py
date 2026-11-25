@@ -49,6 +49,15 @@ from .agent_blueprint_created_data_invocable_as_instance_types import (
 from .agent_blueprint_created_data_invocable_by import (
     AgentBlueprintCreatedDataInvocableBy as AgentBlueprintCreatedDataInvocableBy,
 )
+from .agent_blueprint_created_data_scoped_permission import (
+    AgentBlueprintCreatedDataScopedPermission as AgentBlueprintCreatedDataScopedPermission,
+)
+from .agent_blueprint_created_data_scoped_permission_instance_types import (
+    AgentBlueprintCreatedDataScopedPermissionInstanceTypes as AgentBlueprintCreatedDataScopedPermissionInstanceTypes,
+)
+from .agent_blueprint_created_data_scoped_permission_instance_types import (
+    AgentBlueprintCreatedDataScopedPermissionInstanceTypesLiteral as AgentBlueprintCreatedDataScopedPermissionInstanceTypesLiteral,
+)
 from .agent_blueprint_created_data_session_setting import (
     AgentBlueprintCreatedDataSessionSetting as AgentBlueprintCreatedDataSessionSetting,
 )
@@ -58,6 +67,15 @@ from .agent_blueprint_deleted_data import (
 )
 from .agent_blueprint_invocable_as_instance_types import (
     AgentBlueprintInvocableAsInstanceTypes as AgentBlueprintInvocableAsInstanceTypes,
+)
+from .agent_blueprint_invocable_as_instance_types import (
+    AgentBlueprintInvocableAsInstanceTypesLiteral as AgentBlueprintInvocableAsInstanceTypesLiteral,
+)
+from .agent_blueprint_scoped_permission_instance_types import (
+    AgentBlueprintScopedPermissionInstanceTypes as AgentBlueprintScopedPermissionInstanceTypes,
+)
+from .agent_blueprint_scoped_permission_instance_types import (
+    AgentBlueprintScopedPermissionInstanceTypesLiteral as AgentBlueprintScopedPermissionInstanceTypesLiteral,
 )
 from .agent_blueprint_updated import AgentBlueprintUpdated as AgentBlueprintUpdated
 from .agent_blueprint_updated_data import (
@@ -69,14 +87,35 @@ from .agent_blueprint_updated_data_invocable_as import (
 from .agent_blueprint_updated_data_invocable_as_instance_types import (
     AgentBlueprintUpdatedDataInvocableAsInstanceTypes as AgentBlueprintUpdatedDataInvocableAsInstanceTypes,
 )
+from .agent_blueprint_updated_data_invocable_as_instance_types import (
+    AgentBlueprintUpdatedDataInvocableAsInstanceTypesLiteral as AgentBlueprintUpdatedDataInvocableAsInstanceTypesLiteral,
+)
 from .agent_blueprint_updated_data_invocable_by import (
     AgentBlueprintUpdatedDataInvocableBy as AgentBlueprintUpdatedDataInvocableBy,
+)
+from .agent_blueprint_updated_data_scoped_permission import (
+    AgentBlueprintUpdatedDataScopedPermission as AgentBlueprintUpdatedDataScopedPermission,
+)
+from .agent_blueprint_updated_data_scoped_permission_instance_types import (
+    AgentBlueprintUpdatedDataScopedPermissionInstanceTypes as AgentBlueprintUpdatedDataScopedPermissionInstanceTypes,
+)
+from .agent_blueprint_updated_data_scoped_permission_instance_types import (
+    AgentBlueprintUpdatedDataScopedPermissionInstanceTypesLiteral as AgentBlueprintUpdatedDataScopedPermissionInstanceTypesLiteral,
 )
 from .agent_blueprint_updated_data_session_setting import (
     AgentBlueprintUpdatedDataSessionSetting as AgentBlueprintUpdatedDataSessionSetting,
 )
 from .agent_blueprints_create_request_invocable_as_instance_types import (
     AgentBlueprintsCreateRequestInvocableAsInstanceTypes as AgentBlueprintsCreateRequestInvocableAsInstanceTypes,
+)
+from .agent_blueprints_create_request_invocable_as_instance_types import (
+    AgentBlueprintsCreateRequestInvocableAsInstanceTypesLiteral as AgentBlueprintsCreateRequestInvocableAsInstanceTypesLiteral,
+)
+from .agent_blueprints_create_request_permission_instance_types import (
+    AgentBlueprintsCreateRequestPermissionInstanceTypes as AgentBlueprintsCreateRequestPermissionInstanceTypes,
+)
+from .agent_blueprints_create_request_permission_instance_types import (
+    AgentBlueprintsCreateRequestPermissionInstanceTypesLiteral as AgentBlueprintsCreateRequestPermissionInstanceTypesLiteral,
 )
 from .agent_blueprints_token_mint_token_request_type import (
     AgentBlueprintsTokenMintTokenRequestType as AgentBlueprintsTokenMintTokenRequestType,
@@ -87,6 +126,15 @@ from .agent_blueprints_token_mint_token_request_type import (
 from .agent_blueprints_update_request_invocable_as_instance_types import (
     AgentBlueprintsUpdateRequestInvocableAsInstanceTypes as AgentBlueprintsUpdateRequestInvocableAsInstanceTypes,
 )
+from .agent_blueprints_update_request_invocable_as_instance_types import (
+    AgentBlueprintsUpdateRequestInvocableAsInstanceTypesLiteral as AgentBlueprintsUpdateRequestInvocableAsInstanceTypesLiteral,
+)
+from .agent_blueprints_update_request_permission_instance_types import (
+    AgentBlueprintsUpdateRequestPermissionInstanceTypes as AgentBlueprintsUpdateRequestPermissionInstanceTypes,
+)
+from .agent_blueprints_update_request_permission_instance_types import (
+    AgentBlueprintsUpdateRequestPermissionInstanceTypesLiteral as AgentBlueprintsUpdateRequestPermissionInstanceTypesLiteral,
+)
 from .agent_instance_created import AgentInstanceCreated as AgentInstanceCreated
 from .agent_instance_created_data import (
     AgentInstanceCreatedData as AgentInstanceCreatedData,
@@ -94,12 +142,18 @@ from .agent_instance_created_data import (
 from .agent_instance_created_data_type import (
     AgentInstanceCreatedDataType as AgentInstanceCreatedDataType,
 )
+from .agent_instance_created_data_type import (
+    AgentInstanceCreatedDataTypeLiteral as AgentInstanceCreatedDataTypeLiteral,
+)
 from .agent_instance_deleted import AgentInstanceDeleted as AgentInstanceDeleted
 from .agent_instance_deleted_data import (
     AgentInstanceDeletedData as AgentInstanceDeletedData,
 )
 from .agent_instance_deleted_data_type import (
     AgentInstanceDeletedDataType as AgentInstanceDeletedDataType,
+)
+from .agent_instance_deleted_data_type import (
+    AgentInstanceDeletedDataTypeLiteral as AgentInstanceDeletedDataTypeLiteral,
 )
 from .agent_instance_session_created import (
     AgentInstanceSessionCreated as AgentInstanceSessionCreated,
@@ -120,6 +174,7 @@ from .agent_instance_session_status import (
     AgentInstanceSessionStatusLiteral as AgentInstanceSessionStatusLiteral,
 )
 from .agent_instance_type import AgentInstanceType as AgentInstanceType
+from .agent_instance_type import AgentInstanceTypeLiteral as AgentInstanceTypeLiteral
 from .agent_registration_claim_attempt_created import (
     AgentRegistrationClaimAttemptCreated as AgentRegistrationClaimAttemptCreated,
 )
@@ -184,6 +239,9 @@ from .agent_registration_expired_data import (
     AgentRegistrationExpiredData as AgentRegistrationExpiredData,
 )
 from .agent_registration_kind import AgentRegistrationKind as AgentRegistrationKind
+from .agent_registration_kind import (
+    AgentRegistrationKindLiteral as AgentRegistrationKindLiteral,
+)
 from .agent_registration_organization_switched import (
     AgentRegistrationOrganizationSwitched as AgentRegistrationOrganizationSwitched,
 )
@@ -205,6 +263,9 @@ from .agent_registration_revoked_data import (
 from .agent_registration_status import (
     AgentRegistrationStatus as AgentRegistrationStatus,
 )
+from .agent_registration_status import (
+    AgentRegistrationStatusLiteral as AgentRegistrationStatusLiteral,
+)
 from .already_claimed_error_body import (
     AlreadyClaimedErrorBody as AlreadyClaimedErrorBody,
 )
@@ -225,6 +286,21 @@ from .api_key_updated_data_previous_attribute import (
 )
 from .application_consent_required_error_body import (
     ApplicationConsentRequiredErrorBody as ApplicationConsentRequiredErrorBody,
+)
+from .application_token_exchange_failed import (
+    ApplicationTokenExchangeFailed as ApplicationTokenExchangeFailed,
+)
+from .application_token_exchange_failed_data import (
+    ApplicationTokenExchangeFailedData as ApplicationTokenExchangeFailedData,
+)
+from .application_token_exchange_failed_data_error import (
+    ApplicationTokenExchangeFailedDataError as ApplicationTokenExchangeFailedDataError,
+)
+from .application_token_exchange_succeeded import (
+    ApplicationTokenExchangeSucceeded as ApplicationTokenExchangeSucceeded,
+)
+from .application_token_exchange_succeeded_data import (
+    ApplicationTokenExchangeSucceededData as ApplicationTokenExchangeSucceededData,
 )
 from .audit_log_configuration_log_stream_state import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
@@ -303,6 +379,9 @@ from .authentication_factor_totp import (
 )
 from .authentication_factor_type import (
     AuthenticationFactorType as AuthenticationFactorType,
+)
+from .authentication_factor_type import (
+    AuthenticationFactorTypeLiteral as AuthenticationFactorTypeLiteral,
 )
 from .authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
@@ -473,8 +552,14 @@ from .authorization_url_request_error_body_code import (
 from .authorization_url_request_error_body_code import (
     AuthorizationUrlRequestErrorBodyCodeLiteral as AuthorizationUrlRequestErrorBodyCodeLiteral,
 )
+from .blocked_tld import BlockedTld as BlockedTld
+from .bot_detection import BotDetection as BotDetection
+from .brute_force_attack import BruteForceAttack as BruteForceAttack
 from .claim_view_response_status import (
     ClaimViewResponseStatus as ClaimViewResponseStatus,
+)
+from .claim_view_response_status import (
+    ClaimViewResponseStatusLiteral as ClaimViewResponseStatusLiteral,
 )
 from .client_credentials_data_integration_vended_credential import (
     ClientCredentialsDataIntegrationVendedCredential as ClientCredentialsDataIntegrationVendedCredential,
@@ -574,22 +659,37 @@ from .connection_deactivated_data import (
 from .connection_deactivated_data_connection_type import (
     ConnectionDeactivatedDataConnectionType as ConnectionDeactivatedDataConnectionType,
 )
+from .connection_deactivated_data_connection_type import (
+    ConnectionDeactivatedDataConnectionTypeLiteral as ConnectionDeactivatedDataConnectionTypeLiteral,
+)
 from .connection_deactivated_data_domain import (
     ConnectionDeactivatedDataDomain as ConnectionDeactivatedDataDomain,
 )
 from .connection_deactivated_data_state import (
     ConnectionDeactivatedDataState as ConnectionDeactivatedDataState,
 )
+from .connection_deactivated_data_state import (
+    ConnectionDeactivatedDataStateLiteral as ConnectionDeactivatedDataStateLiteral,
+)
 from .connection_deactivated_data_status import (
     ConnectionDeactivatedDataStatus as ConnectionDeactivatedDataStatus,
+)
+from .connection_deactivated_data_status import (
+    ConnectionDeactivatedDataStatusLiteral as ConnectionDeactivatedDataStatusLiteral,
 )
 from .connection_deleted import ConnectionDeleted as ConnectionDeleted
 from .connection_deleted_data import ConnectionDeletedData as ConnectionDeletedData
 from .connection_deleted_data_connection_type import (
     ConnectionDeletedDataConnectionType as ConnectionDeletedDataConnectionType,
 )
+from .connection_deleted_data_connection_type import (
+    ConnectionDeletedDataConnectionTypeLiteral as ConnectionDeletedDataConnectionTypeLiteral,
+)
 from .connection_deleted_data_state import (
     ConnectionDeletedDataState as ConnectionDeletedDataState,
+)
+from .connection_deleted_data_state import (
+    ConnectionDeletedDataStateLiteral as ConnectionDeletedDataStateLiteral,
 )
 from .connection_finish_error_body import (
     ConnectionFinishErrorBody as ConnectionFinishErrorBody,
@@ -630,8 +730,29 @@ from .connection_saml_certificate_renewed_data_certificate import (
 from .connection_saml_certificate_renewed_data_certificate_certificate_type import (
     ConnectionSAMLCertificateRenewedDataCertificateCertificateType as ConnectionSAMLCertificateRenewedDataCertificateCertificateType,
 )
+from .connection_saml_certificate_renewed_data_certificate_certificate_type import (
+    ConnectionSAMLCertificateRenewedDataCertificateCertificateTypeLiteral as ConnectionSAMLCertificateRenewedDataCertificateCertificateTypeLiteral,
+)
 from .connection_saml_certificate_renewed_data_connection import (
     ConnectionSAMLCertificateRenewedDataConnection as ConnectionSAMLCertificateRenewedDataConnection,
+)
+from .connection_saml_certificate_replaced import (
+    ConnectionSAMLCertificateReplaced as ConnectionSAMLCertificateReplaced,
+)
+from .connection_saml_certificate_replaced_data import (
+    ConnectionSAMLCertificateReplacedData as ConnectionSAMLCertificateReplacedData,
+)
+from .connection_saml_certificate_replaced_data_certificate import (
+    ConnectionSAMLCertificateReplacedDataCertificate as ConnectionSAMLCertificateReplacedDataCertificate,
+)
+from .connection_saml_certificate_replaced_data_certificate_certificate_type import (
+    ConnectionSAMLCertificateReplacedDataCertificateCertificateType as ConnectionSAMLCertificateReplacedDataCertificateCertificateType,
+)
+from .connection_saml_certificate_replaced_data_certificate_certificate_type import (
+    ConnectionSAMLCertificateReplacedDataCertificateCertificateTypeLiteral as ConnectionSAMLCertificateReplacedDataCertificateCertificateTypeLiteral,
+)
+from .connection_saml_certificate_replaced_data_connection import (
+    ConnectionSAMLCertificateReplacedDataConnection as ConnectionSAMLCertificateReplacedDataConnection,
 )
 from .connection_state import ConnectionState as ConnectionState
 from .connection_state import ConnectionStateLiteral as ConnectionStateLiteral
@@ -642,8 +763,14 @@ from .connection_type import ConnectionTypeLiteral as ConnectionTypeLiteral
 from .connection_type_not_updatable_error_body import (
     ConnectionTypeNotUpdatableErrorBody as ConnectionTypeNotUpdatableErrorBody,
 )
+from .create_application_secret import (
+    CreateApplicationSecret as CreateApplicationSecret,
+)
 from .create_connected_account_state import (
     CreateConnectedAccountState as CreateConnectedAccountState,
+)
+from .create_connected_account_state import (
+    CreateConnectedAccountStateLiteral as CreateConnectedAccountStateLiteral,
 )
 from .create_connection_oidc_options_id_token_signature_algorithm import (
     CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm as CreateConnectionOIDCOptionsIdTokenSignatureAlgorithm,
@@ -660,6 +787,9 @@ from .create_connection_oidc_options_token_authentication_method import (
 from .create_data_integration_auth_methods import (
     CreateDataIntegrationAuthMethods as CreateDataIntegrationAuthMethods,
 )
+from .create_data_integration_auth_methods import (
+    CreateDataIntegrationAuthMethodsLiteral as CreateDataIntegrationAuthMethodsLiteral,
+)
 from .create_data_integration_ownership import (
     CreateDataIntegrationOwnership as CreateDataIntegrationOwnership,
 )
@@ -675,11 +805,20 @@ from .create_magic_code_and_return_locale import (
 from .create_organization_connected_account_state import (
     CreateOrganizationConnectedAccountState as CreateOrganizationConnectedAccountState,
 )
+from .create_organization_connected_account_state import (
+    CreateOrganizationConnectedAccountStateLiteral as CreateOrganizationConnectedAccountStateLiteral,
+)
 from .create_password_reset_token_locale import (
     CreatePasswordResetTokenLocale as CreatePasswordResetTokenLocale,
 )
+from .create_password_reset_token_locale import (
+    CreatePasswordResetTokenLocaleLiteral as CreatePasswordResetTokenLocaleLiteral,
+)
 from .create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale,
+)
+from .create_user_invite_options_locale import (
+    CreateUserInviteOptionsLocaleLiteral as CreateUserInviteOptionsLocaleLiteral,
 )
 from .create_user_password_hash_type import (
     CreateUserPasswordHashType as CreateUserPasswordHashType,
@@ -729,8 +868,14 @@ from .data_integration_access_token_response_with_error import (
 from .data_integration_access_token_response_with_error_error import (
     DataIntegrationAccessTokenResponseWithErrorError as DataIntegrationAccessTokenResponseWithErrorError,
 )
+from .data_integration_access_token_response_with_error_error import (
+    DataIntegrationAccessTokenResponseWithErrorErrorLiteral as DataIntegrationAccessTokenResponseWithErrorErrorLiteral,
+)
 from .data_integration_auth_methods import (
     DataIntegrationAuthMethods as DataIntegrationAuthMethods,
+)
+from .data_integration_auth_methods import (
+    DataIntegrationAuthMethodsLiteral as DataIntegrationAuthMethodsLiteral,
 )
 from .data_integration_credential_type import (
     DataIntegrationCredentialType as DataIntegrationCredentialType,
@@ -747,8 +892,14 @@ from .data_integration_credentials_credentials_type import (
 from .data_integration_credentials_input_type import (
     DataIntegrationCredentialsInputType as DataIntegrationCredentialsInputType,
 )
+from .data_integration_credentials_input_type import (
+    DataIntegrationCredentialsInputTypeLiteral as DataIntegrationCredentialsInputTypeLiteral,
+)
 from .data_integration_credentials_response_error import (
     DataIntegrationCredentialsResponseError as DataIntegrationCredentialsResponseError,
+)
+from .data_integration_credentials_response_error import (
+    DataIntegrationCredentialsResponseErrorLiteral as DataIntegrationCredentialsResponseErrorLiteral,
 )
 from .data_integration_credentials_response_with_credential import (
     DataIntegrationCredentialsResponseWithCredential as DataIntegrationCredentialsResponseWithCredential,
@@ -759,14 +910,26 @@ from .data_integration_credentials_response_with_error import (
 from .data_integration_credentials_response_with_error_error import (
     DataIntegrationCredentialsResponseWithErrorError as DataIntegrationCredentialsResponseWithErrorError,
 )
+from .data_integration_credentials_response_with_error_error import (
+    DataIntegrationCredentialsResponseWithErrorErrorLiteral as DataIntegrationCredentialsResponseWithErrorErrorLiteral,
+)
 from .data_integration_custom_provider_authenticate_via import (
     DataIntegrationCustomProviderAuthenticateVia as DataIntegrationCustomProviderAuthenticateVia,
+)
+from .data_integration_custom_provider_authenticate_via import (
+    DataIntegrationCustomProviderAuthenticateViaLiteral as DataIntegrationCustomProviderAuthenticateViaLiteral,
 )
 from .data_integration_installation_connection_role import (
     DataIntegrationInstallationConnectionRole as DataIntegrationInstallationConnectionRole,
 )
+from .data_integration_installation_connection_role import (
+    DataIntegrationInstallationConnectionRoleLiteral as DataIntegrationInstallationConnectionRoleLiteral,
+)
 from .data_integration_ownership import (
     DataIntegrationOwnership as DataIntegrationOwnership,
+)
+from .data_integration_ownership import (
+    DataIntegrationOwnershipLiteral as DataIntegrationOwnershipLiteral,
 )
 from .data_integration_state import DataIntegrationState as DataIntegrationState
 from .data_integration_state import (
@@ -784,11 +947,20 @@ from .data_integration_vended_credential import (
 from .data_integration_vended_credential_auth_method import (
     DataIntegrationVendedCredentialAuthMethod as DataIntegrationVendedCredentialAuthMethod,
 )
+from .data_integration_vended_credential_auth_method import (
+    DataIntegrationVendedCredentialAuthMethodLiteral as DataIntegrationVendedCredentialAuthMethodLiteral,
+)
 from .data_integrations_create_api_key_connection_request_connection_owner import (
     DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwner,
 )
+from .data_integrations_create_api_key_connection_request_connection_owner import (
+    DataIntegrationsCreateApiKeyConnectionRequestConnectionOwnerLiteral as DataIntegrationsCreateApiKeyConnectionRequestConnectionOwnerLiteral,
+)
 from .data_integrations_create_client_credentials_connection_request_connection_owner import (
     DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwner,
+)
+from .data_integrations_create_client_credentials_connection_request_connection_owner import (
+    DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwnerLiteral as DataIntegrationsCreateClientCredentialsConnectionRequestConnectionOwnerLiteral,
 )
 from .data_integrations_get_data_integration_authorize_url_request_connection_intent import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionIntent,
@@ -799,8 +971,14 @@ from .data_integrations_get_data_integration_authorize_url_request_connection_in
 from .data_integrations_get_data_integration_authorize_url_request_connection_owner import (
     DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwner,
 )
+from .data_integrations_get_data_integration_authorize_url_request_connection_owner import (
+    DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral as DataIntegrationsGetDataIntegrationAuthorizeUrlRequestConnectionOwnerLiteral,
+)
 from .data_integrations_get_user_token_request_connection_owner import (
     DataIntegrationsGetUserTokenRequestConnectionOwner as DataIntegrationsGetUserTokenRequestConnectionOwner,
+)
+from .data_integrations_get_user_token_request_connection_owner import (
+    DataIntegrationsGetUserTokenRequestConnectionOwnerLiteral as DataIntegrationsGetUserTokenRequestConnectionOwnerLiteral,
 )
 from .data_integrations_list_response import (
     DataIntegrationsListResponse as DataIntegrationsListResponse,
@@ -811,23 +989,38 @@ from .data_integrations_list_response_data import (
 from .data_integrations_list_response_data_auth_methods import (
     DataIntegrationsListResponseDataAuthMethods as DataIntegrationsListResponseDataAuthMethods,
 )
+from .data_integrations_list_response_data_auth_methods import (
+    DataIntegrationsListResponseDataAuthMethodsLiteral as DataIntegrationsListResponseDataAuthMethodsLiteral,
+)
 from .data_integrations_list_response_data_connected_account import (
     DataIntegrationsListResponseDataConnectedAccount as DataIntegrationsListResponseDataConnectedAccount,
 )
 from .data_integrations_list_response_data_connected_account_auth_method import (
     DataIntegrationsListResponseDataConnectedAccountAuthMethod as DataIntegrationsListResponseDataConnectedAccountAuthMethod,
 )
+from .data_integrations_list_response_data_connected_account_auth_method import (
+    DataIntegrationsListResponseDataConnectedAccountAuthMethodLiteral as DataIntegrationsListResponseDataConnectedAccountAuthMethodLiteral,
+)
 from .data_integrations_list_response_data_connected_account_connection_role import (
     DataIntegrationsListResponseDataConnectedAccountConnectionRole as DataIntegrationsListResponseDataConnectedAccountConnectionRole,
 )
+from .data_integrations_list_response_data_connected_account_connection_role import (
+    DataIntegrationsListResponseDataConnectedAccountConnectionRoleLiteral as DataIntegrationsListResponseDataConnectedAccountConnectionRoleLiteral,
+)
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
+)
+from .data_integrations_list_response_data_connected_account_state import (
+    DataIntegrationsListResponseDataConnectedAccountStateLiteral as DataIntegrationsListResponseDataConnectedAccountStateLiteral,
 )
 from .data_integrations_list_response_data_connected_account_warning import (
     DataIntegrationsListResponseDataConnectedAccountWarning as DataIntegrationsListResponseDataConnectedAccountWarning,
 )
 from .data_integrations_list_response_data_connection_owner import (
     DataIntegrationsListResponseDataConnectionOwner as DataIntegrationsListResponseDataConnectionOwner,
+)
+from .data_integrations_list_response_data_connection_owner import (
+    DataIntegrationsListResponseDataConnectionOwnerLiteral as DataIntegrationsListResponseDataConnectionOwnerLiteral,
 )
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
@@ -838,11 +1031,20 @@ from .data_integrations_list_response_data_ownership import (
 from .data_integrations_upsert_api_key_request_connection_owner import (
     DataIntegrationsUpsertApiKeyRequestConnectionOwner as DataIntegrationsUpsertApiKeyRequestConnectionOwner,
 )
+from .data_integrations_upsert_api_key_request_connection_owner import (
+    DataIntegrationsUpsertApiKeyRequestConnectionOwnerLiteral as DataIntegrationsUpsertApiKeyRequestConnectionOwnerLiteral,
+)
 from .data_integrations_upsert_client_credentials_request_connection_owner import (
     DataIntegrationsUpsertClientCredentialsRequestConnectionOwner as DataIntegrationsUpsertClientCredentialsRequestConnectionOwner,
 )
+from .data_integrations_upsert_client_credentials_request_connection_owner import (
+    DataIntegrationsUpsertClientCredentialsRequestConnectionOwnerLiteral as DataIntegrationsUpsertClientCredentialsRequestConnectionOwnerLiteral,
+)
 from .data_integrations_vend_credentials_request_connection_owner import (
     DataIntegrationsVendCredentialsRequestConnectionOwner as DataIntegrationsVendCredentialsRequestConnectionOwner,
+)
+from .data_integrations_vend_credentials_request_connection_owner import (
+    DataIntegrationsVendCredentialsRequestConnectionOwnerLiteral as DataIntegrationsVendCredentialsRequestConnectionOwnerLiteral,
 )
 from .directory_group import DirectoryGroup as DirectoryGroup
 from .directory_state import DirectoryState as DirectoryState
@@ -859,6 +1061,10 @@ from .directory_user_state import DirectoryUserStateLiteral as DirectoryUserStat
 from .directory_user_with_groups_state import (
     DirectoryUserWithGroupsState as DirectoryUserWithGroupsState,
 )
+from .directory_user_with_groups_state import (
+    DirectoryUserWithGroupsStateLiteral as DirectoryUserWithGroupsStateLiteral,
+)
+from .domain_protections import DomainProtections as DomainProtections
 from .dsync_activated import DsyncActivated as DsyncActivated
 from .dsync_activated_data import DsyncActivatedData as DsyncActivatedData
 from .dsync_activated_data_domain import (
@@ -877,7 +1083,13 @@ from .dsync_activated_data_type import (
 from .dsync_deleted import DsyncDeleted as DsyncDeleted
 from .dsync_deleted_data import DsyncDeletedData as DsyncDeletedData
 from .dsync_deleted_data_state import DsyncDeletedDataState as DsyncDeletedDataState
+from .dsync_deleted_data_state import (
+    DsyncDeletedDataStateLiteral as DsyncDeletedDataStateLiteral,
+)
 from .dsync_deleted_data_type import DsyncDeletedDataType as DsyncDeletedDataType
+from .dsync_deleted_data_type import (
+    DsyncDeletedDataTypeLiteral as DsyncDeletedDataTypeLiteral,
+)
 from .dsync_group_created import DsyncGroupCreated as DsyncGroupCreated
 from .dsync_group_deleted import DsyncGroupDeleted as DsyncGroupDeleted
 from .dsync_group_updated import DsyncGroupUpdated as DsyncGroupUpdated
@@ -903,6 +1115,9 @@ from .dsync_user_updated_data_email import (
 )
 from .dsync_user_updated_data_state import (
     DsyncUserUpdatedDataState as DsyncUserUpdatedDataState,
+)
+from .dsync_user_updated_data_state import (
+    DsyncUserUpdatedDataStateLiteral as DsyncUserUpdatedDataStateLiteral,
 )
 from .email_already_in_use_error_body import (
     EmailAlreadyInUseErrorBody as EmailAlreadyInUseErrorBody,
@@ -936,6 +1151,12 @@ from .email_verification_required_error_body import (
 )
 from .entity_not_found_error_body import (
     EntityNotFoundErrorBody as EntityNotFoundErrorBody,
+)
+from .entity_not_found_error_body_with_entity_id import (
+    EntityNotFoundErrorBodyWithEntityId as EntityNotFoundErrorBodyWithEntityId,
+)
+from .entity_not_found_error_body_with_ids_list import (
+    EntityNotFoundErrorBodyWithIdsList as EntityNotFoundErrorBodyWithIdsList,
 )
 from .error_body import ErrorBody as ErrorBody
 from .error_body_code import ErrorBodyCode as ErrorBodyCode
@@ -1010,6 +1231,9 @@ from .feature_flags_flag_created_context_actor import (
 from .feature_flags_flag_created_context_actor_source import (
     FeatureFlagsFlagCreatedContextActorSource as FeatureFlagsFlagCreatedContextActorSource,
 )
+from .feature_flags_flag_created_context_actor_source import (
+    FeatureFlagsFlagCreatedContextActorSourceLiteral as FeatureFlagsFlagCreatedContextActorSourceLiteral,
+)
 from .feature_flags_flag_created_data import (
     FeatureFlagsFlagCreatedData as FeatureFlagsFlagCreatedData,
 )
@@ -1027,6 +1251,9 @@ from .feature_flags_flag_deleted_context_actor import (
 )
 from .feature_flags_flag_deleted_context_actor_source import (
     FeatureFlagsFlagDeletedContextActorSource as FeatureFlagsFlagDeletedContextActorSource,
+)
+from .feature_flags_flag_deleted_context_actor_source import (
+    FeatureFlagsFlagDeletedContextActorSourceLiteral as FeatureFlagsFlagDeletedContextActorSourceLiteral,
 )
 from .feature_flags_flag_deleted_data import (
     FeatureFlagsFlagDeletedData as FeatureFlagsFlagDeletedData,
@@ -1046,6 +1273,9 @@ from .feature_flags_flag_rule_created_context_actor import (
 from .feature_flags_flag_rule_created_context_actor_source import (
     FeatureFlagsFlagRuleCreatedContextActorSource as FeatureFlagsFlagRuleCreatedContextActorSource,
 )
+from .feature_flags_flag_rule_created_context_actor_source import (
+    FeatureFlagsFlagRuleCreatedContextActorSourceLiteral as FeatureFlagsFlagRuleCreatedContextActorSourceLiteral,
+)
 from .feature_flags_flag_rule_deleted import (
     FeatureFlagsFlagRuleDeleted as FeatureFlagsFlagRuleDeleted,
 )
@@ -1058,6 +1288,9 @@ from .feature_flags_flag_rule_deleted_context_actor import (
 from .feature_flags_flag_rule_deleted_context_actor_source import (
     FeatureFlagsFlagRuleDeletedContextActorSource as FeatureFlagsFlagRuleDeletedContextActorSource,
 )
+from .feature_flags_flag_rule_deleted_context_actor_source import (
+    FeatureFlagsFlagRuleDeletedContextActorSourceLiteral as FeatureFlagsFlagRuleDeletedContextActorSourceLiteral,
+)
 from .feature_flags_flag_rule_updated import (
     FeatureFlagsFlagRuleUpdated as FeatureFlagsFlagRuleUpdated,
 )
@@ -1069,6 +1302,9 @@ from .feature_flags_flag_rule_updated_context_actor import (
 )
 from .feature_flags_flag_rule_updated_context_actor_source import (
     FeatureFlagsFlagRuleUpdatedContextActorSource as FeatureFlagsFlagRuleUpdatedContextActorSource,
+)
+from .feature_flags_flag_rule_updated_context_actor_source import (
+    FeatureFlagsFlagRuleUpdatedContextActorSourceLiteral as FeatureFlagsFlagRuleUpdatedContextActorSourceLiteral,
 )
 from .feature_flags_flag_rule_updated_context_previous_attribute import (
     FeatureFlagsFlagRuleUpdatedContextPreviousAttribute as FeatureFlagsFlagRuleUpdatedContextPreviousAttribute,
@@ -1088,6 +1324,9 @@ from .feature_flags_flag_target_created_context_actor import (
 from .feature_flags_flag_target_created_context_actor_source import (
     FeatureFlagsFlagTargetCreatedContextActorSource as FeatureFlagsFlagTargetCreatedContextActorSource,
 )
+from .feature_flags_flag_target_created_context_actor_source import (
+    FeatureFlagsFlagTargetCreatedContextActorSourceLiteral as FeatureFlagsFlagTargetCreatedContextActorSourceLiteral,
+)
 from .feature_flags_flag_target_deleted import (
     FeatureFlagsFlagTargetDeleted as FeatureFlagsFlagTargetDeleted,
 )
@@ -1100,6 +1339,9 @@ from .feature_flags_flag_target_deleted_context_actor import (
 from .feature_flags_flag_target_deleted_context_actor_source import (
     FeatureFlagsFlagTargetDeletedContextActorSource as FeatureFlagsFlagTargetDeletedContextActorSource,
 )
+from .feature_flags_flag_target_deleted_context_actor_source import (
+    FeatureFlagsFlagTargetDeletedContextActorSourceLiteral as FeatureFlagsFlagTargetDeletedContextActorSourceLiteral,
+)
 from .feature_flags_flag_updated import (
     FeatureFlagsFlagUpdated as FeatureFlagsFlagUpdated,
 )
@@ -1111,6 +1353,9 @@ from .feature_flags_flag_updated_context_actor import (
 )
 from .feature_flags_flag_updated_context_actor_source import (
     FeatureFlagsFlagUpdatedContextActorSource as FeatureFlagsFlagUpdatedContextActorSource,
+)
+from .feature_flags_flag_updated_context_actor_source import (
+    FeatureFlagsFlagUpdatedContextActorSourceLiteral as FeatureFlagsFlagUpdatedContextActorSourceLiteral,
 )
 from .feature_flags_flag_updated_context_previous_attribute import (
     FeatureFlagsFlagUpdatedContextPreviousAttribute as FeatureFlagsFlagUpdatedContextPreviousAttribute,
@@ -1136,6 +1381,9 @@ from .flag_created_context_actor import (
 from .flag_created_context_actor_source import (
     FlagCreatedContextActorSource as FlagCreatedContextActorSource,
 )
+from .flag_created_context_actor_source import (
+    FlagCreatedContextActorSourceLiteral as FlagCreatedContextActorSourceLiteral,
+)
 from .flag_created_data import FlagCreatedData as FlagCreatedData
 from .flag_created_data_owner import FlagCreatedDataOwner as FlagCreatedDataOwner
 from .flag_deleted import FlagDeleted as FlagDeleted
@@ -1145,6 +1393,9 @@ from .flag_deleted_context_actor import (
 )
 from .flag_deleted_context_actor_source import (
     FlagDeletedContextActorSource as FlagDeletedContextActorSource,
+)
+from .flag_deleted_context_actor_source import (
+    FlagDeletedContextActorSourceLiteral as FlagDeletedContextActorSourceLiteral,
 )
 from .flag_deleted_data import FlagDeletedData as FlagDeletedData
 from .flag_deleted_data_owner import FlagDeletedDataOwner as FlagDeletedDataOwner
@@ -1164,6 +1415,9 @@ from .flag_rule_updated_context_actor import (
 from .flag_rule_updated_context_actor_source import (
     FlagRuleUpdatedContextActorSource as FlagRuleUpdatedContextActorSource,
 )
+from .flag_rule_updated_context_actor_source import (
+    FlagRuleUpdatedContextActorSourceLiteral as FlagRuleUpdatedContextActorSourceLiteral,
+)
 from .flag_rule_updated_context_configured_target import (
     FlagRuleUpdatedContextConfiguredTarget as FlagRuleUpdatedContextConfiguredTarget,
 )
@@ -1181,6 +1435,9 @@ from .flag_rule_updated_context_previous_attribute_context import (
 )
 from .flag_rule_updated_context_previous_attribute_context_access_type import (
     FlagRuleUpdatedContextPreviousAttributeContextAccessType as FlagRuleUpdatedContextPreviousAttributeContextAccessType,
+)
+from .flag_rule_updated_context_previous_attribute_context_access_type import (
+    FlagRuleUpdatedContextPreviousAttributeContextAccessTypeLiteral as FlagRuleUpdatedContextPreviousAttributeContextAccessTypeLiteral,
 )
 from .flag_rule_updated_context_previous_attribute_context_configured_target import (
     FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
@@ -1211,6 +1468,9 @@ from .flag_updated_context_actor import (
 from .flag_updated_context_actor_source import (
     FlagUpdatedContextActorSource as FlagUpdatedContextActorSource,
 )
+from .flag_updated_context_actor_source import (
+    FlagUpdatedContextActorSourceLiteral as FlagUpdatedContextActorSourceLiteral,
+)
 from .flag_updated_context_previous_attribute import (
     FlagUpdatedContextPreviousAttribute as FlagUpdatedContextPreviousAttribute,
 )
@@ -1235,6 +1495,7 @@ from .group_updated import GroupUpdated as GroupUpdated
 from .idp_metadata_fetch_failed_error_body import (
     IdpMetadataFetchFailedErrorBody as IdpMetadataFetchFailedErrorBody,
 )
+from .impossible_travel import ImpossibleTravel as ImpossibleTravel
 from .invalid_client_oauth_error_body import (
     InvalidClientOAuthErrorBody as InvalidClientOAuthErrorBody,
 )
@@ -1303,6 +1564,9 @@ from .invitation_created_data import InvitationCreatedData as InvitationCreatedD
 from .invitation_created_data_state import (
     InvitationCreatedDataState as InvitationCreatedDataState,
 )
+from .invitation_created_data_state import (
+    InvitationCreatedDataStateLiteral as InvitationCreatedDataStateLiteral,
+)
 from .invitation_invalid_oauth_error_body import (
     InvitationInvalidOAuthErrorBody as InvitationInvalidOAuthErrorBody,
 )
@@ -1311,16 +1575,27 @@ from .invitation_resent_data import InvitationResentData as InvitationResentData
 from .invitation_resent_data_state import (
     InvitationResentDataState as InvitationResentDataState,
 )
+from .invitation_resent_data_state import (
+    InvitationResentDataStateLiteral as InvitationResentDataStateLiteral,
+)
 from .invitation_revoked import InvitationRevoked as InvitationRevoked
 from .invitation_revoked_data import InvitationRevokedData as InvitationRevokedData
 from .invitation_revoked_data_state import (
     InvitationRevokedDataState as InvitationRevokedDataState,
 )
+from .invitation_revoked_data_state import (
+    InvitationRevokedDataStateLiteral as InvitationRevokedDataStateLiteral,
+)
 from .invitation_state import InvitationState as InvitationState
+from .invitation_state import InvitationStateLiteral as InvitationStateLiteral
 from .invite_it_contact_intents import InviteItContactIntents as InviteItContactIntents
 from .invite_it_contact_intents import (
     InviteItContactIntentsLiteral as InviteItContactIntentsLiteral,
 )
+from .issuer_trust import IssuerTrust as IssuerTrust
+from .issuer_trust_created import IssuerTrustCreated as IssuerTrustCreated
+from .issuer_trust_deleted import IssuerTrustDeleted as IssuerTrustDeleted
+from .issuer_trust_updated import IssuerTrustUpdated as IssuerTrustUpdated
 from .list_metadata import ListMetadata as ListMetadata
 from .magic_auth_created import MagicAuthCreated as MagicAuthCreated
 from .magic_auth_created_data import MagicAuthCreatedData as MagicAuthCreatedData
@@ -1335,6 +1610,7 @@ from .multiple_roles_not_enabled_error_body import (
 from .must_use_sso_for_selected_organization_message_error_body import (
     MustUseSSOForSelectedOrganizationMessageErrorBody as MustUseSSOForSelectedOrganizationMessageErrorBody,
 )
+from .normalized_email import NormalizedEmail as NormalizedEmail
 from .oauth_data_integration_vended_credential import (
     OAuthDataIntegrationVendedCredential as OAuthDataIntegrationVendedCredential,
 )
@@ -1362,6 +1638,9 @@ from .organization_connected_account_import_error_body_code import (
 )
 from .organization_connected_account_state import (
     OrganizationConnectedAccountState as OrganizationConnectedAccountState,
+)
+from .organization_connected_account_state import (
+    OrganizationConnectedAccountStateLiteral as OrganizationConnectedAccountStateLiteral,
 )
 from .organization_created import OrganizationCreated as OrganizationCreated
 from .organization_created_data import (
@@ -1392,8 +1671,14 @@ from .organization_deleted_data_domain import (
 from .organization_deleted_data_domain_state import (
     OrganizationDeletedDataDomainState as OrganizationDeletedDataDomainState,
 )
+from .organization_deleted_data_domain_state import (
+    OrganizationDeletedDataDomainStateLiteral as OrganizationDeletedDataDomainStateLiteral,
+)
 from .organization_deleted_data_domain_verification_strategy import (
     OrganizationDeletedDataDomainVerificationStrategy as OrganizationDeletedDataDomainVerificationStrategy,
+)
+from .organization_deleted_data_domain_verification_strategy import (
+    OrganizationDeletedDataDomainVerificationStrategyLiteral as OrganizationDeletedDataDomainVerificationStrategyLiteral,
 )
 from .organization_domain import OrganizationDomain as OrganizationDomain
 from .organization_domain_created import (
@@ -1405,8 +1690,14 @@ from .organization_domain_created_data import (
 from .organization_domain_created_data_state import (
     OrganizationDomainCreatedDataState as OrganizationDomainCreatedDataState,
 )
+from .organization_domain_created_data_state import (
+    OrganizationDomainCreatedDataStateLiteral as OrganizationDomainCreatedDataStateLiteral,
+)
 from .organization_domain_created_data_verification_strategy import (
     OrganizationDomainCreatedDataVerificationStrategy as OrganizationDomainCreatedDataVerificationStrategy,
+)
+from .organization_domain_created_data_verification_strategy import (
+    OrganizationDomainCreatedDataVerificationStrategyLiteral as OrganizationDomainCreatedDataVerificationStrategyLiteral,
 )
 from .organization_domain_data_state import (
     OrganizationDomainDataState as OrganizationDomainDataState,
@@ -1423,11 +1714,20 @@ from .organization_domain_deleted_data import (
 from .organization_domain_deleted_data_state import (
     OrganizationDomainDeletedDataState as OrganizationDomainDeletedDataState,
 )
+from .organization_domain_deleted_data_state import (
+    OrganizationDomainDeletedDataStateLiteral as OrganizationDomainDeletedDataStateLiteral,
+)
 from .organization_domain_deleted_data_verification_strategy import (
     OrganizationDomainDeletedDataVerificationStrategy as OrganizationDomainDeletedDataVerificationStrategy,
 )
+from .organization_domain_deleted_data_verification_strategy import (
+    OrganizationDomainDeletedDataVerificationStrategyLiteral as OrganizationDomainDeletedDataVerificationStrategyLiteral,
+)
 from .organization_domain_state import (
     OrganizationDomainState as OrganizationDomainState,
+)
+from .organization_domain_state import (
+    OrganizationDomainStateLiteral as OrganizationDomainStateLiteral,
 )
 from .organization_domain_updated import (
     OrganizationDomainUpdated as OrganizationDomainUpdated,
@@ -1438,8 +1738,14 @@ from .organization_domain_updated_data import (
 from .organization_domain_updated_data_state import (
     OrganizationDomainUpdatedDataState as OrganizationDomainUpdatedDataState,
 )
+from .organization_domain_updated_data_state import (
+    OrganizationDomainUpdatedDataStateLiteral as OrganizationDomainUpdatedDataStateLiteral,
+)
 from .organization_domain_updated_data_verification_strategy import (
     OrganizationDomainUpdatedDataVerificationStrategy as OrganizationDomainUpdatedDataVerificationStrategy,
+)
+from .organization_domain_updated_data_verification_strategy import (
+    OrganizationDomainUpdatedDataVerificationStrategyLiteral as OrganizationDomainUpdatedDataVerificationStrategyLiteral,
 )
 from .organization_domain_verification_failed import (
     OrganizationDomainVerificationFailed as OrganizationDomainVerificationFailed,
@@ -1453,8 +1759,14 @@ from .organization_domain_verification_failed_data_organization_domain import (
 from .organization_domain_verification_failed_data_organization_domain_state import (
     OrganizationDomainVerificationFailedDataOrganizationDomainState as OrganizationDomainVerificationFailedDataOrganizationDomainState,
 )
+from .organization_domain_verification_failed_data_organization_domain_state import (
+    OrganizationDomainVerificationFailedDataOrganizationDomainStateLiteral as OrganizationDomainVerificationFailedDataOrganizationDomainStateLiteral,
+)
 from .organization_domain_verification_failed_data_organization_domain_verification_strategy import (
     OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategy as OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategy,
+)
+from .organization_domain_verification_failed_data_organization_domain_verification_strategy import (
+    OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategyLiteral as OrganizationDomainVerificationFailedDataOrganizationDomainVerificationStrategyLiteral,
 )
 from .organization_domain_verification_failed_data_reason import (
     OrganizationDomainVerificationFailedDataReason as OrganizationDomainVerificationFailedDataReason,
@@ -1465,6 +1777,9 @@ from .organization_domain_verification_failed_data_reason import (
 from .organization_domain_verification_strategy import (
     OrganizationDomainVerificationStrategy as OrganizationDomainVerificationStrategy,
 )
+from .organization_domain_verification_strategy import (
+    OrganizationDomainVerificationStrategyLiteral as OrganizationDomainVerificationStrategyLiteral,
+)
 from .organization_domain_verified import (
     OrganizationDomainVerified as OrganizationDomainVerified,
 )
@@ -1474,8 +1789,14 @@ from .organization_domain_verified_data import (
 from .organization_domain_verified_data_state import (
     OrganizationDomainVerifiedDataState as OrganizationDomainVerifiedDataState,
 )
+from .organization_domain_verified_data_state import (
+    OrganizationDomainVerifiedDataStateLiteral as OrganizationDomainVerifiedDataStateLiteral,
+)
 from .organization_domain_verified_data_verification_strategy import (
     OrganizationDomainVerifiedDataVerificationStrategy as OrganizationDomainVerifiedDataVerificationStrategy,
+)
+from .organization_domain_verified_data_verification_strategy import (
+    OrganizationDomainVerifiedDataVerificationStrategyLiteral as OrganizationDomainVerifiedDataVerificationStrategyLiteral,
 )
 from .organization_membership_created import (
     OrganizationMembershipCreated as OrganizationMembershipCreated,
@@ -1498,11 +1819,17 @@ from .organization_membership_deleted_data import (
 from .organization_membership_deleted_data_status import (
     OrganizationMembershipDeletedDataStatus as OrganizationMembershipDeletedDataStatus,
 )
+from .organization_membership_deleted_data_status import (
+    OrganizationMembershipDeletedDataStatusLiteral as OrganizationMembershipDeletedDataStatusLiteral,
+)
 from .organization_membership_not_found_oauth_error_body import (
     OrganizationMembershipNotFoundOAuthErrorBody as OrganizationMembershipNotFoundOAuthErrorBody,
 )
 from .organization_membership_status import (
     OrganizationMembershipStatus as OrganizationMembershipStatus,
+)
+from .organization_membership_status import (
+    OrganizationMembershipStatusLiteral as OrganizationMembershipStatusLiteral,
 )
 from .organization_membership_updated import (
     OrganizationMembershipUpdated as OrganizationMembershipUpdated,
@@ -1512,6 +1839,9 @@ from .organization_membership_updated_data import (
 )
 from .organization_membership_updated_data_status import (
     OrganizationMembershipUpdatedDataStatus as OrganizationMembershipUpdatedDataStatus,
+)
+from .organization_membership_updated_data_status import (
+    OrganizationMembershipUpdatedDataStatusLiteral as OrganizationMembershipUpdatedDataStatusLiteral,
 )
 from .organization_not_found_oauth_error_body import (
     OrganizationNotFoundOAuthErrorBody as OrganizationNotFoundOAuthErrorBody,
@@ -1553,8 +1883,14 @@ from .organization_updated_data_domain import (
 from .organization_updated_data_domain_state import (
     OrganizationUpdatedDataDomainState as OrganizationUpdatedDataDomainState,
 )
+from .organization_updated_data_domain_state import (
+    OrganizationUpdatedDataDomainStateLiteral as OrganizationUpdatedDataDomainStateLiteral,
+)
 from .organization_updated_data_domain_verification_strategy import (
     OrganizationUpdatedDataDomainVerificationStrategy as OrganizationUpdatedDataDomainVerificationStrategy,
+)
+from .organization_updated_data_domain_verification_strategy import (
+    OrganizationUpdatedDataDomainVerificationStrategyLiteral as OrganizationUpdatedDataDomainVerificationStrategyLiteral,
 )
 from .pagination_order import PaginationOrder as PaginationOrder
 from .pagination_order import PaginationOrderLiteral as PaginationOrderLiteral
@@ -1606,11 +1942,20 @@ from .pipe_connected_account import PipeConnectedAccount as PipeConnectedAccount
 from .pipe_connected_account_auth_method import (
     PipeConnectedAccountAuthMethod as PipeConnectedAccountAuthMethod,
 )
+from .pipe_connected_account_auth_method import (
+    PipeConnectedAccountAuthMethodLiteral as PipeConnectedAccountAuthMethodLiteral,
+)
 from .pipe_connected_account_connection_role import (
     PipeConnectedAccountConnectionRole as PipeConnectedAccountConnectionRole,
 )
+from .pipe_connected_account_connection_role import (
+    PipeConnectedAccountConnectionRoleLiteral as PipeConnectedAccountConnectionRoleLiteral,
+)
 from .pipe_connected_account_state import (
     PipeConnectedAccountState as PipeConnectedAccountState,
+)
+from .pipe_connected_account_state import (
+    PipeConnectedAccountStateLiteral as PipeConnectedAccountStateLiteral,
 )
 from .pipes_account_connection_add_failed import (
     PipesAccountConnectionAddFailed as PipesAccountConnectionAddFailed,
@@ -1663,11 +2008,155 @@ from .radar_challenge_created_data import (
 from .radar_challenge_error_body import (
     RadarChallengeErrorBody as RadarChallengeErrorBody,
 )
+from .radar_detection_action import RadarDetectionAction as RadarDetectionAction
+from .radar_detection_action import (
+    RadarDetectionActionLiteral as RadarDetectionActionLiteral,
+)
+from .radar_detection_allowed_by import (
+    RadarDetectionAllowedBy as RadarDetectionAllowedBy,
+)
+from .radar_detection_auth_method import (
+    RadarDetectionAuthMethod as RadarDetectionAuthMethod,
+)
+from .radar_detection_auth_method import (
+    RadarDetectionAuthMethodLiteral as RadarDetectionAuthMethodLiteral,
+)
+from .radar_detection_bot_detection_details import (
+    RadarDetectionBotDetectionDetails as RadarDetectionBotDetectionDetails,
+)
+from .radar_detection_bot_detection_details_browser_signals import (
+    RadarDetectionBotDetectionDetailsBrowserSignals as RadarDetectionBotDetectionDetailsBrowserSignals,
+)
+from .radar_detection_bot_detection_details_browser_signals import (
+    RadarDetectionBotDetectionDetailsBrowserSignalsLiteral as RadarDetectionBotDetectionDetailsBrowserSignalsLiteral,
+)
+from .radar_detection_bot_detection_details_decided_by import (
+    RadarDetectionBotDetectionDetailsDecidedBy as RadarDetectionBotDetectionDetailsDecidedBy,
+)
+from .radar_detection_bot_detection_details_decided_by import (
+    RadarDetectionBotDetectionDetailsDecidedByLiteral as RadarDetectionBotDetectionDetailsDecidedByLiteral,
+)
+from .radar_detection_bot_detection_details_email_pattern import (
+    RadarDetectionBotDetectionDetailsEmailPattern as RadarDetectionBotDetectionDetailsEmailPattern,
+)
+from .radar_detection_bot_detection_details_email_pattern import (
+    RadarDetectionBotDetectionDetailsEmailPatternLiteral as RadarDetectionBotDetectionDetailsEmailPatternLiteral,
+)
+from .radar_detection_bot_detection_details_ip_risk import (
+    RadarDetectionBotDetectionDetailsIpRisk as RadarDetectionBotDetectionDetailsIpRisk,
+)
+from .radar_detection_bot_detection_details_ip_risk import (
+    RadarDetectionBotDetectionDetailsIpRiskLiteral as RadarDetectionBotDetectionDetailsIpRiskLiteral,
+)
+from .radar_detection_bot_detection_signal import (
+    RadarDetectionBotDetectionSignal as RadarDetectionBotDetectionSignal,
+)
+from .radar_detection_bot_detection_signal_action import (
+    RadarDetectionBotDetectionSignalAction as RadarDetectionBotDetectionSignalAction,
+)
+from .radar_detection_bot_detection_signal_action import (
+    RadarDetectionBotDetectionSignalActionLiteral as RadarDetectionBotDetectionSignalActionLiteral,
+)
+from .radar_detection_bot_detection_signal_signal import (
+    RadarDetectionBotDetectionSignalSignal as RadarDetectionBotDetectionSignalSignal,
+)
+from .radar_detection_bot_detection_signal_signal import (
+    RadarDetectionBotDetectionSignalSignalLiteral as RadarDetectionBotDetectionSignalSignalLiteral,
+)
+from .radar_detection_brute_force_attack_details import (
+    RadarDetectionBruteForceAttackDetails as RadarDetectionBruteForceAttackDetails,
+)
+from .radar_detection_brute_force_attack_details_matched_on import (
+    RadarDetectionBruteForceAttackDetailsMatchedOn as RadarDetectionBruteForceAttackDetailsMatchedOn,
+)
+from .radar_detection_brute_force_attack_details_matched_on import (
+    RadarDetectionBruteForceAttackDetailsMatchedOnLiteral as RadarDetectionBruteForceAttackDetailsMatchedOnLiteral,
+)
+from .radar_detection_challenge_type import (
+    RadarDetectionChallengeType as RadarDetectionChallengeType,
+)
+from .radar_detection_challenge_type import (
+    RadarDetectionChallengeTypeLiteral as RadarDetectionChallengeTypeLiteral,
+)
+from .radar_detection_control import RadarDetectionControl as RadarDetectionControl
+from .radar_detection_control import (
+    RadarDetectionControlLiteral as RadarDetectionControlLiteral,
+)
+from .radar_detection_domain_protections_details import (
+    RadarDetectionDomainProtectionsDetails as RadarDetectionDomainProtectionsDetails,
+)
+from .radar_detection_domain_sign_ups import (
+    RadarDetectionDomainSignUps as RadarDetectionDomainSignUps,
+)
+from .radar_detection_evidence_restriction import (
+    RadarDetectionEvidenceRestriction as RadarDetectionEvidenceRestriction,
+)
+from .radar_detection_impossible_travel_details import (
+    RadarDetectionImpossibleTravelDetails as RadarDetectionImpossibleTravelDetails,
+)
+from .radar_detection_ip_sign_ups import (
+    RadarDetectionIpSignUps as RadarDetectionIpSignUps,
+)
+from .radar_detection_list import RadarDetectionList as RadarDetectionList
+from .radar_detection_list_action import (
+    RadarDetectionListAction as RadarDetectionListAction,
+)
+from .radar_detection_list_action import (
+    RadarDetectionListActionLiteral as RadarDetectionListActionLiteral,
+)
+from .radar_detection_list_type import RadarDetectionListType as RadarDetectionListType
+from .radar_detection_list_type import (
+    RadarDetectionListTypeLiteral as RadarDetectionListTypeLiteral,
+)
+from .radar_detection_location import RadarDetectionLocation as RadarDetectionLocation
+from .radar_detection_previous_attempt import (
+    RadarDetectionPreviousAttempt as RadarDetectionPreviousAttempt,
+)
+from .radar_detection_previous_attempt_location import (
+    RadarDetectionPreviousAttemptLocation as RadarDetectionPreviousAttemptLocation,
+)
+from .radar_detection_repeat_sign_up_details import (
+    RadarDetectionRepeatSignUpDetails as RadarDetectionRepeatSignUpDetails,
+)
+from .radar_detection_repeat_sign_up_details import (
+    RadarDetectionRepeatSignUpDetailsUnknown as RadarDetectionRepeatSignUpDetailsUnknown,
+)
+from .radar_detection_repeat_sign_up_details import (
+    RadarDetectionRepeatSignUpDetailsVariant as RadarDetectionRepeatSignUpDetailsVariant,
+)
+from .radar_detection_repeat_sign_up_details_email import (
+    RadarDetectionRepeatSignUpDetailsEmail as RadarDetectionRepeatSignUpDetailsEmail,
+)
+from .radar_detection_restriction_details import (
+    RadarDetectionRestrictionDetails as RadarDetectionRestrictionDetails,
+)
+from .radar_detection_restriction_details import (
+    RadarDetectionRestrictionDetailsUnknown as RadarDetectionRestrictionDetailsUnknown,
+)
+from .radar_detection_restriction_details import (
+    RadarDetectionRestrictionDetailsVariant as RadarDetectionRestrictionDetailsVariant,
+)
+from .radar_detection_restriction_details_list import (
+    RadarDetectionRestrictionDetailsList as RadarDetectionRestrictionDetailsList,
+)
+from .radar_detection_stale_account_details import (
+    RadarDetectionStaleAccountDetails as RadarDetectionStaleAccountDetails,
+)
+from .radar_detection_unrecognized_device_details import (
+    RadarDetectionUnrecognizedDeviceDetails as RadarDetectionUnrecognizedDeviceDetails,
+)
+from .radar_detection_verdict import RadarDetectionVerdict as RadarDetectionVerdict
+from .radar_detection_verdict import (
+    RadarDetectionVerdictLiteral as RadarDetectionVerdictLiteral,
+)
 from .radar_list_entry_already_present_response import (
     RadarListEntryAlreadyPresentResponse as RadarListEntryAlreadyPresentResponse,
 )
 from .radar_sign_up_challenge_error_body import (
     RadarSignUpChallengeErrorBody as RadarSignUpChallengeErrorBody,
+)
+from .radar_sms_challenge_error_body import (
+    RadarSmsChallengeErrorBody as RadarSmsChallengeErrorBody,
 )
 from .radar_sms_sign_in_challenge_error_body import (
     RadarSmsSignInChallengeErrorBody as RadarSmsSignInChallengeErrorBody,
@@ -1687,6 +2176,9 @@ from .radar_standalone_assess_request_auth_method import (
 from .radar_standalone_response_blocklist_type import (
     RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType,
 )
+from .radar_standalone_response_blocklist_type import (
+    RadarStandaloneResponseBlocklistTypeLiteral as RadarStandaloneResponseBlocklistTypeLiteral,
+)
 from .radar_standalone_response_control import (
     RadarStandaloneResponseControl as RadarStandaloneResponseControl,
 )
@@ -1702,8 +2194,12 @@ from .radar_standalone_response_verdict import (
 from .rate_limit_exceeded_error_body_with_retry_after import (
     RateLimitExceededErrorBodyWithRetryAfter as RateLimitExceededErrorBodyWithRetryAfter,
 )
+from .repeat_sign_up import RepeatSignUp as RepeatSignUp
 from .resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale,
+)
+from .resend_user_invite_options_locale import (
+    ResendUserInviteOptionsLocaleLiteral as ResendUserInviteOptionsLocaleLiteral,
 )
 from .resource_export_completed import (
     ResourceExportCompleted as ResourceExportCompleted,
@@ -1724,6 +2220,9 @@ from .resource_export_created_data import (
 from .resource_export_created_data_resource_type import (
     ResourceExportCreatedDataResourceType as ResourceExportCreatedDataResourceType,
 )
+from .resource_export_created_data_resource_type import (
+    ResourceExportCreatedDataResourceTypeLiteral as ResourceExportCreatedDataResourceTypeLiteral,
+)
 from .resource_export_downloaded import (
     ResourceExportDownloaded as ResourceExportDownloaded,
 )
@@ -1733,12 +2232,21 @@ from .resource_export_downloaded_data import (
 from .resource_export_downloaded_data_resource_type import (
     ResourceExportDownloadedDataResourceType as ResourceExportDownloadedDataResourceType,
 )
+from .resource_export_downloaded_data_resource_type import (
+    ResourceExportDownloadedDataResourceTypeLiteral as ResourceExportDownloadedDataResourceTypeLiteral,
+)
 from .resource_export_failed import ResourceExportFailed as ResourceExportFailed
 from .resource_export_failed_data import (
     ResourceExportFailedData as ResourceExportFailedData,
 )
 from .resource_export_failed_data_resource_type import (
     ResourceExportFailedDataResourceType as ResourceExportFailedDataResourceType,
+)
+from .resource_export_failed_data_resource_type import (
+    ResourceExportFailedDataResourceTypeLiteral as ResourceExportFailedDataResourceTypeLiteral,
+)
+from .role_assignment_update_overlap_error_body import (
+    RoleAssignmentUpdateOverlapErrorBody as RoleAssignmentUpdateOverlapErrorBody,
 )
 from .role_created import RoleCreated as RoleCreated
 from .role_created_data import RoleCreatedData as RoleCreatedData
@@ -1749,8 +2257,14 @@ from .role_type import RoleTypeLiteral as RoleTypeLiteral
 from .role_updated import RoleUpdated as RoleUpdated
 from .role_updated_data import RoleUpdatedData as RoleUpdatedData
 from .send_email_change_locale import SendEmailChangeLocale as SendEmailChangeLocale
+from .send_email_change_locale import (
+    SendEmailChangeLocaleLiteral as SendEmailChangeLocaleLiteral,
+)
 from .send_verification_email_locale import (
     SendVerificationEmailLocale as SendVerificationEmailLocale,
+)
+from .send_verification_email_locale import (
+    SendVerificationEmailLocaleLiteral as SendVerificationEmailLocaleLiteral,
 )
 from .session_created import SessionCreated as SessionCreated
 from .session_created_data import SessionCreatedData as SessionCreatedData
@@ -1766,10 +2280,16 @@ from .session_created_data_impersonator import (
 from .session_created_data_status import (
     SessionCreatedDataStatus as SessionCreatedDataStatus,
 )
+from .session_created_data_status import (
+    SessionCreatedDataStatusLiteral as SessionCreatedDataStatusLiteral,
+)
 from .session_revoked import SessionRevoked as SessionRevoked
 from .session_revoked_data import SessionRevokedData as SessionRevokedData
 from .session_revoked_data_auth_method import (
     SessionRevokedDataAuthMethod as SessionRevokedDataAuthMethod,
+)
+from .session_revoked_data_auth_method import (
+    SessionRevokedDataAuthMethodLiteral as SessionRevokedDataAuthMethodLiteral,
 )
 from .session_revoked_data_impersonator import (
     SessionRevokedDataImpersonator as SessionRevokedDataImpersonator,
@@ -1777,6 +2297,10 @@ from .session_revoked_data_impersonator import (
 from .session_revoked_data_status import (
     SessionRevokedDataStatus as SessionRevokedDataStatus,
 )
+from .session_revoked_data_status import (
+    SessionRevokedDataStatusLiteral as SessionRevokedDataStatusLiteral,
+)
+from .sign_up import SignUp as SignUp
 from .sign_up_not_allowed_oauth_error_body import (
     SignUpNotAllowedOAuthErrorBody as SignUpNotAllowedOAuthErrorBody,
 )
@@ -1788,9 +2312,13 @@ from .sms_challenge_quota_reached_error_body import (
 from .sms_challenge_rate_limited_error_body import (
     SmsChallengeRateLimitedErrorBody as SmsChallengeRateLimitedErrorBody,
 )
+from .sms_sign_in import SmsSignIn as SmsSignIn
+from .sms_sign_in_trigger import SmsSignInTrigger as SmsSignInTrigger
+from .sms_sign_in_trigger import SmsSignInTriggerLiteral as SmsSignInTriggerLiteral
 from .sso_required_oauth_error_body_with_connection_ids_list_email import (
     SSORequiredOAuthErrorBodyWithConnectionIdsListEmail as SSORequiredOAuthErrorBodyWithConnectionIdsListEmail,
 )
+from .stale_account import StaleAccount as StaleAccount
 from .sub_resource_scoped_role_not_allowed_error_body_with_role_slug import (
     SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug as SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug,
 )
@@ -1815,6 +2343,7 @@ from .unauthorized_client_oauth_error_body import (
     UnauthorizedClientOAuthErrorBody as UnauthorizedClientOAuthErrorBody,
 )
 from .unauthorized_error_body import UnauthorizedErrorBody as UnauthorizedErrorBody
+from .unrecognized_device import UnrecognizedDevice as UnrecognizedDevice
 from .update_audit_logs_retention_retention_period import (
     UpdateAuditLogsRetentionRetentionPeriod as UpdateAuditLogsRetentionRetentionPeriod,
 )
@@ -1830,8 +2359,14 @@ from .update_audit_logs_retention_with_retention_period_in_days import (
 from .update_audit_logs_retention_with_retention_period_retention_period import (
     UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriod as UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriod,
 )
+from .update_audit_logs_retention_with_retention_period_retention_period import (
+    UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriodLiteral as UpdateAuditLogsRetentionWithRetentionPeriodRetentionPeriodLiteral,
+)
 from .update_custom_provider_definition_authenticate_via import (
     UpdateCustomProviderDefinitionAuthenticateVia as UpdateCustomProviderDefinitionAuthenticateVia,
+)
+from .update_custom_provider_definition_authenticate_via import (
+    UpdateCustomProviderDefinitionAuthenticateViaLiteral as UpdateCustomProviderDefinitionAuthenticateViaLiteral,
 )
 from .update_user_organization_membership_with_role_slug import (
     UpdateUserOrganizationMembershipWithRoleSlug as UpdateUserOrganizationMembershipWithRoleSlug,
@@ -1842,11 +2377,20 @@ from .update_user_organization_membership_with_role_slugs import (
 from .update_user_password_hash_type import (
     UpdateUserPasswordHashType as UpdateUserPasswordHashType,
 )
+from .update_user_password_hash_type import (
+    UpdateUserPasswordHashTypeLiteral as UpdateUserPasswordHashTypeLiteral,
+)
 from .update_user_password_salt_position import (
     UpdateUserPasswordSaltPosition as UpdateUserPasswordSaltPosition,
 )
+from .update_user_password_salt_position import (
+    UpdateUserPasswordSaltPositionLiteral as UpdateUserPasswordSaltPositionLiteral,
+)
 from .update_webhook_endpoint_events import (
     UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents,
+)
+from .update_webhook_endpoint_events import (
+    UpdateWebhookEndpointEventsLiteral as UpdateWebhookEndpointEventsLiteral,
 )
 from .update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
@@ -1888,6 +2432,7 @@ from .user_identities_get_item_provider import (
     UserIdentitiesGetItemProviderLiteral as UserIdentitiesGetItemProviderLiteral,
 )
 from .user_invite_state import UserInviteState as UserInviteState
+from .user_invite_state import UserInviteStateLiteral as UserInviteStateLiteral
 from .user_mismatch_error_body import UserMismatchErrorBody as UserMismatchErrorBody
 from .user_organization_membership_base_list_data import (
     UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
@@ -1895,8 +2440,14 @@ from .user_organization_membership_base_list_data import (
 from .user_organization_membership_base_list_data_status import (
     UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
 )
+from .user_organization_membership_base_list_data_status import (
+    UserOrganizationMembershipBaseListDataStatusLiteral as UserOrganizationMembershipBaseListDataStatusLiteral,
+)
 from .user_organization_membership_status import (
     UserOrganizationMembershipStatus as UserOrganizationMembershipStatus,
+)
+from .user_organization_membership_status import (
+    UserOrganizationMembershipStatusLiteral as UserOrganizationMembershipStatusLiteral,
 )
 from .user_role_assignment_source_type import (
     UserRoleAssignmentSourceType as UserRoleAssignmentSourceType,
@@ -1905,11 +2456,15 @@ from .user_role_assignment_source_type import (
     UserRoleAssignmentSourceTypeLiteral as UserRoleAssignmentSourceTypeLiteral,
 )
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .user_sessions_auth_method import (
+    UserSessionsAuthMethodLiteral as UserSessionsAuthMethodLiteral,
+)
 from .user_sessions_impersonator import (
     UserSessionsImpersonator as UserSessionsImpersonator,
 )
 from .user_sessions_list_item import UserSessionsListItem as UserSessionsListItem
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
+from .user_sessions_status import UserSessionsStatusLiteral as UserSessionsStatusLiteral
 from .user_updated import UserUpdated as UserUpdated
 from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted
 from .vault_byok_key_deleted_data import (
@@ -1938,61 +2493,96 @@ from .vault_data_deleted_data import VaultDataDeletedData as VaultDataDeletedDat
 from .vault_data_deleted_data_actor_source import (
     VaultDataDeletedDataActorSource as VaultDataDeletedDataActorSource,
 )
+from .vault_data_deleted_data_actor_source import (
+    VaultDataDeletedDataActorSourceLiteral as VaultDataDeletedDataActorSourceLiteral,
+)
 from .vault_data_read import VaultDataRead as VaultDataRead
 from .vault_data_read_data import VaultDataReadData as VaultDataReadData
 from .vault_data_read_data_actor_source import (
     VaultDataReadDataActorSource as VaultDataReadDataActorSource,
+)
+from .vault_data_read_data_actor_source import (
+    VaultDataReadDataActorSourceLiteral as VaultDataReadDataActorSourceLiteral,
 )
 from .vault_data_updated import VaultDataUpdated as VaultDataUpdated
 from .vault_data_updated_data import VaultDataUpdatedData as VaultDataUpdatedData
 from .vault_data_updated_data_actor_source import (
     VaultDataUpdatedDataActorSource as VaultDataUpdatedDataActorSource,
 )
+from .vault_data_updated_data_actor_source import (
+    VaultDataUpdatedDataActorSourceLiteral as VaultDataUpdatedDataActorSourceLiteral,
+)
 from .vault_dek_decrypted import VaultDekDecrypted as VaultDekDecrypted
 from .vault_dek_decrypted_data import VaultDekDecryptedData as VaultDekDecryptedData
 from .vault_dek_decrypted_data_actor_source import (
     VaultDekDecryptedDataActorSource as VaultDekDecryptedDataActorSource,
+)
+from .vault_dek_decrypted_data_actor_source import (
+    VaultDekDecryptedDataActorSourceLiteral as VaultDekDecryptedDataActorSourceLiteral,
 )
 from .vault_dek_read import VaultDekRead as VaultDekRead
 from .vault_dek_read_data import VaultDekReadData as VaultDekReadData
 from .vault_dek_read_data_actor_source import (
     VaultDekReadDataActorSource as VaultDekReadDataActorSource,
 )
+from .vault_dek_read_data_actor_source import (
+    VaultDekReadDataActorSourceLiteral as VaultDekReadDataActorSourceLiteral,
+)
 from .vault_dek_rekeyed import VaultDekRekeyed as VaultDekRekeyed
 from .vault_dek_rekeyed_data import VaultDekRekeyedData as VaultDekRekeyedData
 from .vault_dek_rekeyed_data_actor_source import (
     VaultDekRekeyedDataActorSource as VaultDekRekeyedDataActorSource,
+)
+from .vault_dek_rekeyed_data_actor_source import (
+    VaultDekRekeyedDataActorSourceLiteral as VaultDekRekeyedDataActorSourceLiteral,
 )
 from .vault_kek_created import VaultKekCreated as VaultKekCreated
 from .vault_kek_created_data import VaultKekCreatedData as VaultKekCreatedData
 from .vault_kek_created_data_actor_source import (
     VaultKekCreatedDataActorSource as VaultKekCreatedDataActorSource,
 )
+from .vault_kek_created_data_actor_source import (
+    VaultKekCreatedDataActorSourceLiteral as VaultKekCreatedDataActorSourceLiteral,
+)
 from .vault_kek_deleted import VaultKekDeleted as VaultKekDeleted
 from .vault_kek_deleted_data import VaultKekDeletedData as VaultKekDeletedData
 from .vault_kek_deleted_data_actor_source import (
     VaultKekDeletedDataActorSource as VaultKekDeletedDataActorSource,
+)
+from .vault_kek_deleted_data_actor_source import (
+    VaultKekDeletedDataActorSourceLiteral as VaultKekDeletedDataActorSourceLiteral,
 )
 from .vault_metadata_read import VaultMetadataRead as VaultMetadataRead
 from .vault_metadata_read_data import VaultMetadataReadData as VaultMetadataReadData
 from .vault_metadata_read_data_actor_source import (
     VaultMetadataReadDataActorSource as VaultMetadataReadDataActorSource,
 )
+from .vault_metadata_read_data_actor_source import (
+    VaultMetadataReadDataActorSourceLiteral as VaultMetadataReadDataActorSourceLiteral,
+)
 from .vault_names_listed import VaultNamesListed as VaultNamesListed
 from .vault_names_listed_data import VaultNamesListedData as VaultNamesListedData
 from .vault_names_listed_data_actor_source import (
     VaultNamesListedDataActorSource as VaultNamesListedDataActorSource,
 )
+from .vault_names_listed_data_actor_source import (
+    VaultNamesListedDataActorSourceLiteral as VaultNamesListedDataActorSourceLiteral,
+)
 from .verification_id_required_error_body import (
     VerificationIdRequiredErrorBody as VerificationIdRequiredErrorBody,
 )
 from .waitlist_entry_state import WaitlistEntryState as WaitlistEntryState
+from .waitlist_entry_state import WaitlistEntryStateLiteral as WaitlistEntryStateLiteral
 from .waitlist_user import WaitlistUser as WaitlistUser
 from .waitlist_user_approved import WaitlistUserApproved as WaitlistUserApproved
 from .waitlist_user_created import WaitlistUserCreated as WaitlistUserCreated
 from .waitlist_user_denied import WaitlistUserDenied as WaitlistUserDenied
 from .waitlist_user_state import WaitlistUserState as WaitlistUserState
+from .waitlist_user_state import WaitlistUserStateLiteral as WaitlistUserStateLiteral
 from .webhook_endpoint_status import WebhookEndpointStatus as WebhookEndpointStatus
+from .webhook_endpoint_status import (
+    WebhookEndpointStatusLiteral as WebhookEndpointStatusLiteral,
+)
 from .widget_session_token_scopes import (
     WidgetSessionTokenScopes as WidgetSessionTokenScopes,
 )

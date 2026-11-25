@@ -40,6 +40,10 @@ from .group_role_assignment_resource import (
 from .patch_group_role_assignments import (
     PatchGroupRoleAssignments as PatchGroupRoleAssignments,
 )
+from .patch_role_assignment_entry import (
+    PatchRoleAssignmentEntry as PatchRoleAssignmentEntry,
+)
+from .patch_role_assignments import PatchRoleAssignments as PatchRoleAssignments
 from .permission import Permission as Permission
 from .remove_role import RemoveRole as RemoveRole
 from .replace_group_role_assignment_entry import (

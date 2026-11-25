@@ -19,7 +19,7 @@ from workos.common.models import (
     RadarStandaloneAssessRequestAction,
     RadarStandaloneAssessRequestAuthMethod,
 )
-from workos.radar.models import RadarStandaloneResponse
+from workos.radar.models import RadarDetection, RadarStandaloneResponse
 
 
 class TestRadar:
@@ -53,6 +53,18 @@ class TestRadar:
         request = httpx_mock.get_request()
         assert request.method == "PUT"
         assert request.url.path.endswith("/radar/attempts/test_id")
+
+    def test_get_detection(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("radar_detection.json"),
+        )
+        result = workos.radar.get_detection("test_id")
+        assert isinstance(result, RadarDetection)
+        assert result.object == "radar_detection"
+        assert result.id == "detection_01HZBC6N1EB1ZY7KG32X"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/radar/detections/test_id")
 
     def test_add_list_entry(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -221,6 +233,17 @@ class TestAsyncRadar:
         request = httpx_mock.get_request()
         assert request.method == "PUT"
         assert request.url.path.endswith("/radar/attempts/test_id")
+
+    @pytest.mark.asyncio
+    async def test_get_detection(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("radar_detection.json"))
+        result = await async_workos.radar.get_detection("test_id")
+        assert isinstance(result, RadarDetection)
+        assert result.object == "radar_detection"
+        assert result.id == "detection_01HZBC6N1EB1ZY7KG32X"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/radar/detections/test_id")
 
     @pytest.mark.asyncio
     async def test_add_list_entry(self, async_workos, httpx_mock):

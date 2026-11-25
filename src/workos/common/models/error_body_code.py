@@ -32,6 +32,7 @@ class ErrorBodyCode(str, Enum):
     CANNOT_REACTIVATE_PENDING_ORGANIZATION_MEMBERSHIP = (
         "cannot_reactivate_pending_organization_membership"
     )
+    CANNOT_REMOVE_GROUP_SOURCED_ROLE = "cannot_remove_group_sourced_role"
     CERTIFICATE_EXPIRED = "certificate_expired"
     CHAIN_DEPTH_EXCEEDED = "chain_depth_exceeded"
     CLAIM_DENIED = "claim_denied"
@@ -55,6 +56,7 @@ class ErrorBodyCode(str, Enum):
     DIRECTORY_SYNC_RATE_LIMITED = "directory_sync_rate_limited"
     DIRECTORY_SYNC_UNSUPPORTED = "directory_sync_unsupported"
     DISCOVERY_ENDPOINT_MUST_USE_HTTPS = "discovery_endpoint_must_use_https"
+    DISCOVERY_ENDPOINT_TENANT_NOT_ALLOWED = "discovery_endpoint_tenant_not_allowed"
     DOMAIN_ALREADY_EXISTS = "domain_already_exists"
     DOMAIN_ALREADY_VERIFIED = "domain_already_verified"
     DUPLICATE_ENDPOINT = "duplicate_endpoint"
@@ -79,6 +81,7 @@ class ErrorBodyCode(str, Enum):
     EMAIL_VERIFICATION_CODE_INCORRECT = "email_verification_code_incorrect"
     EMAIL_VERIFICATION_CODE_PREVIOUSLY_USED = "email_verification_code_previously_used"
     EMAIL_VERIFICATION_REQUIRED = "email_verification_required"
+    ENTITIES_NOT_FOUND = "entities_not_found"
     ENTITY_NOT_FOUND = "entity_not_found"
     EXPIRES_IN_DAYS_TOO_LONG = "expires_in_days_too_long"
     EXPIRES_IN_DAYS_TOO_SHORT = "expires_in_days_too_short"
@@ -100,6 +103,8 @@ class ErrorBodyCode(str, Enum):
     INVALID_EMAIL = "invalid_email"
     INVALID_IDP_SSO_URL = "invalid_idp_sso_url"
     INVALID_INVITE = "invalid_invite"
+    INVALID_ISSUER_METADATA = "invalid_issuer_metadata"
+    INVALID_ISSUER_URL = "invalid_issuer_url"
     INVALID_LOCALE = "invalid_locale"
     INVALID_METADATA = "invalid_metadata"
     INVALID_ONE_TIME_CODE = "invalid_one_time_code"
@@ -121,6 +126,7 @@ class ErrorBodyCode(str, Enum):
     INVITE_NOT_PENDING = "invite_not_pending"
     INVITE_REVOKED = "invite_revoked"
     IP_ADDRESS_REQUIRED = "ip_address_required"
+    ISSUER_ALREADY_TRUSTED = "issuer_already_trusted"
     IT_CONTACT_ALREADY_EXISTS = "it_contact_already_exists"
     IT_CONTACT_INVITATION_ALREADY_ACTIVE = "it_contact_invitation_already_active"
     KEY_PAIR_NOT_ACCEPTED = "key_pair_not_accepted"
@@ -135,13 +141,16 @@ class ErrorBodyCode(str, Enum):
     MULTIPLE_ROLES_NOT_ENABLED = "multiple_roles_not_enabled"
     NAME_ALREADY_IN_USE = "name_already_in_use"
     NO_PENDING_EMAIL_CHANGE = "no_pending_email_change"
+    NOT_CLAUDE_ISSUER = "not_claude_issuer"
     OIDC_OPTIONS_REQUIRED = "oidc_options_required"
     ONE_TIME_CODE_EXPIRED = "one_time_code_expired"
     ONE_TIME_CODE_PREVIOUSLY_USED = "one_time_code_previously_used"
     ONE_TIME_CODE_TOO_MANY_ATTEMPTS = "one_time_code_too_many_attempts"
+    ORGANIZATION_ALREADY_HAS_TRUST = "organization_already_has_trust"
     ORGANIZATION_BLOCKED_FROM_SENDING_INVITES = (
         "organization_blocked_from_sending_invites"
     )
+    ORGANIZATION_HAS_IDP_MANAGED_EMA = "organization_has_idp_managed_ema"
     ORGANIZATION_MEMBERSHIP_DIRECTORY_MANAGED = (
         "organization_membership_directory_managed"
     )
@@ -149,6 +158,7 @@ class ErrorBodyCode(str, Enum):
     ORGANIZATION_NOT_INVOCABLE = "organization_not_invocable"
     ORGANIZATION_ROLE_SLUG_CONFLICT = "organization_role_slug_conflict"
     ORGANIZATION_SELECTION_REQUIRED = "organization_selection_required"
+    ORGANIZATION_WITHOUT_VERIFIED_DOMAIN = "organization_without_verified_domain"
     PASSKEY_PROGRESSIVE_ENROLLMENT = "passkey_progressive_enrollment"
     PASSWORD_AND_PASSWORD_HASH_PROVIDED = "password_and_password_hash_provided"
     PASSWORD_AND_PASSWORD_HASH_TYPE_PROVIDED = (
@@ -166,11 +176,13 @@ class ErrorBodyCode(str, Enum):
     PRODUCTION_FEATURE_REQUIRES_BILLING = "production_feature_requires_billing"
     RADAR_CHALLENGE = "radar_challenge"
     RADAR_SIGN_UP_CHALLENGE = "radar_sign_up_challenge"
+    RADAR_SMS_CHALLENGE = "radar_sms_challenge"
     RADAR_SMS_SIGN_IN_CHALLENGE = "radar_sms_sign_in_challenge"
     RATE_LIMIT_EXCEEDED = "rate_limit_exceeded"
     RESOURCE_HAS_DEPENDENTS = "resource_has_dependents"
     RESOURCE_LIMIT_EXCEEDED = "resource_limit_exceeded"
     RESOURCE_TYPE_UPDATE_IN_PROGRESS = "resource_type_update_in_progress"
+    ROLE_ASSIGNMENT_UPDATE_OVERLAP = "role_assignment_update_overlap"
     ROLE_HAS_ASSIGNMENTS = "role_has_assignments"
     ROLE_HAS_GROUP_ROLE_MAPPINGS = "role_has_group_role_mappings"
     ROLE_NOT_FOUND = "role_not_found"
@@ -229,6 +241,7 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "cannot_deactivate_pending_organization_membership",
     "cannot_delete_last_certificate",
     "cannot_reactivate_pending_organization_membership",
+    "cannot_remove_group_sourced_role",
     "certificate_expired",
     "chain_depth_exceeded",
     "claim_denied",
@@ -252,6 +265,7 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "directory_sync_rate_limited",
     "directory_sync_unsupported",
     "discovery_endpoint_must_use_https",
+    "discovery_endpoint_tenant_not_allowed",
     "domain_already_exists",
     "domain_already_verified",
     "duplicate_endpoint",
@@ -276,6 +290,7 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "email_verification_code_incorrect",
     "email_verification_code_previously_used",
     "email_verification_required",
+    "entities_not_found",
     "entity_not_found",
     "expires_in_days_too_long",
     "expires_in_days_too_short",
@@ -295,6 +310,8 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "invalid_email",
     "invalid_idp_sso_url",
     "invalid_invite",
+    "invalid_issuer_metadata",
+    "invalid_issuer_url",
     "invalid_locale",
     "invalid_metadata",
     "invalid_one_time_code",
@@ -316,6 +333,7 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "invite_not_pending",
     "invite_revoked",
     "ip_address_required",
+    "issuer_already_trusted",
     "it_contact_already_exists",
     "it_contact_invitation_already_active",
     "key_pair_not_accepted",
@@ -328,16 +346,20 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "multiple_roles_not_enabled",
     "name_already_in_use",
     "no_pending_email_change",
+    "not_claude_issuer",
     "oidc_options_required",
     "one_time_code_expired",
     "one_time_code_previously_used",
     "one_time_code_too_many_attempts",
+    "organization_already_has_trust",
     "organization_blocked_from_sending_invites",
+    "organization_has_idp_managed_ema",
     "organization_membership_directory_managed",
     "organization_not_found",
     "organization_not_invocable",
     "organization_role_slug_conflict",
     "organization_selection_required",
+    "organization_without_verified_domain",
     "passkey_progressive_enrollment",
     "password_and_password_hash_provided",
     "password_and_password_hash_type_provided",
@@ -351,11 +373,13 @@ ErrorBodyCodeLiteral: TypeAlias = Literal[
     "production_feature_requires_billing",
     "radar_challenge",
     "radar_sign_up_challenge",
+    "radar_sms_challenge",
     "radar_sms_sign_in_challenge",
     "rate_limit_exceeded",
     "resource_has_dependents",
     "resource_limit_exceeded",
     "resource_type_update_in_progress",
+    "role_assignment_update_overlap",
     "role_has_assignments",
     "role_has_group_role_mappings",
     "role_not_found",

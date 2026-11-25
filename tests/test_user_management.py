@@ -258,6 +258,14 @@ class TestUserManagement:
         body = json.loads(request.content)
         assert body["origin"] == "test_origin"
 
+    def test_delete_cors_origin(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.user_management.delete_cors_origin("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/cors_origins/test_id")
+
     def test_get_email_verification(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("email_verification.json"),
@@ -1332,6 +1340,15 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/cors_origins")
+
+    @pytest.mark.asyncio
+    async def test_delete_cors_origin(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.user_management.delete_cors_origin("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/user_management/cors_origins/test_id")
 
     @pytest.mark.asyncio
     async def test_get_email_verification(self, async_workos, httpx_mock):

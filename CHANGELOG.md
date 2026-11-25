@@ -1,5 +1,20 @@
 # Changelog
 
+## [10.10.0](https://github.com/workos/workos-python/compare/v10.9.0...v10.10.0) (2026-11-25)
+
+
+### Features
+
+* **agents:** Change agents API surface ([#783](https://github.com/workos/workos-python/issues/783)) ([e12f4cb](https://github.com/workos/workos-python/commit/e12f4cb10783c03815150e241a344c27adb39242))
+* **directory_sync:** Change directory sync API surface ([#783](https://github.com/workos/workos-python/issues/783)) ([e12f4cb](https://github.com/workos/workos-python/commit/e12f4cb10783c03815150e241a344c27adb39242))
+* **sso:** Add SSO API surface ([#783](https://github.com/workos/workos-python/issues/783)) ([e12f4cb](https://github.com/workos/workos-python/commit/e12f4cb10783c03815150e241a344c27adb39242))
+* **webhooks:** Add webhook API surface ([#783](https://github.com/workos/workos-python/issues/783)) ([e12f4cb](https://github.com/workos/workos-python/commit/e12f4cb10783c03815150e241a344c27adb39242))
+
+
+### Bug Fixes
+
+* **events:** Updated model `EventSchema` ([#783](https://github.com/workos/workos-python/issues/783)) ([e12f4cb](https://github.com/workos/workos-python/commit/e12f4cb10783c03815150e241a344c27adb39242))
+
 ## [10.9.0](https://github.com/workos/workos-python/compare/v10.8.0...v10.9.0) (2026-11-13)
 
 ### Features

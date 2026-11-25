@@ -59,6 +59,127 @@ The client reads credentials from the environment when not passed explicitly:
 | `WORKOS_REQUEST_TIMEOUT` | HTTP timeout in seconds (defaults to `60`) |
 | `WORKOS_ISSUER` | Expected `iss` claim of session access tokens, comma-separated to accept several (not validated when unset; also settable via `jwt_issuer=`) |
 
+## Workload Identity
+
+A workload running in GitHub Actions, GCP or AWS can call the WorkOS API without a stored API key. The SDK exchanges a JWT issued by the platform for a short-lived WorkOS access token, caches it in memory, and refreshes it before it expires.
+
+Build a `WorkloadIdentityCredentials` and pass it as `credentials` instead of `api_key`:
+
+```python
+from workos import WorkOSClient, WorkloadIdentityCredentials
+from workos_workload_identity_github_actions import github_actions
+
+client = WorkOSClient(
+    credentials=WorkloadIdentityCredentials(
+        client_id="client_1234",  # the M2M application's client ID
+        token_url="https://.../oauth2/token",  # the token exchange endpoint
+        environment_id="environment_1234",  # optional, see below
+        identity_token_provider=github_actions("https://api.workos.com"),
+    )
+)
+
+page = client.organizations.list_organizations()
+```
+
+`AsyncWorkOSClient` takes the same `credentials` argument. Workload identity is used only when you pass `credentials`: no environment variable switches it on, `WORKOS_API_KEY` is ignored when credentials are passed, and a failed exchange is an error, never a fallback to an API key. Passing both `api_key` and `credentials` raises `ValueError`.
+
+The calls that send the API key as the client secret still need a client built with `api_key`: the `user_management` sign-in methods such as `authenticate_with_password` and `authenticate_with_code`, `sso.get_profile_and_token`, and `refresh()` on a session.
+
+| Argument | Environment variable | Description |
+|----------|----------------------|-------------|
+| `identity_token_provider` | | A callable that returns the workload's JWT (required) |
+| `client_id` | `WORKOS_CLIENT_ID` | The M2M application's client ID (required) |
+| `token_url` | | The token exchange endpoint (required; set in code only, and there is no default). It must be an `https` URL |
+| `environment_id` | | The environment ID (optional; set in code only). When set, it is sent as the `x-url-environment-id` header on every API request |
+| `resource` | | The resource to request a token for (defaults to `https://api.workos.com`) |
+| `scope` | | The scope to request (optional; set in code only, and omitted when unset) |
+
+`WORKOS_CLIENT_ID` is the only environment variable the credentials read, and an explicit `client_id` wins over it. Every other argument is set in code.
+
+`token_url` must be an absolute `https` URL, because the exchange request carries the workload's identity token and the response carries the access token. Any other URL, `http://localhost` included, raises `WorkloadIdentityError` with the code `invalid_configuration` when the credentials are built.
+
+`environment_id` is optional. WorkOS binds a workload identity client to exactly one environment, so the header selects nothing, and when no environment ID is set the header is not sent. Setting it is a safety check: if the value names a different environment from the one the client is bound to, the API refuses the request with `403 environment_mismatch`.
+
+### Platform Providers
+
+Each platform's provider is a separate distribution, so the SDK itself gains no dependencies. Install the one you need; installing a provider does not select it.
+
+```bash
+pip install "workos[github-actions]"  # workos-workload-identity-github-actions
+pip install "workos[gcp]"             # workos-workload-identity-gcp
+pip install "workos[aws]"             # workos-workload-identity-aws (depends on boto3)
+```
+
+Every provider takes the audience the identity token is requested for. It must match the audience of the trust rule on your WorkOS application; the conventional value is `https://api.workos.com`.
+
+**GitHub Actions.** The job needs `permissions: id-token: write`.
+
+```python
+from workos_workload_identity_github_actions import github_actions
+
+provider = github_actions("https://api.workos.com")
+```
+
+**GCP.** Uses the default service account's identity token from the metadata server (Compute Engine, GKE, Cloud Run, Cloud Functions).
+
+```python
+from workos_workload_identity_gcp import gcp_metadata
+
+provider = gcp_metadata("https://api.workos.com")
+```
+
+**AWS.** Calls STS `GetWebIdentityToken` with the default AWS credential chain. The calling identity needs the `sts:GetWebIdentityToken` permission. `region` is optional when boto3 can resolve one.
+
+```python
+from workos_workload_identity_aws import aws_sts
+
+provider = aws_sts("https://api.workos.com", region="us-east-1")
+```
+
+### Custom Providers
+
+A provider is any callable that returns the JWT as a string. The SDK ships two, and you can pass your own function:
+
+```python
+from workos import WorkloadIdentityCredentials, token_env, token_file
+
+# A file that another process writes, such as a sidecar or an earlier CI step
+# that fetches a new token. The file is read again on every exchange
+provider = token_file("/run/workos/identity-token")
+
+# An environment variable, read on every exchange
+provider = token_env("MY_IDENTITY_TOKEN")
+
+# Your own callable
+def provider() -> str:
+    return fetch_identity_token_somehow()
+
+# client_id comes from WORKOS_CLIENT_ID here
+credentials = WorkloadIdentityCredentials(
+    token_url="https://.../oauth2/token",
+    identity_token_provider=provider,
+)
+```
+
+WorkOS accepts an identity token for one exchange only. The SDK exchanges again about every four minutes. If the file or the variable still holds the same token then, that exchange fails with `invalid_grant`. So use `token_file` and `token_env` for a source that something rewrites before each exchange, or for a job shorter than four minutes. The platform providers (GitHub Actions, GCP and AWS) fetch a new token every time.
+
+With `AsyncWorkOSClient`, a plain function runs in a worker thread so it cannot block the event loop, and an `async def` provider is awaited.
+
+### Workload Identity Errors
+
+A failed exchange raises `WorkloadIdentityError`. Its `code` is the OAuth error code from the token endpoint (such as `invalid_grant`) or one of `exchange_failed`, `invalid_response`, `provider_failed` and `invalid_configuration`; `hint` says what to check; `description` carries the server's detail when there is any. Neither token ever appears in an error.
+
+```python
+from workos import WorkloadIdentityError
+
+try:
+    client.organizations.list_organizations()
+except WorkloadIdentityError as e:
+    print(e.code, e.hint)
+```
+
+The exchange is retried on connection failures, 429 and 5xx responses. If the API answers a request with a 401, the SDK discards that token, exchanges again, and retries the request once.
+
 ## Available Resources
 
 The client exposes the WorkOS API through typed namespace properties:

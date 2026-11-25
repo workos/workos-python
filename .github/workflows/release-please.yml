@@ -27,8 +27,15 @@ jobs:
       pull-requests: write
     outputs:
       pr: ${{ steps.release.outputs.pr }}
+      # Every release PR this run created or updated. The SDK and each provider
+      # distribution get their own (separate-pull-requests).
+      prs: ${{ steps.release.outputs.prs }}
+      # The unprefixed outputs are the root package's, i.e. the SDK's.
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      github_actions_release_created: ${{ steps.release.outputs['packages/workos-workload-identity-github-actions--release_created'] }}
+      gcp_release_created: ${{ steps.release.outputs['packages/workos-workload-identity-gcp--release_created'] }}
+      aws_release_created: ${{ steps.release.outputs['packages/workos-workload-identity-aws--release_created'] }}
     steps:
       - name: Generate token
         id: generate-token
@@ -45,15 +52,20 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
-  # While the release PR is open, enrich it before it merges. Runs as its
-  # own job (gated on the PR existing) so a failure here can never block the
-  # release or the PyPI publish that depends on release-please.
+  # While a release PR is open, enrich it before it merges. Runs as its
+  # own job (gated on a PR existing) so a failure here can never block the
+  # release or the PyPI publish that depends on release-please. One run per
+  # release PR: the SDK's and each provider distribution's.
   enrich-release-pr:
     needs: release-please
     if: needs.release-please.outputs.pr
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        pr: ${{ fromJSON(needs.release-please.outputs.prs) }}
     steps:
       - name: Generate token
         id: generate-token
@@ -67,12 +79,14 @@ jobs:
       - name: Checkout release PR branch
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
-          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
+          ref: ${{ matrix.pr.headBranchName }}
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
 
+      # Every release PR needs this: the one uv.lock at the root records the
+      # version of the SDK and of each provider distribution.
       - name: Update lockfile
         run: |
           uv lock
@@ -89,9 +103,13 @@ jobs:
       # without a fragment (typical for human-authored PRs), keep what
       # release-please wrote. Fragments are deleted in the same commit.
       # Idempotent: if no fragments exist, skip silently.
+      # SDK release PR only. Fragments describe SDK changes and go into the
+      # root CHANGELOG.md; a provider's release PR is on a branch named
+      # ...--components--<distribution>.
       - name: Inline rich changelog fragments
+        if: ${{ !contains(matrix.pr.headBranchName, '--components--') }}
         env:
-          PR_JSON: ${{ needs.release-please.outputs.pr }}
+          PR_TITLE: ${{ matrix.pr.title }}
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -101,7 +119,7 @@ jobs:
             exit 0
           fi
 
-          VERSION=$(echo "$PR_JSON" | jq -r '.title' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          VERSION=$(echo "$PR_TITLE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           export VERSION
 
           python3 - <<'PY'
@@ -212,6 +230,9 @@ jobs:
             echo "No CHANGELOG.md body for $TAG; keeping release-please default notes."
           fi
 
+  # The SDK. In a uv workspace, `uv build` at the root builds only the root
+  # package; each provider distribution has its own job below, gated on its
+  # own release.
   publish:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
@@ -228,6 +249,81 @@ jobs:
 
       - name: Build
         run: uv build
+
+      - name: Publish to PyPI
+        run: uv publish
+
+  publish-workload-identity-github-actions:
+    needs: release-please
+    if: needs.release-please.outputs.github_actions_release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: packages/workos-workload-identity-github-actions
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+
+      # A workspace member builds into the workspace root's dist/ by default;
+      # keep the artifacts next to the package so uv publish finds only them.
+      - name: Build
+        run: uv build --out-dir dist
+
+      - name: Publish to PyPI
+        run: uv publish
+
+  publish-workload-identity-gcp:
+    needs: release-please
+    if: needs.release-please.outputs.gcp_release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: packages/workos-workload-identity-gcp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+
+      # A workspace member builds into the workspace root's dist/ by default;
+      # keep the artifacts next to the package so uv publish finds only them.
+      - name: Build
+        run: uv build --out-dir dist
+
+      - name: Publish to PyPI
+        run: uv publish
+
+  publish-workload-identity-aws:
+    needs: release-please
+    if: needs.release-please.outputs.aws_release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: packages/workos-workload-identity-aws
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+
+      # A workspace member builds into the workspace root's dist/ by default;
+      # keep the artifacts next to the package so uv publish finds only them.
+      - name: Build
+        run: uv build --out-dir dist
 
       - name: Publish to PyPI
         run: uv publish

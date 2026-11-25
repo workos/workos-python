@@ -1,0 +1,25 @@
+[project]
+name = "workos-workload-identity-github-actions"
+version = "0.0.0"
+description = "GitHub Actions identity token provider for WorkOS workload identity federation"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "WorkOS", email = "sdk@workos.com" }]
+requires-python = ">=3.10"
+
+dependencies = []
+
+[project.urls]
+Homepage = "https://workos.com/docs/sdks/python"
+Source = "https://github.com/workos/workos-python/tree/main/packages/workos-workload-identity-github-actions"
+Changelog = "https://github.com/workos/workos-python/blob/main/packages/workos-workload-identity-github-actions/CHANGELOG.md"
+
+[dependency-groups]
+dev = ["pytest~=9.0", "ruff~=0.15", "pyright~=1.1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["uv_build~=0.11"]
+build-backend = "uv_build"

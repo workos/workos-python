@@ -31,6 +31,44 @@ jobs:
       - name: Test
         run: uv run pytest
 
+  # Each provider distribution is released on its own, so it is linted,
+  # type-checked and tested on its own: only its dependencies are installed.
+  packages:
+    name: ${{ matrix.package }} (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - workos-workload-identity-github-actions
+          - workos-workload-identity-gcp
+          - workos-workload-identity-aws
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Type check
+        run: uv run pyright
+
+      - name: Test
+        run: uv run pytest
+
+      - name: Build
+        run: uv build --out-dir dist
+
   smoke-test:
     name: Smoke test (Python ${{ matrix.python }})
     if: "${{ github.event_name == 'pull_request' && contains(toJSON(github.event.pull_request.labels.*.name), 'autorelease: pending') }}"

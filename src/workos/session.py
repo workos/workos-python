@@ -305,7 +305,10 @@ class Session:
                 leeway=self._client._jwt_leeway,
                 issuer=self._client._jwt_issuer,
             )
-        except jwt.exceptions.InvalidTokenError:
+        except (
+            jwt.exceptions.InvalidTokenError,
+            jwt.exceptions.PyJWKClientError,
+        ):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
@@ -521,7 +524,10 @@ class AsyncSession:
                 leeway=self._client._jwt_leeway,
                 issuer=self._client._jwt_issuer,
             )
-        except jwt.exceptions.InvalidTokenError:
+        except (
+            jwt.exceptions.InvalidTokenError,
+            jwt.exceptions.PyJWKClientError,
+        ):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
